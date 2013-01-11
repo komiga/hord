@@ -105,7 +105,7 @@ public:
 		Get ID.
 		@returns Current ID.
 	*/
-	inline RuleID get_id() noexcept { return m_id; }
+	inline RuleID get_id() const noexcept { return m_id; }
 
 	/**
 		Get type info.

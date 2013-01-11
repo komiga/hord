@@ -76,7 +76,7 @@ public:
 		Get ID.
 		@returns Current ID.
 	*/
-	inline NodeID get_id() noexcept { return m_id; }
+	inline NodeID get_id() const noexcept { return m_id; }
 
 	/**
 		Assign slug.
@@ -88,7 +88,7 @@ public:
 		Get slug.
 		@returns Current slug.
 	*/
-	inline String const& get_slug() noexcept { return m_slug; }
+	inline String const& get_slug() const noexcept { return m_slug; }
 
 	/**
 		Get metadata.
