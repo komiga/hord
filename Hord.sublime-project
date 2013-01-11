@@ -1,0 +1,29 @@
+{
+	"folders":
+	[
+		{
+			"name": "Root",
+			"path": "./"
+		},
+		{
+			"name": "- Documentation",
+			"path": "./doc/"
+		},
+		{
+			"name": "- Dependencies",
+			"path": "./dep/"
+		},
+		{
+			"name": "- Headers",
+			"path": "./include/Hord/"
+		},
+		{
+			"name": "- Source",
+			"path": "./src/Hord/"
+		}
+	],
+	"settings":
+	{
+		"tab_size": 4
+	}
+}
