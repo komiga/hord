@@ -76,25 +76,25 @@ public:
 		Get ID.
 		@returns Current ID.
 	*/
-	inline NodeID get_id() const noexcept { return m_id; }
+	NodeID get_id() const noexcept { return m_id; }
 
 	/**
 		Assign slug.
 		@warning New slug will be truncated to 64 code units.
 		@param slug New slug.
 	*/
-	inline void set_slug(String slug) { m_slug.assign(slug, 0, 64); }
+	void set_slug(String slug) { m_slug.assign(slug, 0, 64); }
 	/**
 		Get slug.
 		@returns Current slug.
 	*/
-	inline String const& get_slug() const noexcept { return m_slug; }
+	String const& get_slug() const noexcept { return m_slug; }
 
 	/**
 		Get metadata.
 		@returns The current metadata.
 	*/
-	inline Metadata const& get_metadata() const noexcept { return m_metadata; }
+	Metadata const& get_metadata() const noexcept { return m_metadata; }
 /// @}
 };
 

@@ -70,7 +70,7 @@ public:
 		Get type info.
 		@returns The field's type info.
 	*/
-	inline type_info const& get_type_info() const noexcept { return get_type_info_impl(); }
+	type_info const& get_type_info() const noexcept { return get_type_info_impl(); }
 /// @}
 
 private:
@@ -110,7 +110,7 @@ private:
 	static constexpr MetaField::type_info const s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::String)
 	};
-	inline MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
 
 /**
@@ -139,7 +139,7 @@ private:
 	static constexpr MetaField::type_info const s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int32)
 	};
-	inline MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
 
 /**
@@ -168,7 +168,7 @@ private:
 	static constexpr MetaField::type_info const s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int64)
 	};
-	inline MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
 
 /**
@@ -197,7 +197,7 @@ private:
 	static constexpr MetaField::type_info const s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Bool)
 	};
-	inline MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
 
 /**

@@ -105,13 +105,13 @@ public:
 		Get ID.
 		@returns Current ID.
 	*/
-	inline RuleID get_id() const noexcept { return m_id; }
+	RuleID get_id() const noexcept { return m_id; }
 
 	/**
 		Get type info.
 		@returns The rule's type info.
 	*/
-	inline type_info const& get_type_info() const noexcept { return get_type_info_impl(); }
+	type_info const& get_type_info() const noexcept { return get_type_info_impl(); }
 /// @}
 
 private:
