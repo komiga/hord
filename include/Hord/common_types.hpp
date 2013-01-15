@@ -16,15 +16,36 @@ namespace Hord {
 /** Generic object ID. */
 typedef uint32_t ObjectID;
 
-/** Node ID. */
-typedef ObjectID NodeID;
-/** Rule ID. */
-typedef ObjectID RuleID;
+/**
+	@addtogroup metadata
+	@{
+*/
 
 /** MetaField type. */
 typedef uint8_t MetaFieldType;
+
+/** @} */ // end of doc-group metadata
+
+/**
+	@addtogroup node
+	@{
+*/
+
+/** Node ID. */
+typedef ObjectID NodeID;
+
+/**
+	@addtogroup rule
+	@{
+*/
+
+/** Rule ID. */
+typedef ObjectID RuleID;
 /** Rule type. */
 typedef uint32_t RuleType;
+
+/** @} */ // end of doc-group rule
+/** @} */ // end of doc-group node
 
 } // namespace Hord
 

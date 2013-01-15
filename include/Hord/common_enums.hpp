@@ -27,7 +27,7 @@ enum class StandardRuleTypes : RuleType;
 /**
 	Field type.
 	@note The bitflag layout is only for Rule::type_info to restrict use; Fields must use a single value.
-	@sa #Field
+	@sa Field
 */
 enum class FieldType : uint8_t {
 	/** Textual field. */
@@ -48,7 +48,7 @@ enum class FieldType : uint8_t {
 /**
 	Standard MetaField types.
 	@note Values in @c [0x00, 0x08] are reserved for standard types (@c 0x00 is invalid). Custom serialization may specify further types, and unrecognized types should be ignored by a serializer.
-	@sa #MetaField, #Metadata
+	@sa MetaField, Metadata
 */
 enum class StandardMetaFieldTypes : MetaFieldType {
 	/** StringMetaField. */
@@ -74,14 +74,18 @@ static_assert(0x08==static_cast<MetaFieldType>(StandardMetaFieldTypes::ReservedL
 /** @} */ // end of doc-group metadata
 
 /**
-	@addtogroup column
+	@addtogroup node
+	@{
+*/
+/**
+	@addtogroup rule
 	@{
 */
 
 /**
 	Standard Rule types.
 	@note Values in @c [0,8] are reserved for standard types (@c 0 is invalid). Userspace may specify further types, and unrecognized types should be ignored by a serializer.
-	@sa #Rule
+	@sa Rule
 */
 enum class StandardRuleTypes : RuleType {
 	/**
@@ -133,7 +137,8 @@ enum class StandardRuleTypes : RuleType {
 };
 static_assert(8==static_cast<RuleType>(StandardRuleTypes::ReservedLast), "StandardRuleTypes must reserve up to 8");
 
-/** @} */ // end of doc-group column
+/** @} */ // end of doc-group rule
+/** @} */ // end of doc-group node
 
 } // namespace Hord
 

@@ -25,6 +25,10 @@ struct RuleState;
 class Rule;
 
 /**
+	@addtogroup node
+	@{
+*/
+/**
 	@addtogroup rule
 	@{
 */
@@ -63,13 +67,13 @@ public:
 	struct type_info final {
 		/**
 			Rule type.
-			@sa #StandardRuleTypes
+			@sa StandardRuleTypes
 		*/
 		RuleType const type;
 		/**
 			Permitted FieldTypes.
 			@note This should be a nonzero combination of FieldTypes.
-			@sa #FieldType
+			@sa FieldType
 		*/
 		uint8_t const permitted_types;
 	};
@@ -115,10 +119,6 @@ public:
 /// @}
 
 private:
-	/**
-		get_type_info() implementation.
-		@returns The rule's type info.
-	*/
 	virtual type_info const& get_type_info_impl() const noexcept=0;
 };
 /** @cond INTERNAL */
@@ -126,6 +126,7 @@ inline Rule::~Rule()=default;
 /** @endcond */ // INTERNAL
 
 /** @} */ // end of doc-group rule
+/** @} */ // end of doc-group node
 
 } // namespace Hord
 

@@ -36,14 +36,14 @@ struct Field final {
 	FieldType type{FieldType::Text};
 	/** Value. */
 	struct {
-		String str{};
+		String str{}; /**< String value. */
 		union {
-			int64_t num{0};
-			bool bin;
+			int64_t num{0}; /**< Integer value. */
+			bool bin; /**< Boolean value. */
 		};
 	} value{};
 	/** Rule state. */
-	std::unique_ptr<RuleState> state{nullptr};
+	std::unique_ptr<RuleState> state{nullptr}; // Runtime
 /// @}
 
 private:
@@ -78,7 +78,8 @@ struct Record final {
 	typedef aux::vector<Field> field_vector_type;
 
 /** @name Properties */ /// @{
-	field_vector_type fields;
+	/** Field collection. */
+	field_vector_type fields{};
 /// @}
 
 private:

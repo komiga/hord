@@ -15,10 +15,9 @@
 namespace Hord {
 
 // Forward declarations
-enum class FieldType : uint8_t;
-enum class StandardMetaFieldTypes : MetaFieldType;
-enum class StandardRuleTypes : RuleType;
 
+// group metadata
+enum class StandardMetaFieldTypes : MetaFieldType;
 struct MetaField;
 struct StringMetaField;
 struct Int32MetaField;
@@ -26,14 +25,19 @@ struct Int64MetaField;
 struct BoolMetaField;
 struct Metadata;
 
+// group data
+enum class FieldType : uint8_t;
 struct Field;
 struct Record;
 
+// group node
+enum class StandardRuleTypes : RuleType;
 struct RuleState;
 class Rule;
 struct Column;
 class Node;
 
+// group driver
 class Hive;
 
 } // namespace Hord

@@ -1,6 +1,6 @@
 /**
 @file aux.hpp
-@brief Auxiliary stdlib types.
+@brief Auxiliary stdlib specializations.
 
 @author Tim Howard
 @copyright 2013 Tim Howard under the MIT license; see @ref index or the accompanying LICENSE file for full text.
@@ -27,17 +27,22 @@ namespace aux {
 /**
 	@c std::basic_string<CharT, Traits>.
 */
-template<typename CharT, class Traits=std::char_traits<CharT> >
+template<
+	typename CharT,
+	class Traits=std::char_traits<CharT>
+>
 using basic_string=std::basic_string<CharT, Traits, HORD_STL_ALLOCATOR<CharT> >;
 
 /**
 	@c std::vector<T>.
 */
-template<typename T>
+template<
+	typename T
+>
 using vector=std::vector<T, HORD_STL_ALLOCATOR<T> >;
 
 /**
-	@c std::unordered_map<Key, Hash, KeyEqual>.
+	@c std::unordered_map<Key, T, Hash, KeyEqual>.
 */
 template<
 	typename Key,
