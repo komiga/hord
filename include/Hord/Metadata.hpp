@@ -107,11 +107,14 @@ public:
 /// @}
 
 private:
-	static constexpr MetaField::type_info const s_type_info{
+	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::String)
 	};
 	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
+/** @cond INTERNAL */
+constexpr MetaField::type_info StringMetaField::s_type_info;
+/** @endcond */
 
 /**
 	Int32 MetaField.
@@ -136,11 +139,14 @@ public:
 /// @}
 
 private:
-	static constexpr MetaField::type_info const s_type_info{
+	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int32)
 	};
 	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
+/** @cond INTERNAL */
+constexpr MetaField::type_info Int32MetaField::s_type_info;
+/** @endcond */
 
 /**
 	Int64 MetaField.
@@ -165,11 +171,14 @@ public:
 /// @}
 
 private:
-	static constexpr MetaField::type_info const s_type_info{
+	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int64)
 	};
 	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
+/** @cond INTERNAL */
+constexpr MetaField::type_info Int64MetaField::s_type_info;
+/** @endcond */
 
 /**
 	Bool MetaField.
@@ -194,11 +203,14 @@ public:
 /// @}
 
 private:
-	static constexpr MetaField::type_info const s_type_info{
+	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Bool)
 	};
 	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
 };
+/** @cond INTERNAL */
+constexpr MetaField::type_info BoolMetaField::s_type_info;
+/** @endcond */
 
 /**
 	Metadata.
