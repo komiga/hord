@@ -114,7 +114,7 @@ private:
 };
 /** @cond INTERNAL */
 constexpr MetaField::type_info StringMetaField::s_type_info;
-/** @endcond */
+/** @endcond */ // INTERNAL
 
 /**
 	Int32 MetaField.
@@ -146,7 +146,7 @@ private:
 };
 /** @cond INTERNAL */
 constexpr MetaField::type_info Int32MetaField::s_type_info;
-/** @endcond */
+/** @endcond */ // INTERNAL
 
 /**
 	Int64 MetaField.
@@ -178,7 +178,7 @@ private:
 };
 /** @cond INTERNAL */
 constexpr MetaField::type_info Int64MetaField::s_type_info;
-/** @endcond */
+/** @endcond */ // INTERNAL
 
 /**
 	Bool MetaField.
@@ -210,7 +210,7 @@ private:
 };
 /** @cond INTERNAL */
 constexpr MetaField::type_info BoolMetaField::s_type_info;
-/** @endcond */
+/** @endcond */ // INTERNAL
 
 /**
 	Metadata.

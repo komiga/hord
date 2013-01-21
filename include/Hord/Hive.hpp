@@ -47,7 +47,7 @@ private:
 
 	String m_slug{};
 	Metadata m_metadata{};
-	object_set_type m_ids{}; // Runtime
+	object_set_type m_ids{};
 	node_map_type m_nodes{};
 	rule_map_type m_rules{};
 
