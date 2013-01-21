@@ -16,6 +16,11 @@ namespace Hord {
 /** Generic object ID. */
 typedef uint32_t ObjectID;
 
+enum : ObjectID {
+	/** Null object. */
+	OBJECT_NULL
+};
+
 /**
 	@addtogroup metadata
 	@{

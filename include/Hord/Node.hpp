@@ -41,10 +41,10 @@ public:
 
 private:
 	std::reference_wrapper<Hive> m_owner; // Runtime
-	NodeID m_id;
+	NodeID m_id{OBJECT_NULL};
 	String m_slug{};
 	Metadata m_metadata{};
-	NodeID m_layout_ref{0};
+	NodeID m_layout_ref{OBJECT_NULL};
 	column_vector_type m_layout{};
 	record_vector_type m_records{};
 	child_vector_type m_children{};
@@ -61,7 +61,7 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Node(Hive& owner, NodeID const id)
+	Node(Hive& owner, NodeID id)
 		: m_owner{owner}
 		, m_id{id}
 	{}

@@ -79,8 +79,8 @@ public:
 	};
 
 private:
-	Hive& m_owner; // Runtime
-	RuleID m_id;
+	std::reference_wrapper<Hive> m_owner; // Runtime
+	RuleID m_id{OBJECT_NULL};
 
 	Rule()=delete;
 	Rule(Rule const&)=delete;
@@ -94,7 +94,7 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Rule(Hive& owner, RuleID const id)
+	Rule(Hive& owner, RuleID id)
 		: m_owner{owner}
 		, m_id{id}
 	{}
