@@ -32,6 +32,7 @@ class Node;
 */
 class Node final {
 public:
+	friend class Driver;
 	/** Column vector. */
 	typedef aux::vector<Column> column_vector_type;
 	/** Record vector. */

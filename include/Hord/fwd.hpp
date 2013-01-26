@@ -15,6 +15,9 @@
 namespace Hord {
 
 // Forward declarations
+// group error
+enum class ErrorCode : unsigned;
+class Error;
 
 // group metadata
 enum class StandardMetaFieldTypes : MetaFieldType;
@@ -40,6 +43,9 @@ class Node;
 // group driver
 enum class StorageState : unsigned;
 class Hive;
+class IDGenerator;
+class Serializer;
+class Driver;
 
 } // namespace Hord
 

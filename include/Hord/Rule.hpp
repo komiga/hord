@@ -63,6 +63,7 @@ inline RuleState::~RuleState()=default;
 */
 class Rule {
 public:
+	friend class Driver;
 	/**
 		Type info.
 	*/

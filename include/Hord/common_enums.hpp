@@ -15,10 +15,60 @@
 namespace Hord {
 
 // Forward declarations
+enum class ErrorCode : unsigned;
 enum class FieldType : uint8_t;
 enum class StandardMetaFieldTypes : MetaFieldType;
 enum class StandardRuleTypes : RuleType;
 enum class StorageState : unsigned;
+
+/**
+	@addtogroup error
+	@{
+*/
+
+/**
+	Error codes.
+	@sa Error
+*/
+enum class ErrorCode : unsigned {
+/** @name General */ /// @{
+	/**
+		Unknown/unspecified.
+	*/
+	unknown,
+/// @}
+
+/** @name Driver */ /// @{
+	/**
+		Attempted to placehold a Hive with an empty root path.
+	*/
+	driver_hive_root_empty,
+	/**
+		Attempted to placehold a Hive with a root path that is shared with another placeheld Hive.
+	*/
+	driver_hive_root_shared,
+	/**
+		Attempted to access Hive that is locked.
+	*/
+	driver_hive_locked,
+/// @}
+
+/** @name Serialization */ /// @{
+	/**
+		Object is not in proper state.
+		- When deserializing, this is due to any state other than @c StorageState::placeholder.
+		- When serializing, this is due to any state other than @c StorageState::modified (will not be thrown if the serialization was triggered on a Hive).
+	*/
+	serialization_improper_state,
+	/**
+		Cannot access data.
+		When object data cannot be accessed.
+	*/
+	serialization_access,
+/// @}
+};
+
+/** @} */ // end of doc-group error
 
 /**
 	@addtogroup data

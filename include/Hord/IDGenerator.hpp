@@ -1,0 +1,80 @@
+/**
+@file IDGenerator.hpp
+@brief IDGenerator class.
+
+@author Tim Howard
+@copyright 2013 Tim Howard under the MIT license; see @ref index or the accompanying LICENSE file for full text.
+*/
+
+#ifndef HORD_IDGENERATOR_HPP_
+#define HORD_IDGENERATOR_HPP_
+
+#include "./config.hpp"
+#include "./common_types.hpp"
+
+namespace Hord {
+
+// Forward declarations
+class IDGenerator;
+
+/**
+	@addtogroup driver
+	@{
+*/
+
+/**
+	ObjectID generator.
+*/
+class IDGenerator {
+private:
+	IDGenerator& operator=(IDGenerator const&)=delete;
+	IDGenerator& operator=(IDGenerator&&)=delete;
+
+public:
+/** @name Constructors and destructor */ /// @{
+	/** Default constructor. */
+	IDGenerator()=default;
+	/** Copy constructor. */
+	IDGenerator(IDGenerator const&)=default;
+	/** Move constructor. */
+	IDGenerator(IDGenerator&&)=default;
+	/** Destructor. */
+	inline virtual ~IDGenerator()=0;
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		Seed the generator.
+		@param seed_value Seed value.
+	*/
+	void seed(int const seed_value) noexcept { seed_impl(seed_value); }
+	/**
+		Generate an ID.
+		@returns The generated ID.
+	*/
+	ObjectID generate() noexcept { return generate_impl(); }
+	/**
+		Generate unique ID within set.
+		@returns The generated ID.
+		@tparam Set Set type. Must be an associative container with ObjectID as its key type.
+		@param set Set to generate within.
+	*/
+	template<typename Set>
+	ObjectID generate_unique(Set const& set) {
+		ObjectID id;
+		do { id=generate(); } while (set.cend()==set.find(id));
+		return id;
+	}
+/// @}
+
+private:
+	virtual void seed_impl(int seed_value) noexcept=0;
+	virtual ObjectID generate_impl() noexcept=0;
+};
+inline IDGenerator::~IDGenerator()=default;
+
+/** @} */ // end of doc-group driver
+
+} // namespace Hord
+
+#endif // HORD_IDGENERATOR_HPP_

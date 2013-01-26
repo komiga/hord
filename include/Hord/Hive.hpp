@@ -37,6 +37,7 @@ class Hive;
 */
 class Hive final {
 public:
+	friend class Driver;
 	/** Node map. */
 	typedef aux::unordered_map<NodeID, Node> node_map_type;
 	/** Rule map. */
