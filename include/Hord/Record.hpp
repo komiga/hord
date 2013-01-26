@@ -11,6 +11,7 @@
 
 #include "./config.hpp"
 #include "./common_enums.hpp"
+#include "./fwd.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
 
@@ -48,7 +49,6 @@ struct Field final {
 
 private:
 	Field& operator=(Field const&)=delete;
-	Field& operator=(Field&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -68,6 +68,11 @@ public:
 	/** Destructor. */
 	~Field()=default;
 /// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Field& operator=(Field&&)=default;
+/// @}
 };
 
 /**
@@ -84,7 +89,6 @@ struct Record final {
 
 private:
 	Record& operator=(Record const&)=delete;
-	Record& operator=(Record&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -96,6 +100,11 @@ public:
 	Record(Record&&)=default;
 	/** Destructor. */
 	~Record()=default;
+/// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Record& operator=(Record&&)=default;
 /// @}
 };
 
