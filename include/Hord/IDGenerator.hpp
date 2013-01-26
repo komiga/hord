@@ -27,19 +27,22 @@ class IDGenerator;
 */
 class IDGenerator {
 private:
+	IDGenerator(IDGenerator const&)=delete;
 	IDGenerator& operator=(IDGenerator const&)=delete;
-	IDGenerator& operator=(IDGenerator&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	IDGenerator()=default;
-	/** Copy constructor. */
-	IDGenerator(IDGenerator const&)=default;
 	/** Move constructor. */
 	IDGenerator(IDGenerator&&)=default;
 	/** Destructor. */
 	inline virtual ~IDGenerator()=0;
+/// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	IDGenerator& operator=(IDGenerator&&)=default;
 /// @}
 
 /** @name Operations */ /// @{

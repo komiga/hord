@@ -50,6 +50,10 @@ struct MetaField {
 	*/
 	String name{};
 
+private:
+	MetaField(MetaField const&)=delete;
+	MetaField& operator=(MetaField const&)=delete;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor. */
@@ -61,8 +65,6 @@ public:
 	explicit MetaField(String name)
 		: name{std::move(name)}
 	{}
-	/** Copy constructor. */
-	MetaField(MetaField const&)=default;
 	/** Move constructor. */
 	MetaField(MetaField&&)=default;
 	/** Destructor. */
@@ -70,8 +72,6 @@ public:
 /// @}
 
 /** @name Operators */ /// @{
-	/** Copy assignment operator. */
-	MetaField& operator=(MetaField const&)=default;
 	/** Move assignment operator. */
 	MetaField& operator=(MetaField&&)=default;
 /// @}
@@ -100,6 +100,10 @@ struct StringMetaField final : public MetaField {
 	/** Value. */
 	String value{};
 
+private:
+	StringMetaField(StringMetaField const&)=delete;
+	StringMetaField& operator=(StringMetaField const&)=delete;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor. */
@@ -113,8 +117,6 @@ public:
 		: MetaField{std::move(name)}
 		, value{std::move(value)}
 	{}
-	/** Copy constructor. */
-	StringMetaField(StringMetaField const&)=default;
 	/** Move constructor. */
 	StringMetaField(StringMetaField&&)=default;
 	/** Destructor. */
@@ -122,8 +124,6 @@ public:
 /// @}
 
 /** @name Operators */ /// @{
-	/** Copy assignment operator. */
-	StringMetaField& operator=(StringMetaField const&)=default;
 	/** Move assignment operator. */
 	StringMetaField& operator=(StringMetaField&&)=default;
 /// @}
@@ -142,6 +142,10 @@ struct Int32MetaField final : public MetaField {
 	/** Value. */
 	int32_t value{0};
 
+private:
+	Int32MetaField(Int32MetaField const&)=delete;
+	Int32MetaField& operator=(Int32MetaField const&)=delete;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor. */
@@ -155,8 +159,6 @@ public:
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
-	/** Copy constructor. */
-	Int32MetaField(Int32MetaField const&)=default;
 	/** Move constructor. */
 	Int32MetaField(Int32MetaField&&)=default;
 	/** Destructor. */
@@ -164,8 +166,6 @@ public:
 /// @}
 
 /** @name Operators */ /// @{
-	/** Copy assignment operator. */
-	Int32MetaField& operator=(Int32MetaField const&)=default;
 	/** Move assignment operator. */
 	Int32MetaField& operator=(Int32MetaField&&)=default;
 /// @}
@@ -184,6 +184,10 @@ struct Int64MetaField final : public MetaField {
 	/** Value. */
 	int64_t value{0};
 
+private:
+	Int64MetaField(Int64MetaField const&)=delete;
+	Int64MetaField& operator=(Int64MetaField const&)=delete;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor. */
@@ -197,8 +201,6 @@ public:
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
-	/** Copy constructor. */
-	Int64MetaField(Int64MetaField const&)=default;
 	/** Move constructor. */
 	Int64MetaField(Int64MetaField&&)=default;
 	/** Destructor. */
@@ -206,8 +208,6 @@ public:
 /// @}
 
 /** @name Operators */ /// @{
-	/** Copy assignment operator. */
-	Int64MetaField& operator=(Int64MetaField const&)=default;
 	/** Move assignment operator. */
 	Int64MetaField& operator=(Int64MetaField&&)=default;
 /// @}
@@ -226,6 +226,10 @@ struct BoolMetaField final : public MetaField {
 	/** Value. */
 	bool value{false};
 
+private:
+	BoolMetaField(BoolMetaField const&)=delete;
+	BoolMetaField& operator=(BoolMetaField const&)=delete;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor. */
@@ -239,8 +243,6 @@ public:
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
-	/** Copy constructor. */
-	BoolMetaField(BoolMetaField const&)=default;
 	/** Move constructor. */
 	BoolMetaField(BoolMetaField&&)=default;
 	/** Destructor. */
@@ -248,8 +250,6 @@ public:
 /// @}
 
 /** @name Operators */ /// @{
-	/** Copy assignment operator. */
-	BoolMetaField& operator=(BoolMetaField const&)=default;
 	/** Move assignment operator. */
 	BoolMetaField& operator=(BoolMetaField&&)=default;
 /// @}
@@ -280,7 +280,7 @@ public:
 	/** Constructor. */
 	Metadata()=default;
 	/**
-		Construct with field vector.
+		Constructor with field vector.
 		@param fields MetaField vector.
 	*/
 	explicit Metadata(field_vector_type fields)

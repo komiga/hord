@@ -13,7 +13,7 @@
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
 
-#include <memory>
+#include <functional>
 
 // TODO: Rule classes
 

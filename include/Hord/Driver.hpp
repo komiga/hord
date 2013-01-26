@@ -45,7 +45,6 @@ private:
 	Driver()=delete;
 	Driver(Driver const&)=delete;
 	Driver& operator=(Driver const&)=delete;
-	Driver& operator=(Driver&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -62,6 +61,11 @@ public:
 	Driver(Driver&&)=default;
 	/** Destructor. */
 	~Driver()=default;
+/// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Driver& operator=(Driver&&)=default;
 /// @}
 
 /** @name Properties */ /// @{

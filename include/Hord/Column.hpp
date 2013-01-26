@@ -46,19 +46,22 @@ struct Column final {
 /// @}
 
 private:
+	Column(Column const&)=delete;
 	Column& operator=(Column const&)=delete;
-	Column& operator=(Column&&)=delete;
 
 public:
 /** @name Constructor and destructor */ /// @{
 	/** Constructor. */
 	Column()=default;
-	/** Copy constructor. */
-	Column(Column const&)=default;
 	/** Move constructor. */
 	Column(Column&&)=default;
 	/** Destructor. */
 	~Column()=default;
+/// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Column& operator=(Column&&)=default;
 /// @}
 };
 

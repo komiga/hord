@@ -48,21 +48,13 @@ struct Field final {
 /// @}
 
 private:
+	Field(Field const& other)=delete;
 	Field& operator=(Field const&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor with type. */
 	Field()=default;
-	/**
-		Copy constructor.
-		@note Copy will have a null state.
-	*/
-	Field(Field const& other)
-		: type{other.type}
-		, value{other.value}
-		, state{nullptr}
-	{}
 	/** Move constructor. */
 	Field(Field&&)=default;
 	/** Destructor. */
@@ -88,14 +80,13 @@ struct Record final {
 /// @}
 
 private:
+	Record(Record const&)=delete;
 	Record& operator=(Record const&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Constructor. */
 	Record()=default;
-	/** Copy constructor. */
-	Record(Record const&)=default;
 	/** Move constructor. */
 	Record(Record&&)=default;
 	/** Destructor. */

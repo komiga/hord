@@ -41,6 +41,8 @@ private:
 	String const m_msg;
 
 	Error()=delete;
+	Error(Error const&)=delete;
+	Error& operator=(Error const&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -52,10 +54,8 @@ public:
 	Error(ErrorCode errc, String msg) noexcept
 		: std::exception{}
 		, m_errc{errc}
-		, m_msg{msg}
+		, m_msg{std::move(msg)}
 	{}
-	/** Copy constructor. */
-	Error(Error const&)=default;
 	/** Move constructor. */
 	Error(Error&&)=default;
 	/** Destructor. */
@@ -63,9 +63,7 @@ public:
 /// @}
 
 /** @name Operators */ /// @{
-	/** Copy-assignment operator. */
-	Error& operator=(Error const&)=default;
-	/** Move-assignment operator. */
+	/** Move assignment operator. */
 	Error& operator=(Error&&)=default;
 /// @}
 

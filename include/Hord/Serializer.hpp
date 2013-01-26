@@ -36,7 +36,6 @@ class Serializer {
 private:
 	Serializer(Serializer const&)=delete;
 	Serializer& operator=(Serializer const&)=delete;
-	Serializer& operator=(Serializer&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -46,6 +45,11 @@ public:
 	Serializer(Serializer&&)=default;
 	/** Destructor. */
 	inline virtual ~Serializer()=0;
+/// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Serializer& operator=(Serializer&&)=default;
 /// @}
 
 /** @name Serialization */ /// @{
