@@ -25,6 +25,10 @@ struct Column;
 	@addtogroup node
 	@{
 */
+/**
+	@addtogroup column
+	@{
+*/
 
 /**
 	Node layout column.
@@ -59,6 +63,7 @@ public:
 /// @}
 };
 
+/** @} */ // end of doc-group column
 /** @} */ // end of doc-group node
 
 } // namespace Hord
