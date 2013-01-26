@@ -18,6 +18,7 @@ namespace Hord {
 enum class FieldType : uint8_t;
 enum class StandardMetaFieldTypes : MetaFieldType;
 enum class StandardRuleTypes : RuleType;
+enum class StorageState : unsigned;
 
 /**
 	@addtogroup data
@@ -139,6 +140,45 @@ static_assert(8==static_cast<RuleType>(StandardRuleTypes::ReservedLast), "Standa
 
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group node
+
+/**
+	@addtogroup driver
+	@{
+*/
+/**
+	@addtogroup serialization
+	@{
+*/
+
+/**
+	Object storage state.
+*/
+enum class StorageState : unsigned {
+	/**
+		Null/invalid object.
+		Object has no identifying information, a state in which neither serialization nor deserialization can be performed.
+		@sa OBJECT_NULL
+	*/
+	null,
+	/**
+		Placeholder.
+		Object has identifying information, a state in which deserialization can be performed (but not serialization).
+	*/
+	placeholder,
+	/**
+		Matches external storage.
+		Specifically, after successful serialization or deserialization.
+	*/
+	original,
+	/**
+		Modified.
+		Client-side modifications not yet serialized.
+	*/
+	modified,
+};
+
+/** @} */ // end of doc-group driver
+/** @} */ // end of doc-group serialization
 
 } // namespace Hord
 

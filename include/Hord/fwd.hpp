@@ -38,6 +38,7 @@ struct Column;
 class Node;
 
 // group driver
+enum class StorageState : unsigned;
 class Hive;
 
 } // namespace Hord

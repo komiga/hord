@@ -40,6 +40,7 @@ public:
 	typedef aux::vector<NodeID> child_vector_type;
 
 private:
+	mutable StorageState m_storage_state{StorageState::null}; // Runtime
 	std::reference_wrapper<Hive> m_owner; // Runtime
 	NodeID m_id{OBJECT_NULL};
 	String m_slug{};
@@ -52,17 +53,18 @@ private:
 	Node()=delete;
 	Node(Node const&)=delete;
 	Node& operator=(Node const&)=delete;
-	Node& operator=(Node&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with owner and ID.
+		@post @code get_storage_state()==(OBJECT_NULL==get_id() ? StorageState::null : StorageState::placeholder) @endcode
 		@param owner Owner.
 		@param id ID.
 	*/
 	Node(Hive& owner, NodeID id)
-		: m_owner{owner}
+		: m_storage_state{(OBJECT_NULL==id) ? StorageState::null : StorageState::placeholder}
+		, m_owner{owner}
 		, m_id{id}
 	{}
 	/** Move constructor. */
@@ -71,7 +73,24 @@ public:
 	~Node()=default;
 /// @}
 
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Node& operator=(Node&&)=default;
+/// @}
+
 /** @name Properties */ /// @{
+	/**
+		Get storage state.
+		@returns Current storage state.
+	*/
+	StorageState get_storage_state() const noexcept { return m_storage_state; }
+
+	/**
+		Get owner.
+		@returns Current owner.
+	*/
+	Hive& get_owner() const noexcept { return m_owner.get(); }
+
 	/**
 		Get ID.
 		@returns Current ID.

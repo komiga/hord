@@ -40,7 +40,6 @@ struct RuleState {
 private:
 	RuleState(RuleState const&)=delete;
 	RuleState& operator=(RuleState const&)=delete;
-	RuleState& operator=(RuleState&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -51,10 +50,13 @@ public:
 	/** Destructor. */
 	inline virtual ~RuleState()=0;
 /// @}
+
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	RuleState& operator=(RuleState&&)=default;
+/// @}
 };
-/** @cond INTERNAL */
 inline RuleState::~RuleState()=default;
-/** @endcond */ // INTERNAL
 
 /**
 	Base rule.
@@ -79,23 +81,25 @@ public:
 	};
 
 private:
+	mutable StorageState m_storage_state{StorageState::null}; // Runtime
 	std::reference_wrapper<Hive> m_owner; // Runtime
 	RuleID m_id{OBJECT_NULL};
 
 	Rule()=delete;
 	Rule(Rule const&)=delete;
 	Rule& operator=(Rule const&)=delete;
-	Rule& operator=(Rule&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with owner and ID.
+		@post @code get_storage_state()==(OBJECT_NULL==get_id() ? StorageState::null : StorageState::placeholder) @endcode
 		@param owner Owner.
 		@param id ID.
 	*/
 	Rule(Hive& owner, RuleID id)
-		: m_owner{owner}
+		: m_storage_state{(OBJECT_NULL==id) ? StorageState::null : StorageState::placeholder}
+		, m_owner{owner}
 		, m_id{id}
 	{}
 	/** Move constructor. */
@@ -104,7 +108,24 @@ public:
 	inline virtual ~Rule()=0;
 /// @}
 
+/** @name Operators */ /// @{
+	/** Move assignment operator. */
+	Rule& operator=(Rule&&)=default;
+/// @}
+
 /** @name Properties */ /// @{
+	/**
+		Get storage state.
+		@returns Current storage state.
+	*/
+	StorageState get_storage_state() const noexcept { return m_storage_state; }
+
+	/**
+		Get owner.
+		@returns Current owner.
+	*/
+	Hive& get_owner() const noexcept { return m_owner.get(); }
+
 	/**
 		Get ID.
 		@returns Current ID.
@@ -121,9 +142,7 @@ public:
 private:
 	virtual type_info const& get_type_info_impl() const noexcept=0;
 };
-/** @cond INTERNAL */
 inline Rule::~Rule()=default;
-/** @endcond */ // INTERNAL
 
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group node
