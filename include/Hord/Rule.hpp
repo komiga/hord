@@ -12,7 +12,6 @@
 #include "./config.hpp"
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
-#include "./fwd.hpp"
 
 #include <memory>
 
@@ -23,6 +22,7 @@ namespace Hord {
 // Forward declarations
 struct RuleState;
 class Rule;
+class Hive; // ext
 
 /**
 	@addtogroup node

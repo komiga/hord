@@ -11,9 +11,9 @@
 
 #include "./config.hpp"
 #include "./common_enums.hpp"
-#include "./fwd.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
+#include "./Rule.hpp"
 
 #include <memory>
 

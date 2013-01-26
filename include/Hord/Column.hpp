@@ -12,7 +12,6 @@
 #include "./config.hpp"
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
-#include "./fwd.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
 

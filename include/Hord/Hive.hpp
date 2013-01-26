@@ -11,9 +11,11 @@
 
 #include "./config.hpp"
 #include "./common_types.hpp"
-#include "./fwd.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
+#include "./Metadata.hpp"
+#include "./Rule.hpp"
+#include "./Node.hpp"
 
 #include <utility>
 #include <memory>

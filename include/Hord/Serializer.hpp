@@ -10,8 +10,10 @@
 #define HORD_SERIALIZER_HPP_
 
 #include "./config.hpp"
-#include "./fwd.hpp"
 #include "./String.hpp"
+#include "./Rule.hpp"
+#include "./Node.hpp"
+#include "./Hive.hpp"
 
 namespace Hord {
 

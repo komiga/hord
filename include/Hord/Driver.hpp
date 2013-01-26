@@ -11,8 +11,11 @@
 
 #include "./config.hpp"
 #include "./common_types.hpp"
-#include "./fwd.hpp"
 #include "./aux.hpp"
+#include "./String.hpp"
+#include "./IDGenerator.hpp"
+#include "./Serializer.hpp"
+#include "./Hive.hpp"
 
 namespace Hord {
 

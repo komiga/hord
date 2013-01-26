@@ -11,9 +11,12 @@
 
 #include "./config.hpp"
 #include "./common_types.hpp"
-#include "./fwd.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
+#include "./Metadata.hpp"
+#include "./Record.hpp"
+#include "./Rule.hpp"
+#include "./Column.hpp"
 
 #include <functional>
 
@@ -21,6 +24,7 @@ namespace Hord {
 
 // Forward declarations
 class Node;
+class Hive; // ext
 
 /**
 	@addtogroup node
