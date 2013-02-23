@@ -3,15 +3,33 @@
 	[
 		{
 			"name": "Root",
-			"path": "./"
+			"path": "./",
+			"folder_exclude_patterns": [
+				"doc",
+				"dep",
+				"include",
+				"src",
+				"out",
+				"lib"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make"
+			]
 		},
 		{
 			"name": "- Documentation",
-			"path": "./doc/"
+			"path": "./doc/",
+			"folder_exclude_patterns": [
+				"html"
+			]
 		},
 		{
 			"name": "- Dependencies",
-			"path": "./dep/"
+			"path": "./dep/",
+			"folder_exclude_patterns": [
+				"*"
+			]
 		},
 		{
 			"name": "- Headers",
