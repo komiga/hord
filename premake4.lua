@@ -47,7 +47,7 @@ function create_project(name, kind, tdir)
 
 	configuration {}
 		includedirs {
-			"dep/duct/",
+			--"dep/duct/",
 		}
 	return proj
 end

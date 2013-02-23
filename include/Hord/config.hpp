@@ -11,19 +11,12 @@
 
 #include <cstdint>
 
-/**
-	STL/stdlib allocator.
-*/
-#define HORD_STL_ALLOCATOR std::allocator
-
-// Must define allocator before <duct/config.hpp>
-#ifndef DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI
-	#define DUCT_CONFIG_STL_ALLOCATOR HORD_STL_ALLOCATOR
-#endif
-
-#include <duct/config.hpp>
-
 namespace Hord {
+
+/**
+	Allocator for auxiliary specializations.
+*/
+#define HORD_AUX_ALLOCATOR std::allocator
 
 } // namespace Hord
 
