@@ -100,12 +100,6 @@ public:
 	String const& get_root() const noexcept { return m_root; }
 
 	/**
-		Assign slug.
-		@warning New slug will be truncated to 64 code units.
-		@param slug New slug.
-	*/
-	void set_slug(String slug) { m_slug.assign(slug, 0, 64); }
-	/**
 		Get slug.
 		@returns Current slug.
 	*/
