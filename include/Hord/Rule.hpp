@@ -46,7 +46,7 @@ public:
 	/** Constructor. */
 	RuleState()=default;
 	/** Move constructor. */
-	RuleState(RuleState&&)=delete;
+	RuleState(RuleState&&)=default;
 	/** Destructor. */
 	inline virtual ~RuleState()=0;
 /// @}
