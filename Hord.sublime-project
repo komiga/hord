@@ -9,6 +9,7 @@
 				"dep",
 				"include",
 				"src",
+				"test",
 				"out",
 				"lib"
 			],
@@ -38,6 +39,17 @@
 		{
 			"name": "- Source",
 			"path": "./src/Hord/"
+		},
+		{
+			"name": "- Test",
+			"path": "./test/",
+			"folder_exclude_patterns": [
+				"out"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make"
+			]
 		}
 	],
 	"settings":
