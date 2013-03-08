@@ -12,6 +12,7 @@
 #include "./config.hpp"
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
+#include "./String.hpp"
 
 #include <functional>
 
@@ -85,6 +86,7 @@ private:
 	mutable StorageState m_storage_state{StorageState::null}; // Runtime
 	std::reference_wrapper<Hive> m_owner; // Runtime
 	RuleID m_id{OBJECT_NULL};
+	String m_slug{};
 
 	Rule()=delete;
 	Rule(Rule const&)=delete;
@@ -132,6 +134,12 @@ public:
 		@returns Current ID.
 	*/
 	RuleID get_id() const noexcept { return m_id; }
+
+	/**
+		Get slug.
+		@returns Current slug.
+	*/
+	String const& get_slug() const noexcept { return m_slug; }
 
 	/**
 		Get type info.
