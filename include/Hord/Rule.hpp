@@ -96,12 +96,24 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with owner and ID.
-		@post @code get_storage_state()==(OBJECT_NULL==get_id() ? StorageState::null : StorageState::placeholder) @endcode
+
+		@post
+		@code
+			get_storage_state()
+			==(OBJECT_NULL==get_id()
+				? StorageState::null
+				: StorageState::placeholder
+			)
+		@endcode
 		@param owner Owner.
 		@param id ID.
 	*/
 	Rule(Hive& owner, RuleID id)
-		: m_storage_state{(OBJECT_NULL==id) ? StorageState::null : StorageState::placeholder}
+		: m_storage_state{
+			(OBJECT_NULL==id)
+				? StorageState::null
+				: StorageState::placeholder
+		}
 		, m_owner{owner}
 		, m_id{id}
 	{}
@@ -121,31 +133,36 @@ public:
 		Get storage state.
 		@returns Current storage state.
 	*/
-	StorageState get_storage_state() const noexcept { return m_storage_state; }
+	StorageState get_storage_state() const noexcept
+		{ return m_storage_state; }
 
 	/**
 		Get owner.
 		@returns Current owner.
 	*/
-	Hive& get_owner() const noexcept { return m_owner.get(); }
+	Hive& get_owner() const noexcept
+		{ return m_owner.get(); }
 
 	/**
 		Get ID.
 		@returns Current ID.
 	*/
-	RuleID get_id() const noexcept { return m_id; }
+	RuleID get_id() const noexcept
+		{ return m_id; }
 
 	/**
 		Get slug.
 		@returns Current slug.
 	*/
-	String const& get_slug() const noexcept { return m_slug; }
+	String const& get_slug() const noexcept
+		{ return m_slug; }
 
 	/**
 		Get type info.
 		@returns The rule's type info.
 	*/
-	type_info const& get_type_info() const noexcept { return get_type_info_impl(); }
+	type_info const& get_type_info() const noexcept
+		{ return get_type_info_impl(); }
 /// @}
 
 private:

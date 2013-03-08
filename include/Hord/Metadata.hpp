@@ -36,6 +36,7 @@ struct Metadata;
 	Base Metadata field.
 */
 struct MetaField {
+public:
 	/**
 		Type info.
 	*/
@@ -46,7 +47,8 @@ struct MetaField {
 
 	/**
 		Name.
-		@warning This field will be truncated to 255 code units when serializing.
+		@warning This field will be truncated to 255 code units
+		when serializing.
 	*/
 	String name{};
 
@@ -56,7 +58,7 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	MetaField()=default;
 	/**
 		Constructor with name.
@@ -81,7 +83,8 @@ public:
 		Get type info.
 		@returns The field's type info.
 	*/
-	type_info const& get_type_info() const noexcept { return get_type_info_impl(); }
+	type_info const& get_type_info() const noexcept
+		{ return get_type_info_impl(); }
 /// @}
 
 private:
@@ -96,7 +99,9 @@ inline MetaField::~MetaField()=default;
 /**
 	String MetaField.
 */
-struct StringMetaField final : public MetaField {
+struct StringMetaField final
+	: public MetaField {
+public:
 	/** Value. */
 	String value{};
 
@@ -106,7 +111,7 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	StringMetaField()=default;
 	/**
 		Constructor with name and value.
@@ -132,13 +137,16 @@ private:
 	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::String)
 	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override
+		{ return s_type_info; }
 };
 
 /**
 	Int32 MetaField.
 */
-struct Int32MetaField final : public MetaField {
+struct Int32MetaField final
+	: public MetaField {
+public:
 	/** Value. */
 	int32_t value{0};
 
@@ -148,7 +156,7 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	Int32MetaField()=default;
 	/**
 		Constructor with name and value.
@@ -174,13 +182,16 @@ private:
 	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int32)
 	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override
+		{ return s_type_info; }
 };
 
 /**
 	Int64 MetaField.
 */
-struct Int64MetaField final : public MetaField {
+struct Int64MetaField final
+	: public MetaField {
+public:
 	/** Value. */
 	int64_t value{0};
 
@@ -190,7 +201,7 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	Int64MetaField()=default;
 	/**
 		Constructor with name and value.
@@ -216,13 +227,16 @@ private:
 	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int64)
 	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override
+		{ return s_type_info; }
 };
 
 /**
 	Bool MetaField.
 */
-struct BoolMetaField final : public MetaField {
+struct BoolMetaField final
+	: public MetaField {
+public:
 	/** Value. */
 	bool value{false};
 
@@ -232,7 +246,7 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	BoolMetaField()=default;
 	/**
 		Constructor with name and value.
@@ -258,13 +272,15 @@ private:
 	static constexpr MetaField::type_info s_type_info{
 		static_cast<MetaFieldType>(StandardMetaFieldTypes::Bool)
 	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override { return s_type_info; }
+	MetaField::type_info const& get_type_info_impl() const noexcept override
+		{ return s_type_info; }
 };
 
 /**
 	Metadata.
 */
 struct Metadata final {
+public:
 	/** MetaField vector. */
 	typedef aux::vector<std::shared_ptr<MetaField> > field_vector_type;
 
@@ -277,7 +293,7 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	Metadata()=default;
 	/**
 		Constructor with field vector.

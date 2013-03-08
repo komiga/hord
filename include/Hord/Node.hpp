@@ -63,12 +63,24 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with owner and ID.
-		@post @code get_storage_state()==(OBJECT_NULL==get_id() ? StorageState::null : StorageState::placeholder) @endcode
+
+		@post
+		@code
+			get_storage_state()
+			==(OBJECT_NULL==get_id()
+				? StorageState::null
+				: StorageState::placeholder
+			)
+		@endcode
 		@param owner Owner.
 		@param id ID.
 	*/
 	Node(Hive& owner, NodeID id)
-		: m_storage_state{(OBJECT_NULL==id) ? StorageState::null : StorageState::placeholder}
+		: m_storage_state{
+			(OBJECT_NULL==id)
+				? StorageState::null
+				: StorageState::placeholder
+		}
 		, m_owner{owner}
 		, m_id{id}
 	{}
@@ -88,31 +100,36 @@ public:
 		Get storage state.
 		@returns Current storage state.
 	*/
-	StorageState get_storage_state() const noexcept { return m_storage_state; }
+	StorageState get_storage_state() const noexcept
+		{ return m_storage_state; }
 
 	/**
 		Get owner.
 		@returns Current owner.
 	*/
-	Hive& get_owner() const noexcept { return m_owner.get(); }
+	Hive& get_owner() const noexcept
+		{ return m_owner.get(); }
 
 	/**
 		Get ID.
 		@returns Current ID.
 	*/
-	NodeID get_id() const noexcept { return m_id; }
+	NodeID get_id() const noexcept
+		{ return m_id; }
 
 	/**
 		Get slug.
 		@returns Current slug.
 	*/
-	String const& get_slug() const noexcept { return m_slug; }
+	String const& get_slug() const noexcept
+		{ return m_slug; }
 
 	/**
 		Get metadata.
 		@returns The current metadata.
 	*/
-	Metadata const& get_metadata() const noexcept { return m_metadata; }
+	Metadata const& get_metadata() const noexcept
+		{ return m_metadata; }
 /// @}
 };
 

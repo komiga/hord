@@ -63,16 +63,29 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Default constructor.
+
 		@post @code get_storage_state()==StorageState::null @endcode
 	*/
 	Hive()=default;
 	/**
 		Constructor with root path.
-		@post @code get_storage_state()==(get_root().empty() ? StorageState::null : StorageState::placeholder) @endcode
+
+		@post
+		@code
+			get_storage_state()
+			==(get_root().empty()
+				? StorageState::null
+				: StorageState::placeholder
+			)
+		@endcode
 		@param root Root path.
 	*/
 	explicit Hive(String root)
-		: m_storage_state{root.empty() ? StorageState::null : StorageState::placeholder}
+		: m_storage_state{
+			root.empty()
+				? StorageState::null
+				: StorageState::placeholder
+		}
 		, m_root{std::move(root)}
 	{}
 	/** Move constructor. */
@@ -91,59 +104,80 @@ public:
 		Get storage state.
 		@returns Current storage state.
 	*/
-	StorageState get_storage_state() const noexcept { return m_storage_state; }
+	StorageState get_storage_state() const noexcept
+		{ return m_storage_state; }
 
 	/**
 		Get root.
 		@returns Current root.
 	*/
-	String const& get_root() const noexcept { return m_root; }
+	String const& get_root() const noexcept
+		{ return m_root; }
 
 	/**
 		Get slug.
 		@returns Current slug.
 	*/
-	String const& get_slug() const noexcept { return m_slug; }
+	String const& get_slug() const noexcept
+		{ return m_slug; }
 
 	/**
 		Get metadata.
 		@returns The current metadata.
 	*/
-	Metadata const& get_metadata() const noexcept { return m_metadata; }
+	Metadata const& get_metadata() const noexcept
+		{ return m_metadata; }
 
 	/**
 		Get node map.
 		@returns The current node map.
 	*/
-	node_map_type const& get_nodes() const noexcept { return m_nodes; }
+	node_map_type const& get_nodes() const noexcept
+		{ return m_nodes; }
 	/**
 		Get rule map.
 		@returns The current rule map.
 	*/
-	rule_map_type const& get_rules() const noexcept { return m_rules; }
+	rule_map_type const& get_rules() const noexcept
+		{ return m_rules; }
 /// @}
 
 /** @name Objects */ /// @{
 	/**
 		Check if an object exists with the given @a id.
-		@returns @c true if @a id is in the hive, or @c false if it is not.
+
+		@returns
+		- @c true if @a id is in the hive, or
+		- @c false if it is not.
 		@param id Object ID to look for.
 	*/
-	bool has_object(ObjectID const id) const noexcept(noexcept(m_idset.find(id)))
+	bool has_object(
+		ObjectID const id
+	) const noexcept(noexcept(m_idset.find(id)))
 		{ return m_idset.cend()!=m_idset.find(id); }
 	/**
 		Check if a Node exists with the given @a id.
-		@returns @c true if @a id is in the hive, or @c false if it is not.
+
+		@returns
+		- @c true if @a id is in the hive, or
+		- @c false if it is not.
 		@param id Node ID to look for.
 	*/
-	bool has_node(NodeID const id) const noexcept(noexcept(m_nodes.find(id)))
+	bool has_node(
+		NodeID const id
+	) const noexcept(noexcept(m_nodes.find(id)))
 		{ return m_nodes.cend()!=m_nodes.find(id); }
 	/**
 		Check if a Rule exists with the given @a id.
-		@returns @c true if @a id is in the hive, or @c false if it is not.
+
+		@returns
+		- @c true if @a id is in the hive, or
+		- @c false if it is not.
 		@param id Rule ID to look for.
 	*/
-	bool has_rule(RuleID const id) const noexcept(noexcept(m_rules.find(id)))
+	bool has_rule(
+		RuleID const id
+	) const noexcept(noexcept(m_rules.find(id)))
 		{ return m_rules.cend()!=m_rules.find(id); }
 /// @}
 };

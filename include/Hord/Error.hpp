@@ -27,7 +27,9 @@ class Error;
 
 /**
 	Get the name of an error.
-	@returns C-string containing the name of @a error_code or "INVALID" if somehow @a error_code is not actually an ErrorCode.
+
+	@returns C-string containing the name of @a error_code or "INVALID"
+	if somehow @a error_code is not actually an ErrorCode.
 	@param error_code ErrorCode.
 */
 char const* get_error_name(ErrorCode const error_code) noexcept;
@@ -48,6 +50,7 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with error code and message.
+
 		@param errc Error code.
 		@param msg Error message.
 	*/
@@ -80,6 +83,7 @@ public:
 	String const& what_str() const noexcept { return m_msg; }
 	/**
 		Get C-string error message.
+
 		@note This is UTF-8 encoded (per String).
 		@returns C-string of the error message.
 	*/

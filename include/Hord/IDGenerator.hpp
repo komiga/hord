@@ -58,8 +58,10 @@ public:
 	ObjectID generate() noexcept { return generate_impl(); }
 	/**
 		Generate unique ID within set.
+
+		@tparam Set Set type. Must be an associative container
+		with ObjectID as its key type.
 		@returns The generated ID.
-		@tparam Set Set type. Must be an associative container with ObjectID as its key type.
 		@param set Set to generate within.
 	*/
 	template<typename Set>

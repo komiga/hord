@@ -55,47 +55,74 @@ public:
 /** @name Serialization */ /// @{
 	/**
 		Serialize Hive.
-		@throws Error @c ErrorCode::serialization_access: If data for @a hive could not be accessed.
+
+		@throws Error @c ErrorCode::serialization_access:
+		- If data for @a hive could not be accessed.
+
 		@param hive Hive to serialize.
 	*/
-	void serialize_hive(Hive const& hive) { serialize_hive_impl(hive); }
+	void serialize_hive(Hive const& hive)
+		{ serialize_hive_impl(hive); }
 	/**
 		Serialize Node.
-		@throws Error @c ErrorCode::serialization_improper_state: If @a node does not have @c StorageState::placeholder.
-		@throws Error @c ErrorCode::serialization_access: If data for @a node could not be accessed.
+
+		@throws Error @c ErrorCode::serialization_improper_state:
+		- If @a node does not have @c StorageState::placeholder.
+		@throws Error @c ErrorCode::serialization_access:
+		- If data for @a node could not be accessed.
+
 		@param node Node to serialize.
 	*/
-	void serialize_node(Node const& node) { serialize_node_impl(node); }
+	void serialize_node(Node const& node)
+		{ serialize_node_impl(node); }
 	/**
 		Serialize Rule.
-		@throws Error @c ErrorCode::serialization_improper_state: If @a rule does not have @c StorageState::placeholder.
-		@throws Error @c ErrorCode::serialization_access: If data for @a rule could not be accessed.
+
+		@throws Error @c ErrorCode::serialization_improper_state:
+		- If @a rule does not have @c StorageState::placeholder.
+		@throws Error @c ErrorCode::serialization_access:
+		- If data for @a rule could not be accessed.
+
 		@param rule Rule to serialize.
 	*/
-	void serialize_rule(Rule const& rule) { serialize_rule_impl(rule); }
+	void serialize_rule(Rule const& rule)
+		{ serialize_rule_impl(rule); }
 /// @}
 
 /** @name Deserialization */ /// @{
 	/**
 		Deserialize Hive.
-		@throws Error @c ErrorCode::serialization_access: If data for @a hive could not be accessed.
+
+		@throws Error @c ErrorCode::serialization_access:
+		- If data for @a hive could not be accessed.
 		@param hive Hive to deserialize into.
 	*/
-	void deserialize_hive(Hive& hive) { deserialize_hive_impl(hive); }
+	void deserialize_hive(Hive& hive)
+		{ deserialize_hive_impl(hive); }
 	/**
 		Deserialize Node.
-		@throws Error @c ErrorCode::serialization_improper_state: If @a node does not have @c StorageState::modified.
-		@throws Error @c ErrorCode::serialization_access: If data for @a node could not be accessed.
+
+		@throws Error @c ErrorCode::serialization_improper_state:
+		- If @a node does not have @c StorageState::modified.
+		@throws Error @c ErrorCode::serialization_access:
+		- If data for @a node could not be accessed.
+
 		@param node Node to deserialize into.
 	*/
-	void deserialize_node(Node& node) { deserialize_node_impl(node); }
+	void deserialize_node(Node& node)
+		{ deserialize_node_impl(node); }
 	/**
 		Deserialize Rule.
-		@throws Error @c ErrorCode::serialization_improper_state: If @a rule does not have @c StorageState::modified.
-		@throws Error @c ErrorCode::serialization_access: If data for @a rule could not be accessed.
+
+		@throws Error @c ErrorCode::serialization_improper_state:
+		- If @a rule does not have @c StorageState::modified.
+		@throws Error @c ErrorCode::serialization_access:
+		- If data for @a rule could not be accessed.
+
 		@param rule Rule to deserialize into.
 	*/
-	void deserialize_rule(Rule& rule) { deserialize_rule_impl(rule); }
+	void deserialize_rule(Rule& rule)
+		{ deserialize_rule_impl(rule); }
 /// @}
 
 private:

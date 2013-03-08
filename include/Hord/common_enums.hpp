@@ -26,6 +26,8 @@ enum class StorageState : unsigned;
 	@{
 */
 
+// FIXME: Doxygen borks all over itself
+// when name-groups are used inside enums.
 /**
 	Error codes.
 	@sa Error
@@ -44,7 +46,8 @@ enum class ErrorCode : unsigned {
 	*/
 	driver_hive_root_empty,
 	/**
-		Attempted to placehold a Hive with a root path that is shared with another placeheld Hive.
+		Attempted to placehold a Hive with a root path that is
+		shared with another placeheld Hive.
 	*/
 	driver_hive_root_shared,
 	/**
@@ -56,8 +59,12 @@ enum class ErrorCode : unsigned {
 /** @name Serialization */ /// @{
 	/**
 		Object is not in proper state.
-		- When deserializing, this is due to any state other than @c StorageState::placeholder.
-		- When serializing, this is due to any state other than @c StorageState::modified (will not be thrown if the serialization was triggered on a Hive).
+
+		- When deserializing, this is due to any state other
+		  than @c StorageState::placeholder.
+		- When serializing, this is due to any state other
+		  than @c StorageState::modified (will not be thrown
+		  if the serialization was triggered on a Hive).
 	*/
 	serialization_improper_state,
 	/**
@@ -77,7 +84,9 @@ enum class ErrorCode : unsigned {
 
 /**
 	Field type.
-	@note The bitflag layout is only for Rule::type_info to restrict use; Fields must use a single value.
+
+	@note The bitflag layout is only for Rule::type_info to
+	restrict use; Fields must use a single value.
 	@sa Field
 */
 enum class FieldType : uint8_t {
@@ -98,7 +107,11 @@ enum class FieldType : uint8_t {
 
 /**
 	Standard MetaField types.
-	@note Values in @c [0x00, 0x08] are reserved for standard types (@c 0x00 is invalid). Custom serialization may specify further types, and unrecognized types should be ignored by a serializer.
+
+	@note Values in @c [0x00, 0x08] are reserved for standard
+	types (@c 0x00 is invalid). Custom serialization may specify
+	further types, and a serializer should ignore types it does
+	not recognize.
 	@sa MetaField, Metadata
 */
 enum class StandardMetaFieldTypes : MetaFieldType {
@@ -120,7 +133,10 @@ enum class StandardMetaFieldTypes : MetaFieldType {
 	ReservedLast=Reserved4
 	/// @}
 };
-static_assert(0x08==static_cast<MetaFieldType>(StandardMetaFieldTypes::ReservedLast), "StandardMetaFieldTypes must reserve up to 0x08");
+static_assert(
+	0x08==static_cast<MetaFieldType>(StandardMetaFieldTypes::ReservedLast),
+	"StandardMetaFieldTypes must reserve up to 0x08"
+);
 
 /** @} */ // end of doc-group metadata
 
@@ -135,13 +151,18 @@ static_assert(0x08==static_cast<MetaFieldType>(StandardMetaFieldTypes::ReservedL
 
 /**
 	Standard Rule types.
-	@note Values in @c [0,8] are reserved for standard types (@c 0 is invalid). Userspace may specify further types, and unrecognized types should be ignored by a serializer.
+
+	@note Values in @c [0,8] are reserved for standard
+	types (@c 0 is invalid). Userspace may specify further
+	types, and unrecognized types should be ignored by a serializer.
 	@sa Rule
 */
 enum class StandardRuleTypes : RuleType {
 	/**
 		Special non-type.
-		@note This type defines the <em>lack</em> of rule/structure. Rules cannot be registered with this type.
+
+		@note This type defines the <em>lack</em> of rule/structure.
+		Rules cannot be registered with this type.
 	*/
 	None=0,
 	/**
@@ -186,7 +207,10 @@ enum class StandardRuleTypes : RuleType {
 	ReservedLast=Reserved1
 	/// @}
 };
-static_assert(8==static_cast<RuleType>(StandardRuleTypes::ReservedLast), "StandardRuleTypes must reserve up to 8");
+static_assert(
+	8==static_cast<RuleType>(StandardRuleTypes::ReservedLast),
+	"StandardRuleTypes must reserve up to 8"
+);
 
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group node
@@ -206,22 +230,28 @@ static_assert(8==static_cast<RuleType>(StandardRuleTypes::ReservedLast), "Standa
 enum class StorageState : unsigned {
 	/**
 		Null/invalid object.
-		Object has no identifying information, a state in which neither serialization nor deserialization can be performed.
+
+		Object has no identifying information, a state in which neither
+		serialization nor deserialization can be performed.
 		@sa OBJECT_NULL
 	*/
 	null,
 	/**
 		Placeholder.
-		Object has identifying information, a state in which deserialization can be performed (but not serialization).
+
+		Object has identifying information, a state in which deserialization
+		can be performed (but not serialization).
 	*/
 	placeholder,
 	/**
 		Matches external storage.
+
 		Specifically, after successful serialization or deserialization.
 	*/
 	original,
 	/**
 		Modified.
+
 		Client-side modifications not yet serialized.
 	*/
 	modified,

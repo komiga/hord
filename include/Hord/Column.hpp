@@ -33,6 +33,7 @@ struct Column;
 	Node layout column.
 */
 struct Column final {
+public:
 	/** RuleID vector. */
 	typedef aux::vector<RuleID> rule_id_vector_type;
 

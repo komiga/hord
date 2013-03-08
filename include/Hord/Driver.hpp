@@ -50,6 +50,10 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with Serializer and IDGenerator.
+
+		@warning Both references must be valid for the lifetime
+		of the driver.
+
 		@param serializer Serializer.
 		@param id_generator IDGenerator.
 	*/
@@ -91,19 +95,31 @@ public:
 /** @name Operations */ /// @{
 	/**
 		Placehold Hive.
-		@warning @c ErrorCode::driver_hive_root_shared is only caused by string comparison.
-		It is possible for multiple placeheld hives to share the same actual directory, but the second one to attempt deserialization will fail with @c ErrorCode::driver_hive_locked.
-		@throws Error @c ErrorCode::driver_hive_root_empty: If @c true==root.empty().
-		@throws Error @c ErrorCode::driver_hive_root_shared: If a Hive with root path @a root has already been placeheld.
+
+		@warning @c ErrorCode::driver_hive_root_shared is only caused
+		by string comparison. It is possible for multiple placeheld
+		hives to share the same actual directory, but the second one
+		to attempt deserialization will fail
+		with @c ErrorCode::driver_hive_locked.
+
+		@throws Error{ErrorCode::driver_hive_root_empty}
+		If @c true==root.empty().
+
+		@throws Error{ErrorCode::driver_hive_root_shared}
+		If a Hive with root path @a root has already been placeheld.
+
 		@post Emplaced Hive with @a root and @c StorageState::placeholder.
+
 		@returns The placeheld Hive.
 		@param root Root path.
 		@sa get_hives() const
 	*/
 	Hive& placehold_hive(String root);
+
 	/**
 		Serialize objects.
-		@param all Whether to serialize all objects, or only those that have @c StorageState::modified.
+		@param all Whether to serialize all objects, or only
+		those that have @c StorageState::modified.
 	*/
 	void serialize(bool const all=false);
 /// @}

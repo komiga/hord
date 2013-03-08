@@ -32,6 +32,7 @@ struct Record;
 	Data field.
 */
 struct Field final {
+public:
 /** @name Properties */ /// @{
 	/** Type. */
 	FieldType type{FieldType::Text};
@@ -71,6 +72,7 @@ public:
 	Data record.
 */
 struct Record final {
+public:
 	/** Field vector. */
 	typedef aux::vector<Field> field_vector_type;
 
