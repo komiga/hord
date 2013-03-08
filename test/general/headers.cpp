@@ -21,7 +21,7 @@ class DummySerializer : public Hord::Serializer {
 public:
 	DummySerializer()=default;
 	DummySerializer(DummySerializer&&)=default;
-	~DummySerializer()=default;
+	~DummySerializer() override=default;
 
 private:
 	void serialize_hive_impl(Hord::Hive const&) override {}
@@ -36,7 +36,7 @@ class DummyIDGenerator : public Hord::IDGenerator {
 public:
 	DummyIDGenerator()=default;
 	DummyIDGenerator(DummyIDGenerator&&)=default;
-	~DummyIDGenerator()=default;
+	~DummyIDGenerator() override=default;
 
 private:
 	void seed_impl(int) noexcept override { return; }
