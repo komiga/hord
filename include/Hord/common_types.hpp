@@ -14,13 +14,20 @@ see @ref index or the accompanying LICENSE file for full text.
 
 namespace Hord {
 
+/**
+	@addtogroup object
+	@{
+*/
+
 /** Generic object ID. */
 typedef uint32_t ObjectID;
 
 enum : ObjectID {
 	/** Null object. */
-	OBJECT_NULL
+	OBJECT_NULL=0
 };
+
+/** @} */ // end of doc-group object
 
 /**
 	@addtogroup metadata
@@ -33,11 +40,36 @@ typedef uint8_t MetaFieldType;
 /** @} */ // end of doc-group metadata
 
 /**
+	@addtogroup driver
+	@{
+*/
+/**
+	@addtogroup hive
+	@{
+*/
+
+/**
+	Hive ID.
+
+	@note This type is only to telegraph intent in functions;
+	it is entirely equivalent to ObjectID.
+*/
+typedef ObjectID HiveID;
+
+/** @} */ // end of doc-group hive
+/** @} */ // end of doc-group driver
+
+/**
 	@addtogroup node
 	@{
 */
 
-/** Node ID. */
+/**
+	Node ID.
+
+	@note This type is only to telegraph intent in functions;
+	it is entirely equivalent to ObjectID.
+*/
 typedef ObjectID NodeID;
 
 /**
@@ -45,7 +77,12 @@ typedef ObjectID NodeID;
 	@{
 */
 
-/** Rule ID. */
+/**
+	Rule ID.
+
+	@note This type is only to telegraph intent in functions;
+	it is entirely equivalent to ObjectID.
+*/
 typedef ObjectID RuleID;
 /** Rule type. */
 typedef uint32_t RuleType;
