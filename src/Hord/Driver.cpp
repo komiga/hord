@@ -13,7 +13,7 @@ namespace Hord {
 Hive& Driver::placehold_hive(String root) {
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
 	if (root.empty()) {
-		HORD_THROW_ERROR_SCOPED(
+		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::driver_hive_root_empty,
 			"cannot placehold hive with empty root path"
 		);
