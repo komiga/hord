@@ -17,7 +17,7 @@ function create_project(name, kind, tdir, root)
 		proj.kind=kind
 
 	targetname(name)
-	objdir(root.."/out/")
+	objdir("out/")
 	targetdir(tdir)
 
 	configuration {"debug"}
