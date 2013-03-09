@@ -79,9 +79,11 @@ function create_test(group, name, src)
 		files {
 			src
 		}
-		links {
-			"hord"
-		}
+
+	configuration {"debug"}
+		links {"hord_d"}
+	configuration {"release"}
+		links {"hord"}
 end
 
 function create_tests(group, tests)

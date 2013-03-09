@@ -10,6 +10,9 @@ solution("Hord")
 -- Core library
 create_project("hord", "StaticLib", "lib/", ".")
 
+configuration {"debug"}
+	targetsuffix("_d")
+
 configuration {}
 	includedirs {
 		"include/"
