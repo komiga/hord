@@ -57,6 +57,12 @@ private:
 	MetaField(MetaField const&)=delete;
 	MetaField& operator=(MetaField const&)=delete;
 
+	/**
+		get_type_info() implementation.
+		@returns The field's type info.
+	*/
+	virtual type_info const& get_type_info_impl() const noexcept=0;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
@@ -87,13 +93,6 @@ public:
 	type_info const& get_type_info() const noexcept
 		{ return get_type_info_impl(); }
 /// @}
-
-private:
-	/**
-		get_type_info() implementation.
-		@returns The field's type info.
-	*/
-	virtual type_info const& get_type_info_impl() const noexcept=0;
 };
 inline MetaField::~MetaField()=default;
 
@@ -109,6 +108,8 @@ public:
 private:
 	StringMetaField(StringMetaField const&)=delete;
 	StringMetaField& operator=(StringMetaField const&)=delete;
+
+	MetaField::type_info const& get_type_info_impl() const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -133,13 +134,6 @@ public:
 	/** Move assignment operator. */
 	StringMetaField& operator=(StringMetaField&&)=default;
 /// @}
-
-private:
-	static constexpr MetaField::type_info s_type_info{
-		static_cast<MetaFieldType>(StandardMetaFieldTypes::String)
-	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override
-		{ return s_type_info; }
 };
 
 /**
@@ -154,6 +148,8 @@ public:
 private:
 	Int32MetaField(Int32MetaField const&)=delete;
 	Int32MetaField& operator=(Int32MetaField const&)=delete;
+
+	MetaField::type_info const& get_type_info_impl() const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -178,13 +174,6 @@ public:
 	/** Move assignment operator. */
 	Int32MetaField& operator=(Int32MetaField&&)=default;
 /// @}
-
-private:
-	static constexpr MetaField::type_info s_type_info{
-		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int32)
-	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override
-		{ return s_type_info; }
 };
 
 /**
@@ -199,6 +188,8 @@ public:
 private:
 	Int64MetaField(Int64MetaField const&)=delete;
 	Int64MetaField& operator=(Int64MetaField const&)=delete;
+
+	MetaField::type_info const& get_type_info_impl() const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -223,13 +214,6 @@ public:
 	/** Move assignment operator. */
 	Int64MetaField& operator=(Int64MetaField&&)=default;
 /// @}
-
-private:
-	static constexpr MetaField::type_info s_type_info{
-		static_cast<MetaFieldType>(StandardMetaFieldTypes::Int64)
-	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override
-		{ return s_type_info; }
 };
 
 /**
@@ -244,6 +228,8 @@ public:
 private:
 	BoolMetaField(BoolMetaField const&)=delete;
 	BoolMetaField& operator=(BoolMetaField const&)=delete;
+
+	MetaField::type_info const& get_type_info_impl() const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -268,13 +254,6 @@ public:
 	/** Move assignment operator. */
 	BoolMetaField& operator=(BoolMetaField&&)=default;
 /// @}
-
-private:
-	static constexpr MetaField::type_info s_type_info{
-		static_cast<MetaFieldType>(StandardMetaFieldTypes::Bool)
-	};
-	MetaField::type_info const& get_type_info_impl() const noexcept override
-		{ return s_type_info; }
 };
 
 /**
