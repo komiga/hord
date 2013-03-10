@@ -12,9 +12,11 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include "./config.hpp"
 #include "./common_types.hpp"
+#include "./common_enums.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
 #include "./Metadata.hpp"
+#include "./Object.hpp"
 #include "./Rule.hpp"
 #include "./Node.hpp"
 
@@ -38,7 +40,8 @@ class Hive;
 /**
 	Top-level container.
 */
-class Hive final {
+class Hive final
+	: public Object {
 public:
 	friend class Driver;
 	/** Node map. */
@@ -49,10 +52,7 @@ public:
 private:
 	typedef aux::unordered_set<ObjectID> id_set_type;
 
-	mutable StorageState m_storage_state{StorageState::null}; // Runtime
-	String m_root{}; // Runtime
-	String m_slug{};
-	Metadata m_metadata{};
+	String m_root{};
 	id_set_type m_idset{};
 	node_map_type m_nodes{};
 	rule_map_type m_rules{};
@@ -65,7 +65,7 @@ public:
 	/**
 		Default constructor.
 
-		@post @code get_storage_state()==StorageState::null @endcode
+		@post See Object::Object().
 	*/
 	Hive()=default;
 	/**
@@ -82,10 +82,12 @@ public:
 		@param root Root path.
 	*/
 	explicit Hive(String root)
-		: m_storage_state{
+		: Object{
 			root.empty()
 				? StorageState::null
 				: StorageState::placeholder
+			, OBJECT_NULL
+			, OBJECT_NULL
 		}
 		, m_root{std::move(root)}
 	{}
@@ -102,32 +104,11 @@ public:
 
 /** @name Properties */ /// @{
 	/**
-		Get storage state.
-		@returns Current storage state.
-	*/
-	StorageState get_storage_state() const noexcept
-		{ return m_storage_state; }
-
-	/**
 		Get root.
 		@returns Current root.
 	*/
 	String const& get_root() const noexcept
 		{ return m_root; }
-
-	/**
-		Get slug.
-		@returns Current slug.
-	*/
-	String const& get_slug() const noexcept
-		{ return m_slug; }
-
-	/**
-		Get metadata.
-		@returns The current metadata.
-	*/
-	Metadata const& get_metadata() const noexcept
-		{ return m_metadata; }
 
 	/**
 		Get node map.
@@ -145,41 +126,17 @@ public:
 
 /** @name Objects */ /// @{
 	/**
-		Check if an object exists with the given @a id.
+		Check if a child Object exists with the given @a id.
 
 		@returns
 		- @c true if @a id is in the hive, or
 		- @c false if it is not.
 		@param id Object ID to look for.
 	*/
-	bool has_object(
+	bool has_child(
 		ObjectID const id
 	) const noexcept(noexcept(m_idset.find(id)))
 		{ return m_idset.cend()!=m_idset.find(id); }
-	/**
-		Check if a Node exists with the given @a id.
-
-		@returns
-		- @c true if @a id is in the hive, or
-		- @c false if it is not.
-		@param id Node ID to look for.
-	*/
-	bool has_node(
-		NodeID const id
-	) const noexcept(noexcept(m_nodes.find(id)))
-		{ return m_nodes.cend()!=m_nodes.find(id); }
-	/**
-		Check if a Rule exists with the given @a id.
-
-		@returns
-		- @c true if @a id is in the hive, or
-		- @c false if it is not.
-		@param id Rule ID to look for.
-	*/
-	bool has_rule(
-		RuleID const id
-	) const noexcept(noexcept(m_rules.find(id)))
-		{ return m_rules.cend()!=m_rules.find(id); }
 /// @}
 };
 

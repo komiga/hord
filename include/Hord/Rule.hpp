@@ -14,8 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
 #include "./String.hpp"
-
-#include <functional>
+#include "./Object.hpp"
 
 // TODO: Rule classes
 
@@ -24,7 +23,6 @@ namespace Hord {
 // Forward declarations
 struct RuleState;
 class Rule;
-class Hive; // ext
 
 /**
 	@addtogroup node
@@ -63,7 +61,8 @@ inline RuleState::~RuleState()=default;
 /**
 	Base rule.
 */
-class Rule {
+class Rule
+	: public Object {
 public:
 	friend class Driver;
 	/**
@@ -72,11 +71,13 @@ public:
 	struct type_info final {
 		/**
 			Rule type.
+
 			@sa StandardRuleTypes
 		*/
 		RuleType const type;
 		/**
 			Permitted FieldTypes.
+
 			@note This should be a nonzero combination of FieldTypes.
 			@sa FieldType
 		*/
@@ -84,11 +85,6 @@ public:
 	};
 
 private:
-	mutable StorageState m_storage_state{StorageState::null}; // Runtime
-	std::reference_wrapper<Hive> m_owner; // Runtime
-	RuleID m_id{OBJECT_NULL};
-	String m_slug{};
-
 	Rule()=delete;
 	Rule(Rule const&)=delete;
 	Rule& operator=(Rule const&)=delete;
@@ -109,14 +105,14 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Rule(Hive& owner, RuleID id)
-		: m_storage_state{
+	Rule(HiveID owner, RuleID id)
+		: Object{
 			(OBJECT_NULL==id)
 				? StorageState::null
 				: StorageState::placeholder
+			, ObjectID{owner}
+			, ObjectID{id}
 		}
-		, m_owner{owner}
-		, m_id{id}
 	{}
 	/** Move constructor. */
 	Rule(Rule&&)=default;
@@ -130,34 +126,6 @@ public:
 /// @}
 
 /** @name Properties */ /// @{
-	/**
-		Get storage state.
-		@returns Current storage state.
-	*/
-	StorageState get_storage_state() const noexcept
-		{ return m_storage_state; }
-
-	/**
-		Get owner.
-		@returns Current owner.
-	*/
-	Hive& get_owner() const noexcept
-		{ return m_owner.get(); }
-
-	/**
-		Get ID.
-		@returns Current ID.
-	*/
-	RuleID get_id() const noexcept
-		{ return m_id; }
-
-	/**
-		Get slug.
-		@returns Current slug.
-	*/
-	String const& get_slug() const noexcept
-		{ return m_slug; }
-
 	/**
 		Get type info.
 		@returns The rule's type info.
