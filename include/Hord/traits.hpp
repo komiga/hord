@@ -29,7 +29,7 @@ namespace Hord {
 	@tparam Trait The trait to require.
 */
 template<typename Trait>
-struct require_trait {
+struct require_trait final {
 	static_assert(
 		true==Trait::value,
 		"required trait is not satisfied"
@@ -42,7 +42,7 @@ struct require_trait {
 	@tparam Trait The trait to disallow.
 */
 template<typename Trait>
-struct disallow_trait {
+struct disallow_trait final {
 	static_assert(
 		false==Trait::value,
 		"disallowed trait is present"
@@ -57,7 +57,7 @@ struct disallow_trait {
 	@tparam T Type to test.
 */
 template<typename T>
-struct is_copy_constructible_or_assignable
+struct is_copy_constructible_or_assignable final
 	: public std::integral_constant<bool,
 		// FIXME: libstdc++ 4.6.3 does not have
 		// is_assignable nor the is_copy traits.
