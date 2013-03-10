@@ -21,6 +21,10 @@ static constexpr MetaField::type_info s_type_info_bool{
 };
 } // anonymous namespace
 
+// class MetaField implementation
+
+MetaField::~MetaField()=default;
+
 // class StringMetaField implementation
 
 MetaField::type_info const& StringMetaField::get_type_info_impl()

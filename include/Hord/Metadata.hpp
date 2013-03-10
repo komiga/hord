@@ -71,13 +71,13 @@ public:
 		Constructor with name.
 		@param name Name.
 	*/
-	explicit MetaField(String name)
+	explicit MetaField(String name) noexcept
 		: name{std::move(name)}
 	{}
 	/** Move constructor. */
 	MetaField(MetaField&&)=default;
 	/** Destructor. */
-	inline virtual ~MetaField()=0;
+	virtual ~MetaField()=0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -94,7 +94,6 @@ public:
 		{ return get_type_info_impl(); }
 /// @}
 };
-inline MetaField::~MetaField()=default;
 
 /**
 	String MetaField.
@@ -120,7 +119,7 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	StringMetaField(String name, String value)
+	StringMetaField(String name, String value) noexcept
 		: MetaField{std::move(name)}
 		, value{std::move(value)}
 	{}
@@ -160,7 +159,7 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	Int32MetaField(String name, int32_t value)
+	Int32MetaField(String name, int32_t value) noexcept
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
@@ -200,7 +199,7 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	Int64MetaField(String name, int64_t value)
+	Int64MetaField(String name, int64_t value) noexcept
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
@@ -240,7 +239,7 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	BoolMetaField(String name, bool value)
+	BoolMetaField(String name, bool value) noexcept
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
@@ -279,7 +278,7 @@ public:
 		Constructor with field vector.
 		@param fields MetaField vector.
 	*/
-	explicit Metadata(field_vector_type fields)
+	explicit Metadata(field_vector_type fields) noexcept
 		: fields{std::move(fields)}
 	{}
 	/** Move constructor. */
