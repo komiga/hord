@@ -102,8 +102,11 @@ protected:
 	{}
 	/** Move constructor. */
 	Object(Object&&)=default;
+public:
 	/** Destructor. */
 	inline virtual ~Object()=0;
+
+protected:
 /// @}
 
 /** @name Operators */ /// @{

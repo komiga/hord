@@ -44,18 +44,17 @@ class Hive final
 	: public Object {
 public:
 	friend class Driver;
-	/** Node map. */
-	typedef aux::unordered_map<NodeID, Node> node_map_type;
-	/** Rule map. */
-	typedef aux::unordered_map<RuleID, std::unique_ptr<Rule> > rule_map_type;
+	/** Object map. */
+	typedef aux::unordered_map<
+		ObjectID, std::unique_ptr<Object>
+	> object_map_type;
 
 private:
 	typedef aux::unordered_set<ObjectID> id_set_type;
 
 	String m_root{};
 	id_set_type m_idset{};
-	node_map_type m_nodes{};
-	rule_map_type m_rules{};
+	object_map_type m_objects{};
 
 	Hive(Hive const&)=delete;
 	Hive& operator=(Hive const&)=delete;
@@ -113,17 +112,11 @@ public:
 		{ return m_root; }
 
 	/**
-		Get node map.
-		@returns The current node map.
+		Get object map.
+		@returns Current object map.
 	*/
-	node_map_type const& get_nodes() const noexcept
-		{ return m_nodes; }
-	/**
-		Get rule map.
-		@returns The current rule map.
-	*/
-	rule_map_type const& get_rules() const noexcept
-		{ return m_rules; }
+	object_map_type const& get_objects() const noexcept
+		{ return m_objects; }
 /// @}
 
 /** @name Objects */ /// @{
