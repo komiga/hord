@@ -262,7 +262,7 @@ public:
 struct Metadata final {
 public:
 	/** MetaField vector. */
-	typedef aux::vector<std::shared_ptr<MetaField> > field_vector_type;
+	typedef aux::vector<std::unique_ptr<MetaField> > field_vector_type;
 
 	/** Fields. */
 	field_vector_type fields{};
