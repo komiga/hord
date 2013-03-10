@@ -114,7 +114,7 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Rule(HiveID owner, RuleID id)
+	Rule(HiveID owner, RuleID id) noexcept
 		: Object{
 			(OBJECT_NULL==id)
 				? StorageState::null
@@ -126,7 +126,7 @@ public:
 	/** Move constructor. */
 	Rule(Rule&&)=default;
 	/** Destructor. */
-	inline virtual ~Rule()=0;
+	virtual ~Rule() override=0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -143,7 +143,6 @@ public:
 		{ return get_rule_type_info_impl(); }
 /// @}
 };
-inline Rule::~Rule()=default;
 
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group node

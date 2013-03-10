@@ -82,7 +82,7 @@ public:
 		@endcode
 		@param root Root path.
 	*/
-	explicit Hive(String root)
+	explicit Hive(String root) noexcept
 		: Object{
 			root.empty()
 				? StorageState::null
@@ -95,7 +95,7 @@ public:
 	/** Move constructor. */
 	Hive(Hive&&)=default;
 	/** Destructor. */
-	~Hive()=default;
+	~Hive() override=default;
 /// @}
 
 /** @name Operators */ /// @{

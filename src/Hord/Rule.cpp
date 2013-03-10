@@ -15,4 +15,6 @@ Object::type_info const& Rule::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
+Rule::~Rule()=default;
+
 } // namespace Hord

@@ -72,7 +72,7 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Node(HiveID owner, NodeID id)
+	Node(HiveID owner, NodeID id) noexcept
 		: Object{
 			(OBJECT_NULL==id)
 				? StorageState::null
@@ -84,7 +84,7 @@ public:
 	/** Move constructor. */
 	Node(Node&&)=default;
 	/** Destructor. */
-	~Node()=default;
+	~Node() override=default;
 /// @}
 
 /** @name Operators */ /// @{
