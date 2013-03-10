@@ -17,6 +17,7 @@ namespace Hord {
 
 // Forward declarations
 enum class ErrorCode : unsigned;
+enum class ObjectType : unsigned;
 enum class FieldType : uint8_t;
 enum class StandardMetaFieldTypes : MetaFieldType;
 enum class StandardRuleTypes : RuleType;
@@ -77,6 +78,22 @@ enum class ErrorCode : unsigned {
 };
 
 /** @} */ // end of doc-group error
+
+/**
+	@addtogroup object
+	@{
+*/
+
+enum class ObjectType : unsigned {
+	/** Hive. */
+	Hive,
+	/** Rule. */
+	Rule,
+	/** Node. */
+	Node,
+};
+
+/** @} */ // end of doc-group object
 
 /**
 	@addtogroup data

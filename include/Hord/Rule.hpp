@@ -65,6 +65,7 @@ class Rule
 	: public Object {
 public:
 	friend class Driver;
+
 	/**
 		Type info.
 	*/
@@ -88,6 +89,14 @@ private:
 	Rule()=delete;
 	Rule(Rule const&)=delete;
 	Rule& operator=(Rule const&)=delete;
+
+	Object::type_info const& get_type_info_impl() const noexcept override;
+
+	/**
+		get_rule_type_info() implementation.
+		@returns The rule's type info.
+	*/
+	virtual type_info const& get_rule_type_info_impl() const noexcept=0;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -130,12 +139,9 @@ public:
 		Get type info.
 		@returns The rule's type info.
 	*/
-	type_info const& get_type_info() const noexcept
-		{ return get_type_info_impl(); }
+	type_info const& get_rule_type_info() const noexcept
+		{ return get_rule_type_info_impl(); }
 /// @}
-
-private:
-	virtual type_info const& get_type_info_impl() const noexcept=0;
 };
 inline Rule::~Rule()=default;
 

@@ -33,6 +33,18 @@ class Object {
 public:
 	friend class Driver;
 
+	/**
+		Type info.
+	*/
+	struct type_info final {
+		/**
+			Object type.
+
+			@sa ObjectType
+		*/
+		ObjectType const type;
+	};
+
 private:
 	StorageState m_storage_state{StorageState::null};
 	ObjectID m_owner{OBJECT_NULL};
@@ -42,6 +54,12 @@ private:
 
 	Object(Object const&)=delete;
 	Object& operator=(Object const&)=delete;
+
+	/**
+		get_type_info() implementation.
+		@returns The object's type info.
+	*/
+	virtual type_info const& get_type_info_impl() const noexcept=0;
 
 protected:
 /** @name Constructors and destructor */ /// @{
@@ -96,6 +114,13 @@ protected:
 public:
 /** @name Properties */ /// @{
 	/**
+		Get type info.
+		@returns The object's type info.
+	*/
+	type_info const& get_type_info() const noexcept
+		{ return get_type_info_impl(); }
+
+	/**
 		Get storage state.
 		@returns Current storage state.
 	*/
@@ -125,7 +150,7 @@ public:
 
 	/**
 		Get metadata.
-		@returns The current metadata.
+		@returns Current metadata.
 	*/
 	Metadata const& get_metadata() const noexcept
 		{ return m_metadata; }

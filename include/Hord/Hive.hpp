@@ -60,6 +60,8 @@ private:
 	Hive(Hive const&)=delete;
 	Hive& operator=(Hive const&)=delete;
 
+	Object::type_info const& get_type_info_impl() const noexcept override;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
