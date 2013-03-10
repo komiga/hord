@@ -58,7 +58,7 @@ public:
 		@param serializer Serializer.
 		@param id_generator IDGenerator.
 	*/
-	Driver(Serializer& serializer, IDGenerator& id_generator)
+	Driver(Serializer& serializer, IDGenerator& id_generator) noexcept
 		: m_serializer{serializer}
 		, m_id_generator{id_generator}
 	{}
@@ -78,19 +78,22 @@ public:
 		Get Serializer.
 		@returns The Serializer.
 	*/
-	Serializer& get_serializer() noexcept { return m_serializer; }
+	Serializer& get_serializer() noexcept
+		{ return m_serializer; }
 
 	/**
 		Get IDGenerator.
 		@returns The IDGenerator.
 	*/
-	IDGenerator& get_id_generator() noexcept { return m_id_generator; }
+	IDGenerator& get_id_generator() noexcept
+		{ return m_id_generator; }
 
 	/**
 		Get Hive collection.
 		@returns The Hive collection.
 	*/
-	hive_vector_type const& get_hives() const noexcept { return m_hives; }
+	hive_vector_type const& get_hives() const noexcept
+		{ return m_hives; }
 /// @}
 
 /** @name Operations */ /// @{
@@ -119,6 +122,7 @@ public:
 
 	/**
 		Serialize objects.
+
 		@param all Whether to serialize all objects, or only
 		those that have @c StorageState::modified.
 	*/
