@@ -40,6 +40,16 @@ typedef uint8_t MetaFieldType;
 /** @} */ // end of doc-group metadata
 
 /**
+	@addtogroup messaging
+	@{
+*/
+
+/** Message ID. */
+typedef uint32_t MessageID;
+
+/** @} */ // end of doc-group messaging
+
+/**
 	@addtogroup driver
 	@{
 */
