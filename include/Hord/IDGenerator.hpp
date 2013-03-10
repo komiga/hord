@@ -31,6 +31,22 @@ private:
 	IDGenerator(IDGenerator const&)=delete;
 	IDGenerator& operator=(IDGenerator const&)=delete;
 
+	/**
+		seed() implementation.
+
+		@remark If called from Driver, @a seed_value will be a growing
+		value, likely based on time.
+		@param seed_value Seed value.
+	*/
+	virtual void seed_impl(int seed_value) noexcept=0;
+	/**
+		generate() implementation.
+
+		@post Return value must not be equal to @c OBJECT_NULL.
+		@returns The generated ID.
+	*/
+	virtual ObjectID generate_impl() noexcept=0;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
@@ -54,6 +70,11 @@ public:
 	void seed(int const seed_value) noexcept { seed_impl(seed_value); }
 	/**
 		Generate an ID.
+
+		@post
+		@code
+			generate()!=OBJECT_NULL
+		@endcode
 		@returns The generated ID.
 	*/
 	ObjectID generate() noexcept { return generate_impl(); }
@@ -72,10 +93,6 @@ public:
 		return id;
 	}
 /// @}
-
-private:
-	virtual void seed_impl(int seed_value) noexcept=0;
-	virtual ObjectID generate_impl() noexcept=0;
 };
 inline IDGenerator::~IDGenerator()=default;
 
