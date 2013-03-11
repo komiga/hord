@@ -35,10 +35,10 @@ private:
 		seed() implementation.
 
 		@remark If called from Driver, @a seed_value will be a growing
-		value, likely based on time.
+		value, based on time.
 		@param seed_value Seed value.
 	*/
-	virtual void seed_impl(int seed_value) noexcept=0;
+	virtual void seed_impl(int64_t seed_value) noexcept=0;
 	/**
 		generate() implementation.
 
@@ -67,7 +67,8 @@ public:
 		Seed the generator.
 		@param seed_value Seed value.
 	*/
-	void seed(int const seed_value) noexcept { seed_impl(seed_value); }
+	void seed(int64_t const seed_value) noexcept
+		{ seed_impl(seed_value); }
 	/**
 		Generate an ID.
 
@@ -77,7 +78,8 @@ public:
 		@endcode
 		@returns The generated ID.
 	*/
-	ObjectID generate() noexcept { return generate_impl(); }
+	ObjectID generate() noexcept
+		{ return generate_impl(); }
 	/**
 		Generate unique ID within set.
 
@@ -87,7 +89,7 @@ public:
 		@param set Set to generate within.
 	*/
 	template<typename Set>
-	ObjectID generate_unique(Set const& set) {
+	ObjectID generate_unique(Set const& set) noexcept {
 		ObjectID id;
 		do { id=generate(); } while (set.cend()==set.find(id));
 		return id;
