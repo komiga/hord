@@ -3,8 +3,10 @@
 //#include <Hord/common_types.hpp>
 //#include <Hord/common_enums.hpp>
 //#include <Hord/aux.hpp>
+#include <Hord/traits.hpp>
 //#include <Hord/String.hpp>
 #include <Hord/Error.hpp>
+#include <Hord/MessageBuffer.hpp>
 //#include <Hord/Metadata.hpp>
 //#include <Hord/Record.hpp>
 //#include <Hord/Rule.hpp>
@@ -15,32 +17,49 @@
 //#include <Hord/Serializer.hpp>
 #include <Hord/Driver.hpp>
 
+#include <random>
 #include <iostream>
+#include <iomanip>
 
-class DummySerializer : public Hord::Serializer {
+class DummySerializer
+	: public Hord::Serializer {
 public:
 	DummySerializer()=default;
 	DummySerializer(DummySerializer&&)=default;
 	~DummySerializer() override=default;
 
 private:
-	void serialize_hive_impl(Hord::Hive const&) override {}
-	void serialize_node_impl(Hord::Node const&) override {}
-	void serialize_rule_impl(Hord::Rule const&) override {}
-	void deserialize_hive_impl(Hord::Hive&) override {}
-	void deserialize_node_impl(Hord::Node&) override {}
-	void deserialize_rule_impl(Hord::Rule&) override {}
+	void serialize_object_impl(
+		Hord::Object const&,
+		Hord::SerializationFlags
+	) override {}
+	void deserialize_object_impl(
+		Hord::Object&,
+		Hord::SerializationFlags
+	) override {}
 };
 
-class DummyIDGenerator : public Hord::IDGenerator {
+class DummyIDGenerator
+	: public Hord::IDGenerator {
+private:
+	std::mt19937 m_rng{std::mt19937::default_seed};
+
 public:
 	DummyIDGenerator()=default;
 	DummyIDGenerator(DummyIDGenerator&&)=default;
 	~DummyIDGenerator() override=default;
 
 private:
-	void seed_impl(int) noexcept override { return; }
-	Hord::ObjectID generate_impl() noexcept override { return Hord::OBJECT_NULL; }
+	void seed_impl(int64_t seed_value) noexcept override {
+		m_rng.seed(static_cast<std::mt19937::result_type>(
+			seed_value
+		));
+	}
+	Hord::ObjectID generate_impl() noexcept override {
+		Hord::ObjectID id;
+		do { id=m_rng(); } while (Hord::OBJECT_NULL==id);
+		return id;
+	}
 };
 
 int main() {
@@ -79,10 +98,13 @@ int main() {
 	//Hord::RuleState rule_state{};
 	//Hord::Rule rule{};
 	Hord::Column column{};
-	Hord::Node node{hive, Hord::NodeID{42}};
+	Hord::Node node{hive.get_id(), Hord::NodeID{42}};
 
 	try {
-		driver.placehold_hive("./bork");
+		std::cout
+			<<"id: "
+			<<std::hex<<driver.placehold_hive("./bork").get_id()
+		<<std::endl;
 		driver.placehold_hive("./bork");
 	} catch (Hord::Error& e) {
 		std::cerr
