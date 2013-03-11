@@ -5,4 +5,18 @@
 @defgroup hive Hive
 @details
 
+A Hive cannot:
+
+-# be a child of another object; and
+-# have child Hives.
+
+Objects owned by a Hive share an <em>ID space</em> with each-other,
+and as such must be unique within this space.
+
+Hive IDs are runtime values generated when a Hive is placeheld
+(see Driver) -- they are non-persistent to avoid Hive-to-Hive ID
+clashes. Hive IDs are <strong>not</strong> within their child ID
+space specifically to avoid the itchy situation where Hives have
+to be shallow-loaded before the runtime can generate their IDs.
+
 */
