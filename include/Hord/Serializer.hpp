@@ -11,10 +11,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_SERIALIZER_HPP_
 
 #include "./config.hpp"
+#include "./common_enums.hpp"
 #include "./String.hpp"
-#include "./Rule.hpp"
-#include "./Node.hpp"
-#include "./Hive.hpp"
+#include "./Object.hpp"
 
 namespace Hord {
 
@@ -38,6 +37,21 @@ private:
 	Serializer(Serializer const&)=delete;
 	Serializer& operator=(Serializer const&)=delete;
 
+	/**
+		deserialize_object() implementation.
+	*/
+	virtual void deserialize_object_impl(
+		Object& object,
+		SerializationFlags flags
+	)=0;
+	/**
+		serialize_object() implementation.
+	*/
+	virtual void serialize_object_impl(
+		Object const& object,
+		SerializationFlags flags
+	)=0;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
@@ -53,86 +67,43 @@ public:
 	Serializer& operator=(Serializer&&)=default;
 /// @}
 
-/** @name Serialization */ /// @{
+/** @name Operations */ /// @{
 	/**
-		Serialize Hive.
+		Deserialize object.
 
-		@throws Error @c ErrorCode::serialization_access:
-		- If data for @a hive could not be accessed.
+		@note @c SerializationFlags::identity is implicit.
 
-		@param hive Hive to serialize.
+		@throws Error{ErrorCode::serialization_improper_state}
+		If @a object does not have @c StorageState::placeholder.
+
+		@throws Error{ErrorCode::serialization_access}
+		If data for @a object could not be accessed.
+
+		@param object Object to deserialize.
+		@param flags Serialization flags.
 	*/
-	void serialize_hive(Hive const& hive)
-		{ serialize_hive_impl(hive); }
+	void deserialize_object(
+		Object& object,
+		SerializationFlags const flags
+	) { deserialize_object_impl(object, flags); }
+
 	/**
-		Serialize Node.
+		Serialize object.
 
-		@throws Error @c ErrorCode::serialization_improper_state:
-		- If @a node does not have @c StorageState::placeholder.
-		@throws Error @c ErrorCode::serialization_access:
-		- If data for @a node could not be accessed.
+		@throws Error{ErrorCode::serialization_improper_state}
+		If @a object does not have @c StorageState::modified.
 
-		@param node Node to serialize.
+		@throws Error{ErrorCode::serialization_access}
+		If data for @a object could not be accessed.
+
+		@param object Object to serialize.
+		@param flags Serialization flags.
 	*/
-	void serialize_node(Node const& node)
-		{ serialize_node_impl(node); }
-	/**
-		Serialize Rule.
-
-		@throws Error @c ErrorCode::serialization_improper_state:
-		- If @a rule does not have @c StorageState::placeholder.
-		@throws Error @c ErrorCode::serialization_access:
-		- If data for @a rule could not be accessed.
-
-		@param rule Rule to serialize.
-	*/
-	void serialize_rule(Rule const& rule)
-		{ serialize_rule_impl(rule); }
+	void serialize_object(
+		Object const& object,
+		SerializationFlags const flags
+	) { serialize_object_impl(object, flags); }
 /// @}
-
-/** @name Deserialization */ /// @{
-	/**
-		Deserialize Hive.
-
-		@throws Error @c ErrorCode::serialization_access:
-		- If data for @a hive could not be accessed.
-		@param hive Hive to deserialize into.
-	*/
-	void deserialize_hive(Hive& hive)
-		{ deserialize_hive_impl(hive); }
-	/**
-		Deserialize Node.
-
-		@throws Error @c ErrorCode::serialization_improper_state:
-		- If @a node does not have @c StorageState::modified.
-		@throws Error @c ErrorCode::serialization_access:
-		- If data for @a node could not be accessed.
-
-		@param node Node to deserialize into.
-	*/
-	void deserialize_node(Node& node)
-		{ deserialize_node_impl(node); }
-	/**
-		Deserialize Rule.
-
-		@throws Error @c ErrorCode::serialization_improper_state:
-		- If @a rule does not have @c StorageState::modified.
-		@throws Error @c ErrorCode::serialization_access:
-		- If data for @a rule could not be accessed.
-
-		@param rule Rule to deserialize into.
-	*/
-	void deserialize_rule(Rule& rule)
-		{ deserialize_rule_impl(rule); }
-/// @}
-
-private:
-	virtual void serialize_hive_impl(Hive const& hive)=0;
-	virtual void serialize_node_impl(Node const& node)=0;
-	virtual void serialize_rule_impl(Rule const& rule)=0;
-	virtual void deserialize_hive_impl(Hive& hive)=0;
-	virtual void deserialize_node_impl(Node& node)=0;
-	virtual void deserialize_rule_impl(Rule& rule)=0;
 };
 inline Serializer::~Serializer()=default;
 

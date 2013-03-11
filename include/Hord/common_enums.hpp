@@ -22,6 +22,7 @@ enum class FieldType : uint8_t;
 enum class StandardMetaFieldTypes : MetaFieldType;
 enum class StandardRuleTypes : RuleType;
 enum class StorageState : unsigned;
+enum class SerializationFlags : unsigned;
 
 /**
 	@addtogroup error
@@ -292,6 +293,57 @@ enum class StorageState : unsigned {
 		state.
 	*/
 	modified,
+};
+
+/**
+	Serialization flags.
+
+	@note All of these flags apply both to serialization
+	and deserialization unless otherwise stated.
+	@sa Serializer
+*/
+enum class SerializationFlags : unsigned {
+	/**
+		Include identifying information in operation.
+
+		Identifying information includes Object's owner, ID, and slug
+		properties.
+
+		Post-@c placeholder state, this flag is only significant when
+		serializing a Hive after a child was added or removed.
+		Objects have immutable IDs, so once identifying information
+		has been deserialized, Serializer should never have to deal
+		with it changing.
+	*/
+	identity=1<<0,
+	/**
+		Include Metadata property in operation.
+	*/
+	metadata=1<<1,
+	/**
+		Include primary data in operation.
+	*/
+	primary=1<<2,
+	/**
+		Shallow deserialization.
+
+		Includes both @c identity and @c metadata.
+
+		@remark This flag is only used when deserializing
+		placeheld objects.
+	*/
+	shallow
+		=identity
+		|metadata
+	,
+	/**
+		All flags.
+	*/
+	all
+		=identity
+		|metadata
+		|primary
+	,
 };
 
 /** @} */ // end of doc-group serialization
