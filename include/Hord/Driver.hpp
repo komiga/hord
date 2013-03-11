@@ -32,16 +32,14 @@ class Driver;
 	Driver.
 */
 class Driver final {
-public:
-	/**
-		Hive vector.
-	*/
-	typedef aux::vector<Hive> hive_vector_type;
-
 private:
+	typedef aux::unordered_map<HiveID, Hive> hive_map_type;
+	typedef aux::vector<HiveID> id_vector_type;
+
 	Serializer& m_serializer;
 	IDGenerator& m_id_generator;
-	hive_vector_type m_hives{};
+	hive_map_type m_hives{};
+	id_vector_type m_hive_order{};
 
 	Driver()=delete;
 	Driver(Driver const&)=delete;
@@ -58,10 +56,7 @@ public:
 		@param serializer Serializer.
 		@param id_generator IDGenerator.
 	*/
-	Driver(Serializer& serializer, IDGenerator& id_generator) noexcept
-		: m_serializer{serializer}
-		, m_id_generator{id_generator}
-	{}
+	Driver(Serializer& serializer, IDGenerator& id_generator) noexcept;
 	/** Move constructor. */
 	Driver(Driver&&)=default;
 	/** Destructor. */
@@ -87,13 +82,6 @@ public:
 	*/
 	IDGenerator& get_id_generator() noexcept
 		{ return m_id_generator; }
-
-	/**
-		Get Hive collection.
-		@returns The Hive collection.
-	*/
-	hive_vector_type const& get_hives() const noexcept
-		{ return m_hives; }
 /// @}
 
 /** @name Operations */ /// @{
@@ -116,7 +104,6 @@ public:
 
 		@returns The placeheld Hive.
 		@param root Root path.
-		@sa get_hives() const
 	*/
 	Hive& placehold_hive(String root);
 

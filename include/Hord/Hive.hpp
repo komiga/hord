@@ -80,15 +80,16 @@ public:
 				: StorageState::placeholder
 			)
 		@endcode
+		@param id ID.
 		@param root Root path.
 	*/
-	explicit Hive(String root) noexcept
+	explicit Hive(ObjectID id, String root) noexcept
 		: Object{
 			root.empty()
 				? StorageState::null
 				: StorageState::placeholder
 			, OBJECT_NULL
-			, OBJECT_NULL
+			, id
 		}
 		, m_root{std::move(root)}
 	{}
