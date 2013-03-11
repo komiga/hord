@@ -57,7 +57,6 @@ private:
 
 	/**
 		get_type_info() implementation.
-		@returns The object's type info.
 	*/
 	virtual type_info const& get_type_info_impl() const noexcept=0;
 

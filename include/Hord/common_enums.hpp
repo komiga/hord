@@ -71,6 +71,7 @@ enum class ErrorCode : unsigned {
 	serialization_improper_state,
 	/**
 		Cannot access data.
+
 		When object data cannot be accessed.
 	*/
 	serialization_access,
@@ -90,7 +91,7 @@ enum class ObjectType : unsigned {
 	/** Rule. */
 	Rule,
 	/** Node. */
-	Node,
+	Node
 };
 
 /** @} */ // end of doc-group object
@@ -249,34 +250,52 @@ enum class StorageState : unsigned {
 	/**
 		Null/invalid object.
 
-		Object has no identifying information, a state in which neither
-		serialization nor deserialization can be performed.
+		Object has no identifying information, a state in which
+		neither serialization nor deserialization can be performed.
 		@sa OBJECT_NULL
 	*/
 	null,
 	/**
 		Placeholder.
 
-		Object has identifying information, a state in which deserialization
-		can be performed (but not serialization).
+		Object has identifying information, a state in which
+		deserialization can be performed (but not serialization).
+
+		@note An object can have this state when its Metadata and
+		slug properties are deserialized. Most objects only change
+		to @c original when their primary data is deserialized.
 	*/
 	placeholder,
 	/**
 		Matches external storage.
 
-		Specifically, after successful serialization or deserialization.
+		Specifically, after successful serialization or
+		deserialization.
+
+		@note For Hives, this implicitly means that the runtime only
+		has identifying information for all children -- not that all
+		children are fully deserialized. In a typical configuration,
+		children are fully (de)serialized on demand, and always
+		placeheld.
 	*/
 	original,
 	/**
 		Modified.
 
-		Client-side modifications not yet serialized.
+		Runtime-side modifications not yet serialized.
+
+		@note Hives will only have this state when:
+		-# one of its stored properties is modified (metadata or
+		   slug); or
+		-# when a child is added or removed.
+		If a child object is modified, it does not affect the Hive's
+		state.
 	*/
 	modified,
 };
 
-/** @} */ // end of doc-group driver
 /** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group driver
 
 } // namespace Hord
 
