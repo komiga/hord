@@ -36,14 +36,12 @@ private:
 
 		@remark If called from Driver, @a seed_value will be a growing
 		value, based on time.
-		@param seed_value Seed value.
 	*/
 	virtual void seed_impl(int64_t seed_value) noexcept=0;
 	/**
 		generate() implementation.
 
 		@post Return value must not be equal to @c OBJECT_NULL.
-		@returns The generated ID.
 	*/
 	virtual ObjectID generate_impl() noexcept=0;
 
@@ -91,7 +89,7 @@ public:
 	template<typename Set>
 	ObjectID generate_unique(Set const& set) noexcept {
 		ObjectID id;
-		do { id=generate(); } while (set.cend()==set.find(id));
+		do { id=generate(); } while (set.cend()!=set.find(id));
 		return id;
 	}
 /// @}
