@@ -15,7 +15,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./common_enums.hpp"
 #include "./Object.hpp"
 
-// TODO: Rule classes
+// TODO: Standard Rule classes
 
 namespace Hord {
 
@@ -24,7 +24,7 @@ struct RuleState;
 class Rule;
 
 /**
-	@addtogroup node
+	@addtogroup object
 	@{
 */
 /**
@@ -146,7 +146,7 @@ public:
 };
 
 /** @} */ // end of doc-group rule
-/** @} */ // end of doc-group node
+/** @} */ // end of doc-group object
 
 } // namespace Hord
 

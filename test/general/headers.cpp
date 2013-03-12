@@ -69,7 +69,7 @@ void report_error(Hord::Error const& e) {
 	<<'\n'<<std::endl;
 }
 
-Hord::Rule* rule_type_dummy_construct(
+Hord::Rule* dummy_rule_type_construct(
 	Hord::HiveID const,
 	Hord::RuleID const
 ) {
@@ -121,7 +121,7 @@ int main() {
 				Hord::StandardRuleTypes::ReservedLast
 			),
 			0u|static_cast<uint8_t>(Hord::FieldType::Text),
-			rule_type_dummy_construct
+			dummy_rule_type_construct
 		},
 		rti_zero_permitted{
 			1+
@@ -129,7 +129,7 @@ int main() {
 				Hord::StandardRuleTypes::ReservedLast
 			),
 			0u,
-			rule_type_dummy_construct
+			dummy_rule_type_construct
 		},
 		rti_valid{
 			1+
@@ -137,7 +137,7 @@ int main() {
 				Hord::StandardRuleTypes::ReservedLast
 			),
 			0u|static_cast<uint8_t>(Hord::FieldType::Text),
-			rule_type_dummy_construct
+			dummy_rule_type_construct
 		}
 	;
 
@@ -153,7 +153,7 @@ int main() {
 	}
 	try {
 		driver.register_rule_type(rti_valid);
-		std::cout<<"second rule type:"<<std::endl;
+		std::cout<<"second register:"<<std::endl;
 		driver.register_rule_type(rti_valid);
 	} catch (Hord::Error& e) {
 		report_error(e);

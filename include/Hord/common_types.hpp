@@ -19,40 +19,25 @@ namespace Hord {
 	@{
 */
 
-/** Generic object ID. */
+/**
+	Generic object ID.
+
+	@sa HiveID,
+		RuleID,
+		NodeID
+*/
 typedef uint32_t ObjectID;
 
+/**
+	ObjectID constants.
+*/
 enum : ObjectID {
-	/** Null object. */
+	/**
+		Null object.
+	*/
 	OBJECT_NULL=0
 };
 
-/** @} */ // end of doc-group object
-
-/**
-	@addtogroup metadata
-	@{
-*/
-
-/** MetaField type. */
-typedef uint8_t MetaFieldType;
-
-/** @} */ // end of doc-group metadata
-
-/**
-	@addtogroup messaging
-	@{
-*/
-
-/** Message ID. */
-typedef uint32_t MessageID;
-
-/** @} */ // end of doc-group messaging
-
-/**
-	@addtogroup driver
-	@{
-*/
 /**
 	@addtogroup hive
 	@{
@@ -63,11 +48,14 @@ typedef uint32_t MessageID;
 
 	@note This type is only to telegraph intent in functions;
 	it is entirely equivalent to ObjectID.
+
+	@sa ObjectID,
+		RuleID,
+		NodeID
 */
 typedef ObjectID HiveID;
 
 /** @} */ // end of doc-group hive
-/** @} */ // end of doc-group driver
 
 /**
 	@addtogroup node
@@ -79,8 +67,14 @@ typedef ObjectID HiveID;
 
 	@note This type is only to telegraph intent in functions;
 	it is entirely equivalent to ObjectID.
+
+	@sa ObjectID,
+		HiveID,
+		RuleID
 */
 typedef ObjectID NodeID;
+
+/** @} */ // end of doc-group node
 
 /**
 	@addtogroup rule
@@ -92,13 +86,44 @@ typedef ObjectID NodeID;
 
 	@note This type is only to telegraph intent in functions;
 	it is entirely equivalent to ObjectID.
+
+	@sa ObjectID,
+		HiveID,
+		NodeID
 */
 typedef ObjectID RuleID;
-/** Rule type. */
+
+/**
+	Rule type.
+*/
 typedef uint32_t RuleType;
 
 /** @} */ // end of doc-group rule
-/** @} */ // end of doc-group node
+/** @} */ // end of doc-group object
+
+/**
+	@addtogroup metadata
+	@{
+*/
+
+/**
+	MetaField type.
+*/
+typedef uint8_t MetaFieldType;
+
+/** @} */ // end of doc-group metadata
+
+/**
+	@addtogroup messaging
+	@{
+*/
+
+/**
+	Message ID.
+*/
+typedef uint32_t MessageID;
+
+/** @} */ // end of doc-group messaging
 
 } // namespace Hord
 

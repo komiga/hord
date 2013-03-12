@@ -27,7 +27,7 @@ class Object;
 */
 
 /**
-	Object base class.
+	Base object.
 
 	@sa Hive,
 		Rule,

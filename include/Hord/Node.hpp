@@ -24,6 +24,10 @@ namespace Hord {
 class Node;
 
 /**
+	@addtogroup object
+	@{
+*/
+/**
 	@addtogroup node
 	@{
 */
@@ -149,6 +153,7 @@ public:
 };
 
 /** @} */ // end of doc-group node
+/** @} */ // end of doc-group object
 
 } // namespace Hord
 

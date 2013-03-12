@@ -98,7 +98,7 @@ public:
 		be recognized during (de)serialization.
 
 		@throws Error{ErrorCode::driver_rule_type_reserved}
-		If @c type_info.type is reserved by #StandardRuleTypes
+		If @c type_info.type is reserved by StandardRuleTypes
 		(including StandardRuleTypes::None).
 
 		@throws Error{ErrorCode::driver_rule_type_zero_permitted_types}

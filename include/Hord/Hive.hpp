@@ -25,7 +25,7 @@ namespace Hord {
 class Hive;
 
 /**
-	@addtogroup driver
+	@addtogroup object
 	@{
 */
 /**
@@ -161,7 +161,7 @@ public:
 };
 
 /** @} */ // end of doc-group hive
-/** @} */ // end of doc-group driver
+/** @} */ // end of doc-group object
 
 } // namespace Hord
 

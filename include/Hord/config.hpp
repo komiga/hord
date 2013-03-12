@@ -13,6 +13,11 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <cstdint>
 
 /**
+	@addtogroup config
+	@{
+*/
+
+/**
 	Allocator for auxiliary specializations.
 */
 #define HORD_AUX_ALLOCATOR std::allocator
@@ -34,28 +39,39 @@ see @ref index or the accompanying LICENSE file for full text.
 	@code #define HORD_SCOPE_CLASS_IDENT__ ClassName @endcode
 	and
 	@code #undef HORD_SCOPE_CLASS_IDENT__ @endcode
-	around its implementation space. Throwing functions should likewise
-	define and undefine @c HORD_SCOPE_FUNC_IDENT__ within the body.
-	All of these macros require these definitions.
-	@note <Hord/String.hpp> and <Hord/Error.hpp> are required to use these.
+	around its implementation space. Throwing functions should
+	likewise define and undefine @c HORD_SCOPE_FUNC_IDENT__ within
+	the body. All of these macros require these definitions.
+
+	@note <Hord/String.hpp> and <Hord/Error.hpp> are required to use
+	these.
+
+	@note The throw macros encapsulate the final message in
+	#HORD_STR_LIT (that is, @a m__ needn't be #HORD_STR_LIT-ized).
 
 	@remark I quite despise this method, but there is no @c __fqn__.
-	Luckily, a nice a side-effect of this method is that it cuts down on
-	both implementation complexity and dynamic allocation -- both good
-	in my book, even if the cost is paid in 2 gnarly preprocessing directives
-	per throwing function.
+	Luckily, a nice a side-effect of this method is that it cuts down
+	on both implementation complexity and dynamic allocation -- both
+	good in my book, even if the cost is paid in 2 gnarly
+	preprocessing directives per throwing function.
 	@{
 */
 
+#ifdef DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI
 /**
-	@def HORD_SCOPE_CLASS_IDENT__
 	Current class identifier.
+
+	This is defined surrounding class implementations.
 */
+#define HORD_SCOPE_CLASS_IDENT__
 
 /**
-	@def HORD_SCOPE_FUNC_IDENT__
 	Current function identifier.
+
+	This is defined surrounding function implementations.
 */
+#define HORD_SCOPE_FUNC_IDENT__
+#endif
 
 /**
 	Returns the string literal of @c HORD_SCOPE_CLASS_IDENT__.
@@ -111,5 +127,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 namespace Hord {
 } // namespace Hord
+
+/** @} */ // end of doc-group config
 
 #endif // HORD_CONFIG_HPP_

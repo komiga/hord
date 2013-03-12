@@ -45,10 +45,10 @@ enum class ErrorCode : unsigned {
 
 /** @name Runtime object mutation */ /// @{
 	/**
-		Attempted to set Hive root to an empty string after
+		Attempted to set Hive root path to an empty string after
 		construction.
 
-		It is illegal to clear a Hive root after construction.
+		It is illegal to clear a Hive root path after construction.
 	*/
 	mutate_hive_root_empty,
 /// @}
@@ -115,6 +115,9 @@ enum class ErrorCode : unsigned {
 	@{
 */
 
+/**
+	Object type.
+*/
 enum class ObjectType : unsigned {
 	/** Hive. */
 	Hive,
@@ -191,7 +194,7 @@ static_assert(
 /** @} */ // end of doc-group metadata
 
 /**
-	@addtogroup node
+	@addtogroup object
 	@{
 */
 /**
@@ -263,7 +266,7 @@ static_assert(
 );
 
 /** @} */ // end of doc-group rule
-/** @} */ // end of doc-group node
+/** @} */ // end of doc-group object
 
 /**
 	@addtogroup driver
@@ -281,7 +284,7 @@ enum class StorageState : unsigned {
 	/**
 		Null/invalid object.
 
-		Object has no identifying information, a state in which
+		%Object has no identifying information, a state in which
 		neither serialization nor deserialization can be performed.
 		@sa OBJECT_NULL
 	*/
@@ -289,11 +292,11 @@ enum class StorageState : unsigned {
 	/**
 		Placeholder.
 
-		Object has identifying information, a state in which
+		%Object has identifying information, a state in which
 		deserialization can be performed (but not serialization).
 
-		@note An object can have this state when its Metadata and
-		slug properties are deserialized. Most objects only change
+		@note An object can have this state when its metadata
+		property is deserialized. Most objects only change
 		to @c original when their primary data is deserialized.
 	*/
 	placeholder,
@@ -337,17 +340,23 @@ enum class SerializationFlags : unsigned {
 		Include identifying information in operation.
 
 		Identifying information includes Object's owner, ID, and slug
-		properties.
+		properties. The owner and ID properties are the only ones
+		required to deserialize an object.
+	
+		On non-Hive objects, this flag will only (de)serialize the
+		object's slug.
 
 		Post-@c placeholder state, this flag is only significant when
 		serializing a Hive after a child was added or removed.
 		Objects have immutable IDs, so once identifying information
 		has been deserialized, Serializer should never have to deal
 		with it changing.
+
+		@note This flag is implicit.
 	*/
 	identity=1<<0,
 	/**
-		Include Metadata property in operation.
+		Include metadata property in operation.
 	*/
 	metadata=1<<1,
 	/**
@@ -359,7 +368,7 @@ enum class SerializationFlags : unsigned {
 
 		Includes both @c identity and @c metadata.
 
-		@remark This flag is only used when deserializing
+		@remark This flag is only used by Driver when deserializing
 		placeheld objects.
 	*/
 	shallow

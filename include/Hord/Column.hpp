@@ -22,6 +22,10 @@ namespace Hord {
 struct Column;
 
 /**
+	@addtogroup object
+	@{
+*/
+/**
 	@addtogroup node
 	@{
 */
@@ -69,6 +73,7 @@ public:
 
 /** @} */ // end of doc-group column
 /** @} */ // end of doc-group node
+/** @} */ // end of doc-group object
 
 } // namespace Hord
 
