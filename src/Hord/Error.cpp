@@ -11,6 +11,7 @@ static char const
 	s_error_invalid[]=HORD_STR_LIT("INVALID"),
 	* const s_error_names[]{
 		HORD_STR_LIT("unknown"),
+		HORD_STR_LIT("mutate_hive_root_empty"),
 		HORD_STR_LIT("driver_hive_root_empty"),
 		HORD_STR_LIT("driver_hive_root_shared"),
 		HORD_STR_LIT("driver_hive_locked"),
