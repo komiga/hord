@@ -69,6 +69,13 @@ void report_error(Hord::Error const& e) {
 	<<'\n'<<std::endl;
 }
 
+Hord::Rule* rule_type_dummy_construct(
+	Hord::HiveID const,
+	Hord::RuleID const
+) {
+	return nullptr;
+}
+
 int main() {
 	// group driver
 	Hord::Hive hive{};
@@ -113,21 +120,24 @@ int main() {
 			static_cast<Hord::RuleType>(
 				Hord::StandardRuleTypes::ReservedLast
 			),
-			0u|static_cast<uint8_t>(Hord::FieldType::Text)
+			0u|static_cast<uint8_t>(Hord::FieldType::Text),
+			rule_type_dummy_construct
 		},
 		rti_zero_permitted{
 			1+
 			static_cast<Hord::RuleType>(
 				Hord::StandardRuleTypes::ReservedLast
 			),
-			0u
+			0u,
+			rule_type_dummy_construct
 		},
 		rti_valid{
 			1+
 			static_cast<Hord::RuleType>(
 				Hord::StandardRuleTypes::ReservedLast
 			),
-			0u|static_cast<uint8_t>(Hord::FieldType::Text)
+			0u|static_cast<uint8_t>(Hord::FieldType::Text),
+			rule_type_dummy_construct
 		}
 	;
 
@@ -150,6 +160,11 @@ int main() {
 	}
 
 	// Placeholding hives
+	try {
+		driver.placehold_hive(Hord::String{});
+	} catch (Hord::Error& e) {
+		report_error(e);
+	}
 	try {
 		std::cout
 			<<"first hive id: "

@@ -80,6 +80,10 @@ public:
 			@sa FieldType
 		*/
 		uint8_t const permitted_types;
+		/**
+			Construct a Rule of this type.
+		*/
+		Rule* (&construct)(HiveID const owner, RuleID const id);
 	};
 
 private:
