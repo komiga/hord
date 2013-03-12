@@ -15,6 +15,8 @@ Object::type_info const& Node::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
+Node::~Node()=default;
+
 void Node::set_layout_ref(NodeID const node_id) noexcept {
 	m_layout_ref=node_id;
 	if (OBJECT_NULL!=m_layout_ref) {

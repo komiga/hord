@@ -19,6 +19,8 @@ Object::type_info const& Hive::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
+Hive::~Hive()=default;
+
 void Hive::set_root(String root) {
 #define HORD_SCOPE_FUNC_IDENT__ set_root
 	if (root.empty()) {

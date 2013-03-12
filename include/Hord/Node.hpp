@@ -82,7 +82,7 @@ public:
 	/** Move constructor. */
 	Node(Node&&)=default;
 	/** Destructor. */
-	~Node() override=default;
+	~Node() override;
 /// @}
 
 /** @name Operators */ /// @{

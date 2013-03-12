@@ -93,7 +93,7 @@ public:
 	/** Move constructor. */
 	Hive(Hive&&)=default;
 	/** Destructor. */
-	~Hive() override=default;
+	~Hive() override;
 /// @}
 
 /** @name Operators */ /// @{
