@@ -63,8 +63,6 @@ inline RuleState::~RuleState()=default;
 class Rule
 	: public Object {
 public:
-	friend class Driver;
-
 	/**
 		Type info.
 	*/
@@ -109,6 +107,7 @@ public:
 				: StorageState::placeholder
 			)
 		@endcode
+
 		@param owner Owner.
 		@param id ID.
 	*/

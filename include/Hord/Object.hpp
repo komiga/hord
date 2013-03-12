@@ -35,8 +35,6 @@ class Object;
 */
 class Object {
 public:
-	friend class Driver;
-
 	/**
 		Type info.
 	*/

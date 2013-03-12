@@ -39,8 +39,6 @@ class Hive;
 class Hive final
 	: public Object {
 public:
-	friend class Driver;
-
 	/** Object ID set. */
 	typedef aux::unordered_set<ObjectID> id_set_type;
 	/** Object map. */
@@ -77,6 +75,7 @@ public:
 				: StorageState::placeholder
 			)
 		@endcode
+
 		@param id ID.
 		@param root Root path.
 	*/

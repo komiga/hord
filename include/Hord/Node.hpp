@@ -34,7 +34,6 @@ class Node;
 class Node final
 	: public Object {
 public:
-	friend class Driver;
 	/** Column vector. */
 	typedef aux::vector<Column> column_vector_type;
 	/** Record vector. */
@@ -67,6 +66,7 @@ public:
 				: StorageState::placeholder
 			)
 		@endcode
+
 		@param owner Owner.
 		@param id ID.
 	*/
