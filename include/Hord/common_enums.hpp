@@ -103,6 +103,9 @@ enum class ErrorCode : unsigned {
 	*/
 	serialization_access,
 /// @}
+/** @cond INTERNAL */
+	LAST
+/** @endcond */
 };
 
 /** @} */ // end of doc-group error

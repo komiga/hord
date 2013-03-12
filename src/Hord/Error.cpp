@@ -1,4 +1,5 @@
 
+#include <Hord/common_enums.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Error.hpp>
 
@@ -23,6 +24,12 @@ static char const
 	}
 ;
 } // anonymous namespace
+
+static_assert(
+	static_cast<std::size_t>(ErrorCode::LAST)-1
+	!=std::extent<decltype(s_error_names)>::value,
+	"ErrorCode name list is incomplete"
+);
 
 char const* get_error_name(ErrorCode const error_code) noexcept {
 	std::size_t const index=static_cast<std::size_t>(error_code);
