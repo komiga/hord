@@ -13,7 +13,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./config.hpp"
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
-#include "./String.hpp"
 #include "./Object.hpp"
 
 // TODO: Rule classes
@@ -94,7 +93,6 @@ private:
 
 	/**
 		get_rule_type_info() implementation.
-		@returns The rule's type info.
 	*/
 	virtual type_info const& get_rule_type_info_impl() const noexcept=0;
 

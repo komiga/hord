@@ -43,6 +43,16 @@ enum class ErrorCode : unsigned {
 	unknown,
 /// @}
 
+/** @name Runtime object mutation */ /// @{
+	/**
+		Attempted to set Hive root to an empty string after
+		construction.
+
+		It is illegal to clear a Hive root after construction.
+	*/
+	mutate_hive_root_empty,
+/// @}
+
 /** @name Driver */ /// @{
 	/**
 		Attempted to placehold a Hive with an empty root path.

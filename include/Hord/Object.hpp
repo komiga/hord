@@ -28,6 +28,10 @@ class Object;
 
 /**
 	Object base class.
+
+	@sa Hive,
+		Rule,
+		Node
 */
 class Object {
 public:
@@ -103,7 +107,7 @@ protected:
 	Object(Object&&)=default;
 public:
 	/** Destructor. */
-	inline virtual ~Object()=0;
+	virtual ~Object()=0;
 
 protected:
 /// @}
@@ -123,12 +127,26 @@ public:
 		{ return get_type_info_impl(); }
 
 	/**
+		Set storage state.
+		@param storage_state New state.
+	*/
+	void set_storage_state(
+		StorageState const storage_state
+	) noexcept
+		{ m_storage_state=storage_state; }
+	/**
 		Get storage state.
 		@returns Current storage state.
 	*/
 	StorageState get_storage_state() const noexcept
 		{ return m_storage_state; }
 
+	/**
+		Set owner.
+		@param owner New owner.
+	*/
+	void set_owner(ObjectID const owner) noexcept
+		{ m_owner=owner; }
 	/**
 		Get owner.
 		@returns Current owner.
@@ -137,12 +155,25 @@ public:
 		{ return m_owner; }
 
 	/**
+		Set ID.
+		@param id New ID.
+	*/
+	void set_id(ObjectID const id) noexcept
+		{ m_id=id; }
+	/**
 		Get ID.
 		@returns Current ID.
 	*/
 	ObjectID get_id() const noexcept
 		{ return m_id; }
 
+	/**
+		Set slug.
+
+		@warning This property is truncated to 64 code units.
+		@param slug New slug.
+	*/
+	void set_slug(String slug) noexcept;
 	/**
 		Get slug.
 		@returns Current slug.
@@ -156,9 +187,13 @@ public:
 	*/
 	Metadata const& get_metadata() const noexcept
 		{ return m_metadata; }
+	/**
+		Get mutable metadata.
+		@returns Mutable metadata.
+	*/
+	Metadata& get_metadata() noexcept;
 /// @}
 };
-inline Object::~Object()=default;
 
 /** @} */ // end of doc-group object
 

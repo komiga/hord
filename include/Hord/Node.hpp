@@ -14,8 +14,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
 #include "./aux.hpp"
-#include "./String.hpp"
-#include "./Metadata.hpp"
 #include "./Object.hpp"
 #include "./Record.hpp"
 #include "./Column.hpp"
@@ -90,6 +88,63 @@ public:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Node& operator=(Node&&)=default;
+/// @}
+
+/** @name Properties */ /// @{
+	/**
+		Set layout reference.
+
+		@note If @a node_id is non-@c OBJECT_NULL, the layout property
+		will be cleared.
+		@param node_id New layout reference.
+	*/
+	void set_layout_ref(NodeID const node_id) noexcept;
+	/**
+		Get layout reference.
+		@returns Current layout reference.
+	*/
+	ObjectID get_layout_ref() const noexcept
+		{ return m_layout_ref; }
+
+	// TODO: Notes for when layout_ref is non-OBJECT_NULL
+	/**
+		Get layout.
+		@returns Current layout.
+	*/
+	column_vector_type const& get_layout() const noexcept
+		{ return m_layout; }
+	/**
+		Get mutable layout.
+		@returns Mutable layout.
+	*/
+	column_vector_type& get_layout() noexcept
+		{ return m_layout; }
+
+	/**
+		Get record collection.
+		@returns Current record collection.
+	*/
+	record_vector_type const& get_records() const noexcept
+		{ return m_records; }
+	/**
+		Get mutable record collection.
+		@returns Mutable record collection.
+	*/
+	record_vector_type& get_records() noexcept
+		{ return m_records; }
+
+	/**
+		Get child collection.
+		@returns Current child collection.
+	*/
+	child_vector_type const& get_children() const noexcept
+		{ return m_children; }
+	/**
+		Get mutable child collection.
+		@returns Mutable child collection.
+	*/
+	child_vector_type& get_children() noexcept
+		{ return m_children; }
 /// @}
 };
 

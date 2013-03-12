@@ -9,10 +9,10 @@
 #include <Hord/MessageBuffer.hpp>
 //#include <Hord/Metadata.hpp>
 //#include <Hord/Record.hpp>
-//#include <Hord/Rule.hpp>
+#include <Hord/Rule.hpp>
 //#include <Hord/Column.hpp>
-//#include <Hord/Node.hpp>
-//#include <Hord/Hive.hpp>
+#include <Hord/Node.hpp>
+#include <Hord/Hive.hpp>
 //#include <Hord/IDGenerator.hpp>
 //#include <Hord/Serializer.hpp>
 #include <Hord/Driver.hpp>

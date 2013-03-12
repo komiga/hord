@@ -15,12 +15,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./common_enums.hpp"
 #include "./aux.hpp"
 #include "./String.hpp"
-#include "./Metadata.hpp"
 #include "./Object.hpp"
-#include "./Rule.hpp"
-#include "./Node.hpp"
 
-#include <utility>
 #include <memory>
 
 namespace Hord {
@@ -38,20 +34,21 @@ class Hive;
 */
 
 /**
-	Top-level container.
+	Top-level Object container.
 */
 class Hive final
 	: public Object {
 public:
 	friend class Driver;
+
+	/** Object ID set. */
+	typedef aux::unordered_set<ObjectID> id_set_type;
 	/** Object map. */
 	typedef aux::unordered_map<
 		ObjectID, std::unique_ptr<Object>
 	> object_map_type;
 
 private:
-	typedef aux::unordered_set<ObjectID> id_set_type;
-
 	String m_root{};
 	id_set_type m_idset{};
 	object_map_type m_objects{};
@@ -106,17 +103,46 @@ public:
 
 /** @name Properties */ /// @{
 	/**
-		Get root.
-		@returns Current root.
+		Set root path.
+
+		@throws Error{ErrorCode::mutate_hive_root_empty}
+		If @a root is empty. It is illegal to clear the root path
+		after a Hive has been constructed.
+
+		@param root New root path.
+	*/
+	void set_root(String root);
+	/**
+		Get root path.
+		@returns Current root path.
 	*/
 	String const& get_root() const noexcept
 		{ return m_root; }
+
+	/**
+		Get ID set.
+		@returns Current ID set.
+	*/
+	id_set_type const& get_idset() const noexcept
+		{ return m_idset; }
+	/**
+		Get mutable ID set.
+		@returns Mutable ID set.
+	*/
+	id_set_type& get_idset() noexcept
+		{ return m_idset; }
 
 	/**
 		Get object map.
 		@returns Current object map.
 	*/
 	object_map_type const& get_objects() const noexcept
+		{ return m_objects; }
+	/**
+		Get mutable object map.
+		@returns Mutable object map.
+	*/
+	object_map_type& get_objects() noexcept
 		{ return m_objects; }
 /// @}
 
@@ -131,8 +157,7 @@ public:
 	*/
 	bool has_child(
 		ObjectID const id
-	) const noexcept(noexcept(m_idset.find(id)))
-		{ return m_idset.cend()!=m_idset.find(id); }
+	) const noexcept(noexcept(m_idset.find(id)));
 /// @}
 };
 
