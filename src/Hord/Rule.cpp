@@ -3,6 +3,10 @@
 
 namespace Hord {
 
+// class RuleState implementation
+
+RuleState::~RuleState()=default;
+
 // class Rule implementation
 
 namespace {

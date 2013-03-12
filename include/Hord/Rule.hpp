@@ -47,7 +47,7 @@ public:
 	/** Move constructor. */
 	RuleState(RuleState&&)=default;
 	/** Destructor. */
-	inline virtual ~RuleState()=0;
+	virtual ~RuleState()=0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -55,7 +55,6 @@ public:
 	RuleState& operator=(RuleState&&)=default;
 /// @}
 };
-inline RuleState::~RuleState()=default;
 
 /**
 	Base rule.
