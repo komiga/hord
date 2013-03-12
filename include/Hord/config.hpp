@@ -104,21 +104,35 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with class scope.
 
-	@note The final message is encapsulated in #HORD_STR_LIT
-	(that is, @a m__ needn't be #HORD_STR_LIT-ized).
-	@param e__ #ErrorCode.
+	@param e__ ErrorCode.
 	@param m__ Message.
-	@sa HORD_THROW_ERROR_SCOPED_FQN
+
+	@sa HORD_THROW_ERROR_SCOPED_FUNC,
+		HORD_THROW_ERROR_SCOPED_FQN
 */
-#define HORD_THROW_ERROR_SCOPED(e__, m__) \
+#define HORD_THROW_ERROR_SCOPED_CLASS(e__, m__) \
 	HORD_THROW_ERROR_SCOPED_IMPL__(HORD_SCOPE_CLASS, e__, m__)
+
+/**
+	Throw error with function scope.
+
+	@param e__ ErrorCode.
+	@param m__ Message.
+
+	@sa HORD_THROW_ERROR_SCOPED_CLASS,
+		HORD_THROW_ERROR_SCOPED_FQN
+*/
+#define HORD_THROW_ERROR_SCOPED_FUNC(e__, m__) \
+	HORD_THROW_ERROR_SCOPED_IMPL__(HORD_SCOPE_FUNC, e__, m__)
 
 /**
 	Throw error with fully-qualified scope.
 
-	@param e__ #ErrorCode.
+	@param e__ ErrorCode.
 	@param m__ Message.
-	@sa HORD_THROW_ERROR_SCOPED
+
+	@sa HORD_THROW_ERROR_SCOPED_CLASS,
+		HORD_THROW_ERROR_SCOPED_FUNC
 */
 #define HORD_THROW_ERROR_SCOPED_FQN(e__, m__) \
 	HORD_THROW_ERROR_SCOPED_IMPL__(HORD_SCOPE_FQN, e__, m__)
