@@ -77,12 +77,12 @@ see @ref index or the accompanying LICENSE file for full text.
 
 /** @cond INTERNAL */
 #define HORD_THROW_ERROR_SCOPED_IMPL__(s__, e__, m__) \
-	throw ::Hord::Error{				\
+	throw std::move(::Hord::Error{		\
 		e__,							\
 		::Hord::String{HORD_STR_LIT(	\
 			s__ ": " m__				\
 		)}								\
-	}
+	})
 /** @endcond */
 
 /**
