@@ -12,6 +12,9 @@ static char const
 	* const s_error_names[]{
 		HORD_STR_LIT("unknown"),
 		HORD_STR_LIT("mutate_hive_root_empty"),
+		HORD_STR_LIT("driver_rule_type_reserved"),
+		HORD_STR_LIT("driver_rule_type_zero_permitted_types"),
+		HORD_STR_LIT("driver_rule_type_shared"),
 		HORD_STR_LIT("driver_hive_root_empty"),
 		HORD_STR_LIT("driver_hive_root_shared"),
 		HORD_STR_LIT("driver_hive_locked"),

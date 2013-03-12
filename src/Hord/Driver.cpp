@@ -1,4 +1,5 @@
 
+#include <Hord/common_enums.hpp>
 #include <Hord/Error.hpp>
 #include <Hord/Driver.hpp>
 
@@ -23,6 +24,38 @@ Driver::Driver(Serializer& serializer, IDGenerator& id_generator) noexcept
 			tp.time_since_epoch()
 		).count()
 	);
+	// TODO: Register standard rule types.
+}
+
+Driver::~Driver()=default;
+
+void Driver::register_rule_type(Rule::type_info const& type_info) {
+#define HORD_SCOPE_FUNC_IDENT__ register_rule_type
+	if (
+		static_cast<RuleType>(StandardRuleTypes::ReservedLast)
+		>=type_info.type
+	) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::driver_rule_type_reserved,
+			"type is within range reserved for standard rules"
+		);
+	} else if (0u==type_info.permitted_types) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::driver_rule_type_zero_permitted_types,
+			"permitted_types property must be a nonzero combination"
+			" of FieldTypes"
+		);
+	} else if (m_rule_types.cend()!=m_rule_types.find(type_info.type)) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::driver_rule_type_shared,
+			"type has already been registered"
+		);
+	}
+	m_rule_types.insert(std::move(std::make_pair(
+		type_info.type,
+		type_info
+	)));
+#undef HORD_SCOPE_FUNC_IDENT__
 }
 
 Hive& Driver::placehold_hive(String root) {

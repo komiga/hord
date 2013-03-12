@@ -17,6 +17,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./IDGenerator.hpp"
 #include "./Serializer.hpp"
 #include "./Hive.hpp"
+#include "./Rule.hpp"
 
 namespace Hord {
 
@@ -34,10 +35,15 @@ class Driver;
 class Driver final {
 private:
 	typedef aux::unordered_map<HiveID, Hive> hive_map_type;
+	typedef aux::unordered_map<
+		RuleType,
+		Rule::type_info const&
+	> rule_type_map_type;
 	typedef aux::vector<HiveID> id_vector_type;
 
 	Serializer& m_serializer;
 	IDGenerator& m_id_generator;
+	rule_type_map_type m_rule_types{};
 	hive_map_type m_hives{};
 	id_vector_type m_hive_order{};
 
@@ -60,7 +66,7 @@ public:
 	/** Move constructor. */
 	Driver(Driver&&)=default;
 	/** Destructor. */
-	~Driver()=default;
+	~Driver();
 /// @}
 
 /** @name Operators */ /// @{
@@ -86,7 +92,29 @@ public:
 
 /** @name Operations */ /// @{
 	/**
+		Register Rule type information.
+
+		@remark %Client-defined rules must be registered for them to
+		be recognized during (de)serialization.
+
+		@throws Error{ErrorCode::driver_rule_type_reserved}
+		If @c type_info.type is reserved by #StandardRuleTypes
+		(including StandardRuleTypes::None).
+
+		@throws Error{ErrorCode::driver_rule_type_zero_permitted_types}
+		If @c type_info.permitted_types is @c 0.
+
+		@throws Error{ErrorCode::driver_rule_type_shared}
+		If a rule type @c type_info.type has already been registered.
+
+		@param type_info Rule type information to register.
+	*/
+	void register_rule_type(Rule::type_info const& type_info);
+
+	/**
 		Placehold Hive.
+
+		@remark Hives are ordered in placehold order.
 
 		@warning @c ErrorCode::driver_hive_root_shared is only caused
 		by string comparison. It is possible for multiple placeheld
@@ -100,7 +128,8 @@ public:
 		@throws Error{ErrorCode::driver_hive_root_shared}
 		If a Hive with root path @a root has already been placeheld.
 
-		@post Emplaced Hive with @a root and @c StorageState::placeholder.
+		@post Emplaced Hive with @a root
+		and @c StorageState::placeholder.
 
 		@returns The placeheld Hive.
 		@param root Root path.

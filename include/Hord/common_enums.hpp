@@ -55,6 +55,22 @@ enum class ErrorCode : unsigned {
 
 /** @name Driver */ /// @{
 	/**
+		Attempted to register a rule type that is reserved for
+		standard rules.
+	*/
+	driver_rule_type_reserved,
+	/**
+		Attempted to register a rule with permitted_types property
+		equal to @c 0.
+	*/
+	driver_rule_type_zero_permitted_types,
+	/**
+		Attempted to register a rule type that has already been
+		registered.
+	*/
+	driver_rule_type_shared,
+
+	/**
 		Attempted to placehold a Hive with an empty root path.
 	*/
 	driver_hive_root_empty,
@@ -142,7 +158,8 @@ enum class FieldType : uint8_t {
 	types (@c 0x00 is invalid). Custom serialization may specify
 	further types, and a serializer should ignore types it does
 	not recognize.
-	@sa MetaField, Metadata
+	@sa MetaField,
+		Metadata
 */
 enum class StandardMetaFieldTypes : MetaFieldType {
 	/** StringMetaField. */

@@ -62,6 +62,13 @@ private:
 	}
 };
 
+void report_error(Hord::Error const& e) {
+	std::cerr
+		<<'['<<Hord::get_error_name(e.error_code())<<']'
+		<<'\n'<<e.what_str()
+	<<'\n'<<std::endl;
+}
+
 int main() {
 	// group driver
 	Hord::Hive hive{};
@@ -100,17 +107,57 @@ int main() {
 	Hord::Column column{};
 	Hord::Node node{hive.get_id(), Hord::NodeID{42}};
 
+	// Registering rule types
+	Hord::Rule::type_info const
+		rti_standard{
+			static_cast<Hord::RuleType>(
+				Hord::StandardRuleTypes::ReservedLast
+			),
+			0u|static_cast<uint8_t>(Hord::FieldType::Text)
+		},
+		rti_zero_permitted{
+			1+
+			static_cast<Hord::RuleType>(
+				Hord::StandardRuleTypes::ReservedLast
+			),
+			0u
+		},
+		rti_valid{
+			1+
+			static_cast<Hord::RuleType>(
+				Hord::StandardRuleTypes::ReservedLast
+			),
+			0u|static_cast<uint8_t>(Hord::FieldType::Text)
+		}
+	;
+
+	try {
+		driver.register_rule_type(rti_standard);
+	} catch (Hord::Error& e) {
+		report_error(e);
+	}
+	try {
+		driver.register_rule_type(rti_zero_permitted);
+	} catch (Hord::Error& e) {
+		report_error(e);
+	}
+	try {
+		driver.register_rule_type(rti_valid);
+		std::cout<<"second rule type:"<<std::endl;
+		driver.register_rule_type(rti_valid);
+	} catch (Hord::Error& e) {
+		report_error(e);
+	}
+
+	// Placeholding hives
 	try {
 		std::cout
-			<<"id: "
+			<<"first hive id: "
 			<<std::hex<<driver.placehold_hive("./bork").get_id()
 		<<std::endl;
 		driver.placehold_hive("./bork");
 	} catch (Hord::Error& e) {
-		std::cerr
-			<<Hord::get_error_name(e.error_code())
-			<<": "<<e.what_str()
-		<<std::endl;
+		report_error(e);
 	}
 	return 0;
 }
