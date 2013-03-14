@@ -97,7 +97,7 @@ private:
 	*/
 	virtual type_info const& get_rule_type_info_impl() const noexcept=0;
 
-public:
+protected:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with owner and ID.
@@ -114,7 +114,7 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Rule(HiveID owner, RuleID id) noexcept
+	Rule(HiveID const owner, RuleID const id) noexcept
 		: Object{
 			(OBJECT_NULL==id)
 				? StorageState::null
@@ -125,15 +125,18 @@ public:
 	{}
 	/** Move constructor. */
 	Rule(Rule&&)=default;
+public:
 	/** Destructor. */
 	virtual ~Rule() override=0;
 /// @}
 
+protected:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Rule& operator=(Rule&&)=default;
 /// @}
 
+public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.

@@ -83,9 +83,9 @@ protected:
 		@param id Object ID.
 	*/
 	Object(
-		StorageState storage_state,
-		ObjectID owner,
-		ObjectID id
+		StorageState const storage_state,
+		ObjectID const owner,
+		ObjectID const id
 	) noexcept
 		: m_storage_state{storage_state}
 		, m_owner{owner}
@@ -97,7 +97,7 @@ protected:
 		@param owner Owner ID.
 		@param id Object ID.
 	*/
-	Object(ObjectID owner, ObjectID id) noexcept
+	Object(ObjectID const owner, ObjectID const id) noexcept
 		: m_owner{owner}
 		, m_id{id}
 	{}
@@ -106,10 +106,9 @@ protected:
 public:
 	/** Destructor. */
 	virtual ~Object()=0;
-
-protected:
 /// @}
 
+protected:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Object& operator=(Object&&)=default;

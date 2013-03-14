@@ -79,7 +79,7 @@ public:
 		@param id ID.
 		@param root Root path.
 	*/
-	explicit Hive(ObjectID id, String root) noexcept
+	explicit Hive(ObjectID const id, String root) noexcept
 		: Object{
 			root.empty()
 				? StorageState::null

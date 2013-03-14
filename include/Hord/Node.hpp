@@ -74,7 +74,7 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Node(HiveID owner, NodeID id) noexcept
+	Node(HiveID const owner, NodeID const id) noexcept
 		: Object{
 			(OBJECT_NULL==id)
 				? StorageState::null
