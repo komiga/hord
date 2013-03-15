@@ -124,6 +124,13 @@ public:
 		{ return get_type_info_impl(); }
 
 	/**
+		Get type.
+		@returns Type.
+	*/
+	ObjectType get_type() const noexcept
+		{ return get_type_info().type; }
+
+	/**
 		Set storage state.
 		@param storage_state New state.
 	*/
