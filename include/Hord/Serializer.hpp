@@ -21,10 +21,6 @@ namespace Hord {
 class Serializer;
 
 /**
-	@addtogroup driver
-	@{
-*/
-/**
 	@addtogroup serialization
 	@{
 */
@@ -37,6 +33,8 @@ private:
 	Serializer(Serializer const&)=delete;
 	Serializer& operator=(Serializer const&)=delete;
 
+protected:
+/** @name Implementation */ /// @{
 	/**
 		deserialize_object() implementation.
 	*/
@@ -51,6 +49,7 @@ private:
 		Object const& object,
 		SerializationFlags flags
 	)=0;
+/// @}
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -108,7 +107,6 @@ public:
 inline Serializer::~Serializer()=default;
 
 /** @} */ // end of doc-group serialization
-/** @} */ // end of doc-group driver
 
 } // namespace Hord
 

@@ -40,7 +40,7 @@ public:
 	*/
 	struct type_info final {
 		/**
-			Object type.
+			%Object type.
 
 			@sa ObjectType
 		*/
@@ -57,10 +57,13 @@ private:
 	Object(Object const&)=delete;
 	Object& operator=(Object const&)=delete;
 
+protected:
+/** @name Implementation */ /// @{
 	/**
 		get_type_info() implementation.
 	*/
 	virtual type_info const& get_type_info_impl() const noexcept=0;
+/// @}
 
 protected:
 /** @name Constructors and destructor */ /// @{
@@ -80,7 +83,7 @@ protected:
 
 		@param storage_state Storage state.
 		@param owner Owner ID.
-		@param id Object ID.
+		@param id %Object ID.
 	*/
 	Object(
 		StorageState const storage_state,
@@ -95,7 +98,7 @@ protected:
 		Constructor with owner and id.
 
 		@param owner Owner ID.
-		@param id Object ID.
+		@param id %Object ID.
 	*/
 	Object(ObjectID const owner, ObjectID const id) noexcept
 		: m_owner{owner}

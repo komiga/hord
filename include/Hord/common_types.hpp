@@ -120,6 +120,7 @@ typedef uint8_t MetaFieldType;
 
 /**
 	Message ID.
+	@sa MessageBuffer
 */
 typedef uint32_t MessageID;
 

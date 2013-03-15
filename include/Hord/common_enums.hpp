@@ -32,7 +32,7 @@ enum class SerializationFlags : unsigned;
 // FIXME: Doxygen borks all over itself
 // when name-groups are used inside enums.
 /**
-	Error codes.
+	%Error codes.
 	@sa Error
 */
 enum class ErrorCode : unsigned {
@@ -45,10 +45,10 @@ enum class ErrorCode : unsigned {
 
 /** @name Runtime object mutation */ /// @{
 	/**
-		Attempted to set Hive root path to an empty string after
+		Attempted to set hive root path to an empty string after
 		construction.
 
-		It is illegal to clear a Hive root path after construction.
+		It is illegal to clear a hive root path after construction.
 	*/
 	mutate_hive_root_empty,
 /// @}
@@ -71,29 +71,29 @@ enum class ErrorCode : unsigned {
 	driver_rule_type_shared,
 
 	/**
-		Attempted to placehold a Hive with an empty root path.
+		Attempted to placehold a hive with an empty root path.
 	*/
 	driver_hive_root_empty,
 	/**
-		Attempted to placehold a Hive with a root path that is
-		shared with another placeheld Hive.
+		Attempted to placehold a hive with a root path that is
+		shared with another placeheld hive.
 	*/
 	driver_hive_root_shared,
 	/**
-		Attempted to access Hive that is locked.
+		Attempted to access hive that is locked.
 	*/
 	driver_hive_locked,
 /// @}
 
 /** @name Serialization */ /// @{
 	/**
-		Object is not in proper state.
+		%Object is not in proper state.
 
 		- When deserializing, this is due to any state other
 		  than @c StorageState::placeholder.
 		- When serializing, this is due to any state other
 		  than @c StorageState::modified (will not be thrown
-		  if the serialization was triggered on a Hive).
+		  if the serialization was triggered on a hive).
 	*/
 	serialization_improper_state,
 	/**
@@ -116,14 +116,14 @@ enum class ErrorCode : unsigned {
 */
 
 /**
-	Object type.
+	@ref object type.
 */
 enum class ObjectType : unsigned {
-	/** Hive. */
+	/** @ref hive. */
 	Hive,
-	/** Rule. */
+	/** @ref rule. */
 	Rule,
-	/** Node. */
+	/** @ref node. */
 	Node
 };
 
@@ -203,7 +203,7 @@ static_assert(
 */
 
 /**
-	Standard Rule types.
+	Standard rule types.
 
 	@note Values in @c [0,8] are reserved for standard
 	types (@c 0 is invalid). Userspace may specify further
@@ -215,7 +215,7 @@ enum class StandardRuleTypes : RuleType {
 		Special non-type.
 
 		@note This type defines the <em>lack</em> of rule/structure.
-		Rules cannot be registered with this type.
+		%Rules cannot be registered with this type.
 	*/
 	None=0,
 	/**
@@ -269,16 +269,12 @@ static_assert(
 /** @} */ // end of doc-group object
 
 /**
-	@addtogroup driver
-	@{
-*/
-/**
 	@addtogroup serialization
 	@{
 */
 
 /**
-	Object storage state.
+	@ref object storage state.
 */
 enum class StorageState : unsigned {
 	/**
@@ -306,7 +302,7 @@ enum class StorageState : unsigned {
 		Specifically, after successful serialization or
 		deserialization.
 
-		@note For Hives, this implicitly means that the runtime only
+		@note For hives, this implicitly means that the runtime only
 		has identifying information for all children -- not that all
 		children are fully deserialized. In a typical configuration,
 		children are fully (de)serialized on demand, and always
@@ -318,11 +314,11 @@ enum class StorageState : unsigned {
 
 		Runtime-side modifications not yet serialized.
 
-		@note Hives will only have this state when:
+		@note %Hives will only have this state when:
 		-# one of its stored properties is modified (metadata or
 		   slug); or
 		-# when a child is added or removed.
-		If a child object is modified, it does not affect the Hive's
+		If a child object is modified, it does not affect the hive's
 		state.
 	*/
 	modified,
@@ -342,13 +338,14 @@ enum class SerializationFlags : unsigned {
 		Identifying information includes Object's owner, ID, and slug
 		properties. The owner and ID properties are the only ones
 		required to deserialize an object.
-	
-		On non-Hive objects, this flag will only (de)serialize the
-		object's slug.
+
+		On non-hive objects, this flag will only (de)serialize the
+		object's slug (the object's actual ID is supplied by the
+		hive's primary data).
 
 		Post-@c placeholder state, this flag is only significant when
-		serializing a Hive after a child was added or removed.
-		Objects have immutable IDs, so once identifying information
+		serializing a hive after a child was added or removed.
+		%Objects have immutable IDs, so once identifying information
 		has been deserialized, Serializer should never have to deal
 		with it changing.
 
@@ -361,6 +358,9 @@ enum class SerializationFlags : unsigned {
 	metadata=1<<1,
 	/**
 		Include primary data in operation.
+
+		%Hives' primary data is its idset property. A child will only
+		be placeheld when its owner's primary data is deserialized.
 	*/
 	primary=1<<2,
 	/**
@@ -368,8 +368,8 @@ enum class SerializationFlags : unsigned {
 
 		Includes both @c identity and @c metadata.
 
-		@remark This flag is only used by Driver when deserializing
-		placeheld objects.
+		@remark This flag is only used by the driver when
+		deserializing placeheld objects.
 	*/
 	shallow
 		=identity
@@ -386,7 +386,6 @@ enum class SerializationFlags : unsigned {
 };
 
 /** @} */ // end of doc-group serialization
-/** @} */ // end of doc-group driver
 
 } // namespace Hord
 

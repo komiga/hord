@@ -57,11 +57,13 @@ private:
 	MetaField(MetaField const&)=delete;
 	MetaField& operator=(MetaField const&)=delete;
 
+protected:
+/** @name Implementation */ /// @{
 	/**
 		get_type_info() implementation.
-		@returns The field's type info.
 	*/
 	virtual type_info const& get_type_info_impl() const noexcept=0;
+/// @}
 
 public:
 /** @name Constructors and destructor */ /// @{

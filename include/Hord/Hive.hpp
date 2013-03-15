@@ -106,7 +106,7 @@ public:
 
 		@throws Error{ErrorCode::mutate_hive_root_empty}
 		If @a root is empty. It is illegal to clear the root path
-		after a Hive has been constructed.
+		after a hive has been constructed.
 
 		@param root New root path.
 	*/
@@ -147,12 +147,12 @@ public:
 
 /** @name Objects */ /// @{
 	/**
-		Check if a child Object exists with the given @a id.
+		Check if a child object exists with the given @a id.
 
 		@returns
 		- @c true if @a id is in the hive, or
 		- @c false if it is not.
-		@param id Object ID to look for.
+		@param id %Object ID to look for.
 	*/
 	bool has_child(
 		ObjectID const id

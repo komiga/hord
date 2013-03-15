@@ -31,6 +31,8 @@ private:
 	IDGenerator(IDGenerator const&)=delete;
 	IDGenerator& operator=(IDGenerator const&)=delete;
 
+protected:
+/** @name Implementation */ /// @{
 	/**
 		seed() implementation.
 
@@ -44,6 +46,7 @@ private:
 		@post Return value must not be equal to @c OBJECT_NULL.
 	*/
 	virtual ObjectID generate_impl() noexcept=0;
+/// @}
 
 public:
 /** @name Constructors and destructor */ /// @{

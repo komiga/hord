@@ -67,7 +67,7 @@ public:
 	*/
 	struct type_info final {
 		/**
-			Rule type.
+			%Rule type.
 
 			@sa StandardRuleTypes
 		*/
@@ -79,8 +79,9 @@ public:
 			@sa FieldType
 		*/
 		uint8_t const permitted_types;
+		// TODO: Documentation on construct()
 		/**
-			Construct a Rule of this type.
+			Construct a rule of this type.
 		*/
 		Rule* (&construct)(HiveID const owner, RuleID const id);
 	};
@@ -92,10 +93,13 @@ private:
 
 	Object::type_info const& get_type_info_impl() const noexcept override;
 
+protected:
+/** @name Implementation */ /// @{
 	/**
 		get_rule_type_info() implementation.
 	*/
 	virtual type_info const& get_rule_type_info_impl() const noexcept=0;
+/// @}
 
 protected:
 /** @name Constructors and destructor */ /// @{
