@@ -36,7 +36,7 @@ protected:
 	/**
 		seed() implementation.
 
-		@remark If called from Driver, @a seed_value will be a growing
+		@remarks If called from Driver, @a seed_value will be a growing
 		value, based on time.
 	*/
 	virtual void seed_impl(int64_t seed_value) noexcept=0;

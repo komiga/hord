@@ -94,7 +94,7 @@ public:
 	/**
 		Register Rule type information.
 
-		@remark %Client-defined rules must be registered for them to
+		@remarks %Client-defined rules must be registered for them to
 		be recognized during (de)serialization.
 
 		@throws Error{ErrorCode::driver_rule_type_reserved}
@@ -114,7 +114,7 @@ public:
 	/**
 		Placehold Hive.
 
-		@remark Hives are ordered in placehold order.
+		@remarks Hives are ordered in placehold order.
 
 		@warning @c ErrorCode::driver_hive_root_shared is only caused
 		by string comparison. It is possible for multiple placeheld

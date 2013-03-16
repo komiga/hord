@@ -368,7 +368,7 @@ enum class SerializationFlags : unsigned {
 
 		Includes both @c identity and @c metadata.
 
-		@remark This flag is only used by the driver when
+		@remarks This flag is only used by the driver when
 		deserializing placeheld objects.
 	*/
 	shallow

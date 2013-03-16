@@ -49,7 +49,7 @@ see @ref index or the accompanying LICENSE file for full text.
 	@note The throw macros encapsulate the final message in
 	#HORD_STR_LIT (that is, @a m__ needn't be #HORD_STR_LIT-ized).
 
-	@remark I quite despise this method, but there is no @c __fqn__.
+	@remarks I quite despise this method, but there is no @c __fqn__.
 	Luckily, a nice a side-effect of this method is that it cuts down
 	on both implementation complexity and dynamic allocation -- both
 	good in my book, even if the cost is paid in 2 gnarly
