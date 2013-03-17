@@ -44,7 +44,7 @@ public:
 	/**
 		Message header.
 	*/
-	struct msg_header {
+	struct msg_header final {
 		MessageID id; /**< Message ID. */
 		uint32_t size; /**< Message size. */
 	};
@@ -65,20 +65,16 @@ public:
 
 		@param capacity Buffer capacity. Consider space used by headers.
 	*/
-	MessageBuffer(std::size_t const capacity)
-		: m_buffer{}
-	{
-		m_buffer.reserve(capacity);
-	}
+	MessageBuffer(std::size_t const capacity);
 	/** Move constructor. */
-	MessageBuffer(MessageBuffer&&)=default;
+	MessageBuffer(MessageBuffer&&);
 	/** Destructor. */
-	~MessageBuffer()=default;
+	~MessageBuffer() noexcept;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	MessageBuffer& operator=(MessageBuffer&&)=default;
+	MessageBuffer& operator=(MessageBuffer&&);
 /// @}
 
 /** @name Properties */ /// @{

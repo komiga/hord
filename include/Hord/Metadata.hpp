@@ -21,11 +21,11 @@ see @ref index or the accompanying LICENSE file for full text.
 namespace Hord {
 
 // Forward declarations
-struct MetaField;
-struct StringMetaField;
-struct Int32MetaField;
-struct Int64MetaField;
-struct BoolMetaField;
+class MetaField;
+class StringMetaField;
+class Int32MetaField;
+class Int64MetaField;
+class BoolMetaField;
 struct Metadata;
 
 /**
@@ -36,7 +36,7 @@ struct Metadata;
 /**
 	Base Metadata field.
 */
-struct MetaField {
+class MetaField {
 public:
 	/**
 		Type info.
@@ -46,12 +46,14 @@ public:
 		MetaFieldType const type;
 	};
 
+/** @name Properties */ /// @{
 	/**
 		Name.
 		@warning This field will be truncated to 255 code units
 		when serializing.
 	*/
 	String name{};
+/// @}
 
 private:
 	MetaField(MetaField const&)=delete;
@@ -68,7 +70,7 @@ protected:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	MetaField()=default;
+	MetaField();
 	/**
 		Constructor with name.
 		@param name Name.
@@ -77,14 +79,14 @@ public:
 		: name{std::move(name)}
 	{}
 	/** Move constructor. */
-	MetaField(MetaField&&)=default;
+	MetaField(MetaField&&);
 	/** Destructor. */
-	virtual ~MetaField()=0;
+	virtual ~MetaField() noexcept=0;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	MetaField& operator=(MetaField&&)=default;
+	MetaField& operator=(MetaField&&);
 /// @}
 
 /** @name Properties */ /// @{
@@ -100,11 +102,13 @@ public:
 /**
 	String MetaField.
 */
-struct StringMetaField final
+class StringMetaField final
 	: public MetaField {
 public:
+/** @name Properties */ /// @{
 	/** Value. */
 	String value{};
+/// @}
 
 private:
 	StringMetaField(StringMetaField const&)=delete;
@@ -115,7 +119,7 @@ private:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	StringMetaField()=default;
+	StringMetaField();
 	/**
 		Constructor with name and value.
 		@param name Name.
@@ -126,25 +130,27 @@ public:
 		, value{std::move(value)}
 	{}
 	/** Move constructor. */
-	StringMetaField(StringMetaField&&)=default;
+	StringMetaField(StringMetaField&&);
 	/** Destructor. */
-	~StringMetaField() override=default;
+	~StringMetaField() noexcept override;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	StringMetaField& operator=(StringMetaField&&)=default;
+	StringMetaField& operator=(StringMetaField&&);
 /// @}
 };
 
 /**
 	Int32 MetaField.
 */
-struct Int32MetaField final
+class Int32MetaField final
 	: public MetaField {
 public:
+/** @name Properties */ /// @{
 	/** Value. */
 	int32_t value{0};
+/// @}
 
 private:
 	Int32MetaField(Int32MetaField const&)=delete;
@@ -155,7 +161,7 @@ private:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Int32MetaField()=default;
+	Int32MetaField();
 	/**
 		Constructor with name and value.
 		@param name Name.
@@ -166,25 +172,27 @@ public:
 		, value{value}
 	{}
 	/** Move constructor. */
-	Int32MetaField(Int32MetaField&&)=default;
+	Int32MetaField(Int32MetaField&&);
 	/** Destructor. */
-	~Int32MetaField() override=default;
+	~Int32MetaField() noexcept override;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Int32MetaField& operator=(Int32MetaField&&)=default;
+	Int32MetaField& operator=(Int32MetaField&&);
 /// @}
 };
 
 /**
 	Int64 MetaField.
 */
-struct Int64MetaField final
+class Int64MetaField final
 	: public MetaField {
 public:
+/** @name Properties */ /// @{
 	/** Value. */
 	int64_t value{0};
+/// @}
 
 private:
 	Int64MetaField(Int64MetaField const&)=delete;
@@ -195,7 +203,7 @@ private:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Int64MetaField()=default;
+	Int64MetaField();
 	/**
 		Constructor with name and value.
 		@param name Name.
@@ -206,25 +214,27 @@ public:
 		, value{value}
 	{}
 	/** Move constructor. */
-	Int64MetaField(Int64MetaField&&)=default;
+	Int64MetaField(Int64MetaField&&);
 	/** Destructor. */
-	~Int64MetaField() override=default;
+	~Int64MetaField() noexcept override;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Int64MetaField& operator=(Int64MetaField&&)=default;
+	Int64MetaField& operator=(Int64MetaField&&);
 /// @}
 };
 
 /**
 	Bool MetaField.
 */
-struct BoolMetaField final
+class BoolMetaField final
 	: public MetaField {
 public:
+/** @name Properties */ /// @{
 	/** Value. */
 	bool value{false};
+/// @}
 
 private:
 	BoolMetaField(BoolMetaField const&)=delete;
@@ -235,7 +245,7 @@ private:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	BoolMetaField()=default;
+	BoolMetaField();
 	/**
 		Constructor with name and value.
 		@param name Name.
@@ -246,14 +256,14 @@ public:
 		, value{value}
 	{}
 	/** Move constructor. */
-	BoolMetaField(BoolMetaField&&)=default;
+	BoolMetaField(BoolMetaField&&);
 	/** Destructor. */
-	~BoolMetaField() override=default;
+	~BoolMetaField() noexcept override;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	BoolMetaField& operator=(BoolMetaField&&)=default;
+	BoolMetaField& operator=(BoolMetaField&&);
 /// @}
 };
 
@@ -265,8 +275,10 @@ public:
 	/** MetaField vector. */
 	typedef aux::vector<std::unique_ptr<MetaField> > field_vector_type;
 
+/** @name Properties */ /// @{
 	/** Fields. */
 	field_vector_type fields{};
+/// @}
 
 private:
 	Metadata(Metadata const&)=delete;
@@ -276,17 +288,10 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	Metadata()=default;
-	/**
-		Constructor with field vector.
-		@param fields MetaField vector.
-	*/
-	explicit Metadata(field_vector_type fields) noexcept
-		: fields{std::move(fields)}
-	{}
 	/** Move constructor. */
 	Metadata(Metadata&&)=default;
 	/** Destructor. */
-	~Metadata()=default;
+	~Metadata() noexcept=default;
 /// @}
 
 /** @name Operators */ /// @{

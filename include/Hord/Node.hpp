@@ -74,24 +74,16 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Node(HiveID const owner, NodeID const id) noexcept
-		: Object{
-			(OBJECT_NULL==id)
-				? StorageState::null
-				: StorageState::placeholder
-			, ObjectID{owner}
-			, ObjectID{id}
-		}
-	{}
+	Node(HiveID const owner, NodeID const id) noexcept;
 	/** Move constructor. */
-	Node(Node&&)=default;
+	Node(Node&&);
 	/** Destructor. */
-	~Node() override;
+	~Node() noexcept override;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Node& operator=(Node&&)=default;
+	Node& operator=(Node&&);
 /// @}
 
 /** @name Properties */ /// @{

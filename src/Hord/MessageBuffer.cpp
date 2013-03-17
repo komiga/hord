@@ -12,6 +12,17 @@ void MessageBuffer::grow(std::size_t const new_size) {
 	m_buffer.resize(new_size);
 }
 
+MessageBuffer::MessageBuffer(std::size_t const capacity)
+	: m_buffer{}
+{
+	m_buffer.reserve(capacity);
+}
+
+MessageBuffer::MessageBuffer(MessageBuffer&&)=default;
+MessageBuffer::~MessageBuffer() noexcept=default;
+
+MessageBuffer& MessageBuffer::operator=(MessageBuffer&&)=default;
+
 void MessageBuffer::push_back(
 	MessageID const id,
 	std::size_t const size,

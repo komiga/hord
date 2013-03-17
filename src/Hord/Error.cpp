@@ -4,6 +4,7 @@
 #include <Hord/Error.hpp>
 
 #include <type_traits>
+#include <utility>
 
 namespace Hord {
 
@@ -39,5 +40,16 @@ char const* get_error_name(ErrorCode const error_code) noexcept {
 		return s_error_invalid;
 	}
 }
+
+// class Error implementation
+
+Error::Error(ErrorCode const errc, String msg) noexcept
+	: std::exception{}
+	, m_errc{errc}
+	, m_msg{std::move(msg)}
+{}
+
+Error::Error(Error&&)=default;
+Error::~Error() noexcept=default;
 
 } // namespace Hord

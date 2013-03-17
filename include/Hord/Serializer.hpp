@@ -54,16 +54,16 @@ protected:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Serializer()=default;
+	Serializer() noexcept;
 	/** Move constructor. */
-	Serializer(Serializer&&)=default;
+	Serializer(Serializer&&) noexcept;
 	/** Destructor. */
-	inline virtual ~Serializer()=0;
+	virtual ~Serializer() noexcept=0;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Serializer& operator=(Serializer&&)=default;
+	Serializer& operator=(Serializer&&) noexcept;
 /// @}
 
 /** @name Operations */ /// @{
@@ -104,7 +104,6 @@ public:
 	) { serialize_object_impl(object, flags); }
 /// @}
 };
-inline Serializer::~Serializer()=default;
 
 /** @} */ // end of doc-group serialization
 

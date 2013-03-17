@@ -4,6 +4,7 @@
 #include <Hord/Driver.hpp>
 
 #include <algorithm>
+#include <utility>
 #include <chrono>
 
 namespace Hord {
@@ -18,7 +19,7 @@ Driver::Driver(Serializer& serializer, IDGenerator& id_generator) noexcept
 {
 	// Initialize generator
 	// FIXME: libstdc++ 4.6.3 does not supply steady_clock.
-	auto tp=std::chrono::system_clock::now();
+	auto const tp=std::chrono::system_clock::now();
 	m_id_generator.seed(
 		std::chrono::duration_cast<std::chrono::milliseconds>(
 			tp.time_since_epoch()
@@ -27,10 +28,11 @@ Driver::Driver(Serializer& serializer, IDGenerator& id_generator) noexcept
 	// TODO: Register standard rule types.
 }
 
-Driver::~Driver()=default;
+Driver::Driver(Driver&&)=default;
+Driver::~Driver() noexcept=default;
 
-void Driver::register_rule_type(Rule::type_info const& type_info) {
 #define HORD_SCOPE_FUNC_IDENT__ register_rule_type
+void Driver::register_rule_type(Rule::type_info const& type_info) {
 	if (
 		static_cast<RuleType>(StandardRuleTypes::ReservedLast)
 		>=type_info.type
@@ -55,11 +57,11 @@ void Driver::register_rule_type(Rule::type_info const& type_info) {
 		type_info.type,
 		type_info
 	)));
-#undef HORD_SCOPE_FUNC_IDENT__
 }
+#undef HORD_SCOPE_FUNC_IDENT__
 
-Hive& Driver::placehold_hive(String root) {
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
+Hive& Driver::placehold_hive(String root) {
 	if (root.empty()) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::driver_hive_root_empty,
@@ -85,8 +87,8 @@ Hive& Driver::placehold_hive(String root) {
 		Hive{id, std::move(root)}
 	)));
 	return result_pair.first->second;
-#undef HORD_SCOPE_FUNC_IDENT__
 }
+#undef HORD_SCOPE_FUNC_IDENT__
 
 #undef HORD_SCOPE_CLASS_IDENT__
 

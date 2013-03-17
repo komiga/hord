@@ -38,7 +38,8 @@ char const* get_error_name(ErrorCode const error_code) noexcept;
 /**
 	Error.
 */
-class Error final : public std::exception {
+class Error final
+	: public std::exception {
 private:
 	ErrorCode const m_errc;
 	String const m_msg;
@@ -46,6 +47,7 @@ private:
 	Error()=delete;
 	Error(Error const&)=delete;
 	Error& operator=(Error const&)=delete;
+	Error& operator=(Error&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -55,20 +57,11 @@ public:
 		@param errc Error code.
 		@param msg Error message.
 	*/
-	Error(ErrorCode errc, String msg) noexcept
-		: std::exception{}
-		, m_errc{errc}
-		, m_msg{std::move(msg)}
-	{}
+	Error(ErrorCode const errc, String msg) noexcept;
 	/** Move constructor. */
-	Error(Error&&)=default;
+	Error(Error&&);
 	/** Destructor. */
-	~Error() override=default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Error& operator=(Error&&)=default;
+	~Error() noexcept override;
 /// @}
 
 /** @name Properties */ /// @{
@@ -76,19 +69,22 @@ public:
 		Get error code.
 		@returns The error code.
 	*/
-	ErrorCode error_code() const noexcept { return m_errc; }
+	ErrorCode error_code() const noexcept
+		{ return m_errc; }
 	/**
 		Get error message.
 		@returns The error message.
 	*/
-	String const& what_str() const noexcept { return m_msg; }
+	String const& what_str() const noexcept
+		{ return m_msg; }
 	/**
 		Get C-string error message.
 
 		@note This is UTF-8 encoded (per String).
 		@returns C-string of the error message.
 	*/
-	char const* what() const noexcept override { return m_msg.c_str(); }
+	char const* what() const noexcept override
+		{ return m_msg.c_str(); }
 /// @}
 };
 

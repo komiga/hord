@@ -55,12 +55,12 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor with type. */
+	/** Default constructor. */
 	Field()=default;
 	/** Move constructor. */
 	Field(Field&&)=default;
 	/** Destructor. */
-	~Field()=default;
+	~Field() noexcept=default;
 /// @}
 
 /** @name Operators */ /// @{
@@ -88,12 +88,12 @@ private:
 
 public:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	Record()=default;
 	/** Move constructor. */
 	Record(Record&&)=default;
 	/** Destructor. */
-	~Record()=default;
+	~Record() noexcept=default;
 /// @}
 
 /** @name Operators */ /// @{

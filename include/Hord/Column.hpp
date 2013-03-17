@@ -57,12 +57,12 @@ private:
 
 public:
 /** @name Constructor and destructor */ /// @{
-	/** Constructor. */
+	/** Default constructor. */
 	Column()=default;
 	/** Move constructor. */
 	Column(Column&&)=default;
 	/** Destructor. */
-	~Column()=default;
+	~Column() noexcept=default;
 /// @}
 
 /** @name Operators */ /// @{

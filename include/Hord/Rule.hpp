@@ -20,7 +20,7 @@ see @ref index or the accompanying LICENSE file for full text.
 namespace Hord {
 
 // Forward declarations
-struct RuleState;
+class RuleState;
 class Rule;
 
 /**
@@ -35,24 +35,26 @@ class Rule;
 /**
 	Base Rule state.
 */
-struct RuleState {
+class RuleState {
 private:
 	RuleState(RuleState const&)=delete;
 	RuleState& operator=(RuleState const&)=delete;
 
-public:
+protected:
 /** @name Constructors and destructor */ /// @{
-	/** Constructor. */
-	RuleState()=default;
+	/** Default constructor. */
+	RuleState() noexcept;
 	/** Move constructor. */
-	RuleState(RuleState&&)=default;
+	RuleState(RuleState&&) noexcept;
+public:
 	/** Destructor. */
-	virtual ~RuleState()=0;
+	virtual ~RuleState() noexcept=0;
 /// @}
 
+protected:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	RuleState& operator=(RuleState&&)=default;
+	RuleState& operator=(RuleState&&) noexcept;
 /// @}
 };
 
@@ -128,16 +130,16 @@ protected:
 		}
 	{}
 	/** Move constructor. */
-	Rule(Rule&&)=default;
+	Rule(Rule&&);
 public:
 	/** Destructor. */
-	virtual ~Rule() override=0;
+	virtual ~Rule() noexcept override=0;
 /// @}
 
 protected:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Rule& operator=(Rule&&)=default;
+	Rule& operator=(Rule&&);
 /// @}
 
 public:

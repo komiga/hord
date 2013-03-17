@@ -50,6 +50,7 @@ private:
 	Driver()=delete;
 	Driver(Driver const&)=delete;
 	Driver& operator=(Driver const&)=delete;
+	Driver& operator=(Driver&&)=delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -64,14 +65,9 @@ public:
 	*/
 	Driver(Serializer& serializer, IDGenerator& id_generator) noexcept;
 	/** Move constructor. */
-	Driver(Driver&&)=default;
+	Driver(Driver&&);
 	/** Destructor. */
-	~Driver();
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Driver& operator=(Driver&&)=default;
+	~Driver() noexcept;
 /// @}
 
 /** @name Properties */ /// @{

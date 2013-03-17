@@ -19,10 +19,26 @@ Object::type_info const& Hive::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
-Hive::~Hive()=default;
+Hive::Hive()=default;
 
-void Hive::set_root(String root) {
+Hive::Hive(ObjectID const id, String root) noexcept
+	: Object{
+		root.empty()
+			? StorageState::null
+			: StorageState::placeholder
+		, OBJECT_NULL
+		, id
+	}
+	, m_root{std::move(root)}
+{}
+
+Hive::Hive(Hive&&)=default;
+Hive::~Hive() noexcept=default;
+
+Hive& Hive::operator=(Hive&&)=default;
+
 #define HORD_SCOPE_FUNC_IDENT__ set_root
+void Hive::set_root(String root) {
 	if (root.empty()) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::mutate_hive_root_empty,
@@ -30,8 +46,8 @@ void Hive::set_root(String root) {
 		);
 	}
 	m_root.assign(std::move(root));
-#undef HORD_SCOPE_FUNC_IDENT__
 }
+#undef HORD_SCOPE_FUNC_IDENT__
 
 bool Hive::has_child(
 	ObjectID const id

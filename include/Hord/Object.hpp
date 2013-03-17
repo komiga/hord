@@ -77,7 +77,7 @@ protected:
 			get_id()==OBJECT_NULL
 		@endcode
 	*/
-	Object()=default;
+	Object();
 	/**
 		Constructor with storage state, owner, and id.
 
@@ -89,32 +89,25 @@ protected:
 		StorageState const storage_state,
 		ObjectID const owner,
 		ObjectID const id
-	) noexcept
-		: m_storage_state{storage_state}
-		, m_owner{owner}
-		, m_id{id}
-	{}
+	) noexcept;
 	/**
 		Constructor with owner and id.
 
 		@param owner Owner ID.
 		@param id %Object ID.
 	*/
-	Object(ObjectID const owner, ObjectID const id) noexcept
-		: m_owner{owner}
-		, m_id{id}
-	{}
+	Object(ObjectID const owner, ObjectID const id) noexcept;
 	/** Move constructor. */
-	Object(Object&&)=default;
+	Object(Object&&);
 public:
 	/** Destructor. */
-	virtual ~Object()=0;
+	virtual ~Object() noexcept=0;
 /// @}
 
 protected:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Object& operator=(Object&&)=default;
+	Object& operator=(Object&&);
 /// @}
 
 public:
@@ -198,7 +191,8 @@ public:
 		Get mutable metadata.
 		@returns Mutable metadata.
 	*/
-	Metadata& get_metadata() noexcept;
+	Metadata& get_metadata() noexcept
+		{ return m_metadata; }
 /// @}
 };
 

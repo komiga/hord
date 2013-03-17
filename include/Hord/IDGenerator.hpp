@@ -51,16 +51,16 @@ protected:
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	IDGenerator()=default;
+	IDGenerator() noexcept;
 	/** Move constructor. */
-	IDGenerator(IDGenerator&&)=default;
+	IDGenerator(IDGenerator&&) noexcept;
 	/** Destructor. */
-	inline virtual ~IDGenerator()=0;
+	virtual ~IDGenerator() noexcept=0;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	IDGenerator& operator=(IDGenerator&&)=default;
+	IDGenerator& operator=(IDGenerator&&) noexcept;
 /// @}
 
 /** @name Operations */ /// @{
@@ -70,6 +70,7 @@ public:
 	*/
 	void seed(int64_t const seed_value) noexcept
 		{ seed_impl(seed_value); }
+
 	/**
 		Generate an ID.
 
@@ -81,6 +82,7 @@ public:
 	*/
 	ObjectID generate() noexcept
 		{ return generate_impl(); }
+
 	/**
 		Generate unique ID within set.
 
@@ -97,7 +99,6 @@ public:
 	}
 /// @}
 };
-inline IDGenerator::~IDGenerator()=default;
 
 /** @} */ // end of doc-group driver
 

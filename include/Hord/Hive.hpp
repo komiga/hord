@@ -63,7 +63,7 @@ public:
 
 		@post See Object::Object().
 	*/
-	Hive()=default;
+	Hive();
 	/**
 		Constructor with root path.
 
@@ -79,25 +79,16 @@ public:
 		@param id ID.
 		@param root Root path.
 	*/
-	explicit Hive(ObjectID const id, String root) noexcept
-		: Object{
-			root.empty()
-				? StorageState::null
-				: StorageState::placeholder
-			, OBJECT_NULL
-			, id
-		}
-		, m_root{std::move(root)}
-	{}
+	Hive(ObjectID const id, String root) noexcept;
 	/** Move constructor. */
-	Hive(Hive&&)=default;
+	Hive(Hive&&);
 	/** Destructor. */
-	~Hive() override;
+	~Hive() noexcept override;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Hive& operator=(Hive&&)=default;
+	Hive& operator=(Hive&&);
 /// @}
 
 /** @name Properties */ /// @{
