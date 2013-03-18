@@ -23,6 +23,7 @@ enum class StandardMetaFieldTypes : MetaFieldType;
 enum class StandardRuleTypes : RuleType;
 enum class StorageState : unsigned;
 enum class SerializationFlags : unsigned;
+enum class PropType : unsigned;
 
 /**
 	@addtogroup error
@@ -385,6 +386,23 @@ enum class SerializationFlags : unsigned {
 	,
 };
 
+/**
+	@addtogroup prop
+	@{
+*/
+
+/**
+	Prop type.
+
+	@sa PropInfo,
+		Datastore
+*/
+enum class PropType : unsigned {
+	object_metadata,
+	object_primary
+};
+
+/** @} */ // end of doc-group prop
 /** @} */ // end of doc-group serialization
 
 } // namespace Hord

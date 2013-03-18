@@ -1,0 +1,12 @@
+
+/**
+
+@addtogroup serialization
+@defgroup prop Prop
+@details
+
+@warning Prop streams use RAII (but do not actually own the
+underlying stream). The lifetime of the prop stream controls the
+lock in Datastore.
+
+*/
