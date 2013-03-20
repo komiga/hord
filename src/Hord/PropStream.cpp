@@ -39,10 +39,6 @@ InputPropStream::~InputPropStream() {
 	this->release();
 }
 
-/*InputPropStream& InputPropStream::operator=(
-	InputPropStream&&
-) noexcept=default;*/
-
 std::istream& InputPropStream::get_stream() {
 	assert(nullptr!=m_stream);
 	return *m_stream;
@@ -79,10 +75,6 @@ OutputPropStream::OutputPropStream(
 OutputPropStream::~OutputPropStream() {
 	this->release();
 }
-
-/*OutputPropStream& OutputPropStream::operator=(
-	OutputPropStream&&
-) noexcept=default;*/
 
 std::ostream& OutputPropStream::get_stream() {
 	assert(nullptr!=m_stream);

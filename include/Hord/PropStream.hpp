@@ -46,6 +46,7 @@ private:
 	InputPropStream()=delete;
 	InputPropStream(InputPropStream const&)=delete;
 	InputPropStream& operator=(InputPropStream const&)=delete;
+	InputPropStream& operator=(InputPropStream&&)=delete;
 
 	void acquire();
 	void release();
@@ -75,11 +76,6 @@ public:
 		See Datastore::release_input_stream().
 	*/
 	~InputPropStream();
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	InputPropStream& operator=(InputPropStream&&) noexcept=default;
 /// @}
 
 public:
@@ -123,6 +119,7 @@ private:
 	OutputPropStream()=delete;
 	OutputPropStream(OutputPropStream const&)=delete;
 	OutputPropStream& operator=(OutputPropStream const&)=delete;
+	OutputPropStream& operator=(OutputPropStream&&)=delete;
 
 	void acquire();
 	void release();
@@ -152,11 +149,6 @@ public:
 		See Datastore::release_output_stream().
 	*/
 	~OutputPropStream();
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	OutputPropStream& operator=(OutputPropStream&&) noexcept=default;
 /// @}
 
 public:
