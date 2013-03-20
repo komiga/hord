@@ -124,9 +124,6 @@ public:
 	void open();
 	/**
 		Close the datastore.
-
-		@throws Error{ErrorCode::datastore_closed}
-		If the datastore is already closed.
 	*/
 	void close();
 
@@ -143,9 +140,10 @@ public:
 		If the object for @c prop_info.object_id does not supply
 		the requested prop.
 
-		@throws Error{ErrorCode::datastore_prop_locked}
-		If either <strong>any prop stream</strong> is already
-		active or if some implementation-defined lock is active.
+		@throws Error{ErrorCode::datastore_locked}
+		If the datastore is locked (including implementation-defined
+		reasons). If <strong>any prop stream</strong> is active, the
+		entire datastore is locked.
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
