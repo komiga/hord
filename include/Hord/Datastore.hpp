@@ -59,6 +59,11 @@ private:
 protected:
 /** @name Implementation */ /// @{
 	/**
+		is_open() implementation.
+	*/
+	virtual bool is_open_impl() const noexcept=0;
+
+	/**
 		Acquire raw stream implementation.
 		@{
 	*/
@@ -112,6 +117,16 @@ public:
 	*/
 	Hive const& get_hive() const noexcept
 		{ return m_hive.get(); }
+
+	/**
+		Check if the datastore is open.
+		@returns
+		- @c true if the datastore is open;
+		- @c false if it is closed.
+	*/
+	bool is_open() const noexcept {
+		return is_open_impl();
+	}
 /// @}
 
 /** @name Operations */ /// @{
