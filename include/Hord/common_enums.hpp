@@ -86,6 +86,37 @@ enum class ErrorCode : unsigned {
 	driver_hive_locked,
 /// @}
 
+/** @name Datastore */ /// @{
+	/**
+		Attempted to open datastore when it was already open.
+	*/
+	datastore_already_opened,
+	/**
+		Attempted to perform operation on datastore when it was
+		closed.
+	*/
+	datastore_closed,
+	/**
+		Attempted to perform locking operation while datastore is
+		locked.
+	*/
+	datastore_locked,
+	/**
+		Attempted to perform operation with an object not in the
+		datastore.
+	*/
+	datastore_object_not_found,
+	/**
+		Attempted to request prop from object that does not supply
+		it.
+	*/
+	datastore_prop_unsupplied,
+	/**
+		Attempted to unlock a prop that is not locked.
+	*/
+	datastore_prop_not_locked,
+/// @}
+
 /** @name Serialization */ /// @{
 	/**
 		%Object is not in proper state.
