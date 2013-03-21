@@ -1,5 +1,9 @@
 
 #include <Hord/Datastore.hpp>
+#include <Hord/Error.hpp>
+
+#include <utility>
+#include <cassert>
 
 // TODO: Base exceptions
 
@@ -9,30 +13,92 @@ namespace Hord {
 
 #define HORD_SCOPE_CLASS_IDENT__ Datastore
 
-Datastore::Datastore(Hive const& hive) noexcept
-	: m_hive{hive}
+Datastore::Datastore(String root_path, HiveID const id) noexcept
+	: m_root_path{std::move(root_path)}
+	, m_hive{id}
 {}
 
 Datastore::Datastore(Datastore&&)=default;
 Datastore::~Datastore()=default;
 Datastore& Datastore::operator=(Datastore&&)=default;
 
-#define HORD_SCOPE_FUNC_IDENT__ open
-void open() {
+#define HORD_STATE_ASSERT_VALID__(x) \
+	assert( \
+		State::RESERVED_FIRST>x && \
+		State::RESERVED_LAST<x \
+	);
 
+void Datastore::enable_state(State const state) noexcept {
+	HORD_STATE_ASSERT_VALID__(state);
+	m_states|=static_cast<unsigned>(state);
+}
+
+void Datastore::disable_state(State const state) noexcept {
+	HORD_STATE_ASSERT_VALID__(state);
+	m_states&=~static_cast<unsigned>(state);
+}
+
+bool Datastore::has_state(State const state) const noexcept {
+	HORD_STATE_ASSERT_VALID__(state);
+	return static_cast<unsigned>(state)&m_states;
+}
+#undef HORD_STATE_ASSERT_VALID__
+
+#define HORD_SCOPE_FUNC_IDENT__ set_root_path
+void Datastore::set_root_path(String root_path) {
+	if (is_open()) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::datastore_property_immutable,
+			"cannot change root path while datastore is open"
+		);
+	}
+	m_root_path.assign(std::move(root_path));
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
+#define HORD_SCOPE_FUNC_IDENT__ open
+void Datastore::open() {
+	if (is_open()) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::datastore_open_already,
+			"datastore is already opened"
+		);
+	}
+	open_impl();
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ close
-void close() {
-
+void Datastore::close() {
+	if (is_locked()) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::datastore_locked,
+			"cannot close datastore while locked"
+		);
+	} else if (is_open()) {
+		close_impl();
+	}
 }
 #undef HORD_SCOPE_FUNC_IDENT__
+
+#define HORD_ACQUIRE_CHECK__ \
+	if (!is_open()) { \
+		HORD_THROW_ERROR_SCOPED_FQN( \
+			ErrorCode::datastore_closed, \
+			"cannot acquire stream while datastore is closed" \
+		); \
+	} else if (is_locked()) { \
+		HORD_THROW_ERROR_SCOPED_FQN( \
+			ErrorCode::datastore_locked, \
+			"cannot acquire stream while datastore is locked" \
+		); \
+	}
 
 #define HORD_SCOPE_FUNC_IDENT__ acquire_input_stream
 std::istream& Datastore::acquire_input_stream(
 	PropInfo const& prop_info
 ) {
+	HORD_ACQUIRE_CHECK__;
 	return acquire_input_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
@@ -41,15 +107,26 @@ std::istream& Datastore::acquire_input_stream(
 std::ostream& Datastore::acquire_output_stream(
 	PropInfo const& prop_info
 ) {
+	HORD_ACQUIRE_CHECK__;
 	return acquire_output_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_ACQUIRE_CHECK__
+
+#define HORD_RELEASE_CHECK__ \
+	if (!is_open()) { \
+		HORD_THROW_ERROR_SCOPED_FQN( \
+			ErrorCode::datastore_closed, \
+			"cannot release stream while datastore is closed" \
+		); \
+	}
 
 #define HORD_SCOPE_FUNC_IDENT__ release_input_stream
 void Datastore::release_input_stream(
 	PropInfo const& prop_info
 ) {
-	return release_input_stream_impl(prop_info);
+	HORD_RELEASE_CHECK__;
+	release_input_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
@@ -57,9 +134,11 @@ void Datastore::release_input_stream(
 void Datastore::release_output_stream(
 	PropInfo const& prop_info
 ) {
-	return release_output_stream_impl(prop_info);
+	HORD_RELEASE_CHECK__;
+	release_output_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_RELEASE_CHECK__
 
 #undef HORD_SCOPE_CLASS_IDENT__
 

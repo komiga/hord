@@ -13,9 +13,8 @@ namespace Hord {
 
 #define HORD_SCOPE_CLASS_IDENT__ Driver
 
-Driver::Driver(Serializer& serializer, IDGenerator& id_generator) noexcept
-	: m_serializer{serializer}
-	, m_id_generator{id_generator}
+Driver::Driver(IDGenerator& id_generator) noexcept
+	: m_id_generator{id_generator}
 {
 	// Initialize generator
 	// FIXME: libstdc++ 4.6.3 does not supply steady_clock.
@@ -61,18 +60,33 @@ void Driver::register_rule_type(Rule::type_info const& type_info) {
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
-Hive& Driver::placehold_hive(String root) {
-	if (root.empty()) {
+Hive const& Driver::placehold_hive(
+	Datastore::type_info const& type_info,
+	String root_path
+) {
+	if (root_path.empty()) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::driver_hive_root_empty,
 			"cannot placehold hive with empty root path"
 		);
 	} else if (
-		m_hives.cend()!=std::find_if(m_hives.cbegin(), m_hives.cend(),
-			[&root](hive_map_type::value_type const& pair) -> bool {
-				return 0==root.compare(pair.second.get_root());
-			})
+		m_datastores.cend()
+		!=std::find_if(m_datastores.cbegin(), m_datastores.cend(),
+			[&root_path](datastore_map_type::value_type const& pair) -> bool {
+				return 0==root_path.compare(pair.second->get_root_path());
+			}
+		)
 	) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::driver_hive_root_shared,
+			"cannot placehold hive with non-unique root path"
+		);
+	}
+	// Phew. Now let's try to construct and insert this guy
+	ObjectID const id=m_id_generator.generate_unique(m_datastores);
+	Datastore* const datastore_ptr=
+		type_info.construct(std::move(root_path), id);
+	if (nullptr==datastore_ptr) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::driver_hive_root_shared,
 			"cannot placehold hive with non-unique root path"
@@ -80,13 +94,14 @@ Hive& Driver::placehold_hive(String root) {
 	}
 	// FIXME: libstdc++ 4.6.3 cannot has the emplace!
 	// By Jaal's gnarled neck, does 4.6.3 have anything?
-	ObjectID const id=m_id_generator.generate_unique(m_hives);
-	m_hive_order.emplace_back(id);
-	auto result_pair=m_hives.insert(std::move(std::make_pair(
+	auto result_pair=m_datastores.insert(std::move(std::make_pair(
 		id,
-		Hive{id, std::move(root)}
+		std::move(std::unique_ptr<Datastore>{
+			datastore_ptr
+		})
 	)));
-	return result_pair.first->second;
+	m_hive_order.emplace_back(id);
+	return result_pair.first->second->get_hive();
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 

@@ -44,16 +44,6 @@ enum class ErrorCode : unsigned {
 	unknown,
 /// @}
 
-/** @name Runtime object mutation */ /// @{
-	/**
-		Attempted to set hive root path to an empty string after
-		construction.
-
-		It is illegal to clear a hive root path after construction.
-	*/
-	mutate_hive_root_empty,
-/// @}
-
 /** @name Driver */ /// @{
 	/**
 		Attempted to register a rule type that is reserved for
@@ -80,17 +70,31 @@ enum class ErrorCode : unsigned {
 		shared with another placeheld hive.
 	*/
 	driver_hive_root_shared,
+
 	/**
-		Attempted to access hive that is locked.
+		Failed to construct datastore.
+
+		@sa Datastore::type_info
 	*/
-	driver_hive_locked,
+	driver_datastore_construct_failed,
+	/**
+		Attempted to access datastore that is locked.
+	*/
+	driver_datastore_locked,
 /// @}
 
 /** @name Datastore */ /// @{
 	/**
 		Attempted to open datastore when it was already open.
 	*/
-	datastore_already_opened,
+	datastore_open_already,
+	/**
+		Failed to open datastore.
+
+		Implementation-defined reason.
+	*/
+	datastore_open_failed,
+
 	/**
 		Attempted to perform operation on datastore when it was
 		closed.
@@ -102,10 +106,19 @@ enum class ErrorCode : unsigned {
 	*/
 	datastore_locked,
 	/**
+		Attempted to modify property while datastore was open.
+
+		%Datastore properties are immutable while the datastore is
+		open.
+	*/
+	datastore_property_immutable,
+
+	/**
 		Attempted to perform operation with an object not in the
 		datastore.
 	*/
 	datastore_object_not_found,
+
 	/**
 		Attempted to request prop from object that does not supply
 		it.

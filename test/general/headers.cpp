@@ -13,31 +13,14 @@
 //#include <Hord/Column.hpp>
 #include <Hord/Node.hpp>
 #include <Hord/Hive.hpp>
+//#include <Hord/Datastore.hpp>
 //#include <Hord/IDGenerator.hpp>
-//#include <Hord/Serializer.hpp>
 #include <Hord/Driver.hpp>
 
 #include <random>
+#include <utility>
 #include <iostream>
 #include <iomanip>
-
-class DummySerializer
-	: public Hord::Serializer {
-public:
-	DummySerializer()=default;
-	DummySerializer(DummySerializer&&)=default;
-	~DummySerializer() override=default;
-
-private:
-	void serialize_object_impl(
-		Hord::Object const&,
-		Hord::SerializationFlags
-	) override {}
-	void deserialize_object_impl(
-		Hord::Object&,
-		Hord::SerializationFlags
-	) override {}
-};
 
 class DummyIDGenerator
 	: public Hord::IDGenerator {
@@ -62,6 +45,70 @@ private:
 	}
 };
 
+class DummyDatastore
+	: public Hord::Datastore {
+private:
+	using Hord::Datastore::type_info;
+	using Hord::Datastore::State;
+
+	std::iostream m_stream{nullptr};
+
+public:
+	static Datastore* construct(
+		Hord::String root_path,
+		Hord::HiveID const id
+	) noexcept {
+		try {
+			return new DummyDatastore(std::move(root_path), (id));
+		} catch (...) {
+			return nullptr;
+		}
+	}
+
+	static type_info const s_type_info;
+
+private:
+	DummyDatastore(Hord::String root_path, Hord::HiveID const id)
+		: Hord::Datastore(
+			std::move(root_path),
+			id
+		)
+	{}
+	DummyDatastore(DummyDatastore&&)=default;
+	DummyDatastore& operator=(DummyDatastore&&)=default;
+	~DummyDatastore() noexcept override=default;
+
+private:
+	void open_impl() override {
+		Hord::Datastore::enable_state(State::opened);
+	}
+	void close_impl() override {
+		Hord::Datastore::disable_state(State::opened);
+	}
+
+	std::istream& acquire_input_stream_impl(
+		Hord::PropInfo const&
+	) override {
+		return m_stream;
+	}
+	std::ostream& acquire_output_stream_impl(
+		Hord::PropInfo const&
+	) override {
+		return m_stream;
+	}
+
+	void release_input_stream_impl(
+		Hord::PropInfo const&
+	) override {}
+	void release_output_stream_impl(
+		Hord::PropInfo const&
+	) override {}
+};
+
+Hord::Datastore::type_info const DummyDatastore::s_type_info{
+	DummyDatastore::construct
+};
+
 void report_error(Hord::Error const& e) {
 	std::cerr
 		<<'['<<Hord::get_error_name(e.error_code())<<']'
@@ -80,10 +127,8 @@ int main() {
 	// group driver
 	Hord::Hive hive{};
 	//Hord::IDGenerator id_generator{};
-	//Hord::Serializer serializer{};
-	DummySerializer serializer{};
 	DummyIDGenerator id_generator{};
-	Hord::Driver driver{serializer, id_generator};
+	Hord::Driver driver{id_generator};
 
 	// group error
 	Hord::Error err{Hord::ErrorCode::unknown, "oh no!"};
@@ -161,16 +206,25 @@ int main() {
 
 	// Placeholding hives
 	try {
-		driver.placehold_hive(Hord::String{});
+		driver.placehold_hive(
+			DummyDatastore::s_type_info,
+			Hord::String{}
+		);
 	} catch (Hord::Error& e) {
 		report_error(e);
 	}
 	try {
 		std::cout
 			<<"first hive id: "
-			<<std::hex<<driver.placehold_hive("./bork").get_id()
+			<<std::hex<<driver.placehold_hive(
+				DummyDatastore::s_type_info,
+				"./bork"
+			).get_id()
 		<<std::endl;
-		driver.placehold_hive("./bork");
+		driver.placehold_hive(
+			DummyDatastore::s_type_info,
+			"./bork"
+		);
 	} catch (Hord::Error& e) {
 		report_error(e);
 	}

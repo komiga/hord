@@ -47,7 +47,6 @@ public:
 	> object_map_type;
 
 private:
-	String m_root{};
 	id_set_type m_idset{};
 	object_map_type m_objects{};
 
@@ -65,21 +64,20 @@ public:
 	*/
 	Hive();
 	/**
-		Constructor with root path.
+		Constructor with ID.
 
 		@post
 		@code
 			get_storage_state()
-			==(get_root().empty()
+			==(OBJECT_NULL==get_id()
 				? StorageState::null
 				: StorageState::placeholder
 			)
 		@endcode
 
 		@param id ID.
-		@param root Root path.
 	*/
-	Hive(ObjectID const id, String root) noexcept;
+	Hive(ObjectID const id) noexcept;
 	/** Move constructor. */
 	Hive(Hive&&);
 	/** Destructor. */
@@ -92,23 +90,6 @@ public:
 /// @}
 
 /** @name Properties */ /// @{
-	/**
-		Set root path.
-
-		@throws Error{ErrorCode::mutate_hive_root_empty}
-		If @a root is empty. It is illegal to clear the root path
-		after a hive has been constructed.
-
-		@param root New root path.
-	*/
-	void set_root(String root);
-	/**
-		Get root path.
-		@returns Current root path.
-	*/
-	String const& get_root() const noexcept
-		{ return m_root; }
-
 	/**
 		Get ID set.
 		@returns Current ID set.

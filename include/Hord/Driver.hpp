@@ -15,9 +15,11 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./aux.hpp"
 #include "./String.hpp"
 #include "./IDGenerator.hpp"
-#include "./Serializer.hpp"
+#include "./Datastore.hpp"
 #include "./Hive.hpp"
 #include "./Rule.hpp"
+
+#include <memory>
 
 namespace Hord {
 
@@ -34,17 +36,20 @@ class Driver;
 */
 class Driver final {
 private:
-	typedef aux::unordered_map<HiveID, Hive> hive_map_type;
+	typedef aux::unordered_map<
+		HiveID, std::unique_ptr<Datastore>
+	> datastore_map_type;
+
 	typedef aux::unordered_map<
 		RuleType,
 		Rule::type_info const&
 	> rule_type_map_type;
+
 	typedef aux::vector<HiveID> id_vector_type;
 
-	Serializer& m_serializer;
 	IDGenerator& m_id_generator;
 	rule_type_map_type m_rule_types{};
-	hive_map_type m_hives{};
+	datastore_map_type m_datastores{};
 	id_vector_type m_hive_order{};
 
 	Driver()=delete;
@@ -55,15 +60,14 @@ private:
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
-		Constructor with Serializer and IDGenerator.
+		Constructor with ID generator.
 
-		@warning Both references must be valid for the lifetime
+		@warning All references must be valid for the lifetime
 		of the driver.
 
-		@param serializer Serializer.
 		@param id_generator IDGenerator.
 	*/
-	Driver(Serializer& serializer, IDGenerator& id_generator) noexcept;
+	Driver(IDGenerator& id_generator) noexcept;
 	/** Move constructor. */
 	Driver(Driver&&);
 	/** Destructor. */
@@ -71,13 +75,6 @@ public:
 /// @}
 
 /** @name Properties */ /// @{
-	/**
-		Get Serializer.
-		@returns The Serializer.
-	*/
-	Serializer& get_serializer() noexcept
-		{ return m_serializer; }
-
 	/**
 		Get IDGenerator.
 		@returns The IDGenerator.
@@ -108,29 +105,37 @@ public:
 	void register_rule_type(Rule::type_info const& type_info);
 
 	/**
-		Placehold Hive.
+		Placehold hive.
 
-		@remarks Hives are ordered in placehold order.
+		@remarks %Hives are initially ordered in placehold order.
 
 		@warning @c ErrorCode::driver_hive_root_shared is only caused
 		by string comparison. It is possible for multiple placeheld
 		hives to share the same actual directory, but the second one
 		to attempt deserialization will fail
-		with @c ErrorCode::driver_hive_locked.
+		with @c ErrorCode::driver_datastore_locked.
 
 		@throws Error{ErrorCode::driver_hive_root_empty}
-		If @c true==root.empty().
+		If @c true==root_path.empty().
 
 		@throws Error{ErrorCode::driver_hive_root_shared}
-		If a Hive with root path @a root has already been placeheld.
+		If the root path has already been placeheld.
 
-		@post Emplaced Hive with @a root
+		@throws Error{ErrorCode::driver_datastore_construct_failed}
+		If the datastore failed to construct (see
+		Datastore::type_info::construct()).
+
+		@post Emplaced hive with @a root_path
 		and @c StorageState::placeholder.
 
-		@returns The placeheld Hive.
-		@param root Root path.
+		@returns The placeheld hive.
+		@param type_info %Datastore type for the hive.
+		@param root_path Root path.
 	*/
-	Hive& placehold_hive(String root);
+	Hive const& placehold_hive(
+		Datastore::type_info const& type_info,
+		String root_path
+	);
 
 	/**
 		Serialize objects.

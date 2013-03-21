@@ -1,6 +1,5 @@
 
 #include <Hord/common_enums.hpp>
-#include <Hord/Error.hpp>
 #include <Hord/Hive.hpp>
 
 namespace Hord {
@@ -21,33 +20,20 @@ Object::type_info const& Hive::get_type_info_impl() const noexcept {
 
 Hive::Hive()=default;
 
-Hive::Hive(ObjectID const id, String root) noexcept
+Hive::Hive(ObjectID const id) noexcept
 	: Object{
-		root.empty()
+		OBJECT_NULL==id
 			? StorageState::null
 			: StorageState::placeholder
 		, OBJECT_NULL
 		, id
 	}
-	, m_root{std::move(root)}
 {}
 
 Hive::Hive(Hive&&)=default;
 Hive::~Hive() noexcept=default;
 
 Hive& Hive::operator=(Hive&&)=default;
-
-#define HORD_SCOPE_FUNC_IDENT__ set_root
-void Hive::set_root(String root) {
-	if (root.empty()) {
-		HORD_THROW_ERROR_SCOPED_FQN(
-			ErrorCode::mutate_hive_root_empty,
-			"cannot clear hive root path after construction"
-		);
-	}
-	m_root.assign(std::move(root));
-}
-#undef HORD_SCOPE_FUNC_IDENT__
 
 bool Hive::has_child(
 	ObjectID const id
