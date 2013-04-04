@@ -15,6 +15,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <type_traits>
 
 namespace Hord {
+namespace traits {
 
 // Forward declarations
 
@@ -69,6 +70,7 @@ struct is_copy_constructible_or_assignable final
 
 /** @} */ // end of doc-group traits
 
+} // namespace traits
 } // namespace Hord
 
 #endif // HORD_TRAITS_HPP_

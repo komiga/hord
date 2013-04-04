@@ -84,8 +84,8 @@ Hive const& Driver::placehold_hive(
 	}
 	// Phew. Now let's try to construct and insert this guy
 	ObjectID const id=m_id_generator.generate_unique(m_datastores);
-	Datastore* const datastore_ptr=
-		type_info.construct(std::move(root_path), id);
+	Datastore* const datastore_ptr
+		=type_info.construct(std::move(root_path), id);
 	if (nullptr==datastore_ptr) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::driver_hive_root_shared,

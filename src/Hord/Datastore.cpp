@@ -61,7 +61,7 @@ void Datastore::open() {
 	if (is_open()) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::datastore_open_already,
-			"datastore is already opened"
+			"datastore is already open"
 		);
 	}
 	open_impl();

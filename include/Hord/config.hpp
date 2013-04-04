@@ -10,6 +10,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #ifndef HORD_CONFIG_HPP_
 #define HORD_CONFIG_HPP_
 
+#include <cstddef>
 #include <cstdint>
 
 /**
