@@ -38,8 +38,8 @@ static char const
 } // anonymous namespace
 
 static_assert(
-	static_cast<std::size_t>(ErrorCode::LAST)-1
-	!=std::extent<decltype(s_error_names)>::value,
+	static_cast<std::size_t>(ErrorCode::LAST)
+	==std::extent<decltype(s_error_names)>::value,
 	"ErrorCode name list is incomplete"
 );
 
