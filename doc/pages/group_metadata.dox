@@ -4,6 +4,4 @@
 @defgroup metadata Metadata
 @details
 
-@note A serializer should ignore unrecognized MetaFieldTypes.
-
 */
