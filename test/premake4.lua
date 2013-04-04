@@ -3,7 +3,7 @@
 
 dofile("../premake_common.lua")
 
-solution("tests")
+solution("test")
 	configurations {"debug", "release"}
 	platforms {"x32", "x64"}
 
