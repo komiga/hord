@@ -16,6 +16,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./aux.hpp"
 #include "./String.hpp"
 
+#include <murk/DescCompound.hpp>
+#include <murk/TieCompound.hpp>
+
 #include <memory>
 
 namespace Hord {
@@ -39,11 +42,21 @@ struct Metadata;
 class MetaField {
 public:
 	/**
+		Base descriptor compound.
+	*/
+	static murk::DescCompound const s_comp_base;
+	/**
 		Type info.
 	*/
 	struct type_info final {
 		/** Type. */
 		MetaFieldType const type;
+		/**
+			Descriptor compound for type.
+			@note This must begin with a reference
+			to @c MetaField::s_comp_base.
+		*/
+		murk::DescCompoundRef const comp;
 	};
 
 /** @name Properties */ /// @{
@@ -59,12 +72,21 @@ private:
 	MetaField(MetaField const&)=delete;
 	MetaField& operator=(MetaField const&)=delete;
 
+	void bind_base(murk::TieBinder& binder) noexcept;
+
 protected:
 /** @name Implementation */ /// @{
 	/**
 		get_type_info() implementation.
 	*/
 	virtual type_info const& get_type_info_impl() const noexcept=0;
+	/**
+		bind() implementation.
+
+		@note bind() will bind base properties; implementations shall
+		bind only their own properties.
+	*/
+	virtual void bind_impl(murk::TieBinder&) noexcept=0;
 /// @}
 
 public:
@@ -97,6 +119,17 @@ public:
 	type_info const& get_type_info() const noexcept
 		{ return get_type_info_impl(); }
 /// @}
+
+/** @name Operations */ /// @{
+	/**
+		Bind field.
+		@param binder Tie binder.
+	*/
+	void bind(murk::TieBinder& binder) noexcept {
+		bind_base(binder);
+		bind_impl(binder);
+	}
+/// @}
 };
 
 /**
@@ -115,6 +148,7 @@ private:
 	StringMetaField& operator=(StringMetaField const&)=delete;
 
 	MetaField::type_info const& get_type_info_impl() const noexcept override;
+	void bind_impl(murk::TieBinder&) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -157,6 +191,7 @@ private:
 	Int32MetaField& operator=(Int32MetaField const&)=delete;
 
 	MetaField::type_info const& get_type_info_impl() const noexcept override;
+	void bind_impl(murk::TieBinder&) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -199,6 +234,7 @@ private:
 	Int64MetaField& operator=(Int64MetaField const&)=delete;
 
 	MetaField::type_info const& get_type_info_impl() const noexcept override;
+	void bind_impl(murk::TieBinder&) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -241,6 +277,7 @@ private:
 	BoolMetaField& operator=(BoolMetaField const&)=delete;
 
 	MetaField::type_info const& get_type_info_impl() const noexcept override;
+	void bind_impl(murk::TieBinder&) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
