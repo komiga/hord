@@ -59,7 +59,8 @@ function create_project(name, kind, tdir, root)
 
 	configuration {}
 		includedirs {
-			--root.."/dep/duct/",
+			root.."/dep/duct/",
+			root.."/dep/murk/include/"
 		}
 	return proj
 end
@@ -71,7 +72,8 @@ function create_test(group, name, src)
 	configuration {}
 		targetname(name)
 		libdirs {
-			root.."/lib/"
+			root.."/lib/",
+			root.."/dep/murk/lib/"
 		}
 		includedirs {
 			root.."/include/"
@@ -81,9 +83,15 @@ function create_test(group, name, src)
 		}
 
 	configuration {"debug"}
-		links {"hord_d"}
+		links {
+			"hord_d",
+			"murk_d"
+		}
 	configuration {"release"}
-		links {"hord"}
+		links {
+			"hord",
+			"murk"
+		}
 end
 
 function create_tests(group, tests)

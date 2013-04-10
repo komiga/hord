@@ -24,6 +24,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_AUX_ALLOCATOR std::allocator
 
 /** @cond INTERNAL */
+#define DUCT_CONFIG_ALLOCATOR HORD_AUX_ALLOCATOR
+#define MURK_AUX_ALLOCATOR HORD_AUX_ALLOCATOR
+
 #define HORD_STRINGIFY_INNER__(x) #x
 /** @endcond */
 
