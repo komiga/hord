@@ -34,7 +34,7 @@ static murk::DescCompound const s_comp_string{
 };
 
 static MetaField::type_info const s_type_info_string{
-	static_cast<MetaFieldType>(StandardMetaFieldTypes::String),
+	MetaFieldType::String,
 	{s_comp_string}
 };
 }
@@ -66,7 +66,7 @@ static murk::DescCompound const s_comp_int32{
 };
 
 static MetaField::type_info const s_type_info_int32{
-	static_cast<MetaFieldType>(StandardMetaFieldTypes::Int32),
+	MetaFieldType::Int32,
 	{s_comp_int32}
 };
 }
@@ -98,7 +98,7 @@ static murk::DescCompound const s_comp_int64{
 };
 
 static MetaField::type_info const s_type_info_int64{
-	static_cast<MetaFieldType>(StandardMetaFieldTypes::Int64),
+	MetaFieldType::Int64,
 	{s_comp_int64}
 };
 }
@@ -130,7 +130,7 @@ static murk::DescCompound const s_comp_bool{
 };
 
 static MetaField::type_info const s_type_info_bool{
-	static_cast<MetaFieldType>(StandardMetaFieldTypes::Bool),
+	MetaFieldType::Bool,
 	{s_comp_bool}
 };
 }

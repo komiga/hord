@@ -120,7 +120,7 @@ public:
 		{ return get_type_info_impl(); }
 /// @}
 
-/** @name Operations */ /// @{
+/** @name Serialization */ /// @{
 	/**
 		Bind field.
 		@param binder Tie binder.

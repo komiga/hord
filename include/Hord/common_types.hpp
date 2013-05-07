@@ -102,18 +102,6 @@ typedef uint32_t RuleType;
 /** @} */ // end of doc-group object
 
 /**
-	@addtogroup metadata
-	@{
-*/
-
-/**
-	MetaField type.
-*/
-typedef uint8_t MetaFieldType;
-
-/** @} */ // end of doc-group metadata
-
-/**
 	@addtogroup messaging
 	@{
 */

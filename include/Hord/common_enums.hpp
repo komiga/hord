@@ -19,7 +19,7 @@ namespace Hord {
 enum class ErrorCode : unsigned;
 enum class ObjectType : unsigned;
 enum class FieldType : uint8_t;
-enum class StandardMetaFieldTypes : MetaFieldType;
+enum class MetaFieldType : uint8_t;
 enum class StandardRuleTypes : RuleType;
 enum class StorageState : unsigned;
 enum class SerializationFlags : unsigned;
@@ -203,16 +203,12 @@ enum class FieldType : uint8_t {
 */
 
 /**
-	Standard MetaField types.
+	MetaField type.
 
-	@note Values in @c [0x00, 0x08] are reserved for standard
-	types (@c 0x00 is invalid). Custom serialization may specify
-	further types, and a serializer should ignore types it does
-	not recognize.
 	@sa MetaField,
 		Metadata
 */
-enum class StandardMetaFieldTypes : MetaFieldType {
+enum class MetaFieldType : uint8_t {
 	/** StringMetaField. */
 	String=0x01,
 	/** Int32MetaField. */
@@ -220,21 +216,8 @@ enum class StandardMetaFieldTypes : MetaFieldType {
 	/** Int64MetaField. */
 	Int64,
 	/** BoolMetaField. */
-	Bool,
-	/// @{
-	/** Reserved types (@c 0x05 to @c 0x08). */
-	Reserved1,
-	Reserved2,
-	Reserved3,
-	Reserved4,
-	ReservedFirst=Reserved1,
-	ReservedLast=Reserved4
-	/// @}
+	Bool
 };
-static_assert(
-	0x08==static_cast<MetaFieldType>(StandardMetaFieldTypes::ReservedLast),
-	"StandardMetaFieldTypes must reserve up to 0x08"
-);
 
 /** @} */ // end of doc-group metadata
 
@@ -251,8 +234,8 @@ static_assert(
 	Standard rule types.
 
 	@note Values in @c [0,8] are reserved for standard
-	types (@c 0 is invalid). Userspace may specify further
-	types, and unrecognized types should be ignored by a serializer.
+	types (@c 0 is invalid). Userspace may specify further types in
+	the range @c [9, (2^32)−1].
 	@sa Rule
 */
 enum class StandardRuleTypes : RuleType {
