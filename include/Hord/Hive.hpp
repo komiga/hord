@@ -132,6 +132,8 @@ public:
 /// @}
 };
 
+template struct Object::ensure_traits<Hive>;
+
 /** @} */ // end of doc-group hive
 /** @} */ // end of doc-group object
 

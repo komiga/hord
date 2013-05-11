@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_OBJECT_HPP_
 
 #include "./config.hpp"
+#include "./traits.hpp"
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
 #include "./String.hpp"
@@ -46,6 +47,22 @@ public:
 		*/
 		ObjectType const type;
 	};
+
+	/**
+		Ensure traits for deriving classes.
+
+		@tparam D Deriving class.
+	*/
+	template<typename D>
+	struct ensure_traits final :
+		traits::require<
+			std::is_base_of<Object, D>,
+			// FIXME: libstdc++ 4.7.3 doesn't have the nothrow version
+			std::is_destructible<D>,
+			traits::is_move_constructible_or_assignable<D> >,
+		traits::disallow<
+			traits::is_copy_constructible_or_assignable<D> >
+	{};
 
 private:
 	StorageState m_storage_state{StorageState::null};
@@ -195,6 +212,9 @@ public:
 		{ return m_metadata; }
 /// @}
 };
+
+template struct traits::require<
+	std::has_virtual_destructor<Object> >;
 
 /** @} */ // end of doc-group object
 

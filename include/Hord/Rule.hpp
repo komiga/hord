@@ -88,6 +88,8 @@ public:
 		Rule* (&construct)(HiveID const owner, RuleID const id);
 	};
 
+	using Object::ensure_traits;
+
 private:
 	Rule()=delete;
 	Rule(Rule const&)=delete;

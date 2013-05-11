@@ -144,6 +144,8 @@ public:
 /// @}
 };
 
+template struct Object::ensure_traits<Node>;
+
 /** @} */ // end of doc-group node
 /** @} */ // end of doc-group object
 
