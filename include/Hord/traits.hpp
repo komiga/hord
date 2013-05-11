@@ -24,37 +24,53 @@ namespace traits {
 	@{
 */
 
-/**
-	Require a trait.
+template<typename... P>
+struct integral_and;
 
-	@tparam Trait The trait to require.
+template<typename I>
+struct integral_and<I> final
+	: public std::integral_constant<bool,
+		I::value
+	>
+{};
+
+template<typename I, typename... P>
+struct integral_and<I, P...> final
+	: public std::integral_constant<bool,
+		I::value &&
+		integral_and<P...>::value
+	>
+{};
+
+/**
+	Require traits.
+
+	@tparam P The traits to require.
 */
-template<typename Trait>
-struct require_trait final {
+template<typename... P>
+struct require {
 	static_assert(
-		true==Trait::value,
-		"required trait is not satisfied"
+		true==integral_and<P...>::value,
+		"required traits are not satisfied"
 	);
 };
 
 /**
-	Disallow a trait.
+	Disallow traits.
 
-	@tparam Trait The trait to disallow.
+	@tparam P The traits to disallow.
 */
-template<typename Trait>
-struct disallow_trait final {
+template<typename... P>
+struct disallow {
 	static_assert(
-		false==Trait::value,
-		"disallowed trait is present"
+		false==integral_and<P...>::value,
+		"disallowed traits are present"
 	);
 };
 
 /**
 	Whether a type is either copy constructible or copy assignable.
 
-	@remarks OR of @c std::is_copy_constructible
-	and @c std::is_copy_assignable.
 	@tparam T Type to test.
 */
 template<typename T>
@@ -62,6 +78,19 @@ struct is_copy_constructible_or_assignable final
 	: public std::integral_constant<bool,
 		std::is_copy_constructible<T>::value ||
 		std::is_copy_assignable<T>::value
+	>
+{};
+
+/**
+	Whether a type is either move constructible or move assignable.
+
+	@tparam T Type to test.
+*/
+template<typename T>
+struct is_move_constructible_or_assignable final
+	: public std::integral_constant<bool,
+		std::is_move_constructible<T>::value ||
+		std::is_move_assignable<T>::value
 	>
 {};
 
