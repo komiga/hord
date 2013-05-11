@@ -22,10 +22,10 @@ Datastore::Datastore(Datastore&&)=default;
 Datastore::~Datastore()=default;
 Datastore& Datastore::operator=(Datastore&&)=default;
 
-#define HORD_STATE_ASSERT_VALID__(x) \
+#define HORD_STATE_ASSERT_VALID__(x__) \
 	assert( \
-		State::RESERVED_FIRST>x && \
-		State::RESERVED_LAST<x \
+		State::RESERVED_FIRST>x__ && \
+		State::RESERVED_LAST <x__ \
 	);
 
 void Datastore::enable_state(State const state) noexcept {
@@ -40,7 +40,7 @@ void Datastore::disable_state(State const state) noexcept {
 
 bool Datastore::has_state(State const state) const noexcept {
 	HORD_STATE_ASSERT_VALID__(state);
-	return static_cast<unsigned>(state)&m_states;
+	return m_states&static_cast<unsigned>(state);
 }
 #undef HORD_STATE_ASSERT_VALID__
 

@@ -3,6 +3,7 @@
 #include <Hord/Error.hpp>
 #include <Hord/Driver.hpp>
 
+#include <type_traits>
 #include <algorithm>
 #include <utility>
 #include <chrono>
@@ -16,13 +17,13 @@ namespace Hord {
 Driver::Driver(IDGenerator& id_generator) noexcept
 	: m_id_generator{id_generator}
 {
+	static_assert(
+		std::is_same<int64_t, std::chrono::steady_clock::rep>::value,
+		"steady_clock representation is not 64 bits!"
+	);
 	// Initialize generator
-	// FIXME: libstdc++ 4.6.3 does not supply steady_clock.
-	auto const tp=std::chrono::system_clock::now();
 	m_id_generator.seed(
-		std::chrono::duration_cast<std::chrono::milliseconds>(
-			tp.time_since_epoch()
-		).count()
+		std::chrono::steady_clock::now().time_since_epoch().count()
 	);
 	// TODO: Register standard rule types.
 }
@@ -92,14 +93,12 @@ Hive const& Driver::placehold_hive(
 			"cannot placehold hive with non-unique root path"
 		);
 	}
-	// FIXME: libstdc++ 4.6.3 cannot has the emplace!
-	// By Jaal's gnarled neck, does 4.6.3 have anything?
-	auto result_pair=m_datastores.insert(std::move(std::make_pair(
+	auto result_pair=m_datastores.emplace(
 		id,
 		std::move(std::unique_ptr<Datastore>{
 			datastore_ptr
 		})
-	)));
+	);
 	m_hive_order.emplace_back(id);
 	return result_pair.first->second->get_hive();
 }

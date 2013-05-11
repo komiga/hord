@@ -60,11 +60,8 @@ struct disallow_trait final {
 template<typename T>
 struct is_copy_constructible_or_assignable final
 	: public std::integral_constant<bool,
-		// FIXME: libstdc++ 4.6.3 does not have
-		// is_assignable nor the is_copy traits.
-		std::is_constructible<T, T const&>::value
-		//std::is_copy_constructible<T>::value ||
-		//std::is_copy_assignable<T>::value
+		std::is_copy_constructible<T>::value ||
+		std::is_copy_assignable<T>::value
 	>
 {};
 

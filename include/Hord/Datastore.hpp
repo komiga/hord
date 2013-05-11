@@ -19,9 +19,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <functional>
 #include <iosfwd>
 
-// FIXME: libstdc++ 4.6.3 does not use the noexcept specifier
-// on reference_wrapper ctors.
-
 namespace Hord {
 
 // Forward declarations
