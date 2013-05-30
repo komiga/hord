@@ -5,8 +5,9 @@
 @defgroup prop Prop
 @details
 
-@warning Prop streams use RAII (but do not actually own the
-underlying stream). The lifetime of the prop stream controls the
-lock in Datastore.
+@warning Due to program termination with an exception thrown from a
+destructor during a stack unwind (making normal exception handling
+impossible in many situations), the prop stream classes cannot use
+RAII. @c acquire() and @c release() must be used explicitly.
 
 */

@@ -1,5 +1,6 @@
 
 #include <Hord/PropStream.hpp>
+#include <Hord/Datastore.hpp>
 
 #include <cassert>
 #include <istream>
@@ -8,6 +9,25 @@
 namespace Hord {
 
 // class InputPropStream implementation
+
+InputPropStream::InputPropStream(
+	Datastore& datastore,
+	PropInfo info
+)
+	: m_datastore{datastore}
+	, m_info(std::move(info))
+{}
+
+InputPropStream::InputPropStream(
+	InputPropStream&&
+) noexcept=default;
+
+InputPropStream::~InputPropStream() noexcept=default;
+
+std::istream& InputPropStream::get_stream() {
+	assert(nullptr!=m_stream);
+	return *m_stream;
+}
 
 void InputPropStream::acquire() {
 	assert(nullptr==m_stream);
@@ -21,30 +41,26 @@ void InputPropStream::release() {
 	}
 }
 
-InputPropStream::InputPropStream(
+// class OutputPropStream implementation
+
+OutputPropStream::OutputPropStream(
 	Datastore& datastore,
 	PropInfo info
 )
 	: m_datastore{datastore}
 	, m_info(std::move(info))
-{
-	this->acquire();
-}
+{}
 
-InputPropStream::InputPropStream(
-	InputPropStream&&
+OutputPropStream::OutputPropStream(
+	OutputPropStream&&
 ) noexcept=default;
 
-InputPropStream::~InputPropStream() {
-	this->release();
-}
+OutputPropStream::~OutputPropStream() noexcept=default;
 
-std::istream& InputPropStream::get_stream() {
+std::ostream& OutputPropStream::get_stream() {
 	assert(nullptr!=m_stream);
 	return *m_stream;
 }
-
-// class OutputPropStream implementation
 
 void OutputPropStream::acquire() {
 	assert(nullptr==m_stream);
@@ -56,29 +72,6 @@ void OutputPropStream::release() {
 		m_datastore.release_output_stream(m_info);
 		m_stream=nullptr;
 	}
-}
-
-OutputPropStream::OutputPropStream(
-	Datastore& datastore,
-	PropInfo info
-)
-	: m_datastore{datastore}
-	, m_info(std::move(info))
-{
-	this->acquire();
-}
-
-OutputPropStream::OutputPropStream(
-	OutputPropStream&&
-) noexcept=default;
-
-OutputPropStream::~OutputPropStream() {
-	this->release();
-}
-
-std::ostream& OutputPropStream::get_stream() {
-	assert(nullptr!=m_stream);
-	return *m_stream;
 }
 
 } // namespace Hord

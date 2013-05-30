@@ -13,13 +13,16 @@ see @ref index or the accompanying LICENSE file for full text.
 #include "./config.hpp"
 #include "./common_enums.hpp"
 #include "./Prop.hpp"
-#include "./Datastore.hpp"
+//#include "./Datastore.hpp"
 
 #include <iosfwd>
 
 namespace Hord {
 
 // Forward declarations
+// FIXME: Hack for Object -> Metadata dependency blowing up due to
+// cyclic dependency caused by Datastore (which uses Hive).
+class Datastore; // external
 class InputPropStream;
 class OutputPropStream;
 
@@ -34,13 +37,11 @@ class OutputPropStream;
 
 /**
 	Base input prop stream.
-
-	@remarks This can be used as a generic prop stream.
 */
 class InputPropStream final {
 private:
 	Datastore& m_datastore;
-	PropInfo m_info;
+	PropInfo const m_info;
 	std::istream* m_stream;
 
 	InputPropStream()=delete;
@@ -48,15 +49,9 @@ private:
 	InputPropStream& operator=(InputPropStream const&)=delete;
 	InputPropStream& operator=(InputPropStream&&)=delete;
 
-	void acquire();
-	void release();
-
 public:
 	/**
-		Acquirement constructor.
-
-		@throws Error{..}
-		See Datastore::acquire_input_stream().
+		Constructor with datastore and prop info.
 
 		@param datastore %Datastore.
 		@param info Prop info.
@@ -69,13 +64,8 @@ public:
 	InputPropStream(InputPropStream&&) noexcept;
 	/**
 		Destructor.
-
-		Automatically releases stream if it is valid.
-
-		@throws Error{..}
-		See Datastore::release_input_stream().
 	*/
-	~InputPropStream();
+	~InputPropStream() noexcept;
 /// @}
 
 public:
@@ -105,6 +95,17 @@ public:
 	*/
 	std::istream& get_stream();
 /// @}
+
+/** @name Operations */ /// @{
+	/**
+		See @c Datastore::acquire_input_stream().
+	*/
+	void acquire();
+	/**
+		See @c Datastore::release_input_stream().
+	*/
+	void release();
+/// @}
 };
 
 /**
@@ -113,7 +114,7 @@ public:
 class OutputPropStream final {
 private:
 	Datastore& m_datastore;
-	PropInfo m_info;
+	PropInfo const m_info;
 	std::ostream* m_stream;
 
 	OutputPropStream()=delete;
@@ -121,15 +122,9 @@ private:
 	OutputPropStream& operator=(OutputPropStream const&)=delete;
 	OutputPropStream& operator=(OutputPropStream&&)=delete;
 
-	void acquire();
-	void release();
-
 public:
 	/**
-		Acquirement constructor.
-
-		@throws Error{..}
-		See Datastore::acquire_output_stream().
+		Constructor with datastore and prop info.
 
 		@param datastore %Datastore.
 		@param info Prop info.
@@ -142,13 +137,8 @@ public:
 	OutputPropStream(OutputPropStream&&) noexcept;
 	/**
 		Destructor.
-
-		Automatically releases stream if it is valid.
-
-		@throws Error{..}
-		See Datastore::release_output_stream().
 	*/
-	~OutputPropStream();
+	~OutputPropStream() noexcept;
 /// @}
 
 public:
@@ -177,6 +167,17 @@ public:
 		@returns Raw output stream.
 	*/
 	std::ostream& get_stream();
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		See @c Datastore::acquire_output_stream().
+	*/
+	void acquire();
+	/**
+		See @c Datastore::release_output_stream().
+	*/
+	void release();
 /// @}
 };
 
