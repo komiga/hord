@@ -8,7 +8,7 @@ solution("Hord")
 	platforms {"x32", "x64"}
 
 -- Core library
-create_project("hord", "StaticLib", "lib/", ".")
+create_project("hord", "SharedLib", "lib/", ".")
 
 configuration {"debug"}
 	targetsuffix("_d")
