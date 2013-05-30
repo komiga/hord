@@ -112,28 +112,30 @@ protected:
 	virtual void close_impl()=0;
 
 	/**
-		Acquire raw stream implementation.
-		@{
+		acquire_input_stream() implementation.
 	*/
 	virtual std::istream& acquire_input_stream_impl(
 		PropInfo const& prop_info
 	)=0;
+	/**
+		acquire_output_stream() implementation.
+	*/
 	virtual std::ostream& acquire_output_stream_impl(
 		PropInfo const& prop_info
 	)=0;
-	/** @} */
 
 	/**
-		Release raw stream implementation.
-		@{
+		release_input_stream() implementation.
 	*/
 	virtual void release_input_stream_impl(
 		PropInfo const& prop_info
 	)=0;
+	/**
+		release_output_stream() implementation.
+	*/
 	virtual void release_output_stream_impl(
 		PropInfo const& prop_info
 	)=0;
-	/** @} */
 /// @}
 
 /** @name Internal state */ /// @{
@@ -292,11 +294,10 @@ public:
 		@sa PropInfo,
 			InputPropStream,
 			OutputPropStream
-		@{
 	*/
 	std::istream& acquire_input_stream(PropInfo const& prop_info);
+	/** @copydoc acquire_input_stream(PropInfo const&) */
 	std::ostream& acquire_output_stream(PropInfo const& prop_info);
-	/** @} */
 
 	/**
 		Release raw stream for prop.
@@ -323,11 +324,10 @@ public:
 		@sa PropInfo,
 			InputPropStream,
 			OutputPropStream
-		@{
 	*/
 	void release_input_stream(PropInfo const& prop_info);
+	/** @copydoc release_input_stream(PropInfo const&) */
 	void release_output_stream(PropInfo const& prop_info);
-	/** @} */
 /// @}
 };
 
