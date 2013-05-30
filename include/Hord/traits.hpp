@@ -12,87 +12,37 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include "./config.hpp"
 
-#include <type_traits>
+#include <trait_wrangler/traits.hpp>
+#include <trait_wrangler/test.hpp>
 
 namespace Hord {
-namespace traits {
 
-// Forward declarations
+namespace tw=::trait_wrangler;
+
+namespace traits {
 
 /**
 	@addtogroup traits
 	@{
 */
 
-template<typename... P>
-struct integral_and;
-
-template<typename I>
-struct integral_and<I> final
-	: public std::integral_constant<bool,
-		I::value
-	>
-{};
-
-template<typename I, typename... P>
-struct integral_and<I, P...> final
-	: public std::integral_constant<bool,
-		I::value &&
-		integral_and<P...>::value
-	>
-{};
+/**
+	See @c trait_wrangler::require_t.
+*/
+template<
+	typename T,
+	template<typename> class... TraitTpl
+>
+struct require_t : public tw::require_t<T, TraitTpl...> {};
 
 /**
-	Require traits.
-
-	@tparam P The traits to require.
+	See @c trait_wrangler::disallow_t.
 */
-template<typename... P>
-struct require {
-	static_assert(
-		true==integral_and<P...>::value,
-		"required traits are not satisfied"
-	);
-};
-
-/**
-	Disallow traits.
-
-	@tparam P The traits to disallow.
-*/
-template<typename... P>
-struct disallow {
-	static_assert(
-		false==integral_and<P...>::value,
-		"disallowed traits are present"
-	);
-};
-
-/**
-	Whether a type is either copy constructible or copy assignable.
-
-	@tparam T Type to test.
-*/
-template<typename T>
-struct is_copy_constructible_or_assignable final
-	: public std::integral_constant<bool,
-		std::is_copy_constructible<T>::value ||
-		std::is_copy_assignable<T>::value
-	>
-{};
-
-/**
-	Whether a type is either move constructible or move assignable.
-
-	@tparam T Type to test.
-*/
-template<typename T>
-struct is_move_constructible_or_assignable final
-	: public std::integral_constant<bool,
-		std::is_move_constructible<T>::value ||
-		std::is_move_assignable<T>::value
-	>
-{};
+template<
+	typename T,
+	template<typename> class... TraitTpl
+>
+struct disallow_t : public tw::disallow_t<T, TraitTpl...> {};
 
 /** @} */ // end of doc-group traits
 

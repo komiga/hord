@@ -60,7 +60,8 @@ function create_project(name, kind, tdir, root)
 	configuration {}
 		includedirs {
 			root.."/dep/duct/",
-			root.."/dep/murk/include/"
+			root.."/dep/murk/include/",
+			root.."/dep/trait_wrangler/"
 		}
 	return proj
 end
