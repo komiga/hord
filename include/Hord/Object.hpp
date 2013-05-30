@@ -54,14 +54,18 @@ public:
 		@tparam D Deriving class.
 	*/
 	template<typename D>
-	struct ensure_traits final :
-		traits::require<
-			std::is_base_of<Object, D>,
+	struct ensure_traits :
+		traits::require_t<
+			D,
+			tw::capture_post<std::is_base_of, Object>::type,
 			// FIXME: libstdc++ 4.7.3 doesn't have the nothrow version
-			std::is_destructible<D>,
-			traits::is_move_constructible_or_assignable<D> >,
-		traits::disallow<
-			traits::is_copy_constructible_or_assignable<D> >
+			std::is_destructible,
+			tw::is_fully_moveable
+		>,
+		traits::disallow_t<
+			D,
+			tw::is_copyable
+		>
 	{};
 
 private:
@@ -213,8 +217,10 @@ public:
 /// @}
 };
 
-template struct traits::require<
-	std::has_virtual_destructor<Object> >;
+template struct traits::require_t<
+	Object,
+	std::has_virtual_destructor
+>;
 
 /** @} */ // end of doc-group object
 

@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_DATASTORE_HPP_
 
 #include "./config.hpp"
+#include "./traits.hpp"
 #include "./common_types.hpp"
 #include "./common_enums.hpp"
 #include "./Prop.hpp"
@@ -66,6 +67,27 @@ public:
 		*/
 		Datastore* (&construct)(String root_path, HiveID const id) noexcept;
 	};
+
+	/**
+		Ensure traits for deriving classes.
+
+		@tparam D Deriving class.
+	*/
+	template<typename D>
+	struct ensure_traits :
+		traits::require_t<
+			D,
+			tw::capture_post<std::is_base_of, Datastore>::type,
+			// FIXME: libstdc++ 4.7.3 doesn't have the nothrow version
+			std::is_destructible,
+			tw::is_fully_moveable
+		>,
+		traits::disallow_t<
+			D,
+			std::is_default_constructible,
+			tw::is_fully_copyable
+		>
+	{};
 
 private:
 	unsigned m_states;
@@ -308,6 +330,11 @@ public:
 	/** @} */
 /// @}
 };
+
+template struct traits::require_t<
+	Datastore,
+	std::has_virtual_destructor
+>;
 
 /** @} */ // end of doc-group datastore
 /** @} */ // end of doc-group serialization
