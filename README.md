@@ -1,7 +1,18 @@
 
+# Hord hourd hoerd hoard
+
+This here is a replacement framework for my log-keeping software. It
+is of use to precisely one human. *Hord* is an Old English noun
+equivalent to *hoard*. Fascinating, yes, I know.
+
+## Dependencies
+
+See `dep/README.md`.
+
 ## License
 
-Hord carries the MIT license, which can be found below and in the `LICENSE` file.
+Hord carries the MIT license, which can be found below and in the `LICENSE`
+file.
 
 ```
 Copyright (c) 2013 Tim Howard
