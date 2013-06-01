@@ -357,15 +357,14 @@ enum class StorageState : unsigned {
 
 	@note All of these flags apply both to serialization
 	and deserialization unless otherwise stated.
-	@sa Serializer
 */
 enum class SerializationFlags : unsigned {
 	/**
 		Include identifying information in operation.
 
 		Identifying information includes Object's owner, ID, and slug
-		properties. The owner and ID properties are the only ones
-		required to deserialize an object.
+		properties. Only the owner and ID properties are required to
+		deserialize an object.
 
 		On non-hive objects, this flag will only (de)serialize the
 		object's slug (the object's actual ID is supplied by the
@@ -373,9 +372,6 @@ enum class SerializationFlags : unsigned {
 
 		Post-@c placeholder state, this flag is only significant when
 		serializing a hive after a child was added or removed.
-		%Objects have immutable IDs, so once identifying information
-		has been deserialized, Serializer should never have to deal
-		with it changing.
 
 		@note This flag is implicit.
 	*/
