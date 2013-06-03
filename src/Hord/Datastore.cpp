@@ -18,9 +18,7 @@ Datastore::Datastore(String root_path, HiveID const id) noexcept
 	, m_hive{id}
 {}
 
-Datastore::Datastore(Datastore&&)=default;
 Datastore::~Datastore()=default;
-Datastore& Datastore::operator=(Datastore&&)=default;
 
 #define HORD_STATE_ASSERT_VALID__(x__) \
 	assert( \

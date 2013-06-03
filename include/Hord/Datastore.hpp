@@ -71,6 +71,8 @@ public:
 	/**
 		Ensure traits for deriving classes.
 
+		@remarks All constructors should be hidden or deleted.
+
 		@tparam D Deriving class.
 	*/
 	template<typename D>
@@ -79,13 +81,14 @@ public:
 			D,
 			tw::capture_post<std::is_base_of, Datastore>::type,
 			// FIXME: libstdc++ 4.7.3 doesn't have the nothrow version
-			std::is_destructible,
-			tw::is_fully_moveable
+			std::is_destructible
 		>,
 		traits::disallow_t<
 			D,
 			std::is_default_constructible,
-			tw::is_fully_copyable
+			tw::capture<std::is_constructible, String, HiveID const>::type,
+			tw::is_fully_copyable,
+			tw::is_fully_moveable
 		>
 	{};
 
@@ -96,7 +99,9 @@ private:
 
 	Datastore()=delete;
 	Datastore(Datastore const&)=delete;
+	Datastore(Datastore&&)=delete;
 	Datastore& operator=(Datastore const&)=delete;
+	Datastore& operator=(Datastore&&)=delete;
 
 protected:
 /** @name Implementation */ /// @{
@@ -186,17 +191,9 @@ protected:
 		@param id %Hive ID.
 	*/
 	Datastore(String root_path, HiveID const id) noexcept;
-	/** Move constructor. */
-	Datastore(Datastore&&);
 public:
 	/** Destructor. */
 	virtual ~Datastore()=0;
-/// @}
-
-protected:
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Datastore& operator=(Datastore&&);
 /// @}
 
 public:
