@@ -50,8 +50,9 @@ see @ref index or the accompanying LICENSE file for full text.
 	@note <Hord/String.hpp> and <Hord/Error.hpp> are required to use
 	these.
 
-	@note The throw macros encapsulate the final message in
-	#HORD_STR_LIT (that is, @a m__ needn't be #HORD_STR_LIT-ized).
+	@note All throw macros except for #HORD_THROW_ERROR_S encapsulate
+	the final message in #HORD_STR_LIT (that is, @a m__ needn't be
+	#HORD_STR_LIT-ized).
 
 	@remarks I quite despise this method, but there is no @c __fqn__.
 	Luckily, a nice a side-effect of this method is that it cuts down
@@ -96,50 +97,104 @@ see @ref index or the accompanying LICENSE file for full text.
 	HORD_SCOPE_CLASS "::" HORD_SCOPE_FUNC
 
 /** @cond INTERNAL */
-#define HORD_THROW_ERROR_SCOPED_IMPL__(s__, e__, m__) \
-	throw std::move(::Hord::Error{		\
-		e__,							\
-		::Hord::String{HORD_STR_LIT(	\
-			s__ ": " m__				\
-		)}								\
+#define HORD_MSG_SCOPED_IMPL__(s__, m__) \
+		HORD_STR_LIT(s__ ": " m__)
+/** @endcond */
+
+/**
+	Build message string literal with class scope.
+
+	@param m__ Message.
+*/
+#define HORD_MSG_SCOPED_CLASS(m__) \
+	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_CLASS, m__)
+
+/**
+	Build message string literal with function scope.
+
+	@param m__ Message.
+*/
+#define HORD_MSG_SCOPED_FUNC(m__) \
+	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_FUNC, m__)
+
+/**
+	Build message string literal with fully-qualified scope.
+
+	@param m__ Message.
+*/
+#define HORD_MSG_SCOPED_FQN(m__) \
+	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_FQN, m__)
+
+/** @cond INTERNAL */
+#define HORD_THROW_ERROR_IMPL__(e__, m__) \
+	throw std::move(::Hord::Error{	\
+		e__,						\
+		::Hord::String{m__}			\
 	})
 /** @endcond */
+
+/**
+	Throw error with message.
+
+	@param e__ ErrorCode.
+	@param m__ Message (string literal).
+*/
+#define HORD_THROW_ERROR(e__, m__) \
+	HORD_THROW_ERROR_IMPL__(e__, HORD_STR_LIT(m__))
+
+/**
+	Throw error with message.
+
+	@param e__ ErrorCode.
+	@param m__ Message (String).
+*/
+#define HORD_THROW_ERROR_S(e__, m__) \
+	HORD_THROW_ERROR_IMPL__(e__, m__)
 
 /**
 	Throw error with class scope.
 
 	@param e__ ErrorCode.
-	@param m__ Message.
+	@param m__ Message (string literal).
 
 	@sa HORD_THROW_ERROR_SCOPED_FUNC,
 		HORD_THROW_ERROR_SCOPED_FQN
 */
 #define HORD_THROW_ERROR_SCOPED_CLASS(e__, m__) \
-	HORD_THROW_ERROR_SCOPED_IMPL__(HORD_SCOPE_CLASS, e__, m__)
+	HORD_THROW_ERROR_IMPL__(	\
+		e__,						\
+		HORD_MSG_SCOPED_CLASS(m__)	\
+	)
 
 /**
 	Throw error with function scope.
 
 	@param e__ ErrorCode.
-	@param m__ Message.
+	@param m__ Message (string literal).
 
 	@sa HORD_THROW_ERROR_SCOPED_CLASS,
 		HORD_THROW_ERROR_SCOPED_FQN
 */
 #define HORD_THROW_ERROR_SCOPED_FUNC(e__, m__) \
-	HORD_THROW_ERROR_SCOPED_IMPL__(HORD_SCOPE_FUNC, e__, m__)
+	HORD_THROW_ERROR_IMPL__(	\
+		e__,						\
+		HORD_MSG_SCOPED_FUNC(m__)	\
+	)
 
 /**
 	Throw error with fully-qualified scope.
 
 	@param e__ ErrorCode.
-	@param m__ Message.
+	@param m__ Message (string literal).
 
 	@sa HORD_THROW_ERROR_SCOPED_CLASS,
 		HORD_THROW_ERROR_SCOPED_FUNC
 */
 #define HORD_THROW_ERROR_SCOPED_FQN(e__, m__) \
-	HORD_THROW_ERROR_SCOPED_IMPL__(HORD_SCOPE_FQN, e__, m__)
+	HORD_THROW_ERROR_IMPL__(	\
+		e__,						\
+		HORD_MSG_SCOPED_FQN(m__)	\
+	)
 
 /** @} */ // end of name-group Error reporting
 
