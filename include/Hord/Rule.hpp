@@ -48,7 +48,8 @@ protected:
 	RuleState(RuleState&&) noexcept;
 public:
 	/** Destructor. */
-	virtual ~RuleState() noexcept=0;
+	virtual
+	~RuleState() noexcept=0;
 /// @}
 
 protected:
@@ -85,7 +86,11 @@ public:
 		/**
 			Construct a rule of this type.
 		*/
-		Rule* (&construct)(HiveID const owner, RuleID const id);
+		Rule*
+		(&construct)(
+			HiveID const owner,
+			RuleID const id
+		);
 	};
 
 	using Object::ensure_traits;
@@ -95,14 +100,16 @@ private:
 	Rule(Rule const&)=delete;
 	Rule& operator=(Rule const&)=delete;
 
-	Object::type_info const& get_type_info_impl() const noexcept override;
+	Object::type_info const&
+	get_type_info_impl() const noexcept override;
 
 protected:
 /** @name Implementation */ /// @{
 	/**
 		get_rule_type_info() implementation.
 	*/
-	virtual type_info const& get_rule_type_info_impl() const noexcept=0;
+	virtual type_info const&
+	get_rule_type_info_impl() const noexcept=0;
 /// @}
 
 protected:
@@ -122,7 +129,10 @@ protected:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Rule(HiveID const owner, RuleID const id) noexcept
+	Rule(
+		HiveID const owner,
+		RuleID const id
+	) noexcept
 		: Object{
 			(OBJECT_NULL==id)
 				? StorageState::null
@@ -135,7 +145,8 @@ protected:
 	Rule(Rule&&);
 public:
 	/** Destructor. */
-	virtual ~Rule() noexcept override=0;
+	virtual
+	~Rule() noexcept override=0;
 /// @}
 
 protected:
@@ -150,8 +161,10 @@ public:
 		Get type info.
 		@returns The rule's type info.
 	*/
-	type_info const& get_rule_type_info() const noexcept
-		{ return get_rule_type_info_impl(); }
+	type_info const&
+	get_rule_type_info() const noexcept {
+		return get_rule_type_info_impl();
+	}
 /// @}
 };
 

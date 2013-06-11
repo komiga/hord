@@ -75,7 +75,7 @@ public:
 struct Record final {
 public:
 	/** Field vector. */
-	typedef aux::vector<Field> field_vector_type;
+	using field_vector_type=aux::vector<Field>;
 
 /** @name Properties */ /// @{
 	/** Field collection. */

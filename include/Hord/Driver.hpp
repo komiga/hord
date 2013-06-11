@@ -36,16 +36,19 @@ class Driver;
 */
 class Driver final {
 private:
-	typedef aux::unordered_map<
-		HiveID, std::unique_ptr<Datastore>
-	> datastore_map_type;
+	using datastore_map_type
+	=aux::unordered_map<
+		HiveID,
+		std::unique_ptr<Datastore>
+	>;
 
-	typedef aux::unordered_map<
+	using rule_type_map_type
+	=aux::unordered_map<
 		RuleType,
 		Rule::type_info const&
-	> rule_type_map_type;
+	>;
 
-	typedef aux::vector<HiveID> id_vector_type;
+	using id_vector_type=aux::vector<HiveID>;
 
 	IDGenerator& m_id_generator;
 	rule_type_map_type m_rule_types{};
@@ -67,7 +70,10 @@ public:
 
 		@param id_generator IDGenerator.
 	*/
-	Driver(IDGenerator& id_generator) noexcept;
+	explicit
+	Driver(
+		IDGenerator& id_generator
+	) noexcept;
 	/** Move constructor. */
 	Driver(Driver&&);
 	/** Destructor. */
@@ -79,8 +85,10 @@ public:
 		Get IDGenerator.
 		@returns The IDGenerator.
 	*/
-	IDGenerator& get_id_generator() noexcept
-		{ return m_id_generator; }
+	IDGenerator&
+	get_id_generator() noexcept {
+		return m_id_generator;
+	}
 /// @}
 
 /** @name Operations */ /// @{
@@ -102,7 +110,10 @@ public:
 
 		@param type_info Rule type information to register.
 	*/
-	void register_rule_type(Rule::type_info const& type_info);
+	void
+	register_rule_type(
+		Rule::type_info const& type_info
+	);
 
 	/**
 		Placehold hive.
@@ -132,7 +143,8 @@ public:
 		@param type_info %Datastore type for the hive.
 		@param root_path Root path.
 	*/
-	Hive const& placehold_hive(
+	Hive const&
+	placehold_hive(
 		Datastore::type_info const& type_info,
 		String root_path
 	);
@@ -143,7 +155,10 @@ public:
 		@param all Whether to serialize all objects, or only
 		those that have @c StorageState::modified.
 	*/
-	void serialize(bool const all=false);
+	void
+	serialize(
+		bool const all=false
+	);
 /// @}
 };
 

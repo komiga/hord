@@ -39,7 +39,7 @@ public:
 	/**
 		Buffer type.
 	*/
-	typedef aux::vector<uint8_t> buffer_type;
+	using buffer_type=aux::vector<uint8_t>;
 
 	/**
 		Message header.
@@ -56,7 +56,10 @@ private:
 	MessageBuffer(MessageBuffer const&)=delete;
 	MessageBuffer& operator=(MessageBuffer const&)=delete;
 
-	void grow(std::size_t const new_size);
+	void
+	grow(
+		std::size_t const new_size
+	);
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -65,7 +68,10 @@ public:
 
 		@param capacity Buffer capacity. Consider space used by headers.
 	*/
-	MessageBuffer(std::size_t const capacity);
+	explicit
+	MessageBuffer(
+		std::size_t const capacity
+	);
 	/** Move constructor. */
 	MessageBuffer(MessageBuffer&&);
 	/** Destructor. */
@@ -82,8 +88,10 @@ public:
 		Get buffer.
 		@returns Message buffer.
 	*/
-	buffer_type const& get_buffer() const noexcept
-		{ return m_buffer; }
+	buffer_type const&
+	get_buffer() const noexcept {
+		return m_buffer;
+	}
 	/**
 		Check if buffer is empty.
 
@@ -91,36 +99,46 @@ public:
 		- @c true if the buffer is empty;
 		- @c false if it is not.
 	*/
-	bool is_empty() const noexcept
-		{ return m_buffer.empty(); }
+	bool
+	is_empty() const noexcept {
+		return m_buffer.empty();
+	}
 	/**
 		Get buffer size.
 
 		@returns Current buffer size.
 	*/
-	std::size_t get_size() const noexcept
-		{ return m_buffer.size(); }
+	std::size_t
+	get_size() const noexcept {
+		return m_buffer.size();
+	}
 	/**
 		Get buffer capacity.
 
 		@returns Current buffer capacity.
 	*/
-	std::size_t get_capacity() const noexcept
-		{ return m_buffer.capacity(); }
+	std::size_t
+	get_capacity() const noexcept {
+		return m_buffer.capacity();
+	}
 /// @}
 
 /** @name Operations */ /// @{
 	/**
 		Clear buffer.
 	*/
-	void clear();
+	void
+	clear();
 
 	/**
 		Push a data-less message.
 
 		@param id Message id.
 	*/
-	void push_back(MessageID const id) {
+	void
+	push_back(
+		MessageID const id
+	) {
 		push_back(id, 0, nullptr);
 	}
 
@@ -133,7 +151,8 @@ public:
 		@param size Message size.
 		@param data Message data.
 	*/
-	void push_back(
+	void
+	push_back(
 		MessageID const id,
 		std::size_t const size,
 		void const* const data
@@ -149,15 +168,19 @@ public:
 		@param msg Message.
 	*/
 	template<typename MsgT>
-	void push_back(MessageID const id, MsgT const& msg) {
+	void
+	push_back(
+		MessageID const id,
+		MsgT const& msg
+	) {
 		static_assert(
 			std::is_pod<MsgT>::value,
 			"MsgT must satisfy PODType"
 		);
-		push_back(
+		this->push_back(
 			id,
 			sizeof(MsgT),
-			&msg
+			static_cast<void const*>(&msg)
 		);
 	}
 /// @}

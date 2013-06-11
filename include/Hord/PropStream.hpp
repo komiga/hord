@@ -74,15 +74,19 @@ public:
 		Get datastore.
 		@returns %Datastore.
 	*/
-	Datastore& get_datastore() noexcept
-		{ return m_datastore; }
+	Datastore&
+	get_datastore() noexcept {
+		return m_datastore;
+	}
 
 	/**
 		Get info.
 		@returns Info.
 	*/
-	PropInfo const& get_info() const noexcept
-		{ return m_info; }
+	PropInfo const&
+	get_info() const noexcept {
+		return m_info;
+	}
 
 	/**
 		Get raw input stream.
@@ -93,18 +97,21 @@ public:
 
 		@returns Raw input stream.
 	*/
-	std::istream& get_stream();
+	std::istream&
+	get_stream();
 /// @}
 
 /** @name Operations */ /// @{
 	/**
 		See @c Datastore::acquire_input_stream().
 	*/
-	void acquire();
+	void
+	acquire();
 	/**
 		See @c Datastore::release_input_stream().
 	*/
-	void release();
+	void
+	release();
 /// @}
 };
 
@@ -147,15 +154,19 @@ public:
 		Get datastore.
 		@returns %Datastore.
 	*/
-	Datastore& get_datastore() noexcept
-		{ return m_datastore; }
+	Datastore&
+	get_datastore() noexcept {
+		return m_datastore;
+	}
 
 	/**
 		Get info.
 		@returns Info.
 	*/
-	PropInfo const& get_info() const noexcept
-		{ return m_info; }
+	PropInfo const&
+	get_info() const noexcept {
+		return m_info;
+	}
 
 	/**
 		Get raw output stream.
@@ -166,18 +177,21 @@ public:
 
 		@returns Raw output stream.
 	*/
-	std::ostream& get_stream();
+	std::ostream&
+	get_stream();
 /// @}
 
 /** @name Operations */ /// @{
 	/**
 		See @c Datastore::acquire_output_stream().
 	*/
-	void acquire();
+	void
+	acquire();
 	/**
 		See @c Datastore::release_output_stream().
 	*/
-	void release();
+	void
+	release();
 /// @}
 };
 

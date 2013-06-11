@@ -65,7 +65,11 @@ public:
 			@param root_path Root path.
 			@param id %Hive ID.
 		*/
-		Datastore* (&construct)(String root_path, HiveID const id) noexcept;
+		Datastore*
+		(&construct)(
+			String root_path,
+			HiveID const id
+		) noexcept;
 	};
 
 	/**
@@ -108,37 +112,43 @@ protected:
 	/**
 		open() implementation.
 	*/
-	virtual void open_impl()=0;
+	virtual void
+	open_impl()=0;
 	/**
 		close() implementation.
 
 		@remarks This is not called if @c is_open()==false.
 	*/
-	virtual void close_impl()=0;
+	virtual void
+	close_impl()=0;
 
 	/**
 		acquire_input_stream() implementation.
 	*/
-	virtual std::istream& acquire_input_stream_impl(
+	virtual std::istream&
+	acquire_input_stream_impl(
 		PropInfo const& prop_info
 	)=0;
 	/**
 		acquire_output_stream() implementation.
 	*/
-	virtual std::ostream& acquire_output_stream_impl(
+	virtual std::ostream&
+	acquire_output_stream_impl(
 		PropInfo const& prop_info
 	)=0;
 
 	/**
 		release_input_stream() implementation.
 	*/
-	virtual void release_input_stream_impl(
+	virtual void
+	release_input_stream_impl(
 		PropInfo const& prop_info
 	)=0;
 	/**
 		release_output_stream() implementation.
 	*/
-	virtual void release_output_stream_impl(
+	virtual void
+	release_output_stream_impl(
 		PropInfo const& prop_info
 	)=0;
 /// @}
@@ -166,12 +176,18 @@ protected:
 		Enable state.
 		@param state %State to enable.
 	*/
-	void enable_state(State const state) noexcept;
+	void
+	enable_state(
+		State const state
+	) noexcept;
 	/**
 		Disable state.
 		@param state %State to disable.
 	*/
-	void disable_state(State const state) noexcept;
+	void
+	disable_state(
+		State const state
+	) noexcept;
 	/**
 		Check if a state is enabled.
 
@@ -180,7 +196,10 @@ protected:
 		- @c false if the state is disabled.
 		@param state %State to test.
 	*/
-	bool has_state(State const state) const noexcept;
+	bool
+	has_state(
+		State const state
+	) const noexcept;
 /// @}
 
 /** @name Constructors and destructor */ /// @{
@@ -190,10 +209,14 @@ protected:
 		@param root_path Root path.
 		@param id %Hive ID.
 	*/
-	Datastore(String root_path, HiveID const id) noexcept;
+	Datastore(
+		String root_path,
+		HiveID const id
+	) noexcept;
 public:
 	/** Destructor. */
-	virtual ~Datastore()=0;
+	virtual
+	~Datastore()=0;
 /// @}
 
 public:
@@ -206,27 +229,36 @@ public:
 
 		@param root_path New root path.
 	*/
-	void set_root_path(String root_path);
+	void
+	set_root_path(
+		String root_path
+	);
 	/**
 		Get root path.
 		@returns Root path.
 	*/
-	String const& get_root_path() const noexcept
-		{ return m_root_path; }
+	String const&
+	get_root_path() const noexcept {
+		return m_root_path;
+	}
 
 	/**
 		Get hive.
 		@returns %Hive.
 	*/
-	Hive const& get_hive() const noexcept
-		{ return m_hive; }
+	Hive const&
+	get_hive() const noexcept {
+		return m_hive;
+	}
 
 	/**
 		Get mutable hive.
 		@returns Mutable hive.
 	*/
-	Hive& get_hive() noexcept
-		{ return m_hive; }
+	Hive&
+	get_hive() noexcept {
+		return m_hive;
+	}
 
 	/**
 		Check if the datastore is open.
@@ -234,8 +266,10 @@ public:
 		- @c true if the datastore is open;
 		- @c false if it is closed.
 	*/
-	bool is_open() const noexcept
-		{ return has_state(State::opened); }
+	bool
+	is_open() const noexcept {
+		return has_state(State::opened);
+	}
 
 	/**
 		Check if the datastore is locked.
@@ -243,8 +277,10 @@ public:
 		- @c true if the datastore is locked;
 		- @c false if it is not locked.
 	*/
-	bool is_locked() const noexcept
-		{ return has_state(State::locked); }
+	bool
+	is_locked() const noexcept {
+		return has_state(State::locked);
+	}
 /// @}
 
 /** @name Operations */ /// @{
@@ -257,14 +293,16 @@ public:
 		@throws Error{ErrorCode::datastore_open_failed}
 		If the datastore failed to open.
 	*/
-	void open();
+	void
+	open();
 	/**
 		Close the datastore.
 
 		@throws Error{ErrorCode::datastore_locked}
 		If the datastore is locked.
 	*/
-	void close();
+	void
+	close();
 
 	/**
 		Acquire raw stream for prop.
@@ -292,9 +330,15 @@ public:
 			InputPropStream,
 			OutputPropStream
 	*/
-	std::istream& acquire_input_stream(PropInfo const& prop_info);
+	std::istream&
+	acquire_input_stream(
+		PropInfo const& prop_info
+	);
 	/** @copydoc acquire_input_stream(PropInfo const&) */
-	std::ostream& acquire_output_stream(PropInfo const& prop_info);
+	std::ostream&
+	acquire_output_stream(
+		PropInfo const& prop_info
+	);
 
 	/**
 		Release raw stream for prop.
@@ -322,9 +366,15 @@ public:
 			InputPropStream,
 			OutputPropStream
 	*/
-	void release_input_stream(PropInfo const& prop_info);
+	void
+	release_input_stream(
+		PropInfo const& prop_info
+	);
 	/** @copydoc release_input_stream(PropInfo const&) */
-	void release_output_stream(PropInfo const& prop_info);
+	void
+	release_output_stream(
+		PropInfo const& prop_info
+	);
 /// @}
 };
 

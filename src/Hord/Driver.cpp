@@ -14,7 +14,9 @@ namespace Hord {
 
 #define HORD_SCOPE_CLASS_IDENT__ Driver
 
-Driver::Driver(IDGenerator& id_generator) noexcept
+Driver::Driver(
+	IDGenerator& id_generator
+) noexcept
 	: m_id_generator{id_generator}
 {
 	static_assert(
@@ -32,7 +34,10 @@ Driver::Driver(Driver&&)=default;
 Driver::~Driver() noexcept=default;
 
 #define HORD_SCOPE_FUNC_IDENT__ register_rule_type
-void Driver::register_rule_type(Rule::type_info const& type_info) {
+void
+Driver::register_rule_type(
+	Rule::type_info const& type_info
+) {
 	if (
 		static_cast<RuleType>(StandardRuleTypes::ReservedLast)
 		>=type_info.type
@@ -61,7 +66,8 @@ void Driver::register_rule_type(Rule::type_info const& type_info) {
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
-Hive const& Driver::placehold_hive(
+Hive const&
+Driver::placehold_hive(
 	Datastore::type_info const& type_info,
 	String root_path
 ) {

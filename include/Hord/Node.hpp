@@ -39,11 +39,11 @@ class Node final
 	: public Object {
 public:
 	/** Column vector. */
-	typedef aux::vector<Column> column_vector_type;
+	using column_vector_type=aux::vector<Column>;
 	/** Record vector. */
-	typedef aux::vector<Record> record_vector_type;
+	using record_vector_type=aux::vector<Record>;
 	/** Child vector. */
-	typedef aux::vector<NodeID> child_vector_type;
+	using child_vector_type=aux::vector<NodeID>;
 
 private:
 	NodeID m_layout_ref{OBJECT_NULL};
@@ -55,7 +55,8 @@ private:
 	Node(Node const&)=delete;
 	Node& operator=(Node const&)=delete;
 
-	Object::type_info const& get_type_info_impl() const noexcept override;
+	Object::type_info const&
+	get_type_info_impl() const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -74,7 +75,10 @@ public:
 		@param owner Owner.
 		@param id ID.
 	*/
-	Node(HiveID const owner, NodeID const id) noexcept;
+	Node(
+		HiveID const owner,
+		NodeID const id
+	) noexcept;
 	/** Move constructor. */
 	Node(Node&&);
 	/** Destructor. */
@@ -94,53 +98,70 @@ public:
 		will be cleared.
 		@param node_id New layout reference.
 	*/
-	void set_layout_ref(NodeID const node_id) noexcept;
+	void
+	set_layout_ref(
+		NodeID const node_id
+	) noexcept;
 	/**
 		Get layout reference.
 		@returns Current layout reference.
 	*/
-	ObjectID get_layout_ref() const noexcept
-		{ return m_layout_ref; }
+	ObjectID
+	get_layout_ref() const noexcept {
+		return m_layout_ref;
+	}
 
 	// TODO: Notes for when layout_ref is non-OBJECT_NULL
 	/**
 		Get layout.
 		@returns Current layout.
 	*/
-	column_vector_type const& get_layout() const noexcept
-		{ return m_layout; }
+	column_vector_type const&
+	get_layout() const noexcept {
+		return m_layout;
+	}
 	/**
 		Get mutable layout.
 		@returns Mutable layout.
 	*/
-	column_vector_type& get_layout() noexcept
-		{ return m_layout; }
+	column_vector_type&
+	get_layout() noexcept {
+		return m_layout;
+	}
 
 	/**
 		Get record collection.
 		@returns Current record collection.
 	*/
-	record_vector_type const& get_records() const noexcept
-		{ return m_records; }
+	record_vector_type const&
+	get_records() const noexcept {
+		return m_records;
+	}
 	/**
 		Get mutable record collection.
 		@returns Mutable record collection.
 	*/
-	record_vector_type& get_records() noexcept
-		{ return m_records; }
+	record_vector_type&
+	get_records() noexcept {
+		return m_records;
+	}
 
 	/**
 		Get child collection.
 		@returns Current child collection.
 	*/
-	child_vector_type const& get_children() const noexcept
-		{ return m_children; }
+	child_vector_type const&
+	get_children() const noexcept {
+		return m_children;
+	}
 	/**
 		Get mutable child collection.
 		@returns Mutable child collection.
 	*/
-	child_vector_type& get_children() noexcept
-		{ return m_children; }
+	child_vector_type&
+	get_children() noexcept {
+		return m_children;
+	}
 /// @}
 };
 

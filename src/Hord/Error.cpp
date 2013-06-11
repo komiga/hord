@@ -43,7 +43,10 @@ static_assert(
 	"ErrorCode name list is incomplete"
 );
 
-char const* get_error_name(ErrorCode const error_code) noexcept {
+char const*
+get_error_name(
+	ErrorCode const error_code
+) noexcept {
 	std::size_t const index=static_cast<std::size_t>(error_code);
 	if (index<std::extent<decltype(s_error_names)>::value) {
 		return s_error_names[index];
@@ -54,7 +57,10 @@ char const* get_error_name(ErrorCode const error_code) noexcept {
 
 // class Error implementation
 
-Error::Error(ErrorCode const errc, String msg) noexcept
+Error::Error(
+	ErrorCode const errc,
+	String msg
+) noexcept
 	: std::exception{}
 	, m_errc{errc}
 	, m_msg{std::move(msg)}

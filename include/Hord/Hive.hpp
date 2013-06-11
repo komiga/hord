@@ -40,11 +40,13 @@ class Hive final
 	: public Object {
 public:
 	/** Object ID set. */
-	typedef aux::unordered_set<ObjectID> id_set_type;
+	using id_set_type=aux::unordered_set<ObjectID>;
 	/** Object map. */
-	typedef aux::unordered_map<
-		ObjectID, std::unique_ptr<Object>
-	> object_map_type;
+	using object_map_type
+	=aux::unordered_map<
+		ObjectID,
+		std::unique_ptr<Object>
+	>;
 
 private:
 	id_set_type m_idset{};
@@ -53,7 +55,8 @@ private:
 	Hive(Hive const&)=delete;
 	Hive& operator=(Hive const&)=delete;
 
-	Object::type_info const& get_type_info_impl() const noexcept override;
+	Object::type_info const&
+	get_type_info_impl() const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -77,7 +80,10 @@ public:
 
 		@param id ID.
 	*/
-	Hive(ObjectID const id) noexcept;
+	explicit
+	Hive(
+		ObjectID const id
+	) noexcept;
 	/** Move constructor. */
 	Hive(Hive&&);
 	/** Destructor. */
@@ -94,27 +100,35 @@ public:
 		Get ID set.
 		@returns Current ID set.
 	*/
-	id_set_type const& get_idset() const noexcept
-		{ return m_idset; }
+	id_set_type const&
+	get_idset() const noexcept {
+		return m_idset;
+	}
 	/**
 		Get mutable ID set.
 		@returns Mutable ID set.
 	*/
-	id_set_type& get_idset() noexcept
-		{ return m_idset; }
+	id_set_type&
+	get_idset() noexcept {
+		return m_idset;
+	}
 
 	/**
 		Get object map.
 		@returns Current object map.
 	*/
-	object_map_type const& get_objects() const noexcept
-		{ return m_objects; }
+	object_map_type const&
+	get_objects() const noexcept {
+		return m_objects;
+	}
 	/**
 		Get mutable object map.
 		@returns Mutable object map.
 	*/
-	object_map_type& get_objects() noexcept
-		{ return m_objects; }
+	object_map_type&
+	get_objects() noexcept {
+		return m_objects;
+	}
 /// @}
 
 /** @name Objects */ /// @{
@@ -126,7 +140,8 @@ public:
 		- @c false if it is not.
 		@param id %Object ID to look for.
 	*/
-	bool has_child(
+	bool
+	has_child(
 		ObjectID const id
 	) const noexcept(noexcept(m_idset.find(id)));
 /// @}

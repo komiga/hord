@@ -39,13 +39,17 @@ protected:
 		@remarks If called from Driver, @a seed_value will be a growing
 		value, based on time.
 	*/
-	virtual void seed_impl(int64_t seed_value) noexcept=0;
+	virtual void
+	seed_impl(
+		int64_t seed_value
+	) noexcept=0;
 	/**
 		generate() implementation.
 
 		@post Return value must not be equal to @c OBJECT_NULL.
 	*/
-	virtual ObjectID generate_impl() noexcept=0;
+	virtual ObjectID
+	generate_impl() noexcept=0;
 /// @}
 
 public:
@@ -55,7 +59,8 @@ public:
 	/** Move constructor. */
 	IDGenerator(IDGenerator&&) noexcept;
 	/** Destructor. */
-	virtual ~IDGenerator() noexcept=0;
+	virtual
+	~IDGenerator() noexcept=0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -68,8 +73,12 @@ public:
 		Seed the generator.
 		@param seed_value Seed value.
 	*/
-	void seed(int64_t const seed_value) noexcept
-		{ seed_impl(seed_value); }
+	void
+	seed(
+		int64_t const seed_value
+	) noexcept {
+		seed_impl(seed_value);
+	}
 
 	/**
 		Generate an ID.
@@ -80,8 +89,10 @@ public:
 		@endcode
 		@returns The generated ID.
 	*/
-	ObjectID generate() noexcept
-		{ return generate_impl(); }
+	ObjectID
+	generate() noexcept {
+		return generate_impl();
+	}
 
 	/**
 		Generate unique ID within set.
@@ -92,9 +103,13 @@ public:
 		@param set Set to generate within.
 	*/
 	template<typename Set>
-	ObjectID generate_unique(Set const& set) noexcept {
+	ObjectID
+	generate_unique(
+		Set const& set
+	) noexcept {
 		ObjectID id;
-		do { id=generate(); } while (set.cend()!=set.find(id));
+		do { id=generate(); }
+		while (set.cend()!=set.find(id));
 		return id;
 	}
 /// @}

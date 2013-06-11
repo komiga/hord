@@ -24,7 +24,8 @@
 #include "../common/common.hpp"
 #include "../common/dummies.hpp"
 
-int main() {
+signed
+main() {
 	// group driver
 	Hord::Hive hive{};
 	//Hord::IDGenerator id_generator{};

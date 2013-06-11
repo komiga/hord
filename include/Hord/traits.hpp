@@ -33,7 +33,9 @@ template<
 	typename T,
 	template<typename> class... TraitTpl
 >
-struct require_t : public tw::require_t<T, TraitTpl...> {};
+struct require_t
+	: public tw::require_t<T, TraitTpl...>
+{};
 
 /**
 	See @c trait_wrangler::disallow_t.
@@ -42,7 +44,9 @@ template<
 	typename T,
 	template<typename> class... TraitTpl
 >
-struct disallow_t : public tw::disallow_t<T, TraitTpl...> {};
+struct disallow_t
+	: public tw::disallow_t<T, TraitTpl...>
+{};
 
 /** @} */ // end of doc-group traits
 

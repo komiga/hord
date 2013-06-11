@@ -17,7 +17,10 @@ Object::Object(
 	, m_id{id}
 {}
 
-Object::Object(ObjectID const owner, ObjectID const id) noexcept
+Object::Object(
+	ObjectID const owner,
+	ObjectID const id
+) noexcept
 	: m_owner{owner}
 	, m_id{id}
 {}
@@ -27,7 +30,10 @@ Object::~Object() noexcept=default;
 
 Object& Object::operator=(Object&&)=default;
 
-void Object::set_slug(String slug) noexcept {
+void
+Object::set_slug(
+	String slug
+) noexcept {
 	m_slug.assign(std::move(slug));
 	if (64u<m_slug.size()) {
 		m_slug.resize(64u);

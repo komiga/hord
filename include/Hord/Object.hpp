@@ -83,7 +83,8 @@ protected:
 	/**
 		get_type_info() implementation.
 	*/
-	virtual type_info const& get_type_info_impl() const noexcept=0;
+	virtual type_info const&
+	get_type_info_impl() const noexcept=0;
 /// @}
 
 protected:
@@ -117,12 +118,16 @@ protected:
 		@param owner Owner ID.
 		@param id %Object ID.
 	*/
-	Object(ObjectID const owner, ObjectID const id) noexcept;
+	Object(
+		ObjectID const owner,
+		ObjectID const id
+	) noexcept;
 	/** Move constructor. */
 	Object(Object&&);
 public:
 	/** Destructor. */
-	virtual ~Object() noexcept=0;
+	virtual
+	~Object() noexcept=0;
 /// @}
 
 protected:
@@ -137,56 +142,76 @@ public:
 		Get type info.
 		@returns The object's type info.
 	*/
-	type_info const& get_type_info() const noexcept
-		{ return get_type_info_impl(); }
+	type_info const&
+	get_type_info() const noexcept {
+		return get_type_info_impl();
+	}
 
 	/**
 		Get type.
 		@returns Type.
 	*/
-	ObjectType get_type() const noexcept
-		{ return get_type_info().type; }
+	ObjectType
+	get_type() const noexcept {
+		return get_type_info().type;
+	}
 
 	/**
 		Set storage state.
 		@param storage_state New state.
 	*/
-	void set_storage_state(
+	void
+	set_storage_state(
 		StorageState const storage_state
-	) noexcept
-		{ m_storage_state=storage_state; }
+	) noexcept {
+		m_storage_state=storage_state;
+	}
 	/**
 		Get storage state.
 		@returns Current storage state.
 	*/
-	StorageState get_storage_state() const noexcept
-		{ return m_storage_state; }
+	StorageState
+	get_storage_state() const noexcept {
+		return m_storage_state;
+	}
 
 	/**
 		Set owner.
 		@param owner New owner.
 	*/
-	void set_owner(ObjectID const owner) noexcept
-		{ m_owner=owner; }
+	void
+	set_owner(
+		ObjectID const owner
+	) noexcept {
+		m_owner=owner;
+	}
 	/**
 		Get owner.
 		@returns Current owner.
 	*/
-	ObjectID get_owner() const noexcept
-		{ return m_owner; }
+	ObjectID
+	get_owner() const noexcept {
+		return m_owner;
+	}
 
 	/**
 		Set ID.
 		@param id New ID.
 	*/
-	void set_id(ObjectID const id) noexcept
-		{ m_id=id; }
+	void
+	set_id(
+		ObjectID const id
+	) noexcept {
+		m_id=id;
+	}
 	/**
 		Get ID.
 		@returns Current ID.
 	*/
-	ObjectID get_id() const noexcept
-		{ return m_id; }
+	ObjectID
+	get_id() const noexcept {
+		return m_id;
+	}
 
 	/**
 		Set slug.
@@ -194,26 +219,35 @@ public:
 		@warning This property is truncated to 64 code units.
 		@param slug New slug.
 	*/
-	void set_slug(String slug) noexcept;
+	void
+	set_slug(
+		String slug
+	) noexcept;
 	/**
 		Get slug.
 		@returns Current slug.
 	*/
-	String const& get_slug() const noexcept
-		{ return m_slug; }
+	String const&
+	get_slug() const noexcept {
+		return m_slug;
+	}
 
 	/**
 		Get metadata.
 		@returns Current metadata.
 	*/
-	Metadata const& get_metadata() const noexcept
-		{ return m_metadata; }
+	Metadata const&
+	get_metadata() const noexcept {
+		return m_metadata;
+	}
 	/**
 		Get mutable metadata.
 		@returns Mutable metadata.
 	*/
-	Metadata& get_metadata() noexcept
-		{ return m_metadata; }
+	Metadata&
+	get_metadata() noexcept {
+		return m_metadata;
+	}
 /// @}
 };
 

@@ -72,21 +72,28 @@ private:
 	MetaField(MetaField const&)=delete;
 	MetaField& operator=(MetaField const&)=delete;
 
-	void bind_base(murk::TieBinder& binder) noexcept;
+	void
+	bind_base(
+		murk::TieBinder& binder
+	) noexcept;
 
 protected:
 /** @name Implementation */ /// @{
 	/**
 		get_type_info() implementation.
 	*/
-	virtual type_info const& get_type_info_impl() const noexcept=0;
+	virtual type_info const&
+	get_type_info_impl() const noexcept=0;
 	/**
 		bind() implementation.
 
 		@note bind() will bind base properties; implementations shall
 		bind only their own properties.
 	*/
-	virtual void bind_impl(murk::TieBinder&) noexcept=0;
+	virtual void
+	bind_impl(
+		murk::TieBinder&
+	) noexcept=0;
 /// @}
 
 public:
@@ -97,13 +104,17 @@ public:
 		Constructor with name.
 		@param name Name.
 	*/
-	explicit MetaField(String name) noexcept
+	explicit
+	MetaField(
+		String name
+	) noexcept
 		: name{std::move(name)}
 	{}
 	/** Move constructor. */
 	MetaField(MetaField&&);
 	/** Destructor. */
-	virtual ~MetaField() noexcept=0;
+	virtual
+	~MetaField() noexcept=0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -116,8 +127,10 @@ public:
 		Get type info.
 		@returns The field's type info.
 	*/
-	type_info const& get_type_info() const noexcept
-		{ return get_type_info_impl(); }
+	type_info const&
+	get_type_info() const noexcept {
+		return get_type_info_impl();
+	}
 /// @}
 
 /** @name Serialization */ /// @{
@@ -125,7 +138,10 @@ public:
 		Bind field.
 		@param binder Tie binder.
 	*/
-	void bind(murk::TieBinder& binder) noexcept {
+	void
+	bind(
+		murk::TieBinder& binder
+	) noexcept {
 		bind_base(binder);
 		bind_impl(binder);
 	}
@@ -147,8 +163,13 @@ private:
 	StringMetaField(StringMetaField const&)=delete;
 	StringMetaField& operator=(StringMetaField const&)=delete;
 
-	MetaField::type_info const& get_type_info_impl() const noexcept override;
-	void bind_impl(murk::TieBinder&) noexcept override;
+	MetaField::type_info const&
+	get_type_info_impl() const noexcept override;
+
+	void
+	bind_impl(
+		murk::TieBinder&
+	) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -159,7 +180,10 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	StringMetaField(String name, String value) noexcept
+	StringMetaField(
+		String name,
+		String value
+	) noexcept
 		: MetaField{std::move(name)}
 		, value{std::move(value)}
 	{}
@@ -190,8 +214,13 @@ private:
 	Int32MetaField(Int32MetaField const&)=delete;
 	Int32MetaField& operator=(Int32MetaField const&)=delete;
 
-	MetaField::type_info const& get_type_info_impl() const noexcept override;
-	void bind_impl(murk::TieBinder&) noexcept override;
+	MetaField::type_info const&
+	get_type_info_impl() const noexcept override;
+
+	void
+	bind_impl(
+		murk::TieBinder&
+	) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -202,7 +231,10 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	Int32MetaField(String name, int32_t value) noexcept
+	Int32MetaField(
+		String name,
+		int32_t value
+	) noexcept
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
@@ -233,8 +265,13 @@ private:
 	Int64MetaField(Int64MetaField const&)=delete;
 	Int64MetaField& operator=(Int64MetaField const&)=delete;
 
-	MetaField::type_info const& get_type_info_impl() const noexcept override;
-	void bind_impl(murk::TieBinder&) noexcept override;
+	MetaField::type_info const&
+	get_type_info_impl() const noexcept override;
+
+	void
+	bind_impl(
+		murk::TieBinder&
+	) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -245,7 +282,10 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	Int64MetaField(String name, int64_t value) noexcept
+	Int64MetaField(
+		String name,
+		int64_t value
+	) noexcept
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
@@ -276,8 +316,13 @@ private:
 	BoolMetaField(BoolMetaField const&)=delete;
 	BoolMetaField& operator=(BoolMetaField const&)=delete;
 
-	MetaField::type_info const& get_type_info_impl() const noexcept override;
-	void bind_impl(murk::TieBinder&) noexcept override;
+	MetaField::type_info const&
+	get_type_info_impl() const noexcept override;
+
+	void
+	bind_impl(
+		murk::TieBinder&
+	) noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -288,7 +333,10 @@ public:
 		@param name Name.
 		@param value Value.
 	*/
-	BoolMetaField(String name, bool value) noexcept
+	BoolMetaField(
+		String name,
+		bool value
+	) noexcept
 		: MetaField{std::move(name)}
 		, value{value}
 	{}
@@ -310,7 +358,7 @@ public:
 struct Metadata final {
 public:
 	/** MetaField vector. */
-	typedef aux::vector<std::unique_ptr<MetaField> > field_vector_type;
+	using field_vector_type=aux::vector<std::unique_ptr<MetaField> >;
 
 /** @name Properties */ /// @{
 	/** Fields. */

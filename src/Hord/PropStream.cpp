@@ -18,23 +18,23 @@ InputPropStream::InputPropStream(
 	, m_info(std::move(info))
 {}
 
-InputPropStream::InputPropStream(
-	InputPropStream&&
-) noexcept=default;
-
+InputPropStream::InputPropStream(InputPropStream&&) noexcept=default;
 InputPropStream::~InputPropStream() noexcept=default;
 
-std::istream& InputPropStream::get_stream() {
+std::istream&
+InputPropStream::get_stream() {
 	assert(nullptr!=m_stream);
 	return *m_stream;
 }
 
-void InputPropStream::acquire() {
+void
+InputPropStream::acquire() {
 	assert(nullptr==m_stream);
 	m_stream=&(m_datastore.acquire_input_stream(m_info));
 }
 
-void InputPropStream::release() {
+void
+InputPropStream::release() {
 	if (nullptr!=m_stream) {
 		m_datastore.release_input_stream(m_info);
 		m_stream=nullptr;
@@ -51,23 +51,23 @@ OutputPropStream::OutputPropStream(
 	, m_info(std::move(info))
 {}
 
-OutputPropStream::OutputPropStream(
-	OutputPropStream&&
-) noexcept=default;
-
+OutputPropStream::OutputPropStream(OutputPropStream&&) noexcept=default;
 OutputPropStream::~OutputPropStream() noexcept=default;
 
-std::ostream& OutputPropStream::get_stream() {
+std::ostream&
+OutputPropStream::get_stream() {
 	assert(nullptr!=m_stream);
 	return *m_stream;
 }
 
-void OutputPropStream::acquire() {
+void
+OutputPropStream::acquire() {
 	assert(nullptr==m_stream);
 	m_stream=&(m_datastore.acquire_output_stream(m_info));
 }
 
-void OutputPropStream::release() {
+void
+OutputPropStream::release() {
 	if (nullptr!=m_stream) {
 		m_datastore.release_output_stream(m_info);
 		m_stream=nullptr;

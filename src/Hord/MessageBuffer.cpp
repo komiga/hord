@@ -5,14 +5,19 @@ namespace Hord {
 
 // class MessageBuffer implementation
 
-void MessageBuffer::grow(std::size_t const new_size) {
+void
+MessageBuffer::grow(
+	std::size_t const new_size
+) {
 	if (new_size>get_capacity()) {
 		m_buffer.reserve(new_size+512u);
 	}
 	m_buffer.resize(new_size);
 }
 
-MessageBuffer::MessageBuffer(std::size_t const capacity)
+MessageBuffer::MessageBuffer(
+	std::size_t const capacity
+)
 	: m_buffer{}
 {
 	m_buffer.reserve(capacity);
@@ -23,13 +28,14 @@ MessageBuffer::~MessageBuffer() noexcept=default;
 
 MessageBuffer& MessageBuffer::operator=(MessageBuffer&&)=default;
 
-void MessageBuffer::push_back(
+void
+MessageBuffer::push_back(
 	MessageID const id,
 	std::size_t const size,
 	void const* const data
 ) {
-
-	msg_header const header{
+	msg_header const
+	header{
 		id,
 		static_cast<uint32_t>(size)
 	};
