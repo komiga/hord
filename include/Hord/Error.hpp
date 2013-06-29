@@ -10,9 +10,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #ifndef HORD_ERROR_HPP_
 #define HORD_ERROR_HPP_
 
-#include "./config.hpp"
-#include "./common_enums.hpp"
-#include "./String.hpp"
+#include <Hord/config.hpp>
+#include <Hord/ErrorCode.hpp>
+#include <Hord/String.hpp>
 
 #include <exception>
 

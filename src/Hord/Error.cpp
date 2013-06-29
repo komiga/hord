@@ -1,5 +1,5 @@
 
-#include <Hord/common_enums.hpp>
+#include <Hord/ErrorCode.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Error.hpp>
 

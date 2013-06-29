@@ -61,6 +61,7 @@ function create_project(name, kind, tdir, root)
 
 	configuration {}
 		includedirs {
+			root .. "/include/",
 			root .. "/dep/duct/",
 			root .. "/dep/murk/include/",
 			root .. "/dep/trait_wrangler/"
@@ -79,7 +80,7 @@ function create_test(group, name, src)
 			root .. "/dep/murk/lib/"
 		}
 		includedirs {
-			root .. "/include/"
+			--root .. "/include/"
 		}
 		files {
 			src

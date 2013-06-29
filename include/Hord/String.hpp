@@ -10,11 +10,15 @@ see @ref index or the accompanying LICENSE file for full text.
 #ifndef HORD_STRING_HPP_
 #define HORD_STRING_HPP_
 
-#include "./config.hpp"
-#include "./aux.hpp"
+#include <Hord/config.hpp>
+#include <Hord/aux.hpp>
 
 namespace Hord {
 
+/**
+	@addtogroup etc
+	@{
+*/
 /**
 	@addtogroup string
 	@{
@@ -33,6 +37,7 @@ namespace Hord {
 using String = aux::basic_string<char>;
 
 /** @} */ // end of doc-group string
+/** @} */ // end of doc-group etc
 
 } // namespace Hord
 

@@ -1,21 +1,22 @@
 
 //#include <Hord/config.hpp>
-//#include <Hord/common_types.hpp>
-//#include <Hord/common_enums.hpp>
 //#include <Hord/aux.hpp>
 #include <Hord/traits.hpp>
 //#include <Hord/String.hpp>
+//#include <Hord/ErrorCode.hpp>
 #include <Hord/Error.hpp>
-#include <Hord/MessageBuffer.hpp>
-//#include <Hord/Metadata.hpp>
-//#include <Hord/Record.hpp>
-#include <Hord/Rule.hpp>
-//#include <Hord/Column.hpp>
-#include <Hord/Node.hpp>
-#include <Hord/Hive.hpp>
-//#include <Hord/Datastore.hpp>
-//#include <Hord/IDGenerator.hpp>
-#include <Hord/Driver.hpp>
+#include <Hord/Msg/Buffer.hpp>
+//#include <Hord/Data/Metadata.hpp>
+//#include <Hord/Data/Field.hpp>
+//#include <Hord/Data/Record.hpp>
+//#include <Hord/Object/Unit.hpp>
+#include <Hord/Rule/Unit.hpp>
+//#include <Hord/Node/Column.hpp>
+#include <Hord/Node/Unit.hpp>
+#include <Hord/Hive/Unit.hpp>
+//#include <Hord/IO/Datastore.hpp>
+//#include <Hord/System/IDGenerator.hpp>
+#include <Hord/System/Driver.hpp>
 
 #include <utility>
 #include <iostream>
@@ -27,23 +28,23 @@
 signed
 main() {
 	// group driver
-	Hord::Hive hive{};
+	Hord::Hive::Unit hive{};
 	//Hord::IDGenerator id_generator{};
 	DummyIDGenerator id_generator{};
-	Hord::Driver driver{id_generator};
+	Hord::System::Driver driver{id_generator};
 
 	// group error
 	Hord::Error err{Hord::ErrorCode::unknown, "oh no!"};
 
 	// group metadata
 	//Hord::MetaField meta_field{};
-	Hord::StringMetaField meta_field_1{};
-	Hord::Int32MetaField meta_field_2{};
-	Hord::Int64MetaField meta_field_3{};
-	Hord::BoolMetaField meta_field_4{};
-	Hord::Metadata metadata{};
+	Hord::Data::StringMetaField meta_field_1{};
+	Hord::Data::Int32MetaField meta_field_2{};
+	Hord::Data::Int64MetaField meta_field_3{};
+	Hord::Data::BoolMetaField meta_field_4{};
+	Hord::Data::Metadata metadata{};
 
-	Hord::MetaField& mf = meta_field_1;
+	Hord::Data::MetaField& mf = meta_field_1;
 	std::cout
 		<< static_cast<int>(mf.get_type_info().type) << ','
 		<< static_cast<int>(meta_field_2.get_type_info().type) << ','
@@ -52,36 +53,36 @@ main() {
 	<< std::endl;
 
 	// group data
-	Hord::Field field{};
-	Hord::Record record{};
+	Hord::Data::Field field{};
+	Hord::Data::Record record{};
 
 	// group node
-	//Hord::RuleState rule_state{};
-	//Hord::Rule rule{};
-	Hord::Column column{};
-	Hord::Node node{hive.get_id(), Hord::NodeID{42}};
+	//Hord::Rule::State rule_state{};
+	//Hord::Rule::Unit rule{};
+	Hord::Node::Column column{};
+	Hord::Node::Unit node{hive.get_id(), Hord::Node::ID{42}};
 
 	// Registering rule types
 	Hord::Rule::type_info const
 		rti_standard{
-			static_cast<Hord::RuleType>(
-				Hord::StandardRuleTypes::ReservedLast
+			static_cast<Hord::Rule::Type>(
+				Hord::Rule::StandardTypes::ReservedLast
 			),
-			0u | static_cast<uint8_t>(Hord::FieldType::Text),
+			0u | static_cast<uint8_t>(Hord::Data::FieldType::Text),
 			dummy_rule_type_construct
 		},
 		rti_zero_permitted{
-			1 + static_cast<Hord::RuleType>(
-				Hord::StandardRuleTypes::ReservedLast
+			1 + static_cast<Hord::Rule::Type>(
+				Hord::Rule::StandardTypes::ReservedLast
 			),
 			0u,
 			dummy_rule_type_construct
 		},
 		rti_valid{
-			1 + static_cast<Hord::RuleType>(
-				Hord::StandardRuleTypes::ReservedLast
+			1 + static_cast<Hord::Rule::Type>(
+				Hord::Rule::StandardTypes::ReservedLast
 			),
-			0u | static_cast<uint8_t>(Hord::FieldType::Text),
+			0u | static_cast<uint8_t>(Hord::Data::FieldType::Text),
 			dummy_rule_type_construct
 		}
 	;

@@ -10,7 +10,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #ifndef HORD_TRAITS_HPP_
 #define HORD_TRAITS_HPP_
 
-#include "./config.hpp"
+#include <Hord/config.hpp>
 
 #include <trait_wrangler/traits.hpp>
 #include <trait_wrangler/test.hpp>
@@ -21,6 +21,10 @@ namespace tw = ::trait_wrangler;
 
 namespace traits {
 
+/**
+	@addtogroup etc
+	@{
+*/
 /**
 	@addtogroup traits
 	@{
@@ -49,6 +53,7 @@ struct disallow_t
 {};
 
 /** @} */ // end of doc-group traits
+/** @} */ // end of doc-group etc
 
 } // namespace traits
 } // namespace Hord

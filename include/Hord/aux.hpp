@@ -10,7 +10,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #ifndef HORD_AUX_HPP_
 #define HORD_AUX_HPP_
 
-#include "./config.hpp"
+#include <Hord/config.hpp>
 
 #include <string>
 #include <vector>
@@ -20,6 +20,10 @@ see @ref index or the accompanying LICENSE file for full text.
 namespace Hord {
 namespace aux {
 
+/**
+	@addtogroup etc
+	@{
+*/
 /**
 	@addtogroup aux
 	@{
@@ -80,6 +84,7 @@ using unordered_set
 >;
 
 /** @} */ // end of doc-group aux
+/** @} */ // end of doc-group etc
 
 } // namespace aux
 } // namespace Hord

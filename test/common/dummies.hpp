@@ -2,15 +2,15 @@
 #ifndef HORD_TEST_COMMON_DUMMIES_HPP_
 #define HORD_TEST_COMMON_DUMMIES_HPP_
 
-#include <Hord/IDGenerator.hpp>
-#include <Hord/Datastore.hpp>
+#include <Hord/System/IDGenerator.hpp>
+#include <Hord/IO/Datastore.hpp>
 
 #include <new>
 #include <random>
 #include <utility>
 
 class DummyIDGenerator
-	: public Hord::IDGenerator
+	: public Hord::System::IDGenerator
 {
 private:
 	std::mt19937 m_rng{std::mt19937::default_seed};
@@ -29,21 +29,22 @@ private:
 			seed_value
 		));
 	}
-	Hord::ObjectID
+
+	Hord::Object::ID
 	generate_impl() noexcept override {
-		Hord::ObjectID id;
+		Hord::Object::ID id;
 		do { id = m_rng(); }
-		while (Hord::OBJECT_NULL == id);
+		while (Hord::Object::NULL_ID == id);
 		return id;
 	}
 };
 
 class DummyDatastore
-	: public Hord::Datastore
+	: public Hord::IO::Datastore
 {
 private:
-	using Hord::Datastore::type_info;
-	using Hord::Datastore::State;
+	using Hord::IO::Datastore::type_info;
+	using Hord::IO::Datastore::State;
 
 	std::iostream m_stream{nullptr};
 
@@ -57,7 +58,7 @@ public:
 	static Datastore*
 	construct(
 		Hord::String root_path,
-		Hord::HiveID const id
+		Hord::Hive::ID const id
 	) noexcept {
 		return new(std::nothrow) DummyDatastore(std::move(root_path), id);
 	}
@@ -67,9 +68,9 @@ public:
 private:
 	DummyDatastore(
 		Hord::String root_path,
-		Hord::HiveID const id
+		Hord::Hive::ID const id
 	)
-		: Hord::Datastore(
+		: Hord::IO::Datastore(
 			std::move(root_path),
 			id
 		)
@@ -81,47 +82,47 @@ public:
 private:
 	void
 	open_impl() override {
-		Hord::Datastore::enable_state(State::opened);
+		Hord::IO::Datastore::enable_state(State::opened);
 	}
 	void
 	close_impl() override {
-		Hord::Datastore::disable_state(State::opened);
+		Hord::IO::Datastore::disable_state(State::opened);
 	}
 
 	std::istream&
 	acquire_input_stream_impl(
-		Hord::PropInfo const&
+		Hord::IO::PropInfo const&
 	) override {
 		return m_stream;
 	}
 	std::ostream&
 	acquire_output_stream_impl(
-		Hord::PropInfo const&
+		Hord::IO::PropInfo const&
 	) override {
 		return m_stream;
 	}
 
 	void
 	release_input_stream_impl(
-		Hord::PropInfo const&
+		Hord::IO::PropInfo const&
 	) override {}
 	void
 	release_output_stream_impl(
-		Hord::PropInfo const&
+		Hord::IO::PropInfo const&
 	) override {}
 };
 
-template struct Hord::Datastore::ensure_traits<DummyDatastore>;
+template struct Hord::IO::Datastore::ensure_traits<DummyDatastore>;
 
-Hord::Datastore::type_info const
+Hord::IO::Datastore::type_info const
 DummyDatastore::s_type_info{
 	DummyDatastore::construct
 };
 
-Hord::Rule*
+Hord::Rule::Unit*
 dummy_rule_type_construct(
-	Hord::HiveID const,
-	Hord::RuleID const
+	Hord::Hive::ID const,
+	Hord::Rule::ID const
 ) {
 	return nullptr;
 }
