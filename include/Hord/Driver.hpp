@@ -37,28 +37,28 @@ class Driver;
 class Driver final {
 private:
 	using datastore_map_type
-	=aux::unordered_map<
+	= aux::unordered_map<
 		HiveID,
 		std::unique_ptr<Datastore>
 	>;
 
 	using rule_type_map_type
-	=aux::unordered_map<
+	= aux::unordered_map<
 		RuleType,
 		Rule::type_info const&
 	>;
 
-	using id_vector_type=aux::vector<HiveID>;
+	using id_vector_type = aux::vector<HiveID>;
 
 	IDGenerator& m_id_generator;
 	rule_type_map_type m_rule_types{};
 	datastore_map_type m_datastores{};
 	id_vector_type m_hive_order{};
 
-	Driver()=delete;
-	Driver(Driver const&)=delete;
-	Driver& operator=(Driver const&)=delete;
-	Driver& operator=(Driver&&)=delete;
+	Driver() = delete;
+	Driver(Driver const&) = delete;
+	Driver& operator=(Driver const&) = delete;
+	Driver& operator=(Driver&&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -74,6 +74,7 @@ public:
 	Driver(
 		IDGenerator& id_generator
 	) noexcept;
+
 	/** Move constructor. */
 	Driver(Driver&&);
 	/** Destructor. */
@@ -83,6 +84,7 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get IDGenerator.
+
 		@returns The IDGenerator.
 	*/
 	IDGenerator&
@@ -157,7 +159,7 @@ public:
 	*/
 	void
 	serialize(
-		bool const all=false
+		bool const all = false
 	);
 /// @}
 };

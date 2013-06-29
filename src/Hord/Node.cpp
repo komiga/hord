@@ -21,26 +21,26 @@ Node::Node(
 	HiveID const owner,
 	NodeID const id
 ) noexcept
-	: Object{
-		(OBJECT_NULL==id)
+	: Object(
+		(OBJECT_NULL == id)
 			? StorageState::null
 			: StorageState::placeholder
-		, ObjectID{owner}
-		, ObjectID{id}
-	}
+		, static_cast<ObjectID>(owner)
+		, static_cast<ObjectID>(id)
+	)
 {}
 
-Node::Node(Node&&)=default;
-Node::~Node() noexcept=default;
+Node::Node(Node&&) = default;
+Node::~Node() noexcept = default;
 
-Node& Node::operator=(Node&&)=default;
+Node& Node::operator=(Node&&) = default;
 
 void
 Node::set_layout_ref(
 	NodeID const node_id
 ) noexcept {
-	m_layout_ref=node_id;
-	if (OBJECT_NULL!=m_layout_ref) {
+	m_layout_ref = node_id;
+	if (OBJECT_NULL != m_layout_ref) {
 		m_layout.clear();
 	}
 }

@@ -37,8 +37,8 @@ class Rule;
 */
 class RuleState {
 private:
-	RuleState(RuleState const&)=delete;
-	RuleState& operator=(RuleState const&)=delete;
+	RuleState(RuleState const&) = delete;
+	RuleState& operator=(RuleState const&) = delete;
 
 protected:
 /** @name Constructors and destructor */ /// @{
@@ -49,7 +49,7 @@ protected:
 public:
 	/** Destructor. */
 	virtual
-	~RuleState() noexcept=0;
+	~RuleState() noexcept = 0;
 /// @}
 
 protected:
@@ -63,7 +63,8 @@ protected:
 	Base rule.
 */
 class Rule
-	: public Object {
+	: public Object
+{
 public:
 	/**
 		Type info.
@@ -75,6 +76,7 @@ public:
 			@sa StandardRuleTypes
 		*/
 		RuleType const type;
+
 		/**
 			Permitted FieldTypes.
 
@@ -82,6 +84,7 @@ public:
 			@sa FieldType
 		*/
 		uint8_t const permitted_types;
+
 		// TODO: Documentation on construct()
 		/**
 			Construct a rule of this type.
@@ -96,9 +99,9 @@ public:
 	using Object::ensure_traits;
 
 private:
-	Rule()=delete;
-	Rule(Rule const&)=delete;
-	Rule& operator=(Rule const&)=delete;
+	Rule() = delete;
+	Rule(Rule const&) = delete;
+	Rule& operator=(Rule const&) = delete;
 
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -109,7 +112,7 @@ protected:
 		get_rule_type_info() implementation.
 	*/
 	virtual type_info const&
-	get_rule_type_info_impl() const noexcept=0;
+	get_rule_type_info_impl() const noexcept = 0;
 /// @}
 
 protected:
@@ -120,7 +123,7 @@ protected:
 		@post
 		@code
 			get_storage_state()
-			==(OBJECT_NULL==get_id()
+			== (OBJECT_NULL == get_id()
 				? StorageState::null
 				: StorageState::placeholder
 			)
@@ -133,20 +136,21 @@ protected:
 		HiveID const owner,
 		RuleID const id
 	) noexcept
-		: Object{
-			(OBJECT_NULL==id)
+		: Object(
+			(OBJECT_NULL == id)
 				? StorageState::null
 				: StorageState::placeholder
-			, ObjectID{owner}
-			, ObjectID{id}
-		}
+			, ObjectID(owner)
+			, ObjectID(id)
+		)
 	{}
+
 	/** Move constructor. */
 	Rule(Rule&&);
 public:
 	/** Destructor. */
 	virtual
-	~Rule() noexcept override=0;
+	~Rule() noexcept override = 0;
 /// @}
 
 protected:

@@ -26,7 +26,7 @@ namespace Hord {
 		RuleID,
 		NodeID
 */
-typedef uint32_t ObjectID;
+using ObjectID = uint32_t;
 
 /**
 	ObjectID constants.
@@ -35,7 +35,7 @@ enum : ObjectID {
 	/**
 		Null object.
 	*/
-	OBJECT_NULL=0
+	OBJECT_NULL = 0
 };
 
 /**
@@ -53,7 +53,7 @@ enum : ObjectID {
 		RuleID,
 		NodeID
 */
-typedef ObjectID HiveID;
+using HiveID = ObjectID;
 
 /** @} */ // end of doc-group hive
 
@@ -72,7 +72,7 @@ typedef ObjectID HiveID;
 		HiveID,
 		RuleID
 */
-typedef ObjectID NodeID;
+using NodeID = ObjectID;
 
 /** @} */ // end of doc-group node
 
@@ -91,12 +91,12 @@ typedef ObjectID NodeID;
 		HiveID,
 		NodeID
 */
-typedef ObjectID RuleID;
+using RuleID = ObjectID;
 
 /**
 	Rule type.
 */
-typedef uint32_t RuleType;
+using RuleType = uint32_t;
 
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group object
@@ -110,7 +110,7 @@ typedef uint32_t RuleType;
 	Message ID.
 	@sa MessageBuffer
 */
-typedef uint32_t MessageID;
+using MessageID = uint32_t;
 
 /** @} */ // end of doc-group messaging
 

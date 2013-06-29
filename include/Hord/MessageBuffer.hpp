@@ -39,7 +39,7 @@ public:
 	/**
 		Buffer type.
 	*/
-	using buffer_type=aux::vector<uint8_t>;
+	using buffer_type = aux::vector<uint8_t>;
 
 	/**
 		Message header.
@@ -52,9 +52,9 @@ public:
 private:
 	buffer_type m_buffer{};
 
-	MessageBuffer()=delete;
-	MessageBuffer(MessageBuffer const&)=delete;
-	MessageBuffer& operator=(MessageBuffer const&)=delete;
+	MessageBuffer() = delete;
+	MessageBuffer(MessageBuffer const&) = delete;
+	MessageBuffer& operator=(MessageBuffer const&) = delete;
 
 	void
 	grow(
@@ -72,6 +72,7 @@ public:
 	MessageBuffer(
 		std::size_t const capacity
 	);
+
 	/** Move constructor. */
 	MessageBuffer(MessageBuffer&&);
 	/** Destructor. */
@@ -86,12 +87,14 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get buffer.
+
 		@returns Message buffer.
 	*/
 	buffer_type const&
 	get_buffer() const noexcept {
 		return m_buffer;
 	}
+
 	/**
 		Check if buffer is empty.
 
@@ -103,6 +106,7 @@ public:
 	is_empty() const noexcept {
 		return m_buffer.empty();
 	}
+
 	/**
 		Get buffer size.
 
@@ -112,6 +116,7 @@ public:
 	get_size() const noexcept {
 		return m_buffer.size();
 	}
+
 	/**
 		Get buffer capacity.
 
@@ -139,7 +144,7 @@ public:
 	push_back(
 		MessageID const id
 	) {
-		push_back(id, 0, nullptr);
+		push_back(id, 0u, nullptr);
 	}
 
 	/**
@@ -167,7 +172,9 @@ public:
 		@param id Message id.
 		@param msg Message.
 	*/
-	template<typename MsgT>
+	template<
+		typename MsgT
+	>
 	void
 	push_back(
 		MessageID const id,

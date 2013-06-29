@@ -1,6 +1,6 @@
 
-#include <Hord/Datastore.hpp>
 #include <Hord/Error.hpp>
+#include <Hord/Datastore.hpp>
 
 #include <utility>
 #include <cassert>
@@ -17,16 +17,16 @@ Datastore::Datastore(
 	String root_path,
 	HiveID const id
 ) noexcept
-	: m_root_path{std::move(root_path)}
-	, m_hive{id}
+	: m_root_path(std::move(root_path))
+	, m_hive(id)
 {}
 
-Datastore::~Datastore()=default;
+Datastore::~Datastore() = default;
 
-#define HORD_STATE_ASSERT_VALID__(x__) \
-	assert( \
-		State::RESERVED_FIRST>x__ && \
-		State::RESERVED_LAST <x__ \
+#define HORD_STATE_ASSERT_VALID__(x__)	\
+	assert(								\
+		State::RESERVED_FIRST > x__ &&	\
+		State::RESERVED_LAST  < x__		\
 	);
 
 void
@@ -34,7 +34,7 @@ Datastore::enable_state(
 	State const state
 ) noexcept {
 	HORD_STATE_ASSERT_VALID__(state);
-	m_states|=static_cast<unsigned>(state);
+	m_states |= static_cast<unsigned>(state);
 }
 
 void
@@ -42,7 +42,7 @@ Datastore::disable_state(
 	State const state
 ) noexcept {
 	HORD_STATE_ASSERT_VALID__(state);
-	m_states&=~static_cast<unsigned>(state);
+	m_states &= ~static_cast<unsigned>(state);
 }
 
 bool
@@ -50,7 +50,7 @@ Datastore::has_state(
 	State const state
 ) const noexcept {
 	HORD_STATE_ASSERT_VALID__(state);
-	return m_states&static_cast<unsigned>(state);
+	return m_states & static_cast<unsigned>(state);
 }
 #undef HORD_STATE_ASSERT_VALID__
 
@@ -96,17 +96,17 @@ Datastore::close() {
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
-#define HORD_ACQUIRE_CHECK__ \
-	if (!is_open()) { \
-		HORD_THROW_ERROR_SCOPED_FQN( \
-			ErrorCode::datastore_closed, \
-			"cannot acquire stream while datastore is closed" \
-		); \
-	} else if (is_locked()) { \
-		HORD_THROW_ERROR_SCOPED_FQN( \
-			ErrorCode::datastore_locked, \
-			"cannot acquire stream while datastore is locked" \
-		); \
+#define HORD_ACQUIRE_CHECK__									\
+	if (!is_open()) {											\
+		HORD_THROW_ERROR_SCOPED_FQN(							\
+			ErrorCode::datastore_closed,						\
+			"cannot acquire stream while datastore is closed"	\
+		);														\
+	} else if (is_locked()) {									\
+		HORD_THROW_ERROR_SCOPED_FQN(							\
+			ErrorCode::datastore_locked,						\
+			"cannot acquire stream while datastore is locked"	\
+		);														\
 	}
 
 #define HORD_SCOPE_FUNC_IDENT__ acquire_input_stream
@@ -130,12 +130,12 @@ Datastore::acquire_output_stream(
 #undef HORD_SCOPE_FUNC_IDENT__
 #undef HORD_ACQUIRE_CHECK__
 
-#define HORD_RELEASE_CHECK__ \
-	if (!is_open()) { \
-		HORD_THROW_ERROR_SCOPED_FQN( \
-			ErrorCode::datastore_closed, \
-			"cannot release stream while datastore is closed" \
-		); \
+#define HORD_RELEASE_CHECK__									\
+	if (!is_open()) {											\
+		HORD_THROW_ERROR_SCOPED_FQN(							\
+			ErrorCode::datastore_closed,						\
+			"cannot release stream while datastore is closed"	\
+		);														\
 	}
 
 #define HORD_SCOPE_FUNC_IDENT__ release_input_stream

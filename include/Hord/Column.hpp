@@ -40,34 +40,36 @@ struct Column;
 struct Column final {
 public:
 	/** RuleID vector. */
-	using rule_id_vector_type=aux::vector<RuleID>;
+	using rule_id_vector_type = aux::vector<RuleID>;
 
 /** @name Properties */ /// @{
 	/** Rule type. */
 	RuleType m_type{static_cast<RuleType>(StandardRuleTypes::None)};
+
 	/** Title. */
 	String m_title{};
+
 	/** Attached rules. */
 	rule_id_vector_type m_rules{};
 /// @}
 
 private:
-	Column(Column const&)=delete;
-	Column& operator=(Column const&)=delete;
+	Column(Column const&) = delete;
+	Column& operator=(Column const&) = delete;
 
 public:
 /** @name Constructor and destructor */ /// @{
 	/** Default constructor. */
-	Column()=default;
+	Column() = default;
 	/** Move constructor. */
-	Column(Column&&)=default;
+	Column(Column&&) = default;
 	/** Destructor. */
-	~Column() noexcept=default;
+	~Column() noexcept = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Column& operator=(Column&&)=default;
+	Column& operator=(Column&&) = default;
 /// @}
 };
 

@@ -29,8 +29,8 @@ class Error;
 /**
 	Get the name of an error.
 
-	@returns C-string containing the name of @a error_code or "INVALID"
-	if somehow @a error_code is not actually an ErrorCode.
+	@returns C-string containing the name of @a error_code or
+	"INVALID" if somehow @a error_code is not actually an ErrorCode.
 	@param error_code ErrorCode.
 */
 char const*
@@ -47,10 +47,10 @@ private:
 	ErrorCode const m_errc;
 	String const m_msg;
 
-	Error()=delete;
-	Error(Error const&)=delete;
-	Error& operator=(Error const&)=delete;
-	Error& operator=(Error&&)=delete;
+	Error() = delete;
+	Error(Error const&) = delete;
+	Error& operator=(Error const&) = delete;
+	Error& operator=(Error&&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -64,6 +64,7 @@ public:
 		ErrorCode const errc,
 		String msg
 	) noexcept;
+
 	/** Move constructor. */
 	Error(Error&&);
 	/** Destructor. */

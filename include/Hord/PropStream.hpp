@@ -44,10 +44,10 @@ private:
 	PropInfo const m_info;
 	std::istream* m_stream;
 
-	InputPropStream()=delete;
-	InputPropStream(InputPropStream const&)=delete;
-	InputPropStream& operator=(InputPropStream const&)=delete;
-	InputPropStream& operator=(InputPropStream&&)=delete;
+	InputPropStream() = delete;
+	InputPropStream(InputPropStream const&) = delete;
+	InputPropStream& operator=(InputPropStream const&) = delete;
+	InputPropStream& operator=(InputPropStream&&) = delete;
 
 public:
 	/**
@@ -60,6 +60,7 @@ public:
 		Datastore& datastore,
 		PropInfo info
 	);
+
 	/** Move constructor. */
 	InputPropStream(InputPropStream&&) noexcept;
 	/**
@@ -72,6 +73,7 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get datastore.
+
 		@returns %Datastore.
 	*/
 	Datastore&
@@ -81,6 +83,7 @@ public:
 
 	/**
 		Get info.
+
 		@returns Info.
 	*/
 	PropInfo const&
@@ -106,6 +109,7 @@ public:
 		See @c Datastore::acquire_input_stream().
 	*/
 	void
+
 	acquire();
 	/**
 		See @c Datastore::release_input_stream().
@@ -124,10 +128,10 @@ private:
 	PropInfo const m_info;
 	std::ostream* m_stream;
 
-	OutputPropStream()=delete;
-	OutputPropStream(OutputPropStream const&)=delete;
-	OutputPropStream& operator=(OutputPropStream const&)=delete;
-	OutputPropStream& operator=(OutputPropStream&&)=delete;
+	OutputPropStream() = delete;
+	OutputPropStream(OutputPropStream const&) = delete;
+	OutputPropStream& operator=(OutputPropStream const&) = delete;
+	OutputPropStream& operator=(OutputPropStream&&) = delete;
 
 public:
 	/**
@@ -140,6 +144,7 @@ public:
 		Datastore& datastore,
 		PropInfo info
 	);
+
 	/** Move constructor. */
 	OutputPropStream(OutputPropStream&&) noexcept;
 	/**
@@ -152,6 +157,7 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get datastore.
+
 		@returns %Datastore.
 	*/
 	Datastore&
@@ -161,6 +167,7 @@ public:
 
 	/**
 		Get info.
+
 		@returns Info.
 	*/
 	PropInfo const&
@@ -187,6 +194,7 @@ public:
 	*/
 	void
 	acquire();
+
 	/**
 		See @c Datastore::release_output_stream().
 	*/

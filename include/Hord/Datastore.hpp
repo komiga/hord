@@ -79,7 +79,9 @@ public:
 
 		@tparam D Deriving class.
 	*/
-	template<typename D>
+	template<
+		typename D
+	>
 	struct ensure_traits :
 		traits::require_t<
 			D,
@@ -101,11 +103,11 @@ private:
 	String m_root_path;
 	Hive m_hive;
 
-	Datastore()=delete;
-	Datastore(Datastore const&)=delete;
-	Datastore(Datastore&&)=delete;
-	Datastore& operator=(Datastore const&)=delete;
-	Datastore& operator=(Datastore&&)=delete;
+	Datastore() = delete;
+	Datastore(Datastore const&) = delete;
+	Datastore(Datastore&&) = delete;
+	Datastore& operator=(Datastore const&) = delete;
+	Datastore& operator=(Datastore&&) = delete;
 
 protected:
 /** @name Implementation */ /// @{
@@ -113,14 +115,15 @@ protected:
 		open() implementation.
 	*/
 	virtual void
-	open_impl()=0;
+	open_impl() = 0;
+
 	/**
 		close() implementation.
 
 		@remarks This is not called if @c is_open()==false.
 	*/
 	virtual void
-	close_impl()=0;
+	close_impl() = 0;
 
 	/**
 		acquire_input_stream() implementation.
@@ -128,14 +131,15 @@ protected:
 	virtual std::istream&
 	acquire_input_stream_impl(
 		PropInfo const& prop_info
-	)=0;
+	) = 0;
+
 	/**
 		acquire_output_stream() implementation.
 	*/
 	virtual std::ostream&
 	acquire_output_stream_impl(
 		PropInfo const& prop_info
-	)=0;
+	) = 0;
 
 	/**
 		release_input_stream() implementation.
@@ -143,14 +147,15 @@ protected:
 	virtual void
 	release_input_stream_impl(
 		PropInfo const& prop_info
-	)=0;
+	) = 0;
+
 	/**
 		release_output_stream() implementation.
 	*/
 	virtual void
 	release_output_stream_impl(
 		PropInfo const& prop_info
-	)=0;
+	) = 0;
 /// @}
 
 /** @name Internal state */ /// @{
@@ -162,14 +167,14 @@ protected:
 	*/
 	enum class State : uint32_t {
 		/** %Datastore is open. */
-		opened	=1<<0,
+		opened = 1 << 0,
 		/** %Datastore is locked. */
-		locked	=1<<1,
+		locked = 1 << 1,
 
 		/** First reserved state. */
-		RESERVED_FIRST=1<<2,
+		RESERVED_FIRST = 1 << 2,
 		/** Last reserved state. */
-		RESERVED_LAST=1<<7
+		RESERVED_LAST = 1 << 7
 	};
 
 	/**
@@ -180,6 +185,7 @@ protected:
 	enable_state(
 		State const state
 	) noexcept;
+
 	/**
 		Disable state.
 		@param state %State to disable.
@@ -188,6 +194,7 @@ protected:
 	disable_state(
 		State const state
 	) noexcept;
+
 	/**
 		Check if a state is enabled.
 
@@ -216,7 +223,7 @@ protected:
 public:
 	/** Destructor. */
 	virtual
-	~Datastore()=0;
+	~Datastore() = 0;
 /// @}
 
 public:
@@ -233,6 +240,7 @@ public:
 	set_root_path(
 		String root_path
 	);
+
 	/**
 		Get root path.
 		@returns Root path.
@@ -334,6 +342,7 @@ public:
 	acquire_input_stream(
 		PropInfo const& prop_info
 	);
+
 	/** @copydoc acquire_input_stream(PropInfo const&) */
 	std::ostream&
 	acquire_output_stream(
@@ -370,6 +379,7 @@ public:
 	release_input_stream(
 		PropInfo const& prop_info
 	);
+
 	/** @copydoc release_input_stream(PropInfo const&) */
 	void
 	release_output_stream(

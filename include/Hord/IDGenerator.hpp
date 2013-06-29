@@ -28,28 +28,28 @@ class IDGenerator;
 */
 class IDGenerator {
 private:
-	IDGenerator(IDGenerator const&)=delete;
-	IDGenerator& operator=(IDGenerator const&)=delete;
+	IDGenerator(IDGenerator const&) = delete;
+	IDGenerator& operator=(IDGenerator const&) = delete;
 
 protected:
 /** @name Implementation */ /// @{
 	/**
 		seed() implementation.
 
-		@remarks If called from Driver, @a seed_value will be a growing
-		value, based on time.
+		@remarks If called from Driver, @a seed_value will be a
+		growing value, based on time.
 	*/
 	virtual void
 	seed_impl(
 		int64_t seed_value
-	) noexcept=0;
+	) noexcept = 0;
 	/**
 		generate() implementation.
 
 		@post Return value must not be equal to @c OBJECT_NULL.
 	*/
 	virtual ObjectID
-	generate_impl() noexcept=0;
+	generate_impl() noexcept = 0;
 /// @}
 
 public:
@@ -60,7 +60,7 @@ public:
 	IDGenerator(IDGenerator&&) noexcept;
 	/** Destructor. */
 	virtual
-	~IDGenerator() noexcept=0;
+	~IDGenerator() noexcept = 0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -71,6 +71,7 @@ public:
 /** @name Operations */ /// @{
 	/**
 		Seed the generator.
+
 		@param seed_value Seed value.
 	*/
 	void
@@ -85,7 +86,7 @@ public:
 
 		@post
 		@code
-			generate()!=OBJECT_NULL
+			generate() != OBJECT_NULL
 		@endcode
 		@returns The generated ID.
 	*/
@@ -108,8 +109,8 @@ public:
 		Set const& set
 	) noexcept {
 		ObjectID id;
-		do { id=generate(); }
-		while (set.cend()!=set.find(id));
+		do { id = generate(); }
+		while (set.cend() != set.find(id));
 		return id;
 	}
 /// @}

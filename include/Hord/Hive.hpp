@@ -37,13 +37,14 @@ class Hive;
 	Top-level Object container.
 */
 class Hive final
-	: public Object {
+	: public Object
+{
 public:
 	/** Object ID set. */
-	using id_set_type=aux::unordered_set<ObjectID>;
+	using id_set_type = aux::unordered_set<ObjectID>;
 	/** Object map. */
 	using object_map_type
-	=aux::unordered_map<
+	= aux::unordered_map<
 		ObjectID,
 		std::unique_ptr<Object>
 	>;
@@ -52,8 +53,8 @@ private:
 	id_set_type m_idset{};
 	object_map_type m_objects{};
 
-	Hive(Hive const&)=delete;
-	Hive& operator=(Hive const&)=delete;
+	Hive(Hive const&) = delete;
+	Hive& operator=(Hive const&) = delete;
 
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -72,7 +73,7 @@ public:
 		@post
 		@code
 			get_storage_state()
-			==(OBJECT_NULL==get_id()
+			== (OBJECT_NULL == get_id()
 				? StorageState::null
 				: StorageState::placeholder
 			)
@@ -84,6 +85,7 @@ public:
 	Hive(
 		ObjectID const id
 	) noexcept;
+
 	/** Move constructor. */
 	Hive(Hive&&);
 	/** Destructor. */
@@ -98,14 +100,17 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get ID set.
+
 		@returns Current ID set.
 	*/
 	id_set_type const&
 	get_idset() const noexcept {
 		return m_idset;
 	}
+
 	/**
 		Get mutable ID set.
+
 		@returns Mutable ID set.
 	*/
 	id_set_type&
@@ -115,14 +120,17 @@ public:
 
 	/**
 		Get object map.
+
 		@returns Current object map.
 	*/
 	object_map_type const&
 	get_objects() const noexcept {
 		return m_objects;
 	}
+
 	/**
 		Get mutable object map.
+
 		@returns Mutable object map.
 	*/
 	object_map_type&

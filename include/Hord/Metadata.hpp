@@ -45,6 +45,7 @@ public:
 		Base descriptor compound.
 	*/
 	static murk::DescCompound const s_comp_base;
+
 	/**
 		Type info.
 	*/
@@ -53,15 +54,22 @@ public:
 		MetaFieldType const type;
 		/**
 			Descriptor compound for type.
+
 			@note This must begin with a reference
 			to @c MetaField::s_comp_base.
 		*/
 		murk::DescCompoundRef const comp;
+		/**
+			Default-construct field of this type.
+		*/
+		MetaField*
+		(&construct)() noexcept;
 	};
 
 /** @name Properties */ /// @{
 	/**
 		Name.
+
 		@warning This field will be truncated to 255 code units
 		when serializing.
 	*/
@@ -69,8 +77,8 @@ public:
 /// @}
 
 private:
-	MetaField(MetaField const&)=delete;
-	MetaField& operator=(MetaField const&)=delete;
+	MetaField(MetaField const&) = delete;
+	MetaField& operator=(MetaField const&) = delete;
 
 	void
 	bind_base(
@@ -83,7 +91,8 @@ protected:
 		get_type_info() implementation.
 	*/
 	virtual type_info const&
-	get_type_info_impl() const noexcept=0;
+	get_type_info_impl() const noexcept = 0;
+
 	/**
 		bind() implementation.
 
@@ -93,15 +102,17 @@ protected:
 	virtual void
 	bind_impl(
 		murk::TieBinder&
-	) noexcept=0;
+	) noexcept = 0;
 /// @}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	MetaField();
+
 	/**
 		Constructor with name.
+
 		@param name Name.
 	*/
 	explicit
@@ -110,11 +121,12 @@ public:
 	) noexcept
 		: name{std::move(name)}
 	{}
+
 	/** Move constructor. */
 	MetaField(MetaField&&);
 	/** Destructor. */
 	virtual
-	~MetaField() noexcept=0;
+	~MetaField() noexcept = 0;
 /// @}
 
 /** @name Operators */ /// @{
@@ -152,7 +164,8 @@ public:
 	String MetaField.
 */
 class StringMetaField final
-	: public MetaField {
+	: public MetaField
+{
 public:
 /** @name Properties */ /// @{
 	/** Value. */
@@ -160,8 +173,8 @@ public:
 /// @}
 
 private:
-	StringMetaField(StringMetaField const&)=delete;
-	StringMetaField& operator=(StringMetaField const&)=delete;
+	StringMetaField(StringMetaField const&) = delete;
+	StringMetaField& operator=(StringMetaField const&) = delete;
 
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -175,8 +188,10 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	StringMetaField();
+
 	/**
 		Constructor with name and value.
+
 		@param name Name.
 		@param value Value.
 	*/
@@ -184,9 +199,10 @@ public:
 		String name,
 		String value
 	) noexcept
-		: MetaField{std::move(name)}
-		, value{std::move(value)}
+		: MetaField(std::move(name))
+		, value(std::move(value))
 	{}
+
 	/** Move constructor. */
 	StringMetaField(StringMetaField&&);
 	/** Destructor. */
@@ -203,7 +219,8 @@ public:
 	Int32 MetaField.
 */
 class Int32MetaField final
-	: public MetaField {
+	: public MetaField
+{
 public:
 /** @name Properties */ /// @{
 	/** Value. */
@@ -211,8 +228,8 @@ public:
 /// @}
 
 private:
-	Int32MetaField(Int32MetaField const&)=delete;
-	Int32MetaField& operator=(Int32MetaField const&)=delete;
+	Int32MetaField(Int32MetaField const&) = delete;
+	Int32MetaField& operator=(Int32MetaField const&) = delete;
 
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -226,8 +243,10 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	Int32MetaField();
+
 	/**
 		Constructor with name and value.
+
 		@param name Name.
 		@param value Value.
 	*/
@@ -235,9 +254,10 @@ public:
 		String name,
 		int32_t value
 	) noexcept
-		: MetaField{std::move(name)}
-		, value{value}
+		: MetaField(std::move(name))
+		, value(value)
 	{}
+
 	/** Move constructor. */
 	Int32MetaField(Int32MetaField&&);
 	/** Destructor. */
@@ -254,7 +274,8 @@ public:
 	Int64 MetaField.
 */
 class Int64MetaField final
-	: public MetaField {
+	: public MetaField
+{
 public:
 /** @name Properties */ /// @{
 	/** Value. */
@@ -262,8 +283,8 @@ public:
 /// @}
 
 private:
-	Int64MetaField(Int64MetaField const&)=delete;
-	Int64MetaField& operator=(Int64MetaField const&)=delete;
+	Int64MetaField(Int64MetaField const&) = delete;
+	Int64MetaField& operator=(Int64MetaField const&) = delete;
 
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -277,8 +298,10 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	Int64MetaField();
+
 	/**
 		Constructor with name and value.
+
 		@param name Name.
 		@param value Value.
 	*/
@@ -286,9 +309,10 @@ public:
 		String name,
 		int64_t value
 	) noexcept
-		: MetaField{std::move(name)}
-		, value{value}
+		: MetaField(std::move(name))
+		, value(value)
 	{}
+
 	/** Move constructor. */
 	Int64MetaField(Int64MetaField&&);
 	/** Destructor. */
@@ -305,7 +329,8 @@ public:
 	Bool MetaField.
 */
 class BoolMetaField final
-	: public MetaField {
+	: public MetaField
+{
 public:
 /** @name Properties */ /// @{
 	/** Value. */
@@ -313,8 +338,8 @@ public:
 /// @}
 
 private:
-	BoolMetaField(BoolMetaField const&)=delete;
-	BoolMetaField& operator=(BoolMetaField const&)=delete;
+	BoolMetaField(BoolMetaField const&) = delete;
+	BoolMetaField& operator=(BoolMetaField const&) = delete;
 
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -328,8 +353,10 @@ public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	BoolMetaField();
+
 	/**
 		Constructor with name and value.
+
 		@param name Name.
 		@param value Value.
 	*/
@@ -337,9 +364,10 @@ public:
 		String name,
 		bool value
 	) noexcept
-		: MetaField{std::move(name)}
-		, value{value}
+		: MetaField(std::move(name))
+		, value(value)
 	{}
+
 	/** Move constructor. */
 	BoolMetaField(BoolMetaField&&);
 	/** Destructor. */
@@ -358,7 +386,7 @@ public:
 struct Metadata final {
 public:
 	/** MetaField vector. */
-	using field_vector_type=aux::vector<std::unique_ptr<MetaField> >;
+	using field_vector_type = aux::vector<std::unique_ptr<MetaField> >;
 
 /** @name Properties */ /// @{
 	/** Fields. */
@@ -366,22 +394,22 @@ public:
 /// @}
 
 private:
-	Metadata(Metadata const&)=delete;
-	Metadata& operator=(Metadata const&)=delete;
+	Metadata(Metadata const&) = delete;
+	Metadata& operator=(Metadata const&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Metadata()=default;
+	Metadata() = default;
 	/** Move constructor. */
-	Metadata(Metadata&&)=default;
+	Metadata(Metadata&&) = default;
 	/** Destructor. */
-	~Metadata() noexcept=default;
+	~Metadata() noexcept = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Metadata& operator=(Metadata&&)=default;
+	Metadata& operator=(Metadata&&) = default;
 /// @}
 };
 

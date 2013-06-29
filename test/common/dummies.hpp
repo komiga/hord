@@ -10,14 +10,15 @@
 #include <utility>
 
 class DummyIDGenerator
-	: public Hord::IDGenerator {
+	: public Hord::IDGenerator
+{
 private:
 	std::mt19937 m_rng{std::mt19937::default_seed};
 
 public:
-	DummyIDGenerator()=default;
-	DummyIDGenerator(DummyIDGenerator&&)=default;
-	~DummyIDGenerator() override=default;
+	DummyIDGenerator() = default;
+	DummyIDGenerator(DummyIDGenerator&&) = default;
+	~DummyIDGenerator() override = default;
 
 private:
 	void
@@ -31,27 +32,30 @@ private:
 	Hord::ObjectID
 	generate_impl() noexcept override {
 		Hord::ObjectID id;
-		do { id=m_rng(); } while (Hord::OBJECT_NULL==id);
+		do { id = m_rng(); }
+		while (Hord::OBJECT_NULL == id);
 		return id;
 	}
 };
 
 class DummyDatastore
-	: public Hord::Datastore {
+	: public Hord::Datastore
+{
 private:
 	using Hord::Datastore::type_info;
 	using Hord::Datastore::State;
 
 	std::iostream m_stream{nullptr};
 
-	DummyDatastore()=delete;
-	DummyDatastore(DummyDatastore const&)=delete;
-	DummyDatastore(DummyDatastore&&)=delete;
-	DummyDatastore& operator=(DummyDatastore const&)=delete;
-	DummyDatastore& operator=(DummyDatastore&&)=delete;
+	DummyDatastore() = delete;
+	DummyDatastore(DummyDatastore const&) = delete;
+	DummyDatastore(DummyDatastore&&) = delete;
+	DummyDatastore& operator=(DummyDatastore const&) = delete;
+	DummyDatastore& operator=(DummyDatastore&&) = delete;
 
 public:
-	static Datastore* construct(
+	static Datastore*
+	construct(
 		Hord::String root_path,
 		Hord::HiveID const id
 	) noexcept {
@@ -72,7 +76,7 @@ private:
 	{}
 
 public:
-	~DummyDatastore() noexcept override=default;
+	~DummyDatastore() noexcept override = default;
 
 private:
 	void

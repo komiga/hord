@@ -38,6 +38,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 /**
 	@name Error reporting
+
 	These macros are for error reporting.
 	A class implementation file should
 	@code #define HORD_SCOPE_CLASS_IDENT__ ClassName @endcode
@@ -126,10 +127,10 @@ see @ref index or the accompanying LICENSE file for full text.
 	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_FQN, m__)
 
 /** @cond INTERNAL */
-#define HORD_THROW_ERROR_IMPL__(e__, m__) \
-	throw std::move(::Hord::Error{	\
-		e__,						\
-		::Hord::String{m__}			\
+#define HORD_THROW_ERROR_IMPL__(e__, m__)	\
+	throw std::move(::Hord::Error{			\
+		e__,								\
+		::Hord::String{m__}					\
 	})
 /** @endcond */
 
@@ -160,10 +161,10 @@ see @ref index or the accompanying LICENSE file for full text.
 	@sa HORD_THROW_ERROR_SCOPED_FUNC,
 		HORD_THROW_ERROR_SCOPED_FQN
 */
-#define HORD_THROW_ERROR_SCOPED_CLASS(e__, m__) \
-	HORD_THROW_ERROR_IMPL__(	\
-		e__,						\
-		HORD_MSG_SCOPED_CLASS(m__)	\
+#define HORD_THROW_ERROR_SCOPED_CLASS(e__, m__)	\
+	HORD_THROW_ERROR_IMPL__(					\
+		e__,									\
+		HORD_MSG_SCOPED_CLASS(m__)				\
 	)
 
 /**
@@ -175,10 +176,10 @@ see @ref index or the accompanying LICENSE file for full text.
 	@sa HORD_THROW_ERROR_SCOPED_CLASS,
 		HORD_THROW_ERROR_SCOPED_FQN
 */
-#define HORD_THROW_ERROR_SCOPED_FUNC(e__, m__) \
-	HORD_THROW_ERROR_IMPL__(	\
-		e__,						\
-		HORD_MSG_SCOPED_FUNC(m__)	\
+#define HORD_THROW_ERROR_SCOPED_FUNC(e__, m__)	\
+	HORD_THROW_ERROR_IMPL__(					\
+		e__,									\
+		HORD_MSG_SCOPED_FUNC(m__)				\
 	)
 
 /**
@@ -190,10 +191,10 @@ see @ref index or the accompanying LICENSE file for full text.
 	@sa HORD_THROW_ERROR_SCOPED_CLASS,
 		HORD_THROW_ERROR_SCOPED_FUNC
 */
-#define HORD_THROW_ERROR_SCOPED_FQN(e__, m__) \
-	HORD_THROW_ERROR_IMPL__(	\
-		e__,						\
-		HORD_MSG_SCOPED_FQN(m__)	\
+#define HORD_THROW_ERROR_SCOPED_FQN(e__, m__)	\
+	HORD_THROW_ERROR_IMPL__(					\
+		e__,									\
+		HORD_MSG_SCOPED_FQN(m__)				\
 	)
 
 /** @} */ // end of name-group Error reporting

@@ -30,7 +30,7 @@ namespace Hord {
 	String type.
 	@note Contents must be UTF-8.
 */
-using String=aux::basic_string<char>;
+using String = aux::basic_string<char>;
 
 /** @} */ // end of doc-group string
 

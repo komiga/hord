@@ -10,7 +10,7 @@ namespace Hord {
 
 namespace {
 static char const
-	s_error_invalid[]=HORD_STR_LIT("INVALID"),
+	s_error_invalid[] = HORD_STR_LIT("INVALID"),
 	* const s_error_names[]{
 		HORD_STR_LIT("unknown"),
 
@@ -39,7 +39,7 @@ static char const
 
 static_assert(
 	static_cast<std::size_t>(ErrorCode::LAST)
-	==std::extent<decltype(s_error_names)>::value,
+	== std::extent<decltype(s_error_names)>::value,
 	"ErrorCode name list is incomplete"
 );
 
@@ -47,8 +47,8 @@ char const*
 get_error_name(
 	ErrorCode const error_code
 ) noexcept {
-	std::size_t const index=static_cast<std::size_t>(error_code);
-	if (index<std::extent<decltype(s_error_names)>::value) {
+	std::size_t const index = static_cast<std::size_t>(error_code);
+	if (index < std::extent<decltype(s_error_names)>::value) {
 		return s_error_names[index];
 	} else {
 		return s_error_invalid;
@@ -61,12 +61,12 @@ Error::Error(
 	ErrorCode const errc,
 	String msg
 ) noexcept
-	: std::exception{}
-	, m_errc{errc}
-	, m_msg{std::move(msg)}
+	: std::exception()
+	, m_errc(errc)
+	, m_msg(std::move(msg))
 {}
 
-Error::Error(Error&&)=default;
-Error::~Error() noexcept=default;
+Error::Error(Error&&) = default;
+Error::~Error() noexcept = default;
 
 } // namespace Hord

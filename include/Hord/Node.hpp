@@ -36,14 +36,15 @@ class Node;
 	Node.
 */
 class Node final
-	: public Object {
+	: public Object
+{
 public:
 	/** Column vector. */
-	using column_vector_type=aux::vector<Column>;
+	using column_vector_type = aux::vector<Column>;
 	/** Record vector. */
-	using record_vector_type=aux::vector<Record>;
+	using record_vector_type = aux::vector<Record>;
 	/** Child vector. */
-	using child_vector_type=aux::vector<NodeID>;
+	using child_vector_type = aux::vector<NodeID>;
 
 private:
 	NodeID m_layout_ref{OBJECT_NULL};
@@ -51,9 +52,9 @@ private:
 	record_vector_type m_records{};
 	child_vector_type m_children{};
 
-	Node()=delete;
-	Node(Node const&)=delete;
-	Node& operator=(Node const&)=delete;
+	Node() = delete;
+	Node(Node const&) = delete;
+	Node& operator=(Node const&) = delete;
 
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
@@ -66,7 +67,7 @@ public:
 		@post
 		@code
 			get_storage_state()
-			==(OBJECT_NULL==get_id()
+			== (OBJECT_NULL == get_id()
 				? StorageState::null
 				: StorageState::placeholder
 			)
@@ -79,6 +80,7 @@ public:
 		HiveID const owner,
 		NodeID const id
 	) noexcept;
+
 	/** Move constructor. */
 	Node(Node&&);
 	/** Destructor. */
@@ -94,16 +96,18 @@ public:
 	/**
 		Set layout reference.
 
-		@note If @a node_id is non-@c OBJECT_NULL, the layout property
-		will be cleared.
+		@note If @a node_id is non-@c OBJECT_NULL, the layout
+		property will be cleared.
 		@param node_id New layout reference.
 	*/
 	void
 	set_layout_ref(
 		NodeID const node_id
 	) noexcept;
+
 	/**
 		Get layout reference.
+
 		@returns Current layout reference.
 	*/
 	ObjectID
@@ -114,14 +118,17 @@ public:
 	// TODO: Notes for when layout_ref is non-OBJECT_NULL
 	/**
 		Get layout.
+
 		@returns Current layout.
 	*/
 	column_vector_type const&
 	get_layout() const noexcept {
 		return m_layout;
 	}
+
 	/**
 		Get mutable layout.
+
 		@returns Mutable layout.
 	*/
 	column_vector_type&
@@ -131,14 +138,17 @@ public:
 
 	/**
 		Get record collection.
+
 		@returns Current record collection.
 	*/
 	record_vector_type const&
 	get_records() const noexcept {
 		return m_records;
 	}
+
 	/**
 		Get mutable record collection.
+
 		@returns Mutable record collection.
 	*/
 	record_vector_type&
@@ -148,14 +158,17 @@ public:
 
 	/**
 		Get child collection.
+
 		@returns Current child collection.
 	*/
 	child_vector_type const&
 	get_children() const noexcept {
 		return m_children;
 	}
+
 	/**
 		Get mutable child collection.
+
 		@returns Mutable child collection.
 	*/
 	child_vector_type&

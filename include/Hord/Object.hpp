@@ -53,7 +53,9 @@ public:
 
 		@tparam D Deriving class.
 	*/
-	template<typename D>
+	template<
+		typename D
+	>
 	struct ensure_traits :
 		traits::require_t<
 			D,
@@ -75,8 +77,8 @@ private:
 	String m_slug{};
 	Metadata m_metadata{};
 
-	Object(Object const&)=delete;
-	Object& operator=(Object const&)=delete;
+	Object(Object const&) = delete;
+	Object& operator=(Object const&) = delete;
 
 protected:
 /** @name Implementation */ /// @{
@@ -84,7 +86,7 @@ protected:
 		get_type_info() implementation.
 	*/
 	virtual type_info const&
-	get_type_info_impl() const noexcept=0;
+	get_type_info_impl() const noexcept = 0;
 /// @}
 
 protected:
@@ -100,6 +102,7 @@ protected:
 		@endcode
 	*/
 	Object();
+
 	/**
 		Constructor with storage state, owner, and id.
 
@@ -112,6 +115,7 @@ protected:
 		ObjectID const owner,
 		ObjectID const id
 	) noexcept;
+
 	/**
 		Constructor with owner and id.
 
@@ -122,12 +126,13 @@ protected:
 		ObjectID const owner,
 		ObjectID const id
 	) noexcept;
+
 	/** Move constructor. */
 	Object(Object&&);
 public:
 	/** Destructor. */
 	virtual
-	~Object() noexcept=0;
+	~Object() noexcept = 0;
 /// @}
 
 protected:
@@ -140,6 +145,7 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.
+
 		@returns The object's type info.
 	*/
 	type_info const&
@@ -149,6 +155,7 @@ public:
 
 	/**
 		Get type.
+
 		@returns Type.
 	*/
 	ObjectType
@@ -158,16 +165,19 @@ public:
 
 	/**
 		Set storage state.
+
 		@param storage_state New state.
 	*/
 	void
 	set_storage_state(
 		StorageState const storage_state
 	) noexcept {
-		m_storage_state=storage_state;
+		m_storage_state = storage_state;
 	}
+
 	/**
 		Get storage state.
+
 		@returns Current storage state.
 	*/
 	StorageState
@@ -177,16 +187,19 @@ public:
 
 	/**
 		Set owner.
+
 		@param owner New owner.
 	*/
 	void
 	set_owner(
 		ObjectID const owner
 	) noexcept {
-		m_owner=owner;
+		m_owner = owner;
 	}
+
 	/**
 		Get owner.
+
 		@returns Current owner.
 	*/
 	ObjectID
@@ -196,16 +209,19 @@ public:
 
 	/**
 		Set ID.
+
 		@param id New ID.
 	*/
 	void
 	set_id(
 		ObjectID const id
 	) noexcept {
-		m_id=id;
+		m_id = id;
 	}
+
 	/**
 		Get ID.
+
 		@returns Current ID.
 	*/
 	ObjectID
@@ -223,8 +239,10 @@ public:
 	set_slug(
 		String slug
 	) noexcept;
+
 	/**
 		Get slug.
+
 		@returns Current slug.
 	*/
 	String const&
@@ -234,14 +252,17 @@ public:
 
 	/**
 		Get metadata.
+
 		@returns Current metadata.
 	*/
 	Metadata const&
 	get_metadata() const noexcept {
 		return m_metadata;
 	}
+
 	/**
 		Get mutable metadata.
+
 		@returns Mutable metadata.
 	*/
 	Metadata&

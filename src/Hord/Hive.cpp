@@ -20,30 +20,30 @@ Hive::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
-Hive::Hive()=default;
+Hive::Hive() = default;
 
 Hive::Hive(
 	ObjectID const id
 ) noexcept
-	: Object{
-		OBJECT_NULL==id
+	: Object(
+		OBJECT_NULL == id
 			? StorageState::null
 			: StorageState::placeholder
 		, OBJECT_NULL
 		, id
-	}
+	)
 {}
 
-Hive::Hive(Hive&&)=default;
-Hive::~Hive() noexcept=default;
+Hive::Hive(Hive&&) = default;
+Hive::~Hive() noexcept = default;
 
-Hive& Hive::operator=(Hive&&)=default;
+Hive& Hive::operator=(Hive&&) = default;
 
 bool
 Hive::has_child(
 	ObjectID const id
 ) const noexcept(noexcept(m_idset.find(id))) {
-	return m_idset.cend()!=m_idset.find(id);
+	return m_idset.cend() != m_idset.find(id);
 }
 
 #undef HORD_SCOPE_CLASS_IDENT__

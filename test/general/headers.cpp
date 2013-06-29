@@ -43,13 +43,13 @@ main() {
 	Hord::BoolMetaField meta_field_4{};
 	Hord::Metadata metadata{};
 
-	Hord::MetaField& mf=meta_field_1;
+	Hord::MetaField& mf = meta_field_1;
 	std::cout
-		<<static_cast<int>(mf.get_type_info().type)<<','
-		<<static_cast<int>(meta_field_2.get_type_info().type)<<','
-		<<static_cast<int>(meta_field_3.get_type_info().type)<<','
-		<<static_cast<int>(meta_field_4.get_type_info().type)
-	<<std::endl;
+		<< static_cast<int>(mf.get_type_info().type) << ','
+		<< static_cast<int>(meta_field_2.get_type_info().type) << ','
+		<< static_cast<int>(meta_field_3.get_type_info().type) << ','
+		<< static_cast<int>(meta_field_4.get_type_info().type)
+	<< std::endl;
 
 	// group data
 	Hord::Field field{};
@@ -67,23 +67,21 @@ main() {
 			static_cast<Hord::RuleType>(
 				Hord::StandardRuleTypes::ReservedLast
 			),
-			0u|static_cast<uint8_t>(Hord::FieldType::Text),
+			0u | static_cast<uint8_t>(Hord::FieldType::Text),
 			dummy_rule_type_construct
 		},
 		rti_zero_permitted{
-			1+
-			static_cast<Hord::RuleType>(
+			1 + static_cast<Hord::RuleType>(
 				Hord::StandardRuleTypes::ReservedLast
 			),
 			0u,
 			dummy_rule_type_construct
 		},
 		rti_valid{
-			1+
-			static_cast<Hord::RuleType>(
+			1 + static_cast<Hord::RuleType>(
 				Hord::StandardRuleTypes::ReservedLast
 			),
-			0u|static_cast<uint8_t>(Hord::FieldType::Text),
+			0u | static_cast<uint8_t>(Hord::FieldType::Text),
 			dummy_rule_type_construct
 		}
 	;
@@ -100,7 +98,7 @@ main() {
 	}
 	try {
 		driver.register_rule_type(rti_valid);
-		std::cout<<"second register:"<<std::endl;
+		std::cout << "second register:" << std::endl;
 		driver.register_rule_type(rti_valid);
 	} catch (Hord::Error& e) {
 		report_error(e);
@@ -117,12 +115,12 @@ main() {
 	}
 	try {
 		std::cout
-			<<"first hive id: "
-			<<std::hex<<driver.placehold_hive(
+			<< "first hive id: "
+			<< std::hex << driver.placehold_hive(
 				DummyDatastore::s_type_info,
 				"./bork"
 			).get_id()
-		<<std::endl;
+		<< std::endl;
 		driver.placehold_hive(
 			DummyDatastore::s_type_info,
 			"./bork"

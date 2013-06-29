@@ -188,11 +188,11 @@ enum class ObjectType : unsigned {
 */
 enum class FieldType : uint8_t {
 	/** Textual field. */
-	Text	=1<<0,
+	Text	= 1 << 0,
 	/** Numeric field. */
-	Number	=1<<1,
+	Number	= 1 << 1,
 	/** Boolean field. */
-	Boolean	=1<<2
+	Boolean	= 1 << 2
 };
 
 /** @} */ // end of doc-group data
@@ -210,7 +210,7 @@ enum class FieldType : uint8_t {
 */
 enum class MetaFieldType : uint8_t {
 	/** StringMetaField. */
-	String=0x01,
+	String = 0x01,
 	/** Int32MetaField. */
 	Int32,
 	/** Int64MetaField. */
@@ -245,7 +245,7 @@ enum class StandardRuleTypes : RuleType {
 		@note This type defines the <em>lack</em> of rule/structure.
 		%Rules cannot be registered with this type.
 	*/
-	None=0,
+	None = 0,
 	/**
 		Composition of types.
 		@sa CompositionRule
@@ -289,7 +289,7 @@ enum class StandardRuleTypes : RuleType {
 	/// @}
 };
 static_assert(
-	8==static_cast<RuleType>(StandardRuleTypes::ReservedLast),
+	8 == static_cast<RuleType>(StandardRuleTypes::ReservedLast),
 	"StandardRuleTypes must reserve up to 8"
 );
 
@@ -375,18 +375,18 @@ enum class SerializationFlags : unsigned {
 
 		@note This flag is implicit.
 	*/
-	identity=1<<0,
+	identity = 1 << 0,
 	/**
 		Include metadata property in operation.
 	*/
-	metadata=1<<1,
+	metadata = 1 << 1,
 	/**
 		Include primary data in operation.
 
 		%Hives' primary data is its idset property. A child will only
 		be placeheld when its owner's primary data is deserialized.
 	*/
-	primary=1<<2,
+	primary = 1 << 2,
 	/**
 		Shallow deserialization.
 
@@ -396,16 +396,16 @@ enum class SerializationFlags : unsigned {
 		deserializing placeheld objects.
 	*/
 	shallow
-		=identity
-		|metadata
+		= identity
+		| metadata
 	,
 	/**
 		All flags.
 	*/
 	all
-		=identity
-		|metadata
-		|primary
+		= identity
+		| metadata
+		| primary
 	,
 };
 

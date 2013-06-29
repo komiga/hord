@@ -13,11 +13,11 @@ MetaField::s_comp_base{
 	{murk::DescType::terminate}
 };
 
-MetaField::MetaField()=default;
-MetaField::MetaField(MetaField&&)=default;
-MetaField::~MetaField() noexcept=default;
+MetaField::MetaField() = default;
+MetaField::MetaField(MetaField&&) = default;
+MetaField::~MetaField() noexcept = default;
 
-MetaField& MetaField::operator=(MetaField&&)=default;
+MetaField& MetaField::operator=(MetaField&&) = default;
 
 void
 MetaField::bind_base(
@@ -31,7 +31,8 @@ MetaField::bind_base(
 // class StringMetaField implementation
 
 namespace {
-static murk::DescCompound const s_comp_string{
+static murk::DescCompound const
+s_comp_string{
 	{murk::RefDesc{MetaField::s_comp_base}},
 	{murk::StringDesc{0u}},
 	{murk::DescType::terminate}
@@ -48,7 +49,7 @@ s_type_info_string{
 	{s_comp_string},
 	s_construct_string
 };
-}
+} // anonymous namespace
 
 MetaField::type_info const&
 StringMetaField::get_type_info_impl() const noexcept {
@@ -64,11 +65,11 @@ StringMetaField::bind_impl(
 	;
 }
 
-StringMetaField::StringMetaField()=default;
-StringMetaField::StringMetaField(StringMetaField&&)=default;
-StringMetaField::~StringMetaField() noexcept=default;
+StringMetaField::StringMetaField() = default;
+StringMetaField::StringMetaField(StringMetaField&&) = default;
+StringMetaField::~StringMetaField() noexcept = default;
 
-StringMetaField& StringMetaField::operator=(StringMetaField&&)=default;
+StringMetaField& StringMetaField::operator=(StringMetaField&&) = default;
 
 // class Int32MetaField implementation
 
@@ -91,7 +92,7 @@ s_type_info_int32{
 	{s_comp_int32},
 	s_construct_int32
 };
-}
+} // anonymous namespace
 
 MetaField::type_info const&
 Int32MetaField::get_type_info_impl() const noexcept {
@@ -107,11 +108,11 @@ Int32MetaField::bind_impl(
 	;
 }
 
-Int32MetaField::Int32MetaField()=default;
-Int32MetaField::Int32MetaField(Int32MetaField&&)=default;
-Int32MetaField::~Int32MetaField() noexcept=default;
+Int32MetaField::Int32MetaField() = default;
+Int32MetaField::Int32MetaField(Int32MetaField&&) = default;
+Int32MetaField::~Int32MetaField() noexcept = default;
 
-Int32MetaField& Int32MetaField::operator=(Int32MetaField&&)=default;
+Int32MetaField& Int32MetaField::operator=(Int32MetaField&&) = default;
 
 // class Int64MetaField implementation
 
@@ -134,7 +135,7 @@ s_type_info_int64{
 	{s_comp_int64},
 	s_construct_int64
 };
-}
+} // anonymous namespace
 
 MetaField::type_info const&
 Int64MetaField::get_type_info_impl() const noexcept {
@@ -150,11 +151,11 @@ Int64MetaField::bind_impl(
 	;
 }
 
-Int64MetaField::Int64MetaField()=default;
-Int64MetaField::Int64MetaField(Int64MetaField&&)=default;
-Int64MetaField::~Int64MetaField() noexcept=default;
+Int64MetaField::Int64MetaField() = default;
+Int64MetaField::Int64MetaField(Int64MetaField&&) = default;
+Int64MetaField::~Int64MetaField() noexcept = default;
 
-Int64MetaField& Int64MetaField::operator=(Int64MetaField&&)=default;
+Int64MetaField& Int64MetaField::operator=(Int64MetaField&&) = default;
 
 // class BoolMetaField implementation
 
@@ -177,7 +178,7 @@ s_type_info_bool{
 	{s_comp_bool},
 	s_construct_bool
 };
-}
+} // anonymous namespace
 
 MetaField::type_info const&
 BoolMetaField::get_type_info_impl() const noexcept {
@@ -193,10 +194,10 @@ BoolMetaField::bind_impl(
 	;
 }
 
-BoolMetaField::BoolMetaField()=default;
-BoolMetaField::BoolMetaField(BoolMetaField&&)=default;
-BoolMetaField::~BoolMetaField() noexcept=default;
+BoolMetaField::BoolMetaField() = default;
+BoolMetaField::BoolMetaField(BoolMetaField&&) = default;
+BoolMetaField::~BoolMetaField() noexcept = default;
 
-BoolMetaField& BoolMetaField::operator=(BoolMetaField&&)=default;
+BoolMetaField& BoolMetaField::operator=(BoolMetaField&&) = default;
 
 } // namespace Hord

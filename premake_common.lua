@@ -2,19 +2,19 @@
 -- premake common
 
 newoption {
-	trigger="clang",
-	description="Use Clang in-place of GCC",
+	trigger = "clang",
+	description = "Use Clang in-place of GCC",
 }
 
 if _OPTIONS["clang"] then
-	premake.gcc.cc="clang"
-	premake.gcc.cxx="clang++"
+	premake.gcc.cc = "clang"
+	premake.gcc.cxx = "clang++"
 end
 
 function create_project(name, kind, tdir, root)
-	local proj=project(name)
-		proj.language="C++"
-		proj.kind=kind
+	local proj = project(name)
+	proj.language = "C++"
+	proj.kind = kind
 
 	targetname(name)
 	objdir("out/")
@@ -29,6 +29,7 @@ function create_project(name, kind, tdir, root)
 		flags {"ExtraWarnings", "Optimize"}
 
 	configuration {"linux"}
+		buildoptions {"-std=c++11"}
 		buildoptions {
 			"-pedantic-errors",
 			"-Werror",
@@ -50,34 +51,35 @@ function create_project(name, kind, tdir, root)
 		}
 
 	configuration {"linux", "not clang"}
-		buildoptions {"-std=c++0x"}
+		-- NB: -Werror is a pita for GCC. Good for testing, though,
+		-- since its error checking is better.
 
 	configuration {"linux", "clang"}
-		buildoptions {"-std=c++11"}
+		buildoptions {"-Werror"}
 		buildoptions {"-stdlib=libstdc++"}
 		links {"stdc++"}
 
 	configuration {}
 		includedirs {
-			root.."/dep/duct/",
-			root.."/dep/murk/include/",
-			root.."/dep/trait_wrangler/"
+			root .. "/dep/duct/",
+			root .. "/dep/murk/include/",
+			root .. "/dep/trait_wrangler/"
 		}
 	return proj
 end
 
 function create_test(group, name, src)
-	local root="../.."
-	create_project(group.."_"..name, "ConsoleApp", ".", root)
+	local root = "../.."
+	create_project(group .. "_" .. name, "ConsoleApp", ".", root)
 
 	configuration {}
 		targetname(name)
 		libdirs {
-			root.."/lib/",
-			root.."/dep/murk/lib/"
+			root .. "/lib/",
+			root .. "/dep/murk/lib/"
 		}
 		includedirs {
-			root.."/include/"
+			root .. "/include/"
 		}
 		files {
 			src

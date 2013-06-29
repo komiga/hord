@@ -30,10 +30,10 @@ namespace aux {
 */
 template<
 	typename CharT,
-	class Traits=std::char_traits<CharT>
+	class Traits = std::char_traits<CharT>
 >
 using basic_string
-=std::basic_string<
+= std::basic_string<
 	CharT, Traits,
 	HORD_AUX_ALLOCATOR<CharT>
 >;
@@ -45,7 +45,7 @@ template<
 	typename T
 >
 using vector
-=std::vector<
+= std::vector<
 	T,
 	HORD_AUX_ALLOCATOR<T>
 >;
@@ -56,11 +56,11 @@ using vector
 template<
 	typename Key,
 	typename T,
-	class Hash=std::hash<Key>,
-	class KeyEqual=std::equal_to<Key>
+	class Hash = std::hash<Key>,
+	class KeyEqual = std::equal_to<Key>
 >
 using unordered_map
-=std::unordered_map<
+= std::unordered_map<
 	Key, T, Hash, KeyEqual,
 	HORD_AUX_ALLOCATOR<std::pair<Key const, T> >
 >;
@@ -70,11 +70,11 @@ using unordered_map
 */
 template<
 	typename Key,
-	class Hash=std::hash<Key>,
-	class KeyEqual=std::equal_to<Key>
+	class Hash = std::hash<Key>,
+	class KeyEqual = std::equal_to<Key>
 >
 using unordered_set
-=std::unordered_set<
+= std::unordered_set<
 	Key, Hash, KeyEqual,
 	HORD_AUX_ALLOCATOR<Key>
 >;

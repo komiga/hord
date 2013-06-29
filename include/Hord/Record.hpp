@@ -50,22 +50,22 @@ public:
 /// @}
 
 private:
-	Field(Field const& other)=delete;
-	Field& operator=(Field const&)=delete;
+	Field(Field const& other) = delete;
+	Field& operator=(Field const&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Field()=default;
+	Field() = default;
 	/** Move constructor. */
-	Field(Field&&)=default;
+	Field(Field&&) = default;
 	/** Destructor. */
-	~Field() noexcept=default;
+	~Field() noexcept = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Field& operator=(Field&&)=default;
+	Field& operator=(Field&&) = default;
 /// @}
 };
 
@@ -75,7 +75,7 @@ public:
 struct Record final {
 public:
 	/** Field vector. */
-	using field_vector_type=aux::vector<Field>;
+	using field_vector_type = aux::vector<Field>;
 
 /** @name Properties */ /// @{
 	/** Field collection. */
@@ -83,22 +83,22 @@ public:
 /// @}
 
 private:
-	Record(Record const&)=delete;
-	Record& operator=(Record const&)=delete;
+	Record(Record const&) = delete;
+	Record& operator=(Record const&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Record()=default;
+	Record() = default;
 	/** Move constructor. */
-	Record(Record&&)=default;
+	Record(Record&&) = default;
 	/** Destructor. */
-	~Record() noexcept=default;
+	~Record() noexcept = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Record& operator=(Record&&)=default;
+	Record& operator=(Record&&) = default;
 /// @}
 };
 

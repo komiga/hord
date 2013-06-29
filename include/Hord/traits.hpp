@@ -17,7 +17,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 namespace Hord {
 
-namespace tw=::trait_wrangler;
+namespace tw = ::trait_wrangler;
 
 namespace traits {
 
