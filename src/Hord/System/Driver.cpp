@@ -95,14 +95,16 @@ Driver::placehold_hive(
 			"cannot placehold hive with non-unique root path"
 		);
 	}
+
 	// Phew. Now let's try to construct and insert this guy
-	Object::ID const id = m_id_generator.generate_unique(m_datastores);
+	Object::ID const
+		id = m_id_generator.generate_unique(m_datastores);
 	IO::Datastore* const
 		datastore_ptr = type_info.construct(std::move(root_path), id);
 	if (nullptr == datastore_ptr) {
 		HORD_THROW_ERROR_SCOPED_FQN(
-			ErrorCode::driver_hive_root_shared,
-			"cannot placehold hive with non-unique root path"
+			ErrorCode::driver_datastore_construct_failed,
+			"failed to construct datastore for root path"
 		);
 	}
 	auto result_pair = m_datastores.emplace(
