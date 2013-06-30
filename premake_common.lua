@@ -64,7 +64,8 @@ function create_project(name, kind, tdir, root)
 			root .. "/include/",
 			root .. "/dep/duct/",
 			root .. "/dep/murk/include/",
-			root .. "/dep/trait_wrangler/"
+			root .. "/dep/trait_wrangler/",
+			root .. "/dep/ceformat/"
 		}
 	return proj
 end
