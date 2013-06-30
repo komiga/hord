@@ -3,6 +3,8 @@
 #include <Hord/Error.hpp>
 #include <Hord/System/Driver.hpp>
 
+#include <ceformat/print.hpp>
+
 #include <type_traits>
 #include <algorithm>
 #include <utility>
@@ -71,6 +73,12 @@ Driver::register_rule_type(
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
+
+HORD_FMT_SCOPED_FQN(
+	s_err_root_shared,
+	"cannot placehold hive with non-unique root path `%s`"
+);
+
 Hive::Unit const&
 Driver::placehold_hive(
 	IO::Datastore::type_info const& type_info,
@@ -90,9 +98,10 @@ Driver::placehold_hive(
 			}
 		)
 	) {
-		HORD_THROW_ERROR_SCOPED_FQN(
+		HORD_THROW_ERROR_F(
 			ErrorCode::driver_hive_root_shared,
-			"cannot placehold hive with non-unique root path"
+			s_err_root_shared,
+			root_path
 		);
 	}
 
