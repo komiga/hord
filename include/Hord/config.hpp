@@ -51,6 +51,10 @@ see @ref index or the accompanying LICENSE file for full text.
 	@note <Hord/String.hpp> and <Hord/Error.hpp> are required to use
 	these.
 
+	@note <ceformat/Format.hpp> is required for
+	the @c HORD_FMT_SCOPED_* macros, and <ceformat/print.hpp> is
+	required for #HORD_THROW_ERROR_F.
+
 	@note All throw macros except for #HORD_THROW_ERROR_S encapsulate
 	the final message in #HORD_STR_LIT (that is, @a m__ needn't be
 	#HORD_STR_LIT-ized).
@@ -80,13 +84,13 @@ see @ref index or the accompanying LICENSE file for full text.
 #endif
 
 /**
-	Returns the string literal of @c HORD_SCOPE_CLASS_IDENT__.
+	Returns the string literal of #HORD_SCOPE_CLASS_IDENT__.
 */
 #define HORD_SCOPE_CLASS \
 	HORD_STRINGIFY(HORD_SCOPE_CLASS_IDENT__)
 
 /**
-	Returns the string literal of @c HORD_SCOPE_FUNC_IDENT__.
+	Returns the string literal of #HORD_SCOPE_FUNC_IDENT__.
 */
 #define HORD_SCOPE_FUNC \
 	HORD_STRINGIFY(HORD_SCOPE_FUNC_IDENT__)
@@ -99,8 +103,14 @@ see @ref index or the accompanying LICENSE file for full text.
 
 /** @cond INTERNAL */
 #define HORD_MSG_SCOPED_IMPL__(s__, m__) \
-		HORD_STR_LIT(s__ ": " m__)
+	HORD_STR_LIT(s__ ": " m__)
+
+#define HORD_FMT_SCOPED_IMPL__(ident__, f__)	\
+	static constexpr ceformat::Format const	\
+	ident__{f__}
 /** @endcond */
+
+// class scope
 
 /**
 	Build message string literal with class scope.
@@ -111,6 +121,17 @@ see @ref index or the accompanying LICENSE file for full text.
 	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_CLASS, m__)
 
 /**
+	Define format message with class scope.
+
+	@param ident__ Identifier for format message.
+	@param f__ Format message.
+*/
+#define HORD_FMT_SCOPED_CLASS(ident__, f__) \
+	HORD_FMT_SCOPED_IMPL__(ident__, HORD_MSG_SCOPED_CLASS(f__))
+
+// function scope
+
+/**
 	Build message string literal with function scope.
 
 	@param m__ Message.
@@ -119,12 +140,32 @@ see @ref index or the accompanying LICENSE file for full text.
 	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_FUNC, m__)
 
 /**
+	Define format message with function scope.
+
+	@param ident__ Identifier for format message.
+	@param f__ Format message.
+*/
+#define HORD_FMT_SCOPED_FUNC(ident__, f__) \
+	HORD_FMT_SCOPED_IMPL__(ident__, HORD_MSG_SCOPED_FUNC(f__))
+
+// fully-qualified scope
+
+/**
 	Build message string literal with fully-qualified scope.
 
 	@param m__ Message.
 */
 #define HORD_MSG_SCOPED_FQN(m__) \
 	HORD_MSG_SCOPED_IMPL__(HORD_SCOPE_FQN, m__)
+
+/**
+	Define format message with fully-qualified scope.
+
+	@param ident__ Identifier for format message.
+	@param f__ Format message.
+*/
+#define HORD_FMT_SCOPED_FQN(ident__, f__) \
+	HORD_FMT_SCOPED_IMPL__(ident__, HORD_MSG_SCOPED_FQN(f__))
 
 /** @cond INTERNAL */
 #define HORD_THROW_ERROR_IMPL__(e__, m__)	\
@@ -151,6 +192,19 @@ see @ref index or the accompanying LICENSE file for full text.
 */
 #define HORD_THROW_ERROR_S(e__, m__) \
 	HORD_THROW_ERROR_IMPL__(e__, m__)
+
+/**
+	Throw error with format message.
+
+	@param e__ ErrorCode.
+	@param f__ @c ceformat::Format message.
+	@param ... Arguments.
+*/
+#define HORD_THROW_ERROR_F(e__, f__, ...)	\
+	HORD_THROW_ERROR_IMPL__(				\
+		e__,								\
+		ceformat::print<f__>(__VA_ARGS__)	\
+	)
 
 /**
 	Throw error with class scope.
