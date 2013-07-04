@@ -1,0 +1,22 @@
+
+/**
+
+@addtogroup etc
+@defgroup memory Memory
+@details
+
+The cc_unique_ptr smart pointer is exactly the same as
+@c std::unique_ptr, except that all const property observers return
+the object-immutable
+
+@code element_type const @endcode
+
+instead of the object-mutable
+
+@code element_type @endcode
+
+(in pointer-to or reference-to forms). This prevents a client from
+modifying an object wrapped in a cc_unique_ptr if it was acquired from
+an immutable context.
+
+*/

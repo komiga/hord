@@ -1,4 +1,5 @@
 
+#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Error.hpp>
 #include <Hord/System/Driver.hpp>
@@ -118,7 +119,7 @@ Driver::placehold_hive(
 	}
 	auto result_pair = m_datastores.emplace(
 		id,
-		std::move(std::unique_ptr<IO::Datastore>{
+		std::move(cc_unique_ptr<IO::Datastore>{
 			datastore_ptr
 		})
 	);

@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_DATA_FIELD_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
 #include <Hord/Rule/State.hpp>
@@ -47,7 +48,7 @@ public:
 	} value{};
 
 	/** Rule state. */
-	std::unique_ptr<Rule::State> state{nullptr}; // Runtime
+	cc_unique_ptr<Rule::State> state{nullptr}; // Runtime
 /// @}
 
 private:

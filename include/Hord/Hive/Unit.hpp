@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_HIVE_UNIT_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
@@ -50,7 +51,7 @@ public:
 	using object_map_type
 	= aux::unordered_map<
 		Object::ID,
-		std::unique_ptr<Object::Unit>
+		cc_unique_ptr<Object::Unit>
 	>;
 
 private:

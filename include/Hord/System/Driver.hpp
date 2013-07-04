@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_SYSTEM_DRIVER_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
 #include <Hord/System/IDGenerator.hpp>
@@ -44,7 +45,7 @@ private:
 	using datastore_map_type
 	= aux::unordered_map<
 		Hive::ID,
-		std::unique_ptr<IO::Datastore>
+		cc_unique_ptr<IO::Datastore>
 	>;
 
 	using rule_type_map_type

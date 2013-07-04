@@ -106,7 +106,7 @@ see @ref index or the accompanying LICENSE file for full text.
 	HORD_STR_LIT(s__ ": " m__)
 
 #define HORD_FMT_SCOPED_IMPL__(ident__, f__)	\
-	static constexpr ceformat::Format const	\
+	static constexpr ceformat::Format const		\
 	ident__{f__}
 /** @endcond */
 
