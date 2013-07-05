@@ -124,7 +124,7 @@ public:
 	MetaField(
 		String name
 	) noexcept
-		: name{std::move(name)}
+		: name(std::move(name))
 	{}
 
 	/** Move constructor. */
@@ -142,6 +142,7 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.
+
 		@returns The field's type info.
 	*/
 	type_info const&
@@ -153,6 +154,7 @@ public:
 /** @name Serialization */ /// @{
 	/**
 		Bind field.
+
 		@param binder Tie binder.
 	*/
 	void
