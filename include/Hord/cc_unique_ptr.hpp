@@ -216,11 +216,11 @@ typename = typename std::enable_if<
 		return m_base.release();
 	}
 
-	pointer
+	void
 	reset(
 		pointer ptr = pointer()
 	) noexcept {
-		return m_base.reset(std::forward<pointer>(ptr));
+		m_base.reset(std::forward<pointer>(ptr));
 	}
 
 	void
