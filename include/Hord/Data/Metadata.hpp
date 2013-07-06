@@ -90,6 +90,11 @@ private:
 		murk::TieBinder& binder
 	) noexcept;
 
+	void
+	bind_const_base(
+		murk::TieBinder& binder
+	) const noexcept;
+
 protected:
 /** @name Implementation */ /// @{
 	/**
@@ -103,11 +108,18 @@ protected:
 
 		@note bind() will bind base properties; implementations shall
 		bind only their own properties.
+		@{
 	*/
 	virtual void
 	bind_impl(
 		murk::TieBinder&
 	) noexcept = 0;
+
+	virtual void
+	bind_const_impl(
+		murk::TieBinder&
+	) const noexcept = 0;
+	/** @} */
 /// @}
 
 public:
@@ -156,6 +168,7 @@ public:
 		Bind field.
 
 		@param binder Tie binder.
+		@{
 	*/
 	void
 	bind(
@@ -164,6 +177,15 @@ public:
 		bind_base(binder);
 		bind_impl(binder);
 	}
+
+	void
+	bind(
+		murk::TieBinder& binder
+	) const noexcept {
+		bind_const_base(binder);
+		bind_const_impl(binder);
+	}
+	/** @} */
 /// @}
 };
 
@@ -190,6 +212,11 @@ private:
 	bind_impl(
 		murk::TieBinder&
 	) noexcept override;
+
+	void
+	bind_const_impl(
+		murk::TieBinder&
+	) const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{
@@ -246,6 +273,11 @@ private:
 		murk::TieBinder&
 	) noexcept override;
 
+	void
+	bind_const_impl(
+		murk::TieBinder&
+	) const noexcept override;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
@@ -301,6 +333,11 @@ private:
 		murk::TieBinder&
 	) noexcept override;
 
+	void
+	bind_const_impl(
+		murk::TieBinder&
+	) const noexcept override;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
@@ -355,6 +392,11 @@ private:
 	bind_impl(
 		murk::TieBinder&
 	) noexcept override;
+
+	void
+	bind_const_impl(
+		murk::TieBinder&
+	) const noexcept override;
 
 public:
 /** @name Constructors and destructor */ /// @{

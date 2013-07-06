@@ -20,14 +20,29 @@ MetaField::~MetaField() noexcept = default;
 
 MetaField& MetaField::operator=(MetaField&&) = default;
 
+#define MURK_METAFIELD_BIND__	\
+	binder						\
+		(&this->name)
+
 void
 MetaField::bind_base(
 	murk::TieBinder& binder
 ) noexcept {
-	binder
-		(&this->name)
-	;
+	MURK_METAFIELD_BIND__;
 }
+
+void
+MetaField::bind_const_base(
+	murk::TieBinder& binder
+) const noexcept {
+	MURK_METAFIELD_BIND__;
+}
+
+#undef MURK_METAFIELD_BIND__
+
+#define MURK_METAFIELD_BIND__	\
+	binder						\
+		(&this->value)
 
 // class StringMetaField implementation
 
@@ -61,9 +76,14 @@ void
 StringMetaField::bind_impl(
 	murk::TieBinder& binder
 ) noexcept {
-	binder
-		(&this->value)
-	;
+	MURK_METAFIELD_BIND__;
+}
+
+void
+StringMetaField::bind_const_impl(
+	murk::TieBinder& binder
+) const noexcept {
+	MURK_METAFIELD_BIND__;
 }
 
 StringMetaField::StringMetaField() = default;
@@ -104,9 +124,14 @@ void
 Int32MetaField::bind_impl(
 	murk::TieBinder& binder
 ) noexcept {
-	binder
-		(&this->value)
-	;
+	MURK_METAFIELD_BIND__;
+}
+
+void
+Int32MetaField::bind_const_impl(
+	murk::TieBinder& binder
+) const noexcept {
+	MURK_METAFIELD_BIND__;
 }
 
 Int32MetaField::Int32MetaField() = default;
@@ -147,9 +172,14 @@ void
 Int64MetaField::bind_impl(
 	murk::TieBinder& binder
 ) noexcept {
-	binder
-		(&this->value)
-	;
+	MURK_METAFIELD_BIND__;
+}
+
+void
+Int64MetaField::bind_const_impl(
+	murk::TieBinder& binder
+) const noexcept {
+	MURK_METAFIELD_BIND__;
 }
 
 Int64MetaField::Int64MetaField() = default;
@@ -190,9 +220,14 @@ void
 BoolMetaField::bind_impl(
 	murk::TieBinder& binder
 ) noexcept {
-	binder
-		(&this->value)
-	;
+	MURK_METAFIELD_BIND__;
+}
+
+void
+BoolMetaField::bind_const_impl(
+	murk::TieBinder& binder
+) const noexcept {
+	MURK_METAFIELD_BIND__;
 }
 
 BoolMetaField::BoolMetaField() = default;
