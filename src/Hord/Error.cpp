@@ -31,6 +31,9 @@ static char const
 		HORD_STR_LIT("datastore_prop_unsupplied"),
 		HORD_STR_LIT("datastore_prop_not_locked"),
 
+		HORD_STR_LIT("metadata_serialization_type_invalid"),
+		HORD_STR_LIT("metadata_serialization_io_failed"),
+
 		HORD_STR_LIT("serialization_improper_state"),
 		HORD_STR_LIT("serialization_access"),
 	}

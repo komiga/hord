@@ -15,6 +15,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/IO/PropStream.hpp>
 
 #include <murk/DescCompound.hpp>
 #include <murk/TieCompound.hpp>
@@ -459,6 +460,37 @@ public:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Metadata& operator=(Metadata&&) = default;
+/// @}
+
+/** @name Serialization */ /// @{
+	/**
+		Deserialize from prop stream.
+
+		@throws Error{ErrorCode::metadata_serialization_type_invalid}
+		If an invalid field type is encountered in the prop stream.
+
+		@throws Error{ErrorCode::metadata_serialization_io_failed}
+		If an input operation failed.
+
+		@param prop_stream %Prop stream.
+	*/
+	void
+	deserialize(
+		IO::InputPropStream& prop_stream
+	);
+
+	/**
+		Serialize to prop stream.
+
+		@throws Error{ErrorCode::metadata_serialization_io_failed}
+		If an input operation failed.
+
+		@param prop_stream %Prop stream.
+	*/
+	void
+	serialize(
+		IO::OutputPropStream& prop_stream
+	) const;
 /// @}
 };
 

@@ -24,6 +24,7 @@ enum class ErrorCode : unsigned;
 
 // FIXME: Doxygen borks all over itself
 // when name-groups are used inside enums.
+
 /**
 	%Error codes.
 	@sa Error
@@ -120,6 +121,23 @@ enum class ErrorCode : unsigned {
 		Attempted to unlock a prop that is not locked.
 	*/
 	datastore_prop_not_locked,
+/// @}
+
+/** @name Metadata */ /// @{
+	/**
+		Encountered invalid field type when deserializing.
+
+		@remarks This would indicate malformed prop data.
+	*/
+	metadata_serialization_type_invalid,
+	/**
+		Write or read operation failed while deserializing or
+		serializing.
+
+		@remarks This will originate from a
+		captured @c murk::SerializeError.
+	*/
+	metadata_serialization_io_failed,
 /// @}
 
 /** @name Serialization */ /// @{
