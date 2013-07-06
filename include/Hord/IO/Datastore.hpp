@@ -27,7 +27,7 @@ namespace IO {
 class Datastore;
 
 /**
-	@addtogroup serialization
+	@addtogroup io
 	@{
 */
 /**
@@ -391,7 +391,7 @@ public:
 };
 
 /** @} */ // end of doc-group datastore
-/** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group io
 
 } // namespace IO
 

@@ -21,7 +21,7 @@ namespace IO {
 struct PropInfo;
 
 /**
-	@addtogroup serialization
+	@addtogroup io
 	@{
 */
 /**
@@ -41,7 +41,7 @@ public:
 };
 
 /** @} */ // end of doc-group prop
-/** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group io
 
 } // namespace IO
 } // namespace Hord
