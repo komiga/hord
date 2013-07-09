@@ -123,7 +123,7 @@ Hord::Rule::Unit*
 dummy_rule_type_construct(
 	Hord::Hive::ID const,
 	Hord::Rule::ID const
-) {
+) noexcept {
 	return nullptr;
 }
 

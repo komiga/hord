@@ -50,9 +50,9 @@ using Type = uint32_t;
 /**
 	Standard rule types.
 
-	@note Values in @c [0,8] are reserved for standard
+	@note Values in <code>[0, 8]</code> are reserved for standard
 	types (@c 0 is invalid). Userspace may specify further types in
-	the range @c [9, (2^32)−1].
+	the range <code>[9, (2 ^ 32) - 1]</code>.
 	@sa Rule
 */
 enum class StandardTypes : Rule::Type {
@@ -65,41 +65,50 @@ enum class StandardTypes : Rule::Type {
 	None = 0,
 	/**
 		Composition of types.
+
 		@sa CompositionRule
 	*/
 	Composition,
 	/**
 		Delimited set of rules.
+
 		@sa DelimitedSetRule
 	*/
 	DelimitedSet,
 	/**
 		Value matcher.
+
 		@sa MatchRule
 	*/
 	Match,
 	/**
 		Number limiter.
+
 		@sa LimitRule
 	*/
 	Limit,
 	/**
 		List.
+
 		@sa ListRule
 	*/
 	List,
 	/**
 		Date-time.
+
 		@sa DateTimeRule
 	*/
 	DateTime,
 	/**
 		Timespan.
+
 		@sa TimespanRule
 	*/
 	Timespan,
 	/// @{
-	/** Reserved types (@c 8). */
+	/**
+		Reserved types (@c 8).
+	*/
 	Reserved1,
 	ReservedFirst = Reserved1,
 	ReservedLast = Reserved1
@@ -132,15 +141,20 @@ struct type_info final {
 	*/
 	uint8_t const permitted_types;
 
-	// TODO: Documentation on construct()
 	/**
 		Construct a rule of this type.
+
+		@returns
+		- The constructed rule; or
+		- @c nullptr if construction failed.
+		@param owner Owner ID.
+		@param id %Object ID.
 	*/
 	Unit*
 	(&construct)(
 		Hive::ID const owner,
 		Rule::ID const id
-	);
+	) noexcept;
 };
 
 /** @} */ // end of doc-group rule

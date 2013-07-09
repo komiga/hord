@@ -61,8 +61,8 @@ public:
 			Construct a datastore of this type.
 
 			@returns
-			- The constructed datastore;
-			- or @c nullptr if construction failed.
+			- The constructed datastore; or
+			- @c nullptr if construction failed.
 			@param root_path Root path.
 			@param id %Hive ID.
 		*/
