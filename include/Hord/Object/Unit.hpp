@@ -108,17 +108,6 @@ protected:
 		Object::ID const id
 	) noexcept;
 
-	/**
-		Constructor with owner and id.
-
-		@param owner Owner ID.
-		@param id %Object ID.
-	*/
-	Unit(
-		Object::ID const owner,
-		Object::ID const id
-	) noexcept;
-
 	/** Move constructor. */
 	Unit(Unit&&);
 public:

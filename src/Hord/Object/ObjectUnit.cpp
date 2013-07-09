@@ -20,14 +20,6 @@ Unit::Unit(
 	, m_id(id)
 {}
 
-Unit::Unit(
-	Object::ID const owner,
-	Object::ID const id
-) noexcept
-	: m_owner(owner)
-	, m_id(id)
-{}
-
 Unit::Unit(Unit&&) = default;
 Unit::~Unit() noexcept = default;
 
