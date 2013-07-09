@@ -37,6 +37,17 @@ enum class ErrorCode : unsigned {
 	unknown,
 /// @}
 
+/** @name LockFile */ /// @{
+	/**
+		Attempted to modify property while lock is active.
+	*/
+	lockfile_immutable,
+	/**
+		Failed to acquire the lock.
+	*/
+	lockfile_acquire_failed,
+/// @}
+
 /** @name Driver */ /// @{
 	/**
 		Attempted to register a rule type that is reserved for

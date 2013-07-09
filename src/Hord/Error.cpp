@@ -14,6 +14,9 @@ static char const
 	* const s_error_names[]{
 		HORD_STR_LIT("unknown"),
 
+		HORD_STR_LIT("lockfile_immutable"),
+		HORD_STR_LIT("lockfile_acquire_failed"),
+
 		HORD_STR_LIT("driver_rule_type_reserved"),
 		HORD_STR_LIT("driver_rule_type_zero_permitted_types"),
 		HORD_STR_LIT("driver_rule_type_shared"),

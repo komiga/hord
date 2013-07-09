@@ -10,6 +10,7 @@ solution("test")
 -- Include all groups
 
 include "general"
+include "etc"
 
 if _ACTION == "clean" then
 	local prjs = solution().projects
