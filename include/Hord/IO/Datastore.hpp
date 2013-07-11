@@ -17,6 +17,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 
+#include <cassert>
 #include <functional>
 #include <iosfwd>
 
@@ -178,23 +179,39 @@ protected:
 		RESERVED_LAST = 1 << 7
 	};
 
+/** @cond INTERNAL */
+#define HORD_STATE_ASSERT_VALID__(x__)	\
+	assert(								\
+		State::RESERVED_FIRST > x__ &&	\
+		State::RESERVED_LAST  < x__		\
+	);
+/** @endcond */
+
 	/**
 		Enable state.
+
 		@param state %State to enable.
 	*/
 	void
 	enable_state(
 		State const state
-	) noexcept;
+	) noexcept {
+		HORD_STATE_ASSERT_VALID__(state);
+		m_states |= static_cast<unsigned>(state);
+	}
 
 	/**
 		Disable state.
+
 		@param state %State to disable.
 	*/
 	void
 	disable_state(
 		State const state
-	) noexcept;
+	) noexcept {
+		HORD_STATE_ASSERT_VALID__(state);
+		m_states &= ~static_cast<unsigned>(state);
+	}
 
 	/**
 		Check if a state is enabled.
@@ -207,7 +224,11 @@ protected:
 	bool
 	has_state(
 		State const state
-	) const noexcept;
+	) const noexcept {
+		HORD_STATE_ASSERT_VALID__(state);
+		return m_states & static_cast<unsigned>(state);
+	}
+#undef HORD_STATE_ASSERT_VALID__
 /// @}
 
 /** @name Constructors and destructor */ /// @{
@@ -244,6 +265,7 @@ public:
 
 	/**
 		Get root path.
+
 		@returns Root path.
 	*/
 	String const&
@@ -253,6 +275,7 @@ public:
 
 	/**
 		Get hive.
+
 		@returns %Hive.
 	*/
 	Hive::Unit const&
@@ -262,6 +285,7 @@ public:
 
 	/**
 		Get mutable hive.
+
 		@returns Mutable hive.
 	*/
 	Hive::Unit&
@@ -271,6 +295,7 @@ public:
 
 	/**
 		Check if the datastore is open.
+
 		@returns
 		- @c true if the datastore is open;
 		- @c false if it is closed.
@@ -282,6 +307,7 @@ public:
 
 	/**
 		Check if the datastore is locked.
+
 		@returns
 		- @c true if the datastore is locked;
 		- @c false if it is not locked.

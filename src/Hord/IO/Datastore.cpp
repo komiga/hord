@@ -3,9 +3,6 @@
 #include <Hord/IO/Datastore.hpp>
 
 #include <utility>
-#include <cassert>
-
-// TODO: Base exceptions [???]
 
 namespace Hord {
 namespace IO {
@@ -24,38 +21,8 @@ Datastore::Datastore(
 
 Datastore::~Datastore() = default;
 
-#define HORD_STATE_ASSERT_VALID__(x__)	\
-	assert(								\
-		State::RESERVED_FIRST > x__ &&	\
-		State::RESERVED_LAST  < x__		\
-	);
-
-void
-Datastore::enable_state(
-	State const state
-) noexcept {
-	HORD_STATE_ASSERT_VALID__(state);
-	m_states |= static_cast<unsigned>(state);
-}
-
-void
-Datastore::disable_state(
-	State const state
-) noexcept {
-	HORD_STATE_ASSERT_VALID__(state);
-	m_states &= ~static_cast<unsigned>(state);
-}
-
-bool
-Datastore::has_state(
-	State const state
-) const noexcept {
-	HORD_STATE_ASSERT_VALID__(state);
-	return m_states & static_cast<unsigned>(state);
-}
-#undef HORD_STATE_ASSERT_VALID__
-
 #define HORD_SCOPE_FUNC_IDENT__ set_root_path
+
 void
 Datastore::set_root_path(
 	String root_path
@@ -68,9 +35,11 @@ Datastore::set_root_path(
 	}
 	m_root_path.assign(std::move(root_path));
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ open
+
 void
 Datastore::open() {
 	if (is_open()) {
@@ -81,9 +50,11 @@ Datastore::open() {
 	}
 	open_impl();
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ close
+
 void
 Datastore::close() {
 	if (is_locked()) {
@@ -95,6 +66,7 @@ Datastore::close() {
 		close_impl();
 	}
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_ACQUIRE_CHECK__									\
@@ -111,6 +83,7 @@ Datastore::close() {
 	}
 
 #define HORD_SCOPE_FUNC_IDENT__ acquire_input_stream
+
 std::istream&
 Datastore::acquire_input_stream(
 	IO::PropInfo const& prop_info
@@ -118,9 +91,11 @@ Datastore::acquire_input_stream(
 	HORD_ACQUIRE_CHECK__;
 	return acquire_input_stream_impl(prop_info);
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ acquire_output_stream
+
 std::ostream&
 Datastore::acquire_output_stream(
 	IO::PropInfo const& prop_info
@@ -128,6 +103,7 @@ Datastore::acquire_output_stream(
 	HORD_ACQUIRE_CHECK__;
 	return acquire_output_stream_impl(prop_info);
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 #undef HORD_ACQUIRE_CHECK__
 
@@ -140,6 +116,7 @@ Datastore::acquire_output_stream(
 	}
 
 #define HORD_SCOPE_FUNC_IDENT__ release_input_stream
+
 void
 Datastore::release_input_stream(
 	IO::PropInfo const& prop_info
@@ -147,9 +124,11 @@ Datastore::release_input_stream(
 	HORD_RELEASE_CHECK__;
 	release_input_stream_impl(prop_info);
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ release_output_stream
+
 void
 Datastore::release_output_stream(
 	IO::PropInfo const& prop_info
@@ -157,6 +136,7 @@ Datastore::release_output_stream(
 	HORD_RELEASE_CHECK__;
 	release_output_stream_impl(prop_info);
 }
+
 #undef HORD_SCOPE_FUNC_IDENT__
 #undef HORD_RELEASE_CHECK__
 
