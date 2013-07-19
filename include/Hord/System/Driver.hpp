@@ -42,6 +42,12 @@ class Driver;
 */
 class Driver final {
 private:
+	using hive_map_type
+	= aux::unordered_map<
+		Hive::ID,
+		Hive::Unit
+	>;
+
 	using datastore_map_type
 	= aux::unordered_map<
 		Hive::ID,
@@ -54,12 +60,13 @@ private:
 		Rule::type_info const&
 	>;
 
-	using id_vector_type = aux::vector<Hive::ID>;
+	using hive_id_vector_type = aux::vector<Hive::ID>;
 
 	System::IDGenerator m_id_generator{};
 	rule_type_map_type m_rule_types{};
+	hive_map_type m_hives{};
 	datastore_map_type m_datastores{};
-	id_vector_type m_hive_order{};
+	hive_id_vector_type m_hive_order{};
 
 	Driver(Driver const&) = delete;
 	Driver& operator=(Driver const&) = delete;

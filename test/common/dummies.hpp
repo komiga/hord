@@ -26,22 +26,19 @@ private:
 public:
 	static Datastore*
 	construct(
-		Hord::String root_path,
-		Hord::Hive::ID const id
+		Hord::String root_path
 	) noexcept {
-		return new(std::nothrow) DummyDatastore(std::move(root_path), id);
+		return new(std::nothrow) DummyDatastore(std::move(root_path));
 	}
 
 	static type_info const s_type_info;
 
 private:
 	DummyDatastore(
-		Hord::String root_path,
-		Hord::Hive::ID const id
+		Hord::String root_path
 	)
 		: Hord::IO::Datastore(
-			std::move(root_path),
-			id
+			std::move(root_path)
 		)
 	{}
 

@@ -12,10 +12,9 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
+#include <Hord/String.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
 
 #include <cassert>
 #include <functional>
@@ -43,14 +42,6 @@ class Datastore;
 
 	@note %Datastores must be locked when a single prop stream is
 	active.
-
-	@remarks The datastore's hive should not be used by
-	an implementation to lookup objects within the datastore. The
-	hive is not guaranteed to contain the entire idset at runtime.
-
-	@remarks The hive will always have a valid ID, but
-	note that the hive's ID is <strong>not</strong> within the ID
-	space of its children -- see @ref hive.
 */
 class Datastore {
 public:
@@ -65,12 +56,10 @@ public:
 			- The constructed datastore; or
 			- @c nullptr if construction failed.
 			@param root_path Root path.
-			@param id %Hive ID.
 		*/
 		Datastore*
 		(&construct)(
-			String root_path,
-			Hive::ID const id
+			String root_path
 		) noexcept;
 	};
 
@@ -94,7 +83,7 @@ public:
 		traits::disallow_t<
 			D,
 			std::is_default_constructible,
-			tw::capture<std::is_constructible, String, Hive::ID const>::type,
+			tw::capture<std::is_constructible, String>::type,
 			tw::is_fully_copyable,
 			tw::is_fully_moveable
 		>
@@ -103,7 +92,6 @@ public:
 private:
 	unsigned m_states;
 	String m_root_path;
-	Hive::Unit m_hive;
 
 	Datastore() = delete;
 	Datastore(Datastore const&) = delete;
@@ -233,14 +221,12 @@ protected:
 
 /** @name Constructors and destructor */ /// @{
 	/**
-		Constructor with root path and hive ID.
+		Constructor with root path.
 
 		@param root_path Root path.
-		@param id %Hive ID.
 	*/
 	Datastore(
-		String root_path,
-		Hive::ID const id
+		String root_path
 	) noexcept;
 public:
 	/** Destructor. */
@@ -271,26 +257,6 @@ public:
 	String const&
 	get_root_path() const noexcept {
 		return m_root_path;
-	}
-
-	/**
-		Get hive.
-
-		@returns %Hive.
-	*/
-	Hive::Unit const&
-	get_hive() const noexcept {
-		return m_hive;
-	}
-
-	/**
-		Get mutable hive.
-
-		@returns Mutable hive.
-	*/
-	Hive::Unit&
-	get_hive() noexcept {
-		return m_hive;
 	}
 
 	/**

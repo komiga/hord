@@ -106,23 +106,25 @@ Driver::placehold_hive(
 
 	// Phew. Now let's try to construct and insert this guy
 	Object::ID const
-		id = m_id_generator.generate_unique(m_datastores);
+		id = m_id_generator.generate_unique(m_hives);
 	IO::Datastore* const
-		datastore_ptr = type_info.construct(std::move(root_path), id);
+		datastore_ptr = type_info.construct(std::move(root_path));
 	if (nullptr == datastore_ptr) {
 		HORD_THROW_ERROR_SCOPED_FQN(
 			ErrorCode::driver_datastore_construct_failed,
-			"failed to construct datastore for root path"
+			"failed to construct datastore"
 		);
 	}
-	auto result_pair = m_datastores.emplace(
-		id,
-		std::move(cc_unique_ptr<IO::Datastore>{
-			datastore_ptr
-		})
-	);
 	m_hive_order.emplace_back(id);
-	return result_pair.first->second->get_hive();
+	auto const& result_pair = m_hives.emplace(
+		id,
+		std::move(Hive::Unit{id})
+	);
+	m_datastores.emplace(
+		id,
+		std::move(cc_unique_ptr<IO::Datastore>{datastore_ptr})
+	);
+	return result_pair.first->second;
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 

@@ -12,11 +12,9 @@ namespace IO {
 #define HORD_SCOPE_CLASS_IDENT__ IO::Datastore
 
 Datastore::Datastore(
-	String root_path,
-	Hive::ID const id
+	String root_path
 ) noexcept
 	: m_root_path(std::move(root_path))
-	, m_hive(id)
 {}
 
 Datastore::~Datastore() = default;
