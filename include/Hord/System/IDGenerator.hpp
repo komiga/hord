@@ -13,6 +13,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
 
+#include <random>
+
 namespace Hord {
 namespace System {
 
@@ -31,42 +33,21 @@ class IDGenerator;
 /**
 	Object ID generator.
 */
-class IDGenerator {
+class IDGenerator final {
 private:
+	std::mt19937 m_rng{std::mt19937::default_seed};
+
 	IDGenerator(IDGenerator const&) = delete;
 	IDGenerator& operator=(IDGenerator const&) = delete;
-
-protected:
-/** @name Implementation */ /// @{
-	/**
-		seed() implementation.
-
-		@remarks If called from Driver, @a seed_value will be a
-		growing value, based on time.
-	*/
-	virtual void
-	seed_impl(
-		int64_t seed_value
-	) noexcept = 0;
-
-	/**
-		generate() implementation.
-
-		@post Return value must not be equal to @c Object::NULL_ID.
-	*/
-	virtual Object::ID
-	generate_impl() noexcept = 0;
-/// @}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	IDGenerator() noexcept;
+	IDGenerator() /*noexcept*/;
 	/** Move constructor. */
 	IDGenerator(IDGenerator&&) noexcept;
 	/** Destructor. */
-	virtual
-	~IDGenerator() noexcept = 0;
+	~IDGenerator() noexcept;
 /// @}
 
 /** @name Operators */ /// @{
@@ -83,9 +64,7 @@ public:
 	void
 	seed(
 		int64_t const seed_value
-	) noexcept {
-		seed_impl(seed_value);
-	}
+	) noexcept;
 
 	/**
 		Generate an ID.
@@ -97,9 +76,7 @@ public:
 		@returns The generated ID.
 	*/
 	Object::ID
-	generate() noexcept {
-		return generate_impl();
-	}
+	generate() noexcept;
 
 	/**
 		Generate unique ID within set.
@@ -117,8 +94,8 @@ public:
 		Set const& set
 	) noexcept {
 		Object::ID id;
-		do { id = generate(); }
-		while (set.cend() != set.find(id));
+		do { id = m_rng(); }
+		while (Object::NULL_ID == id || set.cend() != set.find(id));
 		return id;
 	}
 /// @}

@@ -56,12 +56,11 @@ private:
 
 	using id_vector_type = aux::vector<Hive::ID>;
 
-	System::IDGenerator& m_id_generator;
+	System::IDGenerator m_id_generator{};
 	rule_type_map_type m_rule_types{};
 	datastore_map_type m_datastores{};
 	id_vector_type m_hive_order{};
 
-	Driver() = delete;
 	Driver(Driver const&) = delete;
 	Driver& operator=(Driver const&) = delete;
 	Driver& operator=(Driver&&) = delete;
@@ -69,34 +68,13 @@ private:
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
-		Constructor with ID generator.
-
-		@warning All references must be valid for the lifetime
-		of the driver.
-
-		@param id_generator IDGenerator.
+		Default constructor.
 	*/
-	explicit
-	Driver(
-		System::IDGenerator& id_generator
-	) noexcept;
-
+	Driver() /*noexcept*/;
 	/** Move constructor. */
 	Driver(Driver&&);
 	/** Destructor. */
 	~Driver() noexcept;
-/// @}
-
-/** @name Properties */ /// @{
-	/**
-		Get IDGenerator.
-
-		@returns The IDGenerator.
-	*/
-	System::IDGenerator&
-	get_id_generator() noexcept {
-		return m_id_generator;
-	}
 /// @}
 
 /** @name Operations */ /// @{

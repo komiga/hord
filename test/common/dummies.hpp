@@ -2,42 +2,11 @@
 #ifndef HORD_TEST_COMMON_DUMMIES_HPP_
 #define HORD_TEST_COMMON_DUMMIES_HPP_
 
-#include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Datastore.hpp>
 
 #include <new>
 #include <random>
 #include <utility>
-
-class DummyIDGenerator
-	: public Hord::System::IDGenerator
-{
-private:
-	std::mt19937 m_rng{std::mt19937::default_seed};
-
-public:
-	DummyIDGenerator() = default;
-	DummyIDGenerator(DummyIDGenerator&&) = default;
-	~DummyIDGenerator() override = default;
-
-private:
-	void
-	seed_impl(
-		int64_t seed_value
-	) noexcept override {
-		m_rng.seed(static_cast<std::mt19937::result_type>(
-			seed_value
-		));
-	}
-
-	Hord::Object::ID
-	generate_impl() noexcept override {
-		Hord::Object::ID id;
-		do { id = m_rng(); }
-		while (Hord::Object::NULL_ID == id);
-		return id;
-	}
-};
 
 class DummyDatastore
 	: public Hord::IO::Datastore

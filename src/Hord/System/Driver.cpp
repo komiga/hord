@@ -18,11 +18,9 @@ namespace System {
 
 #define HORD_SCOPE_CLASS_IDENT__ System::Driver
 
-Driver::Driver(
-	System::IDGenerator& id_generator
-) noexcept
-	: m_id_generator(id_generator)
-{
+// NB: See note about stdlib defect in System/IDGenerator.cpp
+
+Driver::Driver() /*noexcept*/ {
 	static_assert(
 		std::is_same<
 			int64_t,

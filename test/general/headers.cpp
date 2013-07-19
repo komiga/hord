@@ -29,9 +29,7 @@ signed
 main() {
 	// group driver
 	Hord::Hive::Unit hive{};
-	//Hord::IDGenerator id_generator{};
-	DummyIDGenerator id_generator{};
-	Hord::System::Driver driver{id_generator};
+	Hord::System::Driver driver{};
 
 	// group error
 	Hord::Error err{Hord::ErrorCode::unknown, "oh no!"};
