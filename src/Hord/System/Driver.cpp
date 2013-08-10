@@ -6,7 +6,6 @@
 
 #include <ceformat/print.hpp>
 
-#include <type_traits>
 #include <algorithm>
 #include <utility>
 #include <chrono>
@@ -22,10 +21,7 @@ namespace System {
 
 Driver::Driver() /*noexcept*/ {
 	static_assert(
-		std::is_same<
-			int64_t,
-			std::chrono::steady_clock::rep
-		>::value,
+		8u == sizeof(std::chrono::steady_clock::rep),
 		"steady_clock representation is not 64 bits!"
 	);
 
