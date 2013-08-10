@@ -1,0 +1,392 @@
+/**
+@file Log.hpp
+@brief Logging utilities.
+
+@author Tim Howard
+@copyright 2013 Tim Howard under the MIT license;
+see @ref index or the accompanying LICENSE file for full text.
+*/
+
+#ifndef HORD_LOG_HPP_
+#define HORD_LOG_HPP_
+
+#include <Hord/config.hpp>
+#include <Hord/String.hpp>
+
+#include <duct/IO/multistream.hpp>
+
+#include <fstream>
+#include <ostream>
+
+namespace Hord {
+namespace Log {
+
+// TODO: Common output sentinels (e.g., current time in ISO-8601)
+// TODO: Logging interface like exception throwing
+
+// TODO: Datastores need to logify by roots.. somehow.
+// Driver should probably manage that. Actually, Driver will
+// probably be doing most of the Datastore logging anyways.
+
+// TODO: Need to handle multi-threaded output to file stream properly
+// FIXME: thread_local requires g++ 4.8!? (In Clang!)
+
+// Forward declarations
+class Controller;
+class OutputStream;
+
+/**
+	@addtogroup etc
+	@{
+*/
+/**
+	@addtogroup log
+	@{
+*/
+
+/**
+	Stream type.
+*/
+enum StreamType : unsigned {
+	general = 0u,
+	debug,
+	error,
+
+/** @cond INTERNAL */
+	LAST
+/** @endcond */ // INTERNAL
+};
+
+/** Stream prefixes. */
+enum class Pre : unsigned {
+	general = 0u,
+	debug,
+	error,
+
+	none,
+	current,
+
+/** @cond INTERNAL */
+	LAST,
+	LAST_CANON = error
+/** @endcond */ // INTERNAL
+};
+
+/** @cond INTERNAL */
+enum : std::size_t {
+	STREAMBUF_BUFFER_SIZE = 2048u
+};
+
+extern /*thread_local*/ Controller
+s_controller;
+/** @endcond */ // INTERNAL
+
+/**
+	Get the log controller.
+
+	@returns The log controller.
+*/
+Controller&
+get_controller() noexcept {
+	return s_controller;
+}
+
+/**
+	Log controller.
+*/
+class Controller final {
+private:
+	friend class OutputStream;
+
+	/**
+		Description.
+	*/
+	enum class Flag : unsigned {
+		write_stdout = 1 << 0,
+		write_file = 1 << 1,
+		write_datastore = 1 << 2
+	};
+
+	unsigned m_flags;
+	String m_file_path;
+
+	std::ofstream m_file_stream;
+	char m_mc_buffer[STREAMBUF_BUFFER_SIZE];
+	duct::IO::multicast_vector_type m_mc_vectors[
+		static_cast<unsigned>(StreamType::LAST)
+	];
+	duct::IO::multistreambuf m_mc_streambufs[
+		static_cast<unsigned>(StreamType::LAST)
+	];
+
+	/**
+		Check if a flag is enabled.
+
+		@returns
+		- @c true if the flag is enabled;
+		- @c false if the flag is disabled.
+		@param flag %Flag to test.
+	*/
+	bool
+	has_flag(
+		Flag const flag
+	) const noexcept {
+		return m_flags & static_cast<unsigned>(flag);
+	}
+
+	/**
+		Enable flag.
+
+		@param flag %Flag to enable.
+	*/
+	void
+	enable_flag(
+		Flag const flag
+	) noexcept {
+		m_flags |= static_cast<unsigned>(flag);
+	}
+
+	/**
+		Disable flag.
+
+		@param flag %Flag to disable.
+	*/
+	void
+	disable_flag(
+		Flag const flag
+	) noexcept {
+		m_flags &= ~static_cast<unsigned>(flag);
+	}
+
+	/**
+		Enable or disable flag.
+
+		@param flag %Flag to enable or disable.
+		@param enable Whether to enable or disable the flag.
+	*/
+	void
+	set_flag(
+		Flag const flag,
+		bool const enable
+	) noexcept {
+		enable
+			? enable_flag(flag)
+			: disable_flag(flag)
+		;
+	}
+
+	/** Disable multicast to log file stream. */
+	void
+	disable_file_stream() noexcept;
+	/** Enable multicast to log file stream. */
+	void
+	enable_file_stream() noexcept;
+
+	/**
+		Open the log file stream.
+
+		@returns Whether the operation succeeded.
+	*/
+	bool
+	open_file();
+
+	/**
+		Close the log file stream.
+
+		@returns Whether the operation succeeded.
+	*/
+	bool
+	close_file();
+
+	Controller(Controller&&) = delete;
+	Controller(Controller const&) = delete;
+	Controller& operator=(Controller const&) = delete;
+	Controller& operator=(Controller&&) = delete;
+
+public:
+/** @name Constructors and destructor */ /// @{
+	/**
+		Constructor with flags and log file path.
+
+		@param enable_stdout Enable or disable standard output.
+		@param enable_file Enable or disable log file output.
+		@param enable_datastore Enable or disable datastore-local
+		file output.
+		@param path Log file path.
+	*/
+	Controller(
+		bool const enable_stdout,
+		bool const enable_file,
+		bool const enable_datastore,
+		String path
+	) noexcept;
+
+	/** Destructor. */
+	~Controller() noexcept;
+/// @}
+
+/** @name Configuration */ /// @{
+	/**
+		Enable or disable standard output.
+
+		@param enable @c true to enable, @c false to disable.
+	*/
+	void
+	stdout(
+		bool const enable
+	) noexcept;
+
+	/**
+		Enable or disable log file output.
+
+		@returns
+		- @c true if the operation succeeded (i.e., opening or closing
+		the log file stream);
+		- @c false if the operation failed.
+		@param enable @c true to enable, @c false to disable.
+	*/
+	bool
+	file(
+		bool const enable
+	) noexcept;
+
+	/**
+		Enable or disable datastore-local file output.
+
+		@param enable @c true to enable, @c false to disable.
+	*/
+	void
+	datastore(
+		bool const enable
+	) noexcept;
+
+	/**
+		Set the log file path.
+
+		@remarks If the file stream is currently open, it is closed.
+		If opening on @a path fails, @c false is returned, but file
+		output is still enabled. If log file output is disabled,
+		this only assigns the log file path.
+
+		@returns
+		- @c true if the file stream was successfully opened;
+		- @c false if the file path could not be opened for writing.
+		@param path Log file path.
+	*/
+	bool
+	set_file_path(
+		String path
+	) noexcept;
+
+	/**
+		Get log file path.
+
+		@returns The log file path.
+	*/
+	String const&
+	get_file_path() const noexcept {
+		return m_file_path;
+	}
+/// @}
+};
+
+/**
+	Log output stream.
+*/
+class OutputStream final
+	: public std::ostream
+{
+private:
+	StreamType const m_type;
+
+	OutputStream() = delete;
+	OutputStream(OutputStream const&) = delete;
+	OutputStream& operator=(OutputStream const&) = delete;
+	OutputStream& operator=(OutputStream&&) = delete;
+
+	using base = std::ostream;
+
+public:
+/** @name Constructors and destructor */ /// @{
+	/**
+		Constructor with type and streambuf.
+
+		@param type Stream type.
+	*/
+	OutputStream(
+		StreamType const type
+	) noexcept
+		: base(
+			&s_controller.m_mc_streambufs[
+				static_cast<unsigned>(type)
+			]
+		)
+		, m_type(type)
+	{}
+
+	// FIXME: Defect in libstdc++ 4.7.3: basic_ostream
+	// move ctor is deleted and swap() is not defined
+	/**
+		Move constructor.
+
+		@param other Stream to take ownership of.
+	*/
+	OutputStream(
+		OutputStream&& other
+	) noexcept
+		//: base(std::move(other))
+		: base(other.rdbuf())
+		, m_type(other.m_type)
+	{}
+
+	/** Destructor. */
+	~OutputStream() noexcept override {
+		// Force-write streambuf to multicast streams
+		static_cast<duct::IO::multistreambuf*>(
+			this->rdbuf()
+		)->multicast();
+	}
+/// @}
+
+/** @name Properties */ /// @{
+	/**
+		Get stream type.
+
+		@returns The stream type.
+	*/
+	StreamType
+	get_type() const noexcept {
+		return m_type;
+	}
+/// @}
+};
+
+/**
+	Acquire log output stream for type.
+
+	@returns The log output stream for @a type.
+	@param type Stream type.
+*/
+OutputStream
+acquire(
+	StreamType const type
+) noexcept {
+	return OutputStream(type);
+}
+
+/** @cond INTERNAL */
+// NB: This (evilly) assumes the output stream is an OutputStream.
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Pre prefix
+);
+/** @endcond */ // INTERNAL
+
+/** @} */ // end of doc-group log
+/** @} */ // end of doc-group etc
+
+} // namespace Log
+} // namespace Hord
+
+#endif // HORD_LOG_HPP_

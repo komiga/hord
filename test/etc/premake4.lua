@@ -1,7 +1,11 @@
 create_tests(
-	"etc", {
+"etc", {
 	{
 		"lockfile",
 		"lockfile.cpp"
+	},
+	{
+		"log",
+		"log.cpp"
 	}
 })
