@@ -6,9 +6,18 @@ newoption {
 	description = "Use Clang in-place of GCC",
 }
 
+newoption {
+	trigger = "stdlib",
+	description = "C++ stdlib to link to for Linux",
+}
+
 if _OPTIONS["clang"] then
 	premake.gcc.cc = "clang"
 	premake.gcc.cxx = "clang++"
+end
+
+if nil == _OPTIONS["stdlib"] then
+	_OPTIONS["stdlib"] = "stdc++"
 end
 
 function create_project(name, kind, tdir, root)
@@ -49,15 +58,13 @@ function create_project(name, kind, tdir, root)
 
 			"-Wunused"
 		}
+		links {_OPTIONS["stdlib"]}
 
-	configuration {"linux", "not clang"}
-		-- NB: -Werror is a pita for GCC. Good for testing, though,
-		-- since its error checking is better.
-
+	-- NB: -Werror is a pita for GCC. Good for testing, though,
+	-- since its error checking is better.
 	configuration {"linux", "clang"}
 		buildoptions {"-Werror"}
-		buildoptions {"-stdlib=libstdc++"}
-		links {"stdc++"}
+		buildoptions {"-stdlib=lib" .. _OPTIONS["stdlib"]}
 
 	configuration {}
 		includedirs {
