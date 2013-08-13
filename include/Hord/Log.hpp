@@ -13,6 +13,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
 
+#include <duct/StateStore.hpp>
 #include <duct/IO/multistream.hpp>
 
 #include <fstream>
@@ -99,7 +100,7 @@ private:
 	friend class OutputStream;
 
 	/**
-		Description.
+		State flags.
 	*/
 	enum class Flag : unsigned {
 		write_stdout = 1 << 0,
@@ -107,7 +108,7 @@ private:
 		write_datastore = 1 << 2
 	};
 
-	unsigned m_flags;
+	duct::StateStore<Flag> m_flags;
 	String m_file_path;
 
 	std::ofstream m_file_stream;
@@ -118,62 +119,6 @@ private:
 	duct::IO::multistreambuf m_mc_streambufs[
 		static_cast<unsigned>(StreamType::LAST)
 	];
-
-	/**
-		Check if a flag is enabled.
-
-		@returns
-		- @c true if the flag is enabled;
-		- @c false if the flag is disabled.
-		@param flag %Flag to test.
-	*/
-	bool
-	has_flag(
-		Flag const flag
-	) const noexcept {
-		return m_flags & static_cast<unsigned>(flag);
-	}
-
-	/**
-		Enable flag.
-
-		@param flag %Flag to enable.
-	*/
-	void
-	enable_flag(
-		Flag const flag
-	) noexcept {
-		m_flags |= static_cast<unsigned>(flag);
-	}
-
-	/**
-		Disable flag.
-
-		@param flag %Flag to disable.
-	*/
-	void
-	disable_flag(
-		Flag const flag
-	) noexcept {
-		m_flags &= ~static_cast<unsigned>(flag);
-	}
-
-	/**
-		Enable or disable flag.
-
-		@param flag %Flag to enable or disable.
-		@param enable Whether to enable or disable the flag.
-	*/
-	void
-	set_flag(
-		Flag const flag,
-		bool const enable
-	) noexcept {
-		enable
-			? enable_flag(flag)
-			: disable_flag(flag)
-		;
-	}
 
 	/** Disable multicast to log file stream. */
 	void

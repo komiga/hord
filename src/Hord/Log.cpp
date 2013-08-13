@@ -69,10 +69,10 @@ Controller::Controller(
 	bool const enable_datastore,
 	String path
 ) noexcept
-	: m_flags(0u)
+	: m_flags()
 	, m_file_path(std::move(path))
-	, m_file_stream{}
-	, m_mc_buffer{}
+	, m_file_stream()
+	, m_mc_buffer()
 	, m_mc_vectors{
 		{{
 			enable_stdout ? &std::cout : nullptr,
@@ -96,7 +96,7 @@ Controller::Controller(
 		{m_mc_vectors[2], m_mc_buffer, STREAMBUF_BUFFER_SIZE}
 	}
 {
-	this->set_flag(Flag::write_stdout, enable_stdout);
+	m_flags.set(Flag::write_stdout, enable_stdout);
 	this->file(enable_file);
 	this->datastore(enable_datastore);
 }
@@ -124,7 +124,7 @@ Controller::enable_file_stream() noexcept {
 bool
 Controller::open_file() {
 	if (
-		has_flag(Flag::write_file) &&
+		m_flags.test(Flag::write_file) &&
 		!m_file_stream.is_open() &&
 		!m_file_path.empty()
 	) {
@@ -207,7 +207,7 @@ Controller::stdout(
 
 	if (
 		enable &&
-		!has_flag(Flag::write_stdout)
+		!m_flags.test(Flag::write_stdout)
 	) {
 		std::size_t index = 0;
 		for (auto& vec : m_mc_vectors) {
@@ -215,20 +215,20 @@ Controller::stdout(
 		}
 	} else if (
 		!enable &&
-		has_flag(Flag::write_stdout)
+		m_flags.test(Flag::write_stdout)
 	) {
 		for (auto& vec : m_mc_vectors) {
 			vec[MC_INDEX_STDOUT] = nullptr;
 		}
 	}
-	set_flag(Flag::write_stdout, enable);
+	m_flags.set(Flag::write_stdout, enable);
 }
 
 bool
 Controller::file(
 	bool const enable
 ) noexcept {
-	set_flag(Flag::write_file, enable);
+	m_flags.set(Flag::write_file, enable);
 	return enable
 		? open_file()
 		: close_file()
@@ -240,7 +240,7 @@ Controller::datastore(
 	bool const enable
 ) noexcept {
 	// TODO
-	set_flag(Flag::write_datastore, enable);
+	m_flags.set(Flag::write_datastore, enable);
 }
 
 bool
