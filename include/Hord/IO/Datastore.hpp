@@ -16,6 +16,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
 
+#include <duct/StateStore.hpp>
+
 #include <cassert>
 #include <functional>
 #include <iosfwd>
@@ -88,16 +90,6 @@ public:
 			tw::is_fully_moveable
 		>
 	{};
-
-private:
-	unsigned m_states;
-	String m_root_path;
-
-	Datastore() = delete;
-	Datastore(Datastore const&) = delete;
-	Datastore(Datastore&&) = delete;
-	Datastore& operator=(Datastore const&) = delete;
-	Datastore& operator=(Datastore&&) = delete;
 
 protected:
 /** @name Implementation */ /// @{
@@ -180,12 +172,12 @@ protected:
 
 		@param state %State to enable.
 	*/
-	void
+	/*constexpr*/ void
 	enable_state(
 		State const state
 	) noexcept {
 		HORD_STATE_ASSERT_VALID__(state);
-		m_states |= static_cast<unsigned>(state);
+		m_states.enable(state);
 	}
 
 	/**
@@ -193,32 +185,58 @@ protected:
 
 		@param state %State to disable.
 	*/
-	void
+	/*constexpr*/ void
 	disable_state(
 		State const state
 	) noexcept {
 		HORD_STATE_ASSERT_VALID__(state);
-		m_states &= ~static_cast<unsigned>(state);
+		m_states.disable(state);
 	}
 
 	/**
-		Check if a state is enabled.
+		Enable or disable state.
+
+		@param state %State to enable or disable.
+		@param enable Whether to enable or disable the state.
+	*/
+	/*constexpr*/ void
+	set_state(
+		State const state,
+		bool const enable
+	) noexcept {
+		HORD_STATE_ASSERT_VALID__(state);
+		m_states.set(state, enable);
+	}
+
+	/**
+		Test value of state.
 
 		@returns
 		- @c true if the state is enabled;
 		- @c false if the state is disabled.
-		@param state %State to test.
+		@param state State to test.
 	*/
-	bool
-	has_state(
+	/*constexpr*/ bool
+	test_state(
 		State const state
 	) const noexcept {
 		HORD_STATE_ASSERT_VALID__(state);
-		return m_states & static_cast<unsigned>(state);
+		return m_states.test(state);
 	}
 #undef HORD_STATE_ASSERT_VALID__
 /// @}
 
+private:
+	duct::StateStore<State> m_states;
+	String m_root_path;
+
+	Datastore() = delete;
+	Datastore(Datastore const&) = delete;
+	Datastore(Datastore&&) = delete;
+	Datastore& operator=(Datastore const&) = delete;
+	Datastore& operator=(Datastore&&) = delete;
+
+protected:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with root path.
@@ -268,7 +286,7 @@ public:
 	*/
 	bool
 	is_open() const noexcept {
-		return has_state(State::opened);
+		return test_state(State::opened);
 	}
 
 	/**
@@ -280,7 +298,7 @@ public:
 	*/
 	bool
 	is_locked() const noexcept {
-		return has_state(State::locked);
+		return test_state(State::locked);
 	}
 /// @}
 
