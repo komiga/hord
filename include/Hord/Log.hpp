@@ -68,7 +68,7 @@ enum class Pre : unsigned {
 
 /** @cond INTERNAL */
 	LAST,
-	LAST_CANON = error
+	LAST_TYPE = error
 /** @endcond */ // INTERNAL
 };
 
@@ -375,10 +375,9 @@ acquire(
 }
 
 /** @cond INTERNAL */
-// NB: This (evilly) assumes the output stream is an OutputStream.
-std::ostream&
+OutputStream&
 operator<<(
-	std::ostream& stream,
+	OutputStream& stream,
 	Pre prefix
 );
 /** @endcond */ // INTERNAL

@@ -45,14 +45,14 @@ s_prefix_strings[]{
 
 } // anonmyous namespace
 
-std::ostream&
+OutputStream&
 operator<<(
-	std::ostream& stream,
+	OutputStream& stream,
 	Pre prefix
 ) {
 	if (Pre::current == prefix) {
 		prefix = s_prefix_for_type[
-			static_cast<OutputStream&>(stream).get_type()
+			stream.get_type()
 		];
 	}
 	if (Pre::none != prefix) {
@@ -76,15 +76,15 @@ Controller::Controller(
 	, m_mc_vectors{
 		{{
 			enable_stdout ? &std::cout : nullptr,
-			nullptr//&m_file_stream
+			nullptr
 		}},
 		{{
 			enable_stdout ? &std::clog : nullptr,
-			nullptr//&m_file_stream
+			nullptr
 		}},
 		{{
 			enable_stdout ? &std::cerr : nullptr,
-			nullptr//&m_file_stream
+			nullptr
 		}}
 	}
 	, m_mc_streambufs{
