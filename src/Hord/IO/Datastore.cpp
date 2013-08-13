@@ -19,6 +19,24 @@ Datastore::Datastore(
 
 Datastore::~Datastore() = default;
 
+#define HORD_CLOSED_CHECK__								\
+	if (!is_open()) {									\
+		HORD_THROW_ERROR_SCOPED_FQN(					\
+			ErrorCode::datastore_closed,				\
+			"cannot perform this operation while"		\
+			" datastore is closed"						\
+		);												\
+	}
+
+#define HORD_LOCKED_CHECK__								\
+	if (is_locked()) {									\
+		HORD_THROW_ERROR_SCOPED_FQN(					\
+			ErrorCode::datastore_locked,				\
+			"cannot perform this operation while"		\
+			" datastore is locked"						\
+		);												\
+	}
+
 #define HORD_SCOPE_FUNC_IDENT__ set_root_path
 
 void
@@ -55,30 +73,15 @@ Datastore::open() {
 
 void
 Datastore::close() {
-	if (is_locked()) {
-		HORD_THROW_ERROR_SCOPED_FQN(
-			ErrorCode::datastore_locked,
-			"cannot close datastore while locked"
-		);
-	} else if (is_open()) {
+	HORD_LOCKED_CHECK__;
+	if (is_open()) {
 		close_impl();
 	}
 }
 
 #undef HORD_SCOPE_FUNC_IDENT__
 
-#define HORD_ACQUIRE_CHECK__									\
-	if (!is_open()) {											\
-		HORD_THROW_ERROR_SCOPED_FQN(							\
-			ErrorCode::datastore_closed,						\
-			"cannot acquire stream while datastore is closed"	\
-		);														\
-	} else if (is_locked()) {									\
-		HORD_THROW_ERROR_SCOPED_FQN(							\
-			ErrorCode::datastore_locked,						\
-			"cannot acquire stream while datastore is locked"	\
-		);														\
-	}
+// acquire
 
 #define HORD_SCOPE_FUNC_IDENT__ acquire_input_stream
 
@@ -86,7 +89,8 @@ std::istream&
 Datastore::acquire_input_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_ACQUIRE_CHECK__;
+	HORD_CLOSED_CHECK__;
+	HORD_LOCKED_CHECK__;
 	return acquire_input_stream_impl(prop_info);
 }
 
@@ -98,20 +102,14 @@ std::ostream&
 Datastore::acquire_output_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_ACQUIRE_CHECK__;
+	HORD_CLOSED_CHECK__;
+	HORD_LOCKED_CHECK__;
 	return acquire_output_stream_impl(prop_info);
 }
 
 #undef HORD_SCOPE_FUNC_IDENT__
-#undef HORD_ACQUIRE_CHECK__
 
-#define HORD_RELEASE_CHECK__									\
-	if (!is_open()) {											\
-		HORD_THROW_ERROR_SCOPED_FQN(							\
-			ErrorCode::datastore_closed,						\
-			"cannot release stream while datastore is closed"	\
-		);														\
-	}
+// release
 
 #define HORD_SCOPE_FUNC_IDENT__ release_input_stream
 
@@ -119,7 +117,7 @@ void
 Datastore::release_input_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_RELEASE_CHECK__;
+	HORD_CLOSED_CHECK__;
 	release_input_stream_impl(prop_info);
 }
 
@@ -131,12 +129,15 @@ void
 Datastore::release_output_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_RELEASE_CHECK__;
+	HORD_CLOSED_CHECK__;
+	HORD_LOCKED_CHECK__;
 	release_output_stream_impl(prop_info);
 }
 
 #undef HORD_SCOPE_FUNC_IDENT__
-#undef HORD_RELEASE_CHECK__
+
+#undef HORD_CLOSED_CHECK__
+#undef HORD_LOCKED_CHECK__
 
 #undef HORD_SCOPE_CLASS_IDENT__
 

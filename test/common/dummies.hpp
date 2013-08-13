@@ -12,8 +12,9 @@ class DummyDatastore
 	: public Hord::IO::Datastore
 {
 private:
-	using Hord::IO::Datastore::type_info;
-	using Hord::IO::Datastore::State;
+	using base = Hord::IO::Datastore;
+	using base::type_info;
+	using base::State;
 
 	std::iostream m_stream{nullptr};
 
@@ -28,7 +29,9 @@ public:
 	construct(
 		Hord::String root_path
 	) noexcept {
-		return new(std::nothrow) DummyDatastore(std::move(root_path));
+		return new(std::nothrow) DummyDatastore(
+			std::move(root_path)
+		);
 	}
 
 	static type_info const s_type_info;
@@ -48,11 +51,11 @@ public:
 private:
 	void
 	open_impl() override {
-		Hord::IO::Datastore::enable_state(State::opened);
+		base::enable_state(State::opened);
 	}
 	void
 	close_impl() override {
-		Hord::IO::Datastore::disable_state(State::opened);
+		base::disable_state(State::opened);
 	}
 
 	std::istream&
