@@ -4,3 +4,6 @@ Makefile
 out/
 
 general/headers
+
+etc/lockfile
+etc/log
