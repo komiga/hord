@@ -1,20 +1,23 @@
 
--- Test
-
 dofile("../premake_common.lua")
 
-solution("test")
-	configurations {"debug", "release"}
-	platforms {"x32", "x64"}
+-- Test solution
 
--- Include all groups
+precore.make_solution(
+	"test",
+	{"debug", "release"},
+	{"x64", "x32"},
+	nil, {
+		"precore-generic",
+		"hord-deps",
+		"hord-import",
+		"murk-import"
+	}
+)
 
-include "general"
-include "etc"
+-- Groups
 
-if _ACTION == "clean" then
-	local prjs = solution().projects
-	for _, prj in ipairs(prjs) do
-		os.rmdir(prj.basedir .. "/out")
-	end
-end
+include("general")
+include("etc")
+
+action_clean()

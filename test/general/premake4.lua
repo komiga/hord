@@ -1,7 +1,5 @@
-create_tests(
+
+make_tests(
 	"general", {
-	{
-		"headers",
-		"headers.cpp"
-	}
+	["headers"] = {nil, nil},
 })

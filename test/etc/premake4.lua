@@ -1,11 +1,6 @@
-create_tests(
-"etc", {
-	{
-		"lockfile",
-		"lockfile.cpp"
-	},
-	{
-		"log",
-		"log.cpp"
-	}
+
+make_tests(
+	"etc", {
+	["lockfile"] = {nil, nil},
+	["log"] = {nil, nil},
 })
