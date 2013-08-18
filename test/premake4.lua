@@ -7,7 +7,8 @@ precore.make_solution(
 	"test",
 	{"debug", "release"},
 	{"x64", "x32"},
-	nil, {
+	nil,
+	{
 		"precore-generic",
 		"hord-deps",
 		"hord-import",

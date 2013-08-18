@@ -92,7 +92,6 @@ precore.make_config(
 project = function()
 	configuration {}
 		includedirs {
-			precore.subst("${ROOT}/include/"),
 			precore.subst("${ROOT}/dep/duct/"),
 			precore.subst("${ROOT}/dep/murk/include/"),
 			precore.subst("${ROOT}/dep/trait_wrangler/"),
@@ -123,7 +122,7 @@ precore.make_config(
 project = function()
 	configuration {}
 		includedirs {
-			precore.subst("${ROOT}/dep/murk/include/")
+			precore.subst("${ROOT}/include/")
 		}
 		libdirs {
 			precore.subst("${ROOT}/lib/")

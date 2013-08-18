@@ -10,8 +10,8 @@ precore.make_solution(
 	nil,
 	{
 		"precore-generic",
-		"hord-deps",
-		"hord-strict"
+		"hord-strict",
+		"hord-deps"
 	}
 )
 
