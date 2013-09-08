@@ -95,6 +95,8 @@ protected:
 /** @name Implementation */ /// @{
 	/**
 		open() implementation.
+
+		@throws Error{ErrorCode::datastore_open_failed}
 	*/
 	virtual void
 	open_impl() = 0;
@@ -109,6 +111,10 @@ protected:
 
 	/**
 		acquire_input_stream() implementation.
+
+		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{ErrorCode::datastore_prop_unsupplied}
+		@throws Error{..}
 	*/
 	virtual std::istream&
 	acquire_input_stream_impl(
@@ -117,6 +123,10 @@ protected:
 
 	/**
 		acquire_output_stream() implementation.
+
+		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{ErrorCode::datastore_prop_unsupplied}
+		@throws Error{..}
 	*/
 	virtual std::ostream&
 	acquire_output_stream_impl(
@@ -125,6 +135,11 @@ protected:
 
 	/**
 		release_input_stream() implementation.
+
+		@throws Error{ErrorCode::datastore_prop_not_locked}
+		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{ErrorCode::datastore_prop_unsupplied}
+		@throws Error{..}
 	*/
 	virtual void
 	release_input_stream_impl(
@@ -133,6 +148,11 @@ protected:
 
 	/**
 		release_output_stream() implementation.
+
+		@throws Error{ErrorCode::datastore_prop_not_locked}
+		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{ErrorCode::datastore_prop_unsupplied}
+		@throws Error{..}
 	*/
 	virtual void
 	release_output_stream_impl(
