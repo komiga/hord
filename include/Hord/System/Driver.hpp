@@ -20,6 +20,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 
+#include <utility>
 #include <memory>
 
 namespace Hord {
@@ -42,22 +43,19 @@ class Driver;
 */
 class Driver final {
 private:
-	using hive_map_type
-	= aux::unordered_map<
-		Hive::ID,
-		Hive::Unit
-	>;
-
-	using datastore_map_type
-	= aux::unordered_map<
-		Hive::ID,
-		cc_unique_ptr<IO::Datastore>
-	>;
-
 	using rule_type_map_type
 	= aux::unordered_map<
 		Rule::Type,
 		Rule::type_info const&
+	>;
+
+	using hive_map_type
+	= aux::unordered_map<
+		Hive::ID,
+		std::pair<
+			cc_unique_ptr<IO::Datastore>,
+			Hive::Unit
+		>
 	>;
 
 	using hive_id_vector_type = aux::vector<Hive::ID>;
@@ -65,7 +63,6 @@ private:
 	System::IDGenerator m_id_generator{};
 	rule_type_map_type m_rule_types{};
 	hive_map_type m_hives{};
-	datastore_map_type m_datastores{};
 	hive_id_vector_type m_hive_order{};
 
 	Driver(Driver const&) = delete;

@@ -60,10 +60,10 @@ Driver::register_rule_type(
 			"type has already been registered"
 		);
 	}
-	m_rule_types.insert(std::move(std::make_pair(
+	m_rule_types.emplace(
 		type_info.type,
 		type_info
-	)));
+	);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
@@ -86,10 +86,12 @@ Driver::placehold_hive(
 		);
 	} else if (
 		// FIXME: This is rank.
-		m_datastores.cend()
-		!= std::find_if(m_datastores.cbegin(), m_datastores.cend(),
-			[&root_path](datastore_map_type::value_type const& pair) -> bool {
-				return 0 == root_path.compare(pair.second->get_root_path());
+		m_hives.cend()
+		!= std::find_if(m_hives.cbegin(), m_hives.cend(),
+			[&root_path](hive_map_type::value_type const& pair) -> bool {
+				return 0 == root_path.compare(
+					pair.second.first->get_root_path()
+				);
 			}
 		)
 	) {
@@ -114,13 +116,12 @@ Driver::placehold_hive(
 	m_hive_order.emplace_back(id);
 	auto const& result_pair = m_hives.emplace(
 		id,
-		std::move(Hive::Unit{id})
+		hive_map_type::mapped_type(
+			cc_unique_ptr<IO::Datastore>{datastore_ptr},
+			Hive::Unit{id}
+		)
 	);
-	m_datastores.emplace(
-		id,
-		std::move(cc_unique_ptr<IO::Datastore>{datastore_ptr})
-	);
-	return result_pair.first->second;
+	return result_pair.first->second.second;
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
