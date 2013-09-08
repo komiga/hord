@@ -130,7 +130,6 @@ Datastore::release_output_stream(
 	IO::PropInfo const& prop_info
 ) {
 	HORD_CLOSED_CHECK__;
-	HORD_LOCKED_CHECK__;
 	release_output_stream_impl(prop_info);
 }
 
