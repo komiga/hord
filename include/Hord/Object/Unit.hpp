@@ -52,8 +52,7 @@ public:
 		traits::require_t<
 			D,
 			tw::capture_post<std::is_base_of, Object::Unit>::type,
-			// FIXME: libstdc++ 4.7.3 doesn't have the nothrow version
-			std::is_destructible,
+			std::is_nothrow_destructible,
 			tw::is_fully_moveable
 		>,
 		traits::disallow_t<

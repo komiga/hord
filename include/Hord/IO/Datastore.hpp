@@ -79,8 +79,7 @@ public:
 		traits::require_t<
 			D,
 			tw::capture_post<std::is_base_of, Datastore>::type,
-			// FIXME: libstdc++ 4.7.3 doesn't have the nothrow version
-			std::is_destructible
+			std::is_nothrow_destructible
 		>,
 		traits::disallow_t<
 			D,
