@@ -44,7 +44,7 @@ enum : Object::ID {
 };
 
 /**
-	@ref object type.
+	%Object type.
 */
 enum class Type : unsigned {
 	/** @ref hive. */

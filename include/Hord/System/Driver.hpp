@@ -81,9 +81,9 @@ public:
 	~Driver() noexcept;
 /// @}
 
-/** @name Operations */ /// @{
+/** @name Type information */ /// @{
 	/**
-		Register Rule type information.
+		Register rule type information.
 
 		@remarks %Client-defined rules must be registered for them to
 		be recognized during (de)serialization.
@@ -98,13 +98,15 @@ public:
 		@throws Error{ErrorCode::driver_rule_type_shared}
 		If a rule type @c type_info.type has already been registered.
 
-		@param type_info Rule type information to register.
+		@param type_info %Rule type information to register.
 	*/
 	void
 	register_rule_type(
 		Rule::type_info const& type_info
 	);
+/// @}
 
+/** @name Operations */ /// @{
 	/**
 		Placehold hive.
 
