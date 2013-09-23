@@ -67,6 +67,9 @@ public:
 		murk::DescCompoundRef const comp;
 		/**
 			Default-construct field of this type.
+
+			@returns Pointer to field, or @c nullptr if allocation
+			failed.
 		*/
 		MetaField*
 		(&construct)() noexcept;

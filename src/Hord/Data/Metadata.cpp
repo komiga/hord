@@ -10,6 +10,8 @@
 
 #include <ceformat/print.hpp>
 
+#include <new>
+
 namespace Hord {
 namespace Data {
 
@@ -63,7 +65,7 @@ s_comp_string{
 
 MetaField*
 s_construct_string() noexcept {
-	return new StringMetaField();
+	return new (std::nothrow) StringMetaField();
 }
 
 static MetaField::type_info const
@@ -111,7 +113,7 @@ s_comp_int32{
 
 MetaField*
 s_construct_int32() noexcept {
-	return new Int32MetaField();
+	return new (std::nothrow) Int32MetaField();
 }
 
 static MetaField::type_info const
@@ -159,7 +161,7 @@ s_comp_int64{
 
 MetaField*
 s_construct_int64() noexcept {
-	return new Int64MetaField();
+	return new (std::nothrow) Int64MetaField();
 }
 
 static MetaField::type_info const
@@ -207,7 +209,7 @@ s_comp_bool{
 
 MetaField*
 s_construct_bool() noexcept {
-	return new BoolMetaField();
+	return new (std::nothrow) BoolMetaField();
 }
 
 static MetaField::type_info const
