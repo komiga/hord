@@ -67,12 +67,27 @@ Driver::register_rule_type(
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
+#define HORD_SCOPE_FUNC_IDENT__ get_rule_type_info
+Rule::type_info const*
+Driver::get_rule_type_info(
+	Rule::Type const type
+) const noexcept {
+	auto const it = m_rule_types.find(type);
+	if (m_rule_types.cend() != it) {
+		return &it->second;
+	}
+	return nullptr;
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
 
+namespace {
 HORD_FMT_SCOPED_FQN(
 	s_err_root_shared,
 	"cannot placehold hive with non-unique root path `%s`"
 );
+} // anonymous namespace
 
 Hive::Unit const&
 Driver::placehold_hive(

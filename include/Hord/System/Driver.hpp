@@ -98,12 +98,24 @@ public:
 		@throws Error{ErrorCode::driver_rule_type_shared}
 		If a rule type @c type_info.type has already been registered.
 
-		@param type_info %Rule type information to register.
+		@param type_info %Rule type info to register.
 	*/
 	void
 	register_rule_type(
 		Rule::type_info const& type_info
 	);
+
+	/**
+		Get rule type information.
+
+		@returns The rule type info, or @c nullptr if the type was not
+		registered.
+		@param type %Rule type.
+	*/
+	Rule::type_info const*
+	get_rule_type_info(
+		Rule::Type const type
+	) const noexcept;
 /// @}
 
 /** @name Operations */ /// @{
