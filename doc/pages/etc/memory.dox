@@ -7,16 +7,11 @@
 
 The cc_unique_ptr smart pointer is exactly the same as
 @c std::unique_ptr, except that all const property observers return
-the object-immutable
+the object-immutable <code>element_type const</code> instead of the
+object-mutable <code>element_type</code> (in pointer-to or
+reference-to forms).
 
-@code element_type const @endcode
-
-instead of the object-mutable
-
-@code element_type @endcode
-
-(in pointer-to or reference-to forms). This prevents a client from
-modifying an object wrapped in a cc_unique_ptr if it was acquired from
-an immutable context.
+This prevents a client from modifying an object wrapped in a
+@c cc_unique_ptr if it was acquired from an immutable context.
 
 */
