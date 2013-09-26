@@ -53,7 +53,9 @@ using Type = uint32_t;
 	@note Values in <code>[0, 8]</code> are reserved for standard
 	types (@c 0 is invalid). Userspace may specify further types in
 	the range <code>[9, (2 ^ 32) - 1]</code>.
-	@sa Rule
+
+	@sa
+		Rule::Unit
 */
 enum class StandardTypes : Rule::Type {
 	/**
@@ -105,14 +107,14 @@ enum class StandardTypes : Rule::Type {
 		@sa TimespanRule
 	*/
 	Timespan,
-	/// @{
+/// @{
 	/**
 		Reserved types (@c 8).
 	*/
 	Reserved1,
 	ReservedFirst = Reserved1,
 	ReservedLast = Reserved1
-	/// @}
+/// @}
 };
 
 static_assert(
