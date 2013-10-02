@@ -10,7 +10,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #ifndef HORD_UTILITY_HPP_
 #define HORD_UTILITY_HPP_
 
-#include "./config.hpp"
+#include <Hord/config.hpp>
 
 #include <type_traits>
 
