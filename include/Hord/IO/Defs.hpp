@@ -32,7 +32,14 @@ enum class SerializationFlags : unsigned;
 		IO::Datastore
 */
 enum class PropType : unsigned {
+	/**
+		Object metadata.
+	*/
 	object_metadata,
+
+	/**
+		Primary object data.
+	*/
 	object_primary
 };
 
