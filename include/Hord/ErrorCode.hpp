@@ -66,6 +66,19 @@ enum class ErrorCode : unsigned {
 	driver_rule_type_shared,
 
 	/**
+		Attempted to register a command type info table which
+		intersects a type range that is reserved for standard commands
+		or stages.
+	*/
+	driver_command_table_range_invalid,
+	/**
+		Attempted to register a command type info table which
+		intersects the type range of a previously-registered command
+		table.
+	*/
+	driver_command_table_range_shared,
+
+	/**
 		Attempted to placehold a hive with an empty root path.
 	*/
 	driver_hive_root_empty,
@@ -168,6 +181,28 @@ enum class ErrorCode : unsigned {
 		When object data cannot be accessed.
 	*/
 	serialization_access,
+/// @}
+
+/** @name Command */ /// @{
+	/**
+		Stage type is not supplied for command.
+	*/
+	cmd_construct_stage_type_invalid,
+/// @}
+
+/** @name Context */ /// @{
+	/**
+		Origin stage does not belong to an active command.
+	*/
+	context_output_detached,
+	/**
+		Non-initiating stage carries an ID which is not active.
+	*/
+	context_execute_not_active,
+	/**
+		Initiating stage carries an ID which is already active.
+	*/
+	context_execute_already_active,
 /// @}
 
 /** @cond INTERNAL */

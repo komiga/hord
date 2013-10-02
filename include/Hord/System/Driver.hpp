@@ -19,6 +19,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
+#include <Hord/Cmd/Defs.hpp>
 
 #include <utility>
 #include <memory>
@@ -49,6 +50,11 @@ private:
 		Rule::type_info const&
 	>;
 
+	using command_table_vector_type
+	= aux::vector<
+		Cmd::type_info_table const*
+	>;
+
 	using hive_map_type
 	= aux::unordered_map<
 		Hive::ID,
@@ -60,10 +66,11 @@ private:
 
 	using hive_id_vector_type = aux::vector<Hive::ID>;
 
-	System::IDGenerator m_id_generator{};
-	rule_type_map_type m_rule_types{};
-	hive_map_type m_hives{};
-	hive_id_vector_type m_hive_order{};
+	System::IDGenerator m_id_generator;
+	rule_type_map_type m_rule_types;
+	command_table_vector_type m_command_tables;
+	hive_map_type m_hives;
+	hive_id_vector_type m_hive_order;
 
 	Driver(Driver const&) = delete;
 	Driver& operator=(Driver const&) = delete;
@@ -115,6 +122,41 @@ public:
 	Rule::type_info const*
 	get_rule_type_info(
 		Rule::Type const type
+	) const noexcept;
+
+	/**
+		Register command type information table.
+
+		@throws Error{ErrorCode::driver_command_table_range_invalid}
+		If the type range:
+
+		- is degenerate
+		  (<code>table.range_begin > table.range_end</code>);
+		- contains no types (<code>table.size() == 0</code>);
+		- intersects the range reserved for stages; or
+		- intersects the range reserved for standard commands.
+
+		@throws Error{ErrorCode::driver_command_table_range_shared}
+		If the table's type range intersects with the type range of a
+		previously-registered table.
+
+		@param table Command type info table.
+	*/
+	void
+	register_command_type_table(
+		Cmd::type_info_table const& table
+	);
+
+	/**
+		Get command type information.
+
+		@returns The command type info, or @c nullptr if the type was
+		not supplied in a registered type info table.
+		@param type Command type.
+	*/
+	Cmd::type_info const*
+	get_command_type_info(
+		Cmd::Type const type
 	) const noexcept;
 /// @}
 

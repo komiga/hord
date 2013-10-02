@@ -64,6 +64,10 @@ see @ref index or the accompanying LICENSE file for full text.
 	on both implementation complexity and dynamic allocation -- both
 	good in my book, even if the cost is paid in 2 gnarly
 	preprocessing directives per throwing function.
+
+	@remarks Also, we can more clearly define the scope according to
+	a pseudo-structure instead of a detail-heavy system-defined
+	structure (as seen with commands).
 	@{
 */
 

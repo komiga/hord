@@ -1,0 +1,10 @@
+
+/**
+
+@addtogroup cmd
+@defgroup cmd_node Group: Node
+@details
+
+Commands for operating on nodes.
+
+*/
