@@ -134,7 +134,6 @@ class Stage;
 		::Hord::Cmd::Stage& initiator			\
 	)
 
-
 /**
 	Define sub-bind with specified constness.
 
@@ -232,8 +231,12 @@ public:
 
 private:
 	union {
-		ID const serial;
-		IDFields fields;
+		Cmd::ID const serial;
+		Cmd::IDFields fields;
+		struct {
+			Cmd::ID const value : 31;
+			bool const _ : 1;
+		} canonical;
 	} m_id{Cmd::NULL_ID};
 
 	Stage(Stage const&) = delete;
@@ -338,11 +341,12 @@ public:
 	/**
 		Get %ID.
 
-		@note This returns the actual %ID value, not the serial form.
+		@note This returns the canonical %ID value (which
+		includes @c flag_host), not the serial form.
 	*/
 	Cmd::ID
 	get_id() const noexcept {
-		return m_id.fields.value;
+		return m_id.canonical.value;
 	}
 
 	/**
@@ -362,6 +366,37 @@ public:
 		return m_id.fields;
 	}
 	/** @} */
+
+	/**
+		Check if the base %ID value is non-null.
+
+		@sa Cmd::IDFields
+	*/
+	bool
+	is_identified() const noexcept {
+		// NB: Avoid sticky flag_host by checking the base value
+		return Cmd::NULL_ID != m_id.fields.base;
+	}
+
+	/**
+		Check if the stage belongs to a host-initiated command.
+
+		@sa Cmd::IDFields
+	*/
+	bool
+	is_host() const noexcept {
+		return m_id.fields.flag_host;
+	}
+
+	/**
+		Check if the stage is an initiator.
+
+		@sa Cmd::IDFields
+	*/
+	bool
+	is_initiator() const noexcept {
+		return m_id.fields.flag_initiator;
+	}
 /// @}
 
 /** @name Serialization */ /// @{

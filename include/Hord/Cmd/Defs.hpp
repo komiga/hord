@@ -19,6 +19,7 @@ namespace Hord {
 namespace Cmd {
 
 // Forward declarations
+struct IDFields;
 struct type_info;
 struct type_info_table;
 class Stage; // external
@@ -31,6 +32,75 @@ enum class Status : unsigned;
 	@addtogroup cmd
 	@{
 */
+
+/**
+	%ID.
+
+	@note Value only takes up bits @c 0x3FFFFFFF.
+	See @c Cmd::IDFields.
+*/
+using ID = uint32_t;
+
+/**
+	%ID constants.
+*/
+enum : Cmd::ID {
+	/**
+		Null %ID.
+	*/
+	NULL_ID = Cmd::ID{0u},
+	/**
+		Maximum %ID value.
+	*/
+	MAX_ID = Cmd::ID{0x3FFFFFFFu}
+};
+
+/**
+	%ID fields.
+
+	@note @c flag_host is included in the canonical value for %ID
+	space separation.
+*/
+struct IDFields final {
+/** @name Properties */ /// @{
+	/**
+		Base %ID value.
+	*/
+	Cmd::ID base : 30;
+
+	/**
+		Whether the command is being executed by the host.
+	*/
+	bool flag_host : 1;
+
+	/**
+		Whether the stage is an initiator for the command.
+
+		@note This is enabled for the first result stage of a
+		local command. It ensures there are no stray command
+		initiations, and assists when resolving %ID collisions.
+	*/
+	bool flag_initiator : 1;
+
+	/**
+		Assign fields.
+
+		@param base @c base.
+		@param flag_host @c flag_host.
+		@param flag_initiator @c flag_initiator.
+	*/
+	void
+	assign(
+		Cmd::ID base,
+		bool const flag_host,
+		bool const flag_initiator
+	) noexcept {
+		this->base = base;
+		this->flag_host = flag_host;
+		this->flag_initiator = flag_initiator;
+	}
+/// @}
+};
 
 /**
 	Command type info.
@@ -51,7 +121,9 @@ struct type_info final {
 		Command flags.
 	*/
 	flag_store_type const flags;
+/// @}
 
+/** @name Operations */ /// @{
 	/**
 		Construct stage by type.
 
@@ -149,47 +221,6 @@ struct type_info_table final {
 		;
 	}
 /// @}
-};
-
-/**
-	%ID.
-
-	@note Value only takes up bits @c 0x7FFFFFFF.
-	See @c Cmd::IDFields.
-*/
-using ID = uint32_t;
-
-/**
-	%ID fields.
-*/
-struct IDFields final {
-	/**
-		Actual %ID value.
-	*/
-	ID value : 31;
-
-	/**
-		Whether the stage is the remote initiator for the command.
-
-		@note This is enabled for the first result stage of a
-		local command. It ensures there are no stray command
-		initiations, and assists when resolving %ID collisions.
-	*/
-	bool flag_remote_initiator : 1;
-};
-
-/**
-	%ID constants.
-*/
-enum : Cmd::ID {
-	/**
-		Null %ID.
-	*/
-	NULL_ID = Cmd::ID{0u},
-	/**
-		Maximum %ID value.
-	*/
-	MAX_ID = Cmd::ID{0x7FFFFFFFu}
 };
 
 /**

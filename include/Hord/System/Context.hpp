@@ -133,19 +133,17 @@ public:
 
 	/**
 		Get driver.
+		@{
 	*/
 	Driver&
 	get_driver() noexcept {
 		return m_driver;
 	}
-
-	/**
-		Get driver.
-	*/
 	Driver const&
 	get_driver() const noexcept {
 		return m_driver;
 	}
+	/** @} */
 
 	/**
 		Get hive ID.
@@ -188,11 +186,12 @@ public:
 		be active until the initiator stage is executed from
 		execute_input().
 
+		@par
 		@note If @a initiator is pushed, the context takes ownership
 		(@a initiator is moved). Otherwise, the callee retains
 		ownership.
 
-		@pre @code stage->get_id() == Cmd::NULL_ID @endcode
+		@pre @code !stage->is_identified() @endcode
 
 		@param initiator Initiator stage.
 	*/
@@ -206,11 +205,12 @@ public:
 
 		@note This is used by userspace to emplace remote stages.
 
+		@par
 		@note If @a stage is pushed, the context takes ownership
 		(@a stage is moved). Otherwise, the callee retains
 		ownership.
 
-		@pre @code stage->get_id() != Cmd::NULL_ID @endcode
+		@pre @code stage->is_identified() @endcode
 
 		@param stage %Stage to push.
 	*/
@@ -225,13 +225,14 @@ public:
 		@note This is only used by command stages to emplace local
 		results.
 
+		@par
 		@note If @a stage is pushed, the context takes ownership
 		(@a stage is moved). Otherwise, the callee retains
 		ownership.
 
 		@pre @code
-			origin->get_id() != Cmd::NULL_ID &&
-			stage ->get_id() == Cmd::NULL_ID
+			 origin->is_identified() &&
+			!stage ->is_identified()
 		@endcode
 
 		@throws Error{ErrorCode::context_output_detached}
@@ -254,11 +255,11 @@ public:
 
 		@note Before an exception is rethrown,
 		-# The local command will be terminated;
-		-# @a result will be assigned to the command %ID
+		-# @a result will be assigned to the offending command %ID
 		   and @c Cmd::Status::error; and
 		-# a @c GenericTerminate stage will be emitted if either the
-		   command is active (i.e., the stage is not an initiator) or
-		   the remote command is waiting for a result.
+		   command is active (i.e., the stage is not a local
+		   initiator) or the remote command is waiting for a result.
 
 		@par
 		@note If there are no stages to execute, @a result holds
