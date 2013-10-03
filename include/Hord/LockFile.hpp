@@ -40,19 +40,21 @@ private:
 		NULL_HANDLE = -1
 	};
 
-	LockFile() = delete;
 	LockFile(LockFile const&) = delete;
 	LockFile& operator=(LockFile const&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
+	/** Default constructor. */
+	LockFile() = default;
+
 	/**
 		Constructor with path.
 
 		@note This does not call @c acquire(); that must be done
 		manually.
 
-		@param path File path to lock.
+		@param path Path.
 	*/
 	explicit
 	LockFile(
@@ -77,8 +79,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Check if lock is active.
-
-		@returns @c true if the lock is active; @c false otherwise.
 	*/
 	bool
 	is_active() const noexcept {
@@ -100,7 +100,6 @@ public:
 
 	/**
 		Get path.
-		@returns The lock's path.
 	*/
 	String const&
 	get_path() const noexcept {
