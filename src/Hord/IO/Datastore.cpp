@@ -101,12 +101,21 @@ Datastore::acquire_output_stream(
 
 // release
 
+#define HORD_RELEASE_CHECK__							\
+	if (!is_locked()) {									\
+		HORD_THROW_ERROR_SCOPED_FQN(					\
+			ErrorCode::datastore_prop_not_locked,		\
+			"prop is not locked"						\
+		);												\
+	}
+
 #define HORD_SCOPE_FUNC_IDENT__ release_input_stream
 void
 Datastore::release_input_stream(
 	IO::PropInfo const& prop_info
 ) {
 	HORD_CLOSED_CHECK__;
+	HORD_RELEASE_CHECK__;
 	release_input_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
@@ -117,9 +126,12 @@ Datastore::release_output_stream(
 	IO::PropInfo const& prop_info
 ) {
 	HORD_CLOSED_CHECK__;
+	HORD_RELEASE_CHECK__;
 	release_output_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC_IDENT__
+
+#undef HORD_RELEASE_CHECK__
 
 // objects
 

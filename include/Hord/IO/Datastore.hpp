@@ -141,6 +141,10 @@ protected:
 	/**
 		release_input_stream() implementation.
 
+		@note This will not be called if @c is_locked()==false.
+		The @c datastore_prop_not_locked exception shall be used for
+		other implementation-specific reasons.
+
 		@throws Error{ErrorCode::datastore_prop_not_locked}
 		@throws Error{ErrorCode::datastore_object_not_found}
 		@throws Error{..}
@@ -152,6 +156,10 @@ protected:
 
 	/**
 		release_output_stream() implementation.
+
+		@note This will not be called if @c is_locked()==false.
+		The @c datastore_prop_not_locked exception shall be used for
+		other implementation-specific reasons.
 
 		@throws Error{ErrorCode::datastore_prop_not_locked}
 		@throws Error{ErrorCode::datastore_object_not_found}
@@ -422,7 +430,7 @@ public:
 
 		@throws Error{ErrorCode::datastore_prop_not_locked}
 		If either @a prop_info does not match the currently locked
-		prop stream or there is no currently locked prop stream.
+		prop stream or there is currently no locked prop stream.
 
 		@throws Error{ErrorCode::datastore_object_not_found}
 		If @c prop_info.object_id does not exist in the datastore.
