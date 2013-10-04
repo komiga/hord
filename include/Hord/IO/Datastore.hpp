@@ -116,6 +116,7 @@ protected:
 		acquire_input_stream() implementation.
 
 		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{ErrorCode::datastore_prop_void}
 		@throws Error{ErrorCode::datastore_prop_unsupplied}
 		@throws Error{..}
 	*/
@@ -128,6 +129,7 @@ protected:
 		acquire_output_stream() implementation.
 
 		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{ErrorCode::datastore_prop_void}
 		@throws Error{ErrorCode::datastore_prop_unsupplied}
 		@throws Error{..}
 	*/
@@ -383,6 +385,11 @@ public:
 
 		@throws Error{ErrorCode::datastore_object_not_found}
 		If @c prop_info.object_id does not exist in the datastore.
+
+		@throws Error{ErrorCode::datastore_prop_void}
+		If the object for @c prop_info.object_id has not yet created
+		the prop (but it is otherwise valid). This can only occur
+		when acquiring an input stream.
 
 		@throws Error{ErrorCode::datastore_prop_unsupplied}
 		If the object for @c prop_info.object_id does not supply the

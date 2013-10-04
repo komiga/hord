@@ -146,6 +146,12 @@ enum class ErrorCode : unsigned {
 	*/
 	datastore_prop_unsupplied,
 	/**
+		Attempted to request prop from an object that has not yet
+		created the prop, or the prop does not exist for some other
+		reason (but is otherwise a valid prop).
+	*/
+	datastore_prop_void,
+	/**
 		Attempted to unlock a prop that is not locked.
 	*/
 	datastore_prop_not_locked,

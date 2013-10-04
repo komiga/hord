@@ -39,6 +39,7 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("datastore_object_type_prohibited"),
 	HORD_STR_LIT("datastore_object_not_found"),
 
+	HORD_STR_LIT("datastore_prop_void"),
 	HORD_STR_LIT("datastore_prop_unsupplied"),
 	HORD_STR_LIT("datastore_prop_not_locked"),
 
