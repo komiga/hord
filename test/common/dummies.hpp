@@ -79,6 +79,21 @@ private:
 	release_output_stream_impl(
 		Hord::IO::PropInfo const&
 	) override {}
+
+	Hord::Object::ID
+	generate_id_impl(
+		Hord::System::IDGenerator&
+	) const noexcept override {
+		return Hord::Object::NULL_ID;
+	}
+	void
+	create_object_impl(
+		Hord::Object::ID const
+	) override {}
+	void
+	destroy_object_impl(
+		Hord::Object::ID const
+	) override {}
 };
 
 template struct Hord::IO::Datastore::ensure_traits<DummyDatastore>;

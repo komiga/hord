@@ -13,8 +13,10 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
+#include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
+#include <Hord/Object/Defs.hpp>
 
 #include <duct/StateStore.hpp>
 
@@ -158,6 +160,41 @@ protected:
 	virtual void
 	release_output_stream_impl(
 		IO::PropInfo const& prop_info
+	) = 0;
+
+	/**
+		generate_id() implementation.
+
+		@remarks The implementation should generate a unique ID
+		within the entire ID set of the datastore -- i.e., including
+		orphaned objects (such as trash).
+	*/
+	virtual Object::ID
+	generate_id_impl(
+		System::IDGenerator& generator
+	) const noexcept = 0;
+
+	/**
+		create_object() implementation.
+
+		@throws Error{ErrorCode::datastore_object_already_exists}
+		@throws Error{..}
+	*/
+	virtual void
+	create_object_impl(
+		Object::ID const object_id,
+		Object::Type const object_type
+	) = 0;
+
+	/**
+		destroy_object() implementation.
+
+		@throws Error{ErrorCode::datastore_object_not_found}
+		@throws Error{..}
+	*/
+	virtual void
+	destroy_object_impl(
+		Object::ID const object_id
 	) = 0;
 /// @}
 
@@ -407,6 +444,72 @@ public:
 	void
 	release_output_stream(
 		IO::PropInfo const& prop_info
+	);
+/// @}
+
+/** @name Objects */ /// @{
+	/**
+		Generate a %Hive-unique ID.
+
+		@throws Error{ErrorCode::datastore_closed}
+		If the datastore is closed.
+
+		@returns The generated object ID.
+		@param generator ID generator.
+	*/
+	Object::ID
+	generate_id(
+		System::IDGenerator& generator
+	) const;
+
+	/**
+		Create an object in the datastore.
+
+		@throws Error{ErrorCode::datastore_object_type_prohibited}
+		If @c object_type!=Object::Type::Node, which is
+		currently the only object type that can be created.
+
+		@throws Error{ErrorCode::datastore_closed}
+		If the datastore is closed.
+
+		@throws Error{ErrorCode::datastore_locked}
+		If the datastore is locked.
+
+		@throws Error{ErrorCode::datastore_object_already_exists}
+		If @a object_id already exists in the datastore.
+
+		@throws Error{..}
+		<em>Implementation-defined exceptions.</em>
+
+		@param object_id ID of object.
+		@param object_type Type of object.
+	*/
+	void
+	create_object(
+		Object::ID const object_id,
+		Object::Type const object_type
+	);
+
+	/**
+		Destroy an object in the datastore.
+
+		@throws Error{ErrorCode::datastore_closed}
+		If the datastore is closed.
+
+		@throws Error{ErrorCode::datastore_locked}
+		If the datastore is locked.
+
+		@throws Error{ErrorCode::datastore_object_not_found}
+		If @a object_id does not exist in the datastore.
+
+		@throws Error{..}
+		<em>Implementation-defined exceptions.</em>
+
+		@param object_id ID of object.
+	*/
+	void
+	destroy_object(
+		Object::ID const object_id
 	);
 /// @}
 };

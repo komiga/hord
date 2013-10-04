@@ -14,9 +14,11 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 * const s_error_names[]{
 	HORD_STR_LIT("unknown"),
 
+// lockfile
 	HORD_STR_LIT("lockfile_immutable"),
 	HORD_STR_LIT("lockfile_acquire_failed"),
 
+// driver
 	HORD_STR_LIT("driver_rule_type_reserved"),
 	HORD_STR_LIT("driver_rule_type_zero_permitted_types"),
 	HORD_STR_LIT("driver_rule_type_shared"),
@@ -27,23 +29,31 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("driver_datastore_construct_failed"),
 	HORD_STR_LIT("driver_datastore_locked"),
 
+// datastore
 	HORD_STR_LIT("datastore_open_already"),
 	HORD_STR_LIT("datastore_open_failed"),
 	HORD_STR_LIT("datastore_closed"),
 	HORD_STR_LIT("datastore_locked"),
 	HORD_STR_LIT("datastore_property_immutable"),
+
+	HORD_STR_LIT("datastore_object_type_prohibited"),
 	HORD_STR_LIT("datastore_object_not_found"),
+
 	HORD_STR_LIT("datastore_prop_unsupplied"),
 	HORD_STR_LIT("datastore_prop_not_locked"),
 
+// metadata
 	HORD_STR_LIT("metadata_serialization_type_invalid"),
 	HORD_STR_LIT("metadata_serialization_io_failed"),
 
+// serialization
 	HORD_STR_LIT("serialization_improper_state"),
 	HORD_STR_LIT("serialization_access"),
 
+// cmd
 	HORD_STR_LIT("cmd_construct_stage_type_invalid"),
 
+// context
 	HORD_STR_LIT("context_output_detached"),
 	HORD_STR_LIT("context_execute_not_active"),
 	HORD_STR_LIT("context_execute_already_active"),
