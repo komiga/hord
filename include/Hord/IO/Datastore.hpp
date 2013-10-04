@@ -89,8 +89,8 @@ public:
 			D,
 			std::is_default_constructible,
 			tw::capture<std::is_constructible, String>::type,
-			tw::is_fully_copyable,
-			tw::is_fully_moveable
+			tw::is_copyable,
+			tw::is_moveable
 		>
 	{};
 
