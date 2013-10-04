@@ -58,6 +58,18 @@ enum class PropType : unsigned {
 };
 
 /**
+	Get the name of a prop type.
+
+	@returns C-string containing the name of @a prop_type or
+	"INVALID" if somehow @a prop_type is not actually a @c PropType.
+	@param prop_type Prop type.
+*/
+char const*
+get_prop_type_name(
+	IO::PropType const prop_type
+) noexcept;
+
+/**
 	@ref object storage state.
 */
 enum class StorageState : unsigned {
