@@ -139,6 +139,10 @@ enum class ErrorCode : unsigned {
 		datastore.
 	*/
 	datastore_object_not_found,
+	/**
+		Attempted to create an object that already exists (by ID).
+	*/
+	datastore_object_already_exists,
 
 	/**
 		Attempted to request prop from object that does not supply
