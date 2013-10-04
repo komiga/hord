@@ -34,7 +34,7 @@ enum class ErrorCode : unsigned {
 	/**
 		Unknown/unspecified.
 	*/
-	unknown,
+	unknown = 0u,
 /// @}
 
 /** @name LockFile */ /// @{
