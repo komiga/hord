@@ -182,7 +182,7 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with message.
 
-	@param e__ ErrorCode.
+	@param e__ @c ErrorCode.
 	@param m__ Message (string literal).
 */
 #define HORD_THROW_ERROR(e__, m__) \
@@ -191,8 +191,8 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with message.
 
-	@param e__ ErrorCode.
-	@param m__ Message (String).
+	@param e__ @c ErrorCode.
+	@param m__ Message (@c String).
 */
 #define HORD_THROW_ERROR_S(e__, m__) \
 	HORD_THROW_ERROR_IMPL__(e__, m__)
@@ -200,7 +200,7 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with format message.
 
-	@param e__ ErrorCode.
+	@param e__ @c ErrorCode.
 	@param f__ @c ceformat::Format message.
 	@param ... Arguments.
 */
@@ -213,7 +213,7 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with class scope.
 
-	@param e__ ErrorCode.
+	@param e__ @c ErrorCode.
 	@param m__ Message (string literal).
 
 	@sa HORD_THROW_ERROR_SCOPED_FUNC,
@@ -228,7 +228,7 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with function scope.
 
-	@param e__ ErrorCode.
+	@param e__ @c ErrorCode.
 	@param m__ Message (string literal).
 
 	@sa HORD_THROW_ERROR_SCOPED_CLASS,
@@ -243,7 +243,7 @@ see @ref index or the accompanying LICENSE file for full text.
 /**
 	Throw error with fully-qualified scope.
 
-	@param e__ ErrorCode.
+	@param e__ @c ErrorCode.
 	@param m__ Message (string literal).
 
 	@sa HORD_THROW_ERROR_SCOPED_CLASS,
