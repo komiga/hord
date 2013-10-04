@@ -143,7 +143,6 @@ protected:
 
 		@throws Error{ErrorCode::datastore_prop_not_locked}
 		@throws Error{ErrorCode::datastore_object_not_found}
-		@throws Error{ErrorCode::datastore_prop_unsupplied}
 		@throws Error{..}
 	*/
 	virtual void
@@ -156,7 +155,6 @@ protected:
 
 		@throws Error{ErrorCode::datastore_prop_not_locked}
 		@throws Error{ErrorCode::datastore_object_not_found}
-		@throws Error{ErrorCode::datastore_prop_unsupplied}
 		@throws Error{..}
 	*/
 	virtual void
@@ -428,10 +426,6 @@ public:
 
 		@throws Error{ErrorCode::datastore_object_not_found}
 		If @c prop_info.object_id does not exist in the datastore.
-
-		@throws Error{ErrorCode::datastore_prop_unsupplied}
-		If the object for @c prop_info.object_id does not supply
-		the requested prop.
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
