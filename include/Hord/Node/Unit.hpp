@@ -112,8 +112,6 @@ public:
 
 	/**
 		Get layout reference.
-
-		@returns Current layout reference.
 	*/
 	Object::ID
 	get_layout_ref() const noexcept {
@@ -123,8 +121,6 @@ public:
 	// TODO: Notes for when layout_ref is non-Object::NULL_ID
 	/**
 		Get layout.
-
-		@returns Current layout.
 	*/
 	column_vector_type const&
 	get_layout() const noexcept {
@@ -133,8 +129,6 @@ public:
 
 	/**
 		Get mutable layout.
-
-		@returns Mutable layout.
 	*/
 	column_vector_type&
 	get_layout() noexcept {
@@ -143,8 +137,6 @@ public:
 
 	/**
 		Get record collection.
-
-		@returns Current record collection.
 	*/
 	record_vector_type const&
 	get_records() const noexcept {
@@ -153,8 +145,6 @@ public:
 
 	/**
 		Get mutable record collection.
-
-		@returns Mutable record collection.
 	*/
 	record_vector_type&
 	get_records() noexcept {
@@ -163,8 +153,6 @@ public:
 
 	/**
 		Get child collection.
-
-		@returns Current child collection.
 	*/
 	child_vector_type const&
 	get_children() const noexcept {
@@ -173,8 +161,6 @@ public:
 
 	/**
 		Get mutable child collection.
-
-		@returns Mutable child collection.
 	*/
 	child_vector_type&
 	get_children() noexcept {
@@ -182,7 +168,6 @@ public:
 	}
 /// @}
 };
-
 
 /** @} */ // end of doc-group node
 /** @} */ // end of doc-group object

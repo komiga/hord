@@ -51,6 +51,7 @@ public:
 		Type info.
 	*/
 	struct type_info final {
+	/** @name Operations */ /// @{
 		/**
 			Construct a datastore of this type.
 
@@ -63,6 +64,7 @@ public:
 		(&construct)(
 			String root_path
 		) noexcept;
+	/// @}
 	};
 
 	/**
@@ -288,8 +290,6 @@ public:
 
 	/**
 		Get root path.
-
-		@returns Root path.
 	*/
 	String const&
 	get_root_path() const noexcept {
@@ -298,10 +298,6 @@ public:
 
 	/**
 		Check if the datastore is open.
-
-		@returns
-		- @c true if the datastore is open;
-		- @c false if it is closed.
 	*/
 	bool
 	is_open() const noexcept {
@@ -310,10 +306,6 @@ public:
 
 	/**
 		Check if the datastore is locked.
-
-		@returns
-		- @c true if the datastore is locked;
-		- @c false if it is not locked.
 	*/
 	bool
 	is_locked() const noexcept {

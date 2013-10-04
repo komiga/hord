@@ -125,8 +125,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.
-
-		@returns The object's type info.
 	*/
 	type_info const&
 	get_type_info() const noexcept {
@@ -135,8 +133,6 @@ public:
 
 	/**
 		Get type.
-
-		@returns Type.
 	*/
 	Object::Type
 	get_type() const noexcept {
@@ -157,8 +153,6 @@ public:
 
 	/**
 		Get storage state.
-
-		@returns Current storage state.
 	*/
 	IO::StorageState
 	get_storage_state() const noexcept {
@@ -179,8 +173,6 @@ public:
 
 	/**
 		Get owner.
-
-		@returns Current owner.
 	*/
 	Object::ID
 	get_owner() const noexcept {
@@ -201,8 +193,6 @@ public:
 
 	/**
 		Get ID.
-
-		@returns Current ID.
 	*/
 	Object::ID
 	get_id() const noexcept {
@@ -222,8 +212,6 @@ public:
 
 	/**
 		Get slug.
-
-		@returns Current slug.
 	*/
 	String const&
 	get_slug() const noexcept {
@@ -232,8 +220,6 @@ public:
 
 	/**
 		Get metadata.
-
-		@returns Current metadata.
 	*/
 	Data::Metadata const&
 	get_metadata() const noexcept {
@@ -242,8 +228,6 @@ public:
 
 	/**
 		Get mutable metadata.
-
-		@returns Mutable metadata.
 	*/
 	Data::Metadata&
 	get_metadata() noexcept {

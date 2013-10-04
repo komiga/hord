@@ -58,6 +58,7 @@ public:
 	struct type_info final {
 		/** Type. */
 		MetaFieldType const type;
+
 		/**
 			Descriptor compound for type.
 
@@ -65,6 +66,7 @@ public:
 			to @c MetaField::s_comp_base.
 		*/
 		murk::DescCompoundRef const comp;
+
 		/**
 			Default-construct field of this type.
 
@@ -158,8 +160,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.
-
-		@returns The field's type info.
 	*/
 	type_info const&
 	get_type_info() const noexcept {

@@ -42,7 +42,6 @@ s_prefix_strings[]{
 	HORD_STR_LIT("<dbg> "),
 	HORD_STR_LIT("<err> ")
 };
-
 } // anonmyous namespace
 
 OutputStream&

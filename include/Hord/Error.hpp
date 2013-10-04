@@ -39,7 +39,7 @@ get_error_name(
 ) noexcept;
 
 /**
-	Error.
+	%Error.
 */
 class Error final
 	: public std::exception {
@@ -74,7 +74,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get error code.
-		@returns The error code.
 	*/
 	ErrorCode
 	error_code() const noexcept {
@@ -83,7 +82,6 @@ public:
 
 	/**
 		Get error message.
-		@returns The error message.
 	*/
 	String const&
 	what_str() const noexcept {

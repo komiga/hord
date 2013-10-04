@@ -225,8 +225,6 @@ public:
 
 	/**
 		Get log file path.
-
-		@returns The log file path.
 	*/
 	String const&
 	get_file_path() const noexcept {
@@ -296,8 +294,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get stream type.
-
-		@returns The stream type.
 	*/
 	StreamType
 	get_type() const noexcept {

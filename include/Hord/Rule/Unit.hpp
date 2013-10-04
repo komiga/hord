@@ -110,7 +110,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.
-		@returns The rule's type info.
 	*/
 	type_info const&
 	get_rule_type_info() const noexcept {

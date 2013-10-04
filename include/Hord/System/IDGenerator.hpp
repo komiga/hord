@@ -73,7 +73,6 @@ public:
 		@code
 			generate() != Object::NULL_ID
 		@endcode
-		@returns The generated ID.
 	*/
 	Object::ID
 	generate() noexcept;

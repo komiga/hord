@@ -184,7 +184,6 @@ struct type_info_table final {
 	/**
 		Check if the table contains a type.
 
-		@returns @c true if the table contains @a type.
 		@param type Command type.
 	*/
 	constexpr bool
@@ -200,7 +199,6 @@ struct type_info_table final {
 	/**
 		Check if the type range intersects with another table.
 
-		@returns @c true if the table intersects with @a other.
 		@param other Table to test against.
 	*/
 	constexpr bool

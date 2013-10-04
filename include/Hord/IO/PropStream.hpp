@@ -74,8 +74,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get datastore.
-
-		@returns %Datastore.
 	*/
 	Datastore&
 	get_datastore() noexcept {
@@ -84,8 +82,6 @@ public:
 
 	/**
 		Get info.
-
-		@returns Info.
 	*/
 	PropInfo const&
 	get_info() const noexcept {
@@ -98,8 +94,6 @@ public:
 		@warning If this happens to be called on a destroyed prop
 		stream, the return value will be a null reference and
 		terrific things will happen.
-
-		@returns Raw input stream.
 	*/
 	std::istream&
 	get_stream();
@@ -158,8 +152,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get datastore.
-
-		@returns %Datastore.
 	*/
 	Datastore&
 	get_datastore() noexcept {
@@ -168,8 +160,6 @@ public:
 
 	/**
 		Get info.
-
-		@returns Info.
 	*/
 	PropInfo const&
 	get_info() const noexcept {
@@ -182,8 +172,6 @@ public:
 		@warning If this happens to be called on a destroyed prop
 		stream, the return value will be a null reference and
 		terrific things will happen.
-
-		@returns Raw output stream.
 	*/
 	std::ostream&
 	get_stream();

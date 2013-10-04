@@ -72,6 +72,7 @@ public:
 		@post See Object::Unit().
 	*/
 	Unit();
+
 	/**
 		Constructor with ID.
 
@@ -105,8 +106,6 @@ public:
 /** @name Properties */ /// @{
 	/**
 		Get ID set.
-
-		@returns Current ID set.
 	*/
 	id_set_type const&
 	get_idset() const noexcept {
@@ -115,8 +114,6 @@ public:
 
 	/**
 		Get mutable ID set.
-
-		@returns Mutable ID set.
 	*/
 	id_set_type&
 	get_idset() noexcept {
@@ -125,8 +122,6 @@ public:
 
 	/**
 		Get object map.
-
-		@returns Current object map.
 	*/
 	object_map_type const&
 	get_objects() const noexcept {
@@ -135,22 +130,18 @@ public:
 
 	/**
 		Get mutable object map.
-
-		@returns Mutable object map.
 	*/
 	object_map_type&
 	get_objects() noexcept {
 		return m_objects;
 	}
+	/** @} */
 /// @}
 
 /** @name Objects */ /// @{
 	/**
 		Check if a child object exists with the given @a id.
 
-		@returns
-		- @c true if @a id is in the hive, or
-		- @c false if it is not.
 		@param id %Object ID to look for.
 	*/
 	bool
