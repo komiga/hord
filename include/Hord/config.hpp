@@ -109,10 +109,21 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_MSG_SCOPED_IMPL__(s__, m__) \
 	HORD_STR_LIT(s__ ": " m__)
 
-#define HORD_FMT_SCOPED_IMPL__(ident__, f__)	\
+#define HORD_FMT_IMPL__(ident__, f__)	\
 	static constexpr ceformat::Format const		\
 	ident__{f__}
 /** @endcond */
+
+// unscoped
+
+/**
+	Define format message with no scope.
+
+	@param ident__ Identifier for format message.
+	@param f__ Format message.
+*/
+#define HORD_FMT_UNSCOPED(ident__, f__) \
+	HORD_FMT_IMPL__(ident__, HORD_STR_LIT(f__))
 
 // class scope
 
@@ -131,7 +142,7 @@ see @ref index or the accompanying LICENSE file for full text.
 	@param f__ Format message.
 */
 #define HORD_FMT_SCOPED_CLASS(ident__, f__) \
-	HORD_FMT_SCOPED_IMPL__(ident__, HORD_MSG_SCOPED_CLASS(f__))
+	HORD_FMT_IMPL__(ident__, HORD_MSG_SCOPED_CLASS(f__))
 
 // function scope
 
@@ -150,7 +161,7 @@ see @ref index or the accompanying LICENSE file for full text.
 	@param f__ Format message.
 */
 #define HORD_FMT_SCOPED_FUNC(ident__, f__) \
-	HORD_FMT_SCOPED_IMPL__(ident__, HORD_MSG_SCOPED_FUNC(f__))
+	HORD_FMT_IMPL__(ident__, HORD_MSG_SCOPED_FUNC(f__))
 
 // fully-qualified scope
 
@@ -169,7 +180,7 @@ see @ref index or the accompanying LICENSE file for full text.
 	@param f__ Format message.
 */
 #define HORD_FMT_SCOPED_FQN(ident__, f__) \
-	HORD_FMT_SCOPED_IMPL__(ident__, HORD_MSG_SCOPED_FQN(f__))
+	HORD_FMT_IMPL__(ident__, HORD_MSG_SCOPED_FQN(f__))
 
 /** @cond INTERNAL */
 #define HORD_THROW_ERROR_IMPL__(e__, m__)	\
