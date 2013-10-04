@@ -40,7 +40,7 @@ enum : Object::ID {
 	/**
 		Null object.
 	*/
-	NULL_ID = static_cast<Object::ID>(0)
+	NULL_ID = static_cast<Object::ID>(0u)
 };
 
 /**
@@ -48,12 +48,31 @@ enum : Object::ID {
 */
 enum class Type : unsigned {
 	/** @ref hive. */
-	Hive,
+	Hive = 0u,
+
 	/** @ref rule. */
 	Rule,
+
 	/** @ref node. */
-	Node
+	Node,
+
+/** @cond INTERNAL */
+	LAST
+/** @endcond */
 };
+
+/**
+	Get the name of an object type.
+
+	@returns C-string containing the name of @a object_type or
+	"INVALID" if somehow @a object_type is not actually
+	an @c Object::Type.
+	@param object_type Object type.
+*/
+char const*
+get_type_name(
+	Object::Type const object_type
+) noexcept;
 
 /**
 	Object type info.
