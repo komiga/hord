@@ -35,12 +35,26 @@ enum class PropType : unsigned {
 	/**
 		Object metadata.
 	*/
-	object_metadata,
+	object_metadata = 0u,
 
 	/**
 		Primary object data.
 	*/
-	object_primary
+	object_primary,
+
+	/**
+		Auxiliary object data.
+	*/
+	object_auxiliary,
+
+	/**
+		Scratch space.
+	*/
+	object_scratch,
+
+/** @cond INTERNAL */
+	LAST
+/** @endcond */
 };
 
 /**
@@ -54,7 +68,8 @@ enum class StorageState : unsigned {
 		neither serialization nor deserialization can be performed.
 		@sa Object::NULL_ID
 	*/
-	null,
+	null = 0u,
+
 	/**
 		Placeholder.
 
@@ -66,6 +81,7 @@ enum class StorageState : unsigned {
 		to @c original when their primary data is deserialized.
 	*/
 	placeholder,
+
 	/**
 		Matches external storage.
 
@@ -79,6 +95,7 @@ enum class StorageState : unsigned {
 		placeheld.
 	*/
 	original,
+
 	/**
 		Modified.
 
@@ -92,6 +109,10 @@ enum class StorageState : unsigned {
 		state.
 	*/
 	modified,
+
+/** @cond INTERNAL */
+	LAST
+/** @endcond */
 };
 
 /**
@@ -118,10 +139,12 @@ enum class SerializationFlags : unsigned {
 		@note This flag is implicit.
 	*/
 	identity = 1 << 0,
+
 	/**
 		Include metadata property in operation.
 	*/
 	metadata = 1 << 1,
+
 	/**
 		Include primary data in operation.
 
@@ -129,6 +152,20 @@ enum class SerializationFlags : unsigned {
 		be placeheld when its owner's primary data is deserialized.
 	*/
 	primary = 1 << 2,
+
+	/**
+		Include auxiliary data in operation.
+
+		@remarks This corresponds to the @c object_auxiliary prop,
+		which only nodes use.
+	*/
+	auxiliary = 1 << 3,
+
+	/**
+		Include scratch space in operation.
+	*/
+	scratch = 1 << 4,
+
 	/**
 		Shallow deserialization.
 
@@ -141,6 +178,7 @@ enum class SerializationFlags : unsigned {
 		= identity
 		| metadata
 	,
+
 	/**
 		All flags.
 	*/
@@ -148,7 +186,6 @@ enum class SerializationFlags : unsigned {
 		= identity
 		| metadata
 		| primary
-	,
 };
 
 /** @} */ // end of doc-group io
