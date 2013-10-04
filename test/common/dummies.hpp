@@ -88,7 +88,8 @@ private:
 	}
 	void
 	create_object_impl(
-		Hord::Object::ID const
+		Hord::Object::ID const,
+		Hord::Object::Type const
 	) override {}
 	void
 	destroy_object_impl(
