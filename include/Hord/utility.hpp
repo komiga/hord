@@ -44,6 +44,28 @@ make_const(
 	return value;
 }
 
+/**
+	Cast enum to underlying or integral type.
+
+	@tparam E Enum type; deduced from @a value.
+	@tparam U Type to cast to; defaults to the underlying type.
+	@param value Enum value.
+*/
+template<
+	typename E,
+	typename U = typename std::underlying_type<E>::type
+>
+inline constexpr U
+enum_cast(
+	E const value
+) noexcept {
+	static_assert(
+		std::is_enum<E>::value,
+		"E must be an enum"
+	);
+	return static_cast<U>(value);
+}
+
 /** @} */ // end of doc-group utility
 /** @} */ // end of doc-group etc
 
