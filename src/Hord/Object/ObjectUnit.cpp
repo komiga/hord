@@ -8,14 +8,16 @@ namespace Object {
 
 #define HORD_SCOPE_CLASS_IDENT__ Object::Unit
 
-Unit::Unit() = default;
-
 Unit::Unit(
-	IO::StorageState const storage_state,
+	bool const supplies_primary,
+	bool const supplies_auxiliary,
 	Object::ID const owner,
 	Object::ID const id
 ) noexcept
-	: m_storage_state(storage_state)
+	: m_prop_states(
+		supplies_primary,
+		supplies_auxiliary
+	)
 	, m_owner(owner)
 	, m_id(id)
 {}

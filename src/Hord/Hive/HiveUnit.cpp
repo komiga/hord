@@ -21,17 +21,21 @@ Unit::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
-Unit::Unit() = default;
+Unit::Unit()
+	: base(
+		true, false,
+		Object::NULL_ID,
+		Object::NULL_ID
+	)
+{}
 
 Unit::Unit(
 	Hive::ID const id
 ) noexcept
 	: base(
-		(Object::NULL_ID == id)
-			? IO::StorageState::null
-			: IO::StorageState::placeholder
-		, Object::NULL_ID
-		, static_cast<Object::ID>(id)
+		true, false,
+		Object::NULL_ID,
+		static_cast<Object::ID>(id)
 	)
 {}
 

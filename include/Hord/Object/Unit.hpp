@@ -62,12 +62,13 @@ public:
 	{};
 
 private:
-	IO::StorageState m_storage_state{IO::StorageState::null};
+	IO::PropStateStore m_prop_states;
 	Object::ID m_owner{Object::NULL_ID};
 	Object::ID m_id{Object::NULL_ID};
 	String m_slug{};
 	Data::Metadata m_metadata{};
 
+	Unit() = delete;
 	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
 
@@ -83,26 +84,29 @@ protected:
 protected:
 /** @name Constructors and destructor */ /// @{
 	/**
-		Default constructor.
+		Constructor with storage state, owner, and id.
 
 		@post
 		@code
-			get_storage_state() == IO::StorageState::null &&
-			get_owner() == Object::NULL_ID &&
-			get_id() == Object::NULL_ID
+			get_storage_state()
+			== (get_id() == Object::NULL_ID
+				? IO::StorageState::null
+				: IO::StorageState::placeholder
+			)
 		@endcode
-	*/
-	Unit();
 
-	/**
-		Constructor with storage state, owner, and id.
-
-		@param storage_state Storage state.
+		@param supplies_primary Whether IO::PropType::primary is
+		supplied by the object.
+		@param supplies_auxiliary Whether IO::PropType::auxiliary is
+		supplied by the object.
 		@param owner Owner ID.
 		@param id %Object ID.
+
+		@sa IO::PropStateStore
 	*/
 	Unit(
-		IO::StorageState const storage_state,
+		bool const supplies_primary,
+		bool const supplies_auxiliary,
 		Object::ID const owner,
 		Object::ID const id
 	) noexcept;
@@ -140,23 +144,35 @@ public:
 	}
 
 	/**
-		Set storage state.
-
-		@param storage_state New state.
-	*/
-	void
-	set_storage_state(
-		IO::StorageState const storage_state
-	) noexcept {
-		m_storage_state = storage_state;
-	}
-
-	/**
 		Get storage state.
 	*/
 	IO::StorageState
 	get_storage_state() const noexcept {
-		return m_storage_state;
+		return
+			  Object::NULL_ID == m_id
+				? IO::StorageState::null
+			: m_prop_states.all_original()
+				? IO::StorageState::original
+			: m_prop_states.any_modified()
+				? IO::StorageState::modified
+			: IO::StorageState::placeholder
+		;
+	}
+
+	/**
+		Get prop state store.
+	*/
+	IO::PropStateStore const&
+	get_prop_states() const noexcept {
+		return m_prop_states;
+	}
+
+	/**
+		Get mutable prop state store.
+	*/
+	IO::PropStateStore&
+	get_prop_states() noexcept {
+		return m_prop_states;
 	}
 
 	/**

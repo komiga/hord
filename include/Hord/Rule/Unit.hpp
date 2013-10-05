@@ -67,28 +67,26 @@ protected:
 	/**
 		Constructor with owner and ID.
 
-		@post
-		@code
-			get_storage_state()
-			== (Object::NULL_ID == get_id()
-				? IO::StorageState::null
-				: IO::StorageState::placeholder
-			)
-		@endcode
+		@post See Object::Unit().
 
+		@param supplies_primary Whether IO::PropType::primary is
+		supplied by the object.
+		@param supplies_auxiliary Whether IO::PropType::auxiliary is
+		supplied by the object.
 		@param owner Owner.
 		@param id ID.
 	*/
 	Unit(
+		bool const supplies_primary,
+		bool const supplies_auxiliary,
 		Hive::ID const owner,
 		Rule::ID const id
 	) noexcept
 		: base(
-			(Object::NULL_ID == id)
-				? IO::StorageState::null
-				: IO::StorageState::placeholder
-			, static_cast<Object::ID>(owner)
-			, static_cast<Object::ID>(id)
+			supplies_primary,
+			supplies_auxiliary,
+			static_cast<Object::ID>(owner),
+			static_cast<Object::ID>(id)
 		)
 	{}
 

@@ -36,6 +36,8 @@ class Unit;
 
 /**
 	Top-level object container.
+
+	@note This object supplies only the primary data prop.
 */
 class Unit final
 	: public Object::Unit
@@ -69,21 +71,17 @@ public:
 	/**
 		Default constructor.
 
-		@post See Object::Unit().
+		@post
+		@code
+			get_storage_state() == IO::StorageState::null
+		@endcode
 	*/
 	Unit();
 
 	/**
 		Constructor with ID.
 
-		@post
-		@code
-			get_storage_state()
-			== (Object::NULL_ID == get_id()
-				? IO::StorageState::null
-				: IO::StorageState::placeholder
-			)
-		@endcode
+		@post See Object::Unit().
 
 		@param id ID.
 	*/

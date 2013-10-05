@@ -307,7 +307,7 @@ void
 Metadata::deserialize(
 	IO::InputPropStream& prop_stream
 ) {
-	assert(IO::PropType::object_metadata == prop_stream.get_info().prop_type);
+	assert(IO::PropType::metadata == prop_stream.get_info().prop_type);
 	std::istream& stream = prop_stream.get_stream();
 
 	this->fields.clear();
@@ -394,7 +394,7 @@ void
 Metadata::serialize(
 	IO::OutputPropStream& prop_stream
 ) const {
-	assert(IO::PropType::object_metadata == prop_stream.get_info().prop_type);
+	assert(IO::PropType::metadata == prop_stream.get_info().prop_type);
 	std::ostream& stream = prop_stream.get_stream();
 
 	// header

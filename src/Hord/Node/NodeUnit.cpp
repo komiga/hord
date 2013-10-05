@@ -26,11 +26,9 @@ Unit::Unit(
 	Node::ID const id
 ) noexcept
 	: base(
-		(Object::NULL_ID == id)
-			? IO::StorageState::null
-			: IO::StorageState::placeholder
-		, static_cast<Object::ID>(owner)
-		, static_cast<Object::ID>(id)
+		true, true,
+		static_cast<Object::ID>(owner),
+		static_cast<Object::ID>(id)
 	)
 {}
 

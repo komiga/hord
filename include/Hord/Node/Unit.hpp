@@ -69,14 +69,7 @@ public:
 	/**
 		Constructor with owner and ID.
 
-		@post
-		@code
-			get_storage_state()
-			== (Object::NULL_ID == get_id()
-				? IO::StorageState::null
-				: IO::StorageState::placeholder
-			)
-		@endcode
+		@post See Object::Unit().
 
 		@param owner Owner.
 		@param id ID.

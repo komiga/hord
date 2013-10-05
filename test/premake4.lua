@@ -19,6 +19,7 @@ precore.make_solution(
 -- Groups
 
 include("general")
+include("io")
 include("etc")
 
 action_clean()

@@ -13,10 +13,11 @@ namespace {
 static char const
 s_prop_type_invalid[]{HORD_STR_LIT("INVALID")},
 * const s_prop_type_names[]{
-	HORD_STR_LIT("object_metadata"),
-	HORD_STR_LIT("object_primary"),
-	HORD_STR_LIT("object_auxiliary"),
-	HORD_STR_LIT("object_scratch")
+	HORD_STR_LIT("identity"),
+	HORD_STR_LIT("metadata"),
+	HORD_STR_LIT("scratch"),
+	HORD_STR_LIT("primary"),
+	HORD_STR_LIT("auxiliary"),
 };
 } // anonymous namespace
 
