@@ -38,8 +38,8 @@ Unit::Unit(
 	: base(
 		s_type_info.supplies_prop_primary,
 		s_type_info.supplies_prop_auxiliary,
-		Object::NULL_ID,
-		static_cast<Object::ID>(id)
+		static_cast<Object::ID>(id),
+		Object::NULL_ID
 	)
 {}
 
@@ -54,6 +54,22 @@ Unit::has_child(
 ) const noexcept(noexcept(m_idset.find(id))) {
 	return m_idset.cend() != m_idset.find(id);
 }
+
+#define HORD_SCOPE_FUNC_IDENT__ deserialize_impl
+void
+Unit::deserialize_impl(
+	IO::InputPropStream& /*prop_stream*/
+) {
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
+#define HORD_SCOPE_FUNC_IDENT__ serialize_impl
+void
+Unit::serialize_impl(
+	IO::OutputPropStream& /*prop_stream*/
+) const {
+}
+#undef HORD_SCOPE_FUNC_IDENT__
 
 #undef HORD_SCOPE_CLASS_IDENT__
 

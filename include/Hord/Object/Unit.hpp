@@ -63,11 +63,13 @@ public:
 	{};
 
 private:
+	Object::ID m_id;
 	IO::PropStateStore m_prop_states;
-	Object::ID m_owner{Object::NULL_ID};
-	Object::ID m_id{Object::NULL_ID};
+
+	Object::ID m_parent;
 	String m_slug{};
 	Data::Metadata m_metadata{};
+	String m_scratch_data{};
 
 	Unit() = delete;
 	Unit(Unit const&) = delete;
@@ -80,15 +82,44 @@ protected:
 	*/
 	virtual type_info const&
 	get_type_info_impl() const noexcept = 0;
+
+	/**
+		deserialize() implementation.
+
+		@note This is only called for the primary and auxiliary
+		props.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		@throws Error{ErrorCode::serialization_data_malformed}
+	*/
+	virtual void
+	deserialize_impl(
+		IO::InputPropStream& prop_stream
+	) = 0;
+
+	/**
+		serialize() implementation.
+
+		@note This is only called for the primary and auxiliary
+		props.
+
+		@throws Error{ErrorCode::serialization_prop_improper_state}
+		@throws Error{ErrorCode::serialization_io_failed}
+	*/
+	virtual void
+	serialize_impl(
+		IO::OutputPropStream& prop_stream
+	) const = 0;
 /// @}
 
 protected:
 /** @name Constructors and destructor */ /// @{
 	/**
-		Constructor with storage state, owner, and id.
+		Constructor with supplied props, %ID, and parent.
 
 		@post
 		@code
+			get_owner() == Object::NULL_ID &&
 			get_storage_state()
 			== (get_id() == Object::NULL_ID
 				? IO::StorageState::null
@@ -100,16 +131,16 @@ protected:
 		supplied by the object.
 		@param supplies_auxiliary Whether IO::PropType::auxiliary is
 		supplied by the object.
-		@param owner Owner ID.
-		@param id %Object ID.
+		@param id Object %ID.
+		@param parent Parent %ID.
 
 		@sa IO::PropStateStore
 	*/
 	Unit(
 		bool const supplies_primary,
 		bool const supplies_auxiliary,
-		Object::ID const owner,
-		Object::ID const id
+		Object::ID const id,
+		Object::ID const parent
 	) noexcept;
 
 	/** Move constructor. */
@@ -182,18 +213,18 @@ public:
 		@param owner New owner.
 	*/
 	void
-	set_owner(
-		Object::ID const owner
+	set_parent(
+		Object::ID const parent
 	) noexcept {
-		m_owner = owner;
+		m_parent = parent;
 	}
 
 	/**
-		Get owner.
+		Get parent.
 	*/
 	Object::ID
-	get_owner() const noexcept {
-		return m_owner;
+	get_parent() const noexcept {
+		return m_parent;
 	}
 
 	/**
@@ -251,6 +282,63 @@ public:
 	get_metadata() noexcept {
 		return m_metadata;
 	}
+/// @}
+
+/** @name Serialization */ /// @{
+	/**
+		Deserialize prop.
+
+		@post @code
+			get_prop_states().has(
+				prop_stream.get_type(),
+				IO::PropState::original
+			)
+		@endcode
+
+		@throws Error{ErrorCode::serialization_prop_unsupplied}
+		If the object does not supply the prop that @a prop_stream
+		represents.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		If an input operation failed.
+
+		@throws Error{ErrorCode::serialization_data_malformed}
+		If malformed data was encountered.
+
+		@param prop_stream Prop stream.
+	*/
+	void
+	deserialize(
+		IO::InputPropStream& prop_stream
+	);
+
+	/**
+		Serialize prop.
+
+		@post @code
+			get_prop_states().has(
+				prop_stream.get_type(),
+				IO::PropState::original
+			)
+		@endcode
+
+		@throws Error{ErrorCode::serialization_prop_unsupplied}
+		If the object does not supply the prop that @a prop_stream
+		represents.
+
+		@throws Error{ErrorCode::serialization_prop_improper_state}
+		If the state for the prop that @a prop_stream represents
+		is uninitialized.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		If an output operation failed.
+
+		@param prop_stream Prop stream.
+	*/
+	void
+	serialize(
+		IO::OutputPropStream& prop_stream
+	);
 /// @}
 };
 

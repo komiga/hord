@@ -24,14 +24,14 @@ Unit::get_type_info_impl() const noexcept {
 }
 
 Unit::Unit(
-	Hive::ID const owner,
-	Node::ID const id
+	Node::ID const id,
+	Object::ID const parent
 ) noexcept
 	: base(
 		s_type_info.supplies_prop_primary,
 		s_type_info.supplies_prop_auxiliary,
-		static_cast<Object::ID>(owner),
-		static_cast<Object::ID>(id)
+		static_cast<Object::ID>(id),
+		parent
 	)
 {}
 
@@ -49,6 +49,22 @@ Unit::set_layout_ref(
 		m_layout.clear();
 	}
 }
+
+#define HORD_SCOPE_FUNC_IDENT__ deserialize_impl
+void
+Unit::deserialize_impl(
+	IO::InputPropStream& /*prop_stream*/
+) {
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
+#define HORD_SCOPE_FUNC_IDENT__ serialize_impl
+void
+Unit::serialize_impl(
+	IO::OutputPropStream& /*prop_stream*/
+) const {
+}
+#undef HORD_SCOPE_FUNC_IDENT__
 
 #undef HORD_SCOPE_CLASS_IDENT__
 

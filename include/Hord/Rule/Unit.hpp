@@ -11,8 +11,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_RULE_UNIT_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/Rule/Defs.hpp>
+#include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Unit.hpp>
+#include <Hord/Rule/Defs.hpp>
 
 // TODO: Standard Rule classes
 
@@ -60,21 +61,37 @@ protected:
 	*/
 	virtual type_info const&
 	get_rule_type_info_impl() const noexcept = 0;
+
+	/**
+		See Object::Unit::deserialize_impl().
+	*/
+	virtual void
+	deserialize_impl(
+		IO::InputPropStream& prop_stream
+	) = 0;
+
+	/**
+		See Object::Unit::serialize_impl().
+	*/
+	virtual void
+	serialize_impl(
+		IO::OutputPropStream& prop_stream
+	) const = 0;
 /// @}
 
 protected:
 /** @name Constructors and destructor */ /// @{
 	/**
-		Constructor with owner and ID.
+		Constructor with ID and parent.
 
-		@post See Object::Unit().
+		@post See Object::Unit.
 
-		@param owner Owner.
 		@param id ID.
+		@param parent Parent ID.
 	*/
 	Unit(
-		Hive::ID const owner,
-		Rule::ID const id
+		Rule::ID const id,
+		Object::ID const parent
 	) noexcept;
 
 	/** Move constructor. */

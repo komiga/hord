@@ -34,9 +34,8 @@ enum class SerializationFlags : unsigned;
 	@note All props are supplied by an object unless otherwise stated.
 
 	@par
-	@note IO::PropType::identity, IO::PropType::metadata, and
-	IO::PropType::scratch are guaranteed to be provided by
-	Object::Unit.
+	@note @c identity, @c metadata, and @c scratch are provided
+	by Object::Unit.
 
 	@sa IO::PropInfo,
 		IO::Datastore
@@ -45,7 +44,7 @@ enum class PropType : unsigned {
 	/**
 		Identity.
 
-		This prop stores the object's owner and slug properties.
+		This prop stores the object's parent and slug properties.
 	*/
 	identity = 0u,
 
@@ -67,9 +66,9 @@ enum class PropType : unsigned {
 		This prop stores object data most likely to mutate.
 		The following objects provide this prop:
 
-		- Hive::Unit: idset
-		- Node::Unit: records
-		- Rule::Unit: implementation-defined rule data
+		- Hive::Unit
+		- Rule::Unit
+		- Node::Unit
 	*/
 	primary,
 
@@ -79,7 +78,7 @@ enum class PropType : unsigned {
 		This prop stores object data least likely to mutate.
 		The following objects provide this prop:
 
-		- Node::Unit: layout, children
+		- Node::Unit
 	*/
 	auxiliary,
 

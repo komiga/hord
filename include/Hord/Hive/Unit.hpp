@@ -13,6 +13,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/cc_unique_ptr.hpp>
 #include <Hord/aux.hpp>
+#include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/Hive/Defs.hpp>
@@ -65,6 +66,16 @@ private:
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
 
+	void
+	deserialize_impl(
+		IO::InputPropStream& prop_stream
+	) override;
+
+	void
+	serialize_impl(
+		IO::OutputPropStream& prop_stream
+	) const override;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
@@ -80,7 +91,7 @@ public:
 	/**
 		Constructor with ID.
 
-		@post See Object::Unit().
+		@post See Object::Unit.
 
 		@param id ID.
 	*/

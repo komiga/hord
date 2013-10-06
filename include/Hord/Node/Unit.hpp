@@ -13,9 +13,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/Data/Record.hpp>
+#include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
-#include <Hord/Hive/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Node/Column.hpp>
 
@@ -45,10 +45,9 @@ class Unit final
 public:
 	/** Column vector. */
 	using column_vector_type = aux::vector<Node::Column>;
+
 	/** Record vector. */
 	using record_vector_type = aux::vector<Data::Record>;
-	/** Child vector. */
-	using child_vector_type = aux::vector<Node::ID>;
 
 private:
 	using base = Object::Unit;
@@ -56,7 +55,6 @@ private:
 	Node::ID m_layout_ref{static_cast<Node::ID>(Object::NULL_ID)};
 	column_vector_type m_layout{};
 	record_vector_type m_records{};
-	child_vector_type m_children{};
 
 	Unit() = delete;
 	Unit(Unit const&) = delete;
@@ -65,19 +63,29 @@ private:
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
 
+	void
+	deserialize_impl(
+		IO::InputPropStream& prop_stream
+	) override;
+
+	void
+	serialize_impl(
+		IO::OutputPropStream& prop_stream
+	) const override;
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
-		Constructor with owner and ID.
+		Constructor with ID and parent.
 
-		@post See Object::Unit().
+		@post See Object::Unit.
 
-		@param owner Owner.
 		@param id ID.
+		@param parent Parent ID.
 	*/
 	Unit(
-		Hive::ID const owner,
-		Node::ID const id
+		Node::ID const id,
+		Object::ID const parent
 	) noexcept;
 
 	/** Move constructor. */
@@ -97,6 +105,7 @@ public:
 
 		@note If @a node_id is non-@c Object::NULL_ID, the layout
 		property will be cleared.
+
 		@param node_id New layout reference.
 	*/
 	void
@@ -143,22 +152,6 @@ public:
 	record_vector_type&
 	get_records() noexcept {
 		return m_records;
-	}
-
-	/**
-		Get child collection.
-	*/
-	child_vector_type const&
-	get_children() const noexcept {
-		return m_children;
-	}
-
-	/**
-		Get mutable child collection.
-	*/
-	child_vector_type&
-	get_children() noexcept {
-		return m_children;
 	}
 /// @}
 };

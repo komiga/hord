@@ -23,14 +23,14 @@ Unit::get_type_info_impl() const noexcept {
 }
 
 Unit::Unit(
-	Hive::ID const owner,
-	Rule::ID const id
+	Rule::ID const id,
+	Object::ID const parent
 ) noexcept
 	: base(
 		s_type_info.supplies_prop_primary,
 		s_type_info.supplies_prop_auxiliary,
-		static_cast<Object::ID>(owner),
-		static_cast<Object::ID>(id)
+		static_cast<Object::ID>(id),
+		parent
 	)
 {}
 
