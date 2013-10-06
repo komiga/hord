@@ -70,6 +70,9 @@ main() {
 
 	assert(0u == value_init_neither);
 
+	assert(!s_all.all_original());
+	assert(!s_all.any_modified());
+
 	assert(s_all.has(Type::primary, State::original));
 	assert(s_all.has(Type::auxiliary, State::original));
 
