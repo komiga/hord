@@ -44,13 +44,11 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("datastore_prop_void"),
 	HORD_STR_LIT("datastore_prop_not_locked"),
 
-// metadata
-	HORD_STR_LIT("metadata_serialization_type_invalid"),
-	HORD_STR_LIT("metadata_serialization_io_failed"),
-
 // serialization
-	HORD_STR_LIT("serialization_improper_state"),
-	HORD_STR_LIT("serialization_access"),
+	HORD_STR_LIT("serialization_prop_unsupplied"),
+	HORD_STR_LIT("serialization_prop_improper_state"),
+	HORD_STR_LIT("serialization_io_failed"),
+	HORD_STR_LIT("serialization_data_malformed"),
 
 // cmd
 	HORD_STR_LIT("cmd_construct_stage_type_invalid"),

@@ -289,7 +289,7 @@ namespace meta_impl {
 
 #define HORD_THROW_MURK_ERROR__(err__, part__, ex__)				\
 	HORD_THROW_ERROR_F(												\
-		ErrorCode::metadata_serialization_io_failed,				\
+		ErrorCode::serialization_io_failed,							\
 		err__,														\
 		HORD_STR_LIT(part__),										\
 		&(ex__.get_tie().get_desc()),								\
@@ -361,7 +361,7 @@ Metadata::deserialize(
 			||	MetaFieldType::Bool   < static_cast<MetaFieldType>(field_type)
 			) {
 				HORD_THROW_ERROR_SCOPED_FQN(
-					ErrorCode::metadata_serialization_type_invalid,
+					ErrorCode::serialization_data_malformed,
 					"invalid field type encountered"
 				);
 			} else {

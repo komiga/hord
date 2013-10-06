@@ -161,40 +161,28 @@ enum class ErrorCode : unsigned {
 	datastore_prop_not_locked,
 /// @}
 
-/** @name Metadata */ /// @{
-	/**
-		Encountered invalid field type when deserializing.
-
-		@remarks This would indicate malformed prop data.
-	*/
-	metadata_serialization_type_invalid,
-	/**
-		Write or read operation failed while deserializing or
-		serializing.
-
-		@remarks This will originate from a
-		captured @c murk::SerializeError.
-	*/
-	metadata_serialization_io_failed,
-/// @}
-
 /** @name Serialization */ /// @{
 	/**
-		%Object is not in proper state.
+		Object does not supply prop.
 
-		- When deserializing, this is due to any state other
-		  than @c StorageState::placeholder.
-		- When serializing, this is due to any state other
-		  than @c StorageState::modified (will not be thrown
-		  if the serialization was triggered on a hive).
+		@remarks If the serialization sequence is proper, this
+		should not occur from a Unit.
 	*/
-	serialization_improper_state,
+	serialization_prop_unsupplied,
 	/**
-		Cannot access data.
-
-		When object data cannot be accessed.
+		Prop is not in proper state for operation.
 	*/
-	serialization_access,
+	serialization_prop_improper_state,
+
+	/**
+		Write or read operation failed during deserialization or
+		serialization.
+	*/
+	serialization_io_failed,
+	/**
+		Encountered malformed data during deserialization.
+	*/
+	serialization_data_malformed,
 /// @}
 
 /** @name Command */ /// @{

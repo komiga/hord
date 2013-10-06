@@ -473,11 +473,11 @@ public:
 			IO::PropType::metadata == prop_stream.get_type()
 		@endcode
 
-		@throws Error{ErrorCode::metadata_serialization_type_invalid}
-		If an invalid field type is encountered in the prop stream.
-
-		@throws Error{ErrorCode::metadata_serialization_io_failed}
+		@throws Error{ErrorCode::serialization_io_failed}
 		If an input operation failed.
+
+		@throws Error{ErrorCode::serialization_data_malformed}
+		If an invalid field type is encountered in the prop stream.
 
 		@param prop_stream %Prop stream.
 	*/
@@ -493,7 +493,7 @@ public:
 			IO::PropType::metadata == prop_stream.get_type()
 		@endcode
 
-		@throws Error{ErrorCode::metadata_serialization_io_failed}
+		@throws Error{ErrorCode::serialization_io_failed}
 		If an output operation failed.
 
 		@param prop_stream %Prop stream.
