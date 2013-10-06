@@ -35,7 +35,9 @@ class Unit;
 */
 
 /**
-	Node unit class.
+	Record container.
+
+	This is the primary data object in Hord.
 */
 class Unit final
 	: public Object::Unit
