@@ -24,6 +24,8 @@ namespace IO {
 // up due to cyclic dependency caused by IO::Datastore (which uses
 // Hive::Unit).
 class Datastore; // external
+
+class PropStream;
 class InputPropStream;
 class OutputPropStream;
 
@@ -37,12 +39,83 @@ class OutputPropStream;
 */
 
 /**
-	Base input prop stream.
+	Base prop stream.
 */
-class InputPropStream final {
+class PropStream {
+protected:
+	/** %Datastore. */
+	IO::Datastore& m_datastore;
+
+	/** Prop info. */
+	IO::PropInfo const m_info;
+
 private:
-	Datastore& m_datastore;
-	PropInfo const m_info;
+	PropStream() = delete;
+	PropStream(PropStream const&) = delete;
+	PropStream& operator=(PropStream const&) = delete;
+	PropStream& operator=(PropStream&&) = delete;
+
+public:
+/** @name Constructors and destructor */ /// @{
+	/**
+		Constructor with datastore and prop info.
+
+		@param datastore %Datastore.
+		@param info Prop info.
+	*/
+	PropStream(
+		IO::Datastore& datastore,
+		IO::PropInfo info
+	)
+		: m_datastore(datastore)
+		, m_info(std::move(info))
+	{}
+
+	/** Move constructor. */
+	PropStream(PropStream&&) noexcept = default;
+
+	/**
+		Destructor.
+	*/
+	~PropStream() noexcept = default;
+/// @}
+
+/** @name Properties */ /// @{
+	/**
+		Get datastore.
+	*/
+	IO::Datastore&
+	get_datastore() noexcept {
+		return m_datastore;
+	}
+
+	/**
+		Get info.
+	*/
+	IO::PropInfo const&
+	get_info() const noexcept {
+		return m_info;
+	}
+
+	/**
+		Get prop type.
+	*/
+	IO::PropType
+	get_type() const noexcept {
+		return m_info.prop_type;
+	}
+/// @}
+};
+
+/**
+	Input prop stream.
+*/
+class InputPropStream final
+	: public IO::PropStream
+{
+private:
+	using base = IO::PropStream;
+
 	std::istream* m_stream;
 
 	InputPropStream() = delete;
@@ -51,6 +124,7 @@ private:
 	InputPropStream& operator=(InputPropStream&&) = delete;
 
 public:
+/** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with datastore and prop info.
 
@@ -58,36 +132,20 @@ public:
 		@param info Prop info.
 	*/
 	InputPropStream(
-		Datastore& datastore,
-		PropInfo info
+		IO::Datastore& datastore,
+		IO::PropInfo info
 	);
 
 	/** Move constructor. */
 	InputPropStream(InputPropStream&&) noexcept;
+
 	/**
 		Destructor.
 	*/
 	~InputPropStream() noexcept;
 /// @}
 
-public:
 /** @name Properties */ /// @{
-	/**
-		Get datastore.
-	*/
-	Datastore&
-	get_datastore() noexcept {
-		return m_datastore;
-	}
-
-	/**
-		Get info.
-	*/
-	PropInfo const&
-	get_info() const noexcept {
-		return m_info;
-	}
-
 	/**
 		Get raw input stream.
 
@@ -101,13 +159,13 @@ public:
 
 /** @name Operations */ /// @{
 	/**
-		See @c Datastore::acquire_input_stream().
+		See IO::Datastore::acquire_input_stream().
 	*/
 	void
-
 	acquire();
+
 	/**
-		See @c Datastore::release_input_stream().
+		See IO::Datastore::release_input_stream().
 	*/
 	void
 	release();
@@ -115,12 +173,14 @@ public:
 };
 
 /**
-	Base output prop stream.
+	Output prop stream.
 */
-class OutputPropStream final {
+class OutputPropStream final
+	: public IO::PropStream
+{
 private:
-	Datastore& m_datastore;
-	PropInfo const m_info;
+	using base = IO::PropStream;
+
 	std::ostream* m_stream;
 
 	OutputPropStream() = delete;
@@ -129,6 +189,7 @@ private:
 	OutputPropStream& operator=(OutputPropStream&&) = delete;
 
 public:
+/** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with datastore and prop info.
 
@@ -136,12 +197,13 @@ public:
 		@param info Prop info.
 	*/
 	OutputPropStream(
-		Datastore& datastore,
-		PropInfo info
+		IO::Datastore& datastore,
+		IO::PropInfo info
 	);
 
 	/** Move constructor. */
 	OutputPropStream(OutputPropStream&&) noexcept;
+
 	/**
 		Destructor.
 	*/
@@ -150,22 +212,6 @@ public:
 
 public:
 /** @name Properties */ /// @{
-	/**
-		Get datastore.
-	*/
-	Datastore&
-	get_datastore() noexcept {
-		return m_datastore;
-	}
-
-	/**
-		Get info.
-	*/
-	PropInfo const&
-	get_info() const noexcept {
-		return m_info;
-	}
-
 	/**
 		Get raw output stream.
 
@@ -179,13 +225,13 @@ public:
 
 /** @name Operations */ /// @{
 	/**
-		See @c Datastore::acquire_output_stream().
+		See IO::Datastore::acquire_output_stream().
 	*/
 	void
 	acquire();
 
 	/**
-		See @c Datastore::release_output_stream().
+		See IO::Datastore::release_output_stream().
 	*/
 	void
 	release();

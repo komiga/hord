@@ -15,8 +15,8 @@ InputPropStream::InputPropStream(
 	IO::Datastore& datastore,
 	IO::PropInfo info
 )
-	: m_datastore(datastore)
-	, m_info(std::move(info))
+	: base(datastore, std::move(info))
+	, m_stream(nullptr)
 {}
 
 InputPropStream::InputPropStream(InputPropStream&&) noexcept = default;
@@ -42,14 +42,15 @@ InputPropStream::release() {
 	}
 }
 
+
 // class OutputPropStream implementation
 
 OutputPropStream::OutputPropStream(
 	IO::Datastore& datastore,
 	IO::PropInfo info
 )
-	: m_datastore(datastore)
-	, m_info(std::move(info))
+	: base(datastore, std::move(info))
+	, m_stream(nullptr)
 {}
 
 OutputPropStream::OutputPropStream(OutputPropStream&&) noexcept = default;
