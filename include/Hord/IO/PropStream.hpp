@@ -11,8 +11,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_IO_PROPSTREAM_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
-//#include <Hord/IO/Datastore.hpp>
+#include <Hord/IO/Datastore.hpp>
 
 #include <iosfwd>
 
@@ -20,11 +21,6 @@ namespace Hord {
 namespace IO {
 
 // Forward declarations
-// FIXME: Hack for Object::Unit -> Data::Metadata dependency blowing
-// up due to cyclic dependency caused by IO::Datastore (which uses
-// Hive::Unit).
-class Datastore; // external
-
 class PropStream;
 class InputPropStream;
 class OutputPropStream;

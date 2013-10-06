@@ -1,6 +1,5 @@
 
 #include <Hord/IO/PropStream.hpp>
-#include <Hord/IO/Datastore.hpp>
 
 #include <cassert>
 #include <istream>
