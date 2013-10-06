@@ -469,6 +469,10 @@ public:
 	/**
 		Deserialize from prop stream.
 
+		@pre @code
+			IO::PropType::metadata == prop_stream.get_type()
+		@endcode
+
 		@throws Error{ErrorCode::metadata_serialization_type_invalid}
 		If an invalid field type is encountered in the prop stream.
 
@@ -484,6 +488,10 @@ public:
 
 	/**
 		Serialize to prop stream.
+
+		@pre @code
+			IO::PropType::metadata == prop_stream.get_type()
+		@endcode
 
 		@throws Error{ErrorCode::metadata_serialization_io_failed}
 		If an input operation failed.

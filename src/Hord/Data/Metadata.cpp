@@ -53,6 +53,7 @@ MetaField::bind_const_base(
 	binder						\
 		(&this->value)
 
+
 // class StringMetaField implementation
 
 namespace {
@@ -100,6 +101,7 @@ StringMetaField::StringMetaField(StringMetaField&&) = default;
 StringMetaField::~StringMetaField() noexcept = default;
 
 StringMetaField& StringMetaField::operator=(StringMetaField&&) = default;
+
 
 // class Int32MetaField implementation
 
@@ -149,6 +151,7 @@ Int32MetaField::~Int32MetaField() noexcept = default;
 
 Int32MetaField& Int32MetaField::operator=(Int32MetaField&&) = default;
 
+
 // class Int64MetaField implementation
 
 namespace {
@@ -197,6 +200,7 @@ Int64MetaField::~Int64MetaField() noexcept = default;
 
 Int64MetaField& Int64MetaField::operator=(Int64MetaField&&) = default;
 
+
 // class BoolMetaField implementation
 
 namespace {
@@ -244,6 +248,7 @@ BoolMetaField::BoolMetaField(BoolMetaField&&) = default;
 BoolMetaField::~BoolMetaField() noexcept = default;
 
 BoolMetaField& BoolMetaField::operator=(BoolMetaField&&) = default;
+
 
 // class Metadata implementation
 
@@ -294,20 +299,22 @@ namespace meta_impl {
 //
 
 // Just stop reading here. Save your sanity
-#define HORD_SCOPE_FUNC_IDENT__ deserialize
 
+#define HORD_SCOPE_FUNC_IDENT__ deserialize
+namespace {
 HORD_FMT_SCOPED_FQN(
 	s_err_metadata_murk_deserialize,
 	"failed to deserialize %s at desc=(%#08p, %s);"
 	" murk message:\n"
 	"  >%s"
 );
+} // anonymous namespace
 
 void
 Metadata::deserialize(
 	IO::InputPropStream& prop_stream
 ) {
-	assert(IO::PropType::metadata == prop_stream.get_info().prop_type);
+	assert(IO::PropType::metadata == prop_stream.get_type());
 	std::istream& stream = prop_stream.get_stream();
 
 	this->fields.clear();
@@ -378,23 +385,23 @@ Metadata::deserialize(
 		);
 	}
 }
-
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ serialize
-
+namespace {
 HORD_FMT_SCOPED_FQN(
 	s_err_metadata_murk_serialize,
 	"failed to serialize %s at desc=(%#08p, %s);"
 	" murk message:\n"
 	"  >%s"
 );
+} // anonymous namespace
 
 void
 Metadata::serialize(
 	IO::OutputPropStream& prop_stream
 ) const {
-	assert(IO::PropType::metadata == prop_stream.get_info().prop_type);
+	assert(IO::PropType::metadata == prop_stream.get_type());
 	std::ostream& stream = prop_stream.get_stream();
 
 	// header
@@ -450,7 +457,6 @@ Metadata::serialize(
 		);
 	}
 }
-
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #undef HORD_THROW_MURK_ERROR__
