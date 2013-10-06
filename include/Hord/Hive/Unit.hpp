@@ -43,9 +43,6 @@ class Unit final
 	: public Object::Unit
 {
 public:
-	/** Base class. */
-	using base = Object::Unit;
-
 	/** Object ID set. */
 	using id_set_type = aux::unordered_set<Object::ID>;
 
@@ -57,6 +54,8 @@ public:
 	>;
 
 private:
+	using base = Object::Unit;
+
 	id_set_type m_idset{};
 	object_map_type m_objects{};
 

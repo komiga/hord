@@ -41,9 +41,6 @@ class Unit final
 	: public Object::Unit
 {
 public:
-	/** Base class. */
-	using base = Object::Unit;
-
 	/** Column vector. */
 	using column_vector_type = aux::vector<Node::Column>;
 	/** Record vector. */
@@ -52,6 +49,8 @@ public:
 	using child_vector_type = aux::vector<Node::ID>;
 
 private:
+	using base = Object::Unit;
+
 	Node::ID m_layout_ref{static_cast<Node::ID>(Object::NULL_ID)};
 	column_vector_type m_layout{};
 	record_vector_type m_records{};

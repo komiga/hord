@@ -494,7 +494,7 @@ public:
 		@endcode
 
 		@throws Error{ErrorCode::metadata_serialization_io_failed}
-		If an input operation failed.
+		If an output operation failed.
 
 		@param prop_stream %Prop stream.
 	*/

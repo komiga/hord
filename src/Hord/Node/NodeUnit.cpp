@@ -10,9 +10,11 @@ namespace Node {
 #define HORD_SCOPE_CLASS_IDENT__ Node::Unit
 
 namespace {
-static Object::type_info const
+static constexpr Object::type_info const
 s_type_info{
-	Object::Type::Node
+	Object::Type::Node,
+	true,
+	true
 };
 } // anonymous namespace
 
@@ -26,7 +28,8 @@ Unit::Unit(
 	Node::ID const id
 ) noexcept
 	: base(
-		true, true,
+		s_type_info.supplies_prop_primary,
+		s_type_info.supplies_prop_auxiliary,
 		static_cast<Object::ID>(owner),
 		static_cast<Object::ID>(id)
 	)

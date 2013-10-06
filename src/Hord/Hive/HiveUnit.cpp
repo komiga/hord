@@ -10,9 +10,11 @@ namespace Hive {
 #define HORD_SCOPE_CLASS_IDENT__ Hive::Unit
 
 namespace {
-static Object::type_info const
+static constexpr Object::type_info const
 s_type_info{
-	Object::Type::Hive
+	Object::Type::Hive,
+	true,
+	false
 };
 } // anonymous namespace
 
@@ -23,7 +25,8 @@ Unit::get_type_info_impl() const noexcept {
 
 Unit::Unit()
 	: base(
-		true, false,
+		s_type_info.supplies_prop_primary,
+		s_type_info.supplies_prop_auxiliary,
 		Object::NULL_ID,
 		Object::NULL_ID
 	)
@@ -33,7 +36,8 @@ Unit::Unit(
 	Hive::ID const id
 ) noexcept
 	: base(
-		true, false,
+		s_type_info.supplies_prop_primary,
+		s_type_info.supplies_prop_auxiliary,
 		Object::NULL_ID,
 		static_cast<Object::ID>(id)
 	)

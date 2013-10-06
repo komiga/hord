@@ -14,6 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
 #include <Hord/IO/Defs.hpp>
+#include <Hord/IO/Prop.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/Object/Defs.hpp>
 
@@ -219,6 +220,7 @@ public:
 		Set slug.
 
 		@warning This property is truncated to 64 code units.
+
 		@param slug New slug.
 	*/
 	void

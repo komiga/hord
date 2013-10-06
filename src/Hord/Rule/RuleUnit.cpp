@@ -9,9 +9,11 @@ namespace Rule {
 #define HORD_SCOPE_CLASS_IDENT__ Rule::Unit
 
 namespace {
-static Object::type_info const
+static constexpr Object::type_info const
 s_type_info{
-	Object::Type::Rule
+	Object::Type::Rule,
+	true,
+	false
 };
 } // anonymous namespace
 
@@ -19,6 +21,18 @@ Object::type_info const&
 Unit::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
+
+Unit::Unit(
+	Hive::ID const owner,
+	Rule::ID const id
+) noexcept
+	: base(
+		s_type_info.supplies_prop_primary,
+		s_type_info.supplies_prop_auxiliary,
+		static_cast<Object::ID>(owner),
+		static_cast<Object::ID>(id)
+	)
+{}
 
 Unit::Unit(Unit&&) = default;
 Unit::~Unit() noexcept = default;

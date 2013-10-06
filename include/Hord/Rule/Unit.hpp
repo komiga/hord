@@ -69,26 +69,13 @@ protected:
 
 		@post See Object::Unit().
 
-		@param supplies_primary Whether IO::PropType::primary is
-		supplied by the object.
-		@param supplies_auxiliary Whether IO::PropType::auxiliary is
-		supplied by the object.
 		@param owner Owner.
 		@param id ID.
 	*/
 	Unit(
-		bool const supplies_primary,
-		bool const supplies_auxiliary,
 		Hive::ID const owner,
 		Rule::ID const id
-	) noexcept
-		: base(
-			supplies_primary,
-			supplies_auxiliary,
-			static_cast<Object::ID>(owner),
-			static_cast<Object::ID>(id)
-		)
-	{}
+	) noexcept;
 
 	/** Move constructor. */
 	Unit(Unit&&);

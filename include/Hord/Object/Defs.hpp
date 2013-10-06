@@ -84,6 +84,16 @@ struct type_info final {
 		@sa Object::Type
 	*/
 	Object::Type const type;
+
+	/**
+		Whether the object supplies IO::PropType::primary.
+	*/
+	bool const supplies_prop_primary;
+
+	/**
+		Whether the object supplies IO::PropType::auxiliary.
+	*/
+	bool const supplies_prop_auxiliary;
 };
 
 /** @} */ // end of doc-group object
