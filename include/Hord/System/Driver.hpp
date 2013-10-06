@@ -194,17 +194,6 @@ public:
 		IO::Datastore::type_info const& type_info,
 		String root_path
 	);
-
-	/**
-		Serialize objects.
-
-		@param all Whether to serialize all objects, or only
-		those that have @c IO::StorageState::modified.
-	*/
-	void
-	serialize(
-		bool const all = false
-	);
 /// @}
 };
 
