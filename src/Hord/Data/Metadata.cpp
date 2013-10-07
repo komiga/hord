@@ -317,8 +317,6 @@ Metadata::deserialize(
 	assert(IO::PropType::metadata == prop_stream.get_type());
 	std::istream& stream = prop_stream.get_stream();
 
-	this->fields.clear();
-
 	// header
 	uint32_t size = 0u;
 	try {
@@ -340,12 +338,12 @@ Metadata::deserialize(
 	}
 
 	// fields
-	this->fields.reserve(static_cast<std::size_t>(size));
+	field_vector_type des_fields{static_cast<std::size_t>(size)};
 	uint8_t field_type = 0x00u;
 	try {
 		for (
-			auto it = this->fields.begin();
-			it != this->fields.end();
+			auto it = des_fields.begin();
+			it != des_fields.end();
 			++it
 		) {
 			meta_impl::tcomp_entry
@@ -356,6 +354,7 @@ Metadata::deserialize(
 			murk::deserialize(
 				stream, meta_impl::tcomp_entry, murk::Endian::LITTLE
 			);
+
 			if (
 				MetaFieldType::String > static_cast<MetaFieldType>(field_type)
 			||	MetaFieldType::Bool   < static_cast<MetaFieldType>(field_type)
@@ -376,14 +375,15 @@ Metadata::deserialize(
 			}
 		}
 	} catch (murk::SerializeError& se) {
-		// Ensure empty
-		this->fields.clear();
 		HORD_THROW_MURK_ERROR__(
 			s_err_metadata_murk_deserialize,
 			"entry",
 			se
 		);
 	}
+
+	// commit
+	this->fields.operator=(std::move(des_fields));
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 
@@ -426,8 +426,8 @@ Metadata::serialize(
 	// fields
 	try {
 		for (
-			auto it = this->fields.begin();
-			it != this->fields.end();
+			auto it = this->fields.cbegin();
+			it != this->fields.cend();
 			++it
 		) {
 			uint8_t field_type = static_cast<uint8_t>(

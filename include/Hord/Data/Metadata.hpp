@@ -435,6 +435,8 @@ public:
 
 /**
 	Metadata.
+
+	@sa IO::PropType::metadata
 */
 struct Metadata final {
 public:
@@ -469,6 +471,8 @@ public:
 	/**
 		Deserialize from prop stream.
 
+		@note State will be retained if an exception is thrown.
+
 		@pre @code
 			IO::PropType::metadata == prop_stream.get_type()
 		@endcode
@@ -488,6 +492,8 @@ public:
 
 	/**
 		Serialize to prop stream.
+
+		@note State will be retained if an exception is thrown.
 
 		@pre @code
 			IO::PropType::metadata == prop_stream.get_type()
