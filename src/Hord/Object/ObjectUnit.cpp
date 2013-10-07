@@ -156,17 +156,25 @@ Unit::deserialize(
 	IO::InputPropStream& prop_stream
 ) {
 	IO::PropType const type = prop_stream.get_type();
+
 	HORD_UNIT_CHECK_UNSUPPLIED__(s_err_deserialize_unsupplied);
 
 	switch (type) {
 	case IO::PropType::identity: {
+		Object::ID parent{Object::NULL_ID};
+		String slug{};
+
 		murk::TieCompound tcomp{prop_comp::identity};
 		tcomp
 		.bind_begin(murk::BindMutable)
-			(&m_parent)
-			(&m_slug)
+			(&parent)
+			(&slug)
 		.bind_end();
 		deserialize_base_prop(prop_stream, tcomp);
+
+		// commit
+		set_parent(parent);
+		set_slug(std::move(slug));
 	} break;
 
 	case IO::PropType::metadata:
@@ -174,12 +182,17 @@ Unit::deserialize(
 		break;
 
 	case IO::PropType::scratch: {
+		String scratch_space{};
+
 		murk::TieCompound tcomp{prop_comp::scratch};
 		tcomp
 		.bind_begin(murk::BindMutable)
-			(&m_scratch_data)
+			(&scratch_space)
 		.bind_end();
 		deserialize_base_prop(prop_stream, tcomp);
+
+		// commit
+		m_scratch_space.assign(std::move(scratch_space));
 	} break;
 
 	default:
@@ -197,6 +210,11 @@ HORD_FMT_SCOPED_FQN(
 	s_err_serialize_unsupplied,
 	HORD_UNIT_ERR_MSG_UNSUPPLIED__
 );
+
+HORD_FMT_SCOPED_FQN(
+	s_err_serialize_improper_state,
+	"prop %08x -> %s cannot be serialized while uninitialized"
+);
 } // anonymous namespace
 
 void
@@ -204,7 +222,16 @@ Unit::serialize(
 	IO::OutputPropStream& prop_stream
 ) {
 	IO::PropType const type = prop_stream.get_type();
+
 	HORD_UNIT_CHECK_UNSUPPLIED__(s_err_serialize_unsupplied);
+	if (!m_prop_states.is_initialized(type)) {
+		HORD_THROW_ERROR_F(
+			ErrorCode::serialization_prop_improper_state,
+			s_err_serialize_improper_state,
+			m_id,
+			IO::get_prop_type_name(type)
+		);
+	}
 
 	switch (type) {
 	case IO::PropType::identity: {
@@ -225,7 +252,7 @@ Unit::serialize(
 		murk::TieCompound tcomp{prop_comp::scratch};
 		tcomp
 		.bind_begin(murk::BindImmutable)
-			(&m_scratch_data)
+			(&m_scratch_space)
 		.bind_end();
 		serialize_base_prop(prop_stream, tcomp);
 	} break;

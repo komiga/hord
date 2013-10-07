@@ -69,7 +69,7 @@ private:
 	Object::ID m_parent;
 	String m_slug{};
 	Data::Metadata m_metadata{};
-	String m_scratch_data{};
+	String m_scratch_space{};
 
 	Unit() = delete;
 	Unit(Unit const&) = delete;
@@ -89,6 +89,10 @@ protected:
 		@note This is only called for the primary and auxiliary
 		props.
 
+		@note Implementation must ensure state is retained if it
+		throws an exception. Object::Unit will not throw an
+		exception after a call to this function.
+
 		@throws Error{ErrorCode::serialization_io_failed}
 		@throws Error{ErrorCode::serialization_data_malformed}
 	*/
@@ -103,7 +107,10 @@ protected:
 		@note This is only called for the primary and auxiliary
 		props.
 
-		@throws Error{ErrorCode::serialization_prop_improper_state}
+		@note Implementation must ensure state is retained if it
+		throws an exception. Object::Unit will not throw an
+		exception after a call to this function.
+
 		@throws Error{ErrorCode::serialization_io_failed}
 	*/
 	virtual void
@@ -208,26 +215,6 @@ public:
 	}
 
 	/**
-		Set owner.
-
-		@param owner New owner.
-	*/
-	void
-	set_parent(
-		Object::ID const parent
-	) noexcept {
-		m_parent = parent;
-	}
-
-	/**
-		Get parent.
-	*/
-	Object::ID
-	get_parent() const noexcept {
-		return m_parent;
-	}
-
-	/**
 		Set ID.
 
 		@param id New ID.
@@ -245,6 +232,26 @@ public:
 	Object::ID
 	get_id() const noexcept {
 		return m_id;
+	}
+
+	/**
+		Set owner.
+
+		@param owner New owner.
+	*/
+	void
+	set_parent(
+		Object::ID const parent
+	) noexcept {
+		m_parent = parent;
+	}
+
+	/**
+		Get parent.
+	*/
+	Object::ID
+	get_parent() const noexcept {
+		return m_parent;
 	}
 
 	/**
@@ -282,13 +289,32 @@ public:
 	get_metadata() noexcept {
 		return m_metadata;
 	}
+
+	/**
+		Get scratch space.
+	*/
+	String const&
+	get_scratch_space() const noexcept {
+		return m_scratch_space;
+	}
+
+	/**
+		Get mutable scratch space.
+	*/
+	String&
+	get_scratch_space() noexcept {
+		return m_scratch_space;
+	}
 /// @}
 
 /** @name Serialization */ /// @{
 	/**
 		Deserialize prop.
 
-		@post @code
+		@note State will be retained if an exception is thrown.
+
+		@post With no exceptions:
+		@code
 			get_prop_states().has(
 				prop_stream.get_type(),
 				IO::PropState::original
@@ -315,7 +341,13 @@ public:
 	/**
 		Serialize prop.
 
-		@post @code
+		@note State will be retained if an exception is thrown.
+
+		@warning If ErrorCode::serialization_io_failed is thrown,
+		the prop stream likely contains malformed data.
+
+		@post With no exceptions:
+		@code
 			get_prop_states().has(
 				prop_stream.get_type(),
 				IO::PropState::original
