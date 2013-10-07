@@ -12,7 +12,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
-#include <Hord/Hive/Defs.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/type_info.hpp>
@@ -20,8 +20,6 @@ see @ref index or the accompanying LICENSE file for full text.
 namespace Hord {
 namespace Cmd {
 namespace Node {
-
-// Forward declarations
 
 /**
 	@addtogroup cmd
@@ -39,13 +37,13 @@ namespace Node {
 	If allocation fails.
 
 	@returns Pointer to initiator stage.
-	@param owner %Hive.
+	@param parent Parent.
 	@param slug %Node slug.
 	@param layout_ref Layout reference.
 */
 Cmd::StageUPtr
 make_create(
-	Hord::Hive::ID const owner,
+	Hord::Object::ID const parent,
 	String slug,
 	Hord::Node::ID const layout_ref
 );

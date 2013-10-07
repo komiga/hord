@@ -1,6 +1,6 @@
 
 #include <Hord/Error.hpp>
-#include <Hord/Hive/Defs.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
@@ -42,14 +42,14 @@ s_type_info_NodeCreate_Request{
 
 HORD_CMD_STAGE_DECL(
 	Request,
-	Hord::Hive::ID owner;
+	Hord::Object::ID parent;
 	Hord::Node::ID layout_ref;
 	String slug;
 );
 
 HORD_CMD_STAGE_DEF_BIND(
 	Request,
-	(&m_data.owner)
+	(&m_data.parent)
 	(&m_data.layout_ref)
 	(&m_data.slug)
 );
@@ -135,12 +135,12 @@ namespace Node {
 
 Cmd::StageUPtr
 make_create(
-	Hord::Hive::ID const owner,
+	Hord::Object::ID const parent,
 	String slug,
 	Hord::Node::ID const layout_ref
 ) {
 	return Cmd::StageUPtr{new Request::impl({
-		owner,
+		parent,
 		layout_ref,
 		std::move(slug)
 	})};
