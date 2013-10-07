@@ -31,7 +31,7 @@ struct Record;
 struct Record final {
 public:
 	/** Field vector. */
-	using field_vector_type = aux::vector<Field>;
+	using field_vector_type = aux::vector<Data::Field>;
 
 /** @name Properties */ /// @{
 	/** Field collection. */

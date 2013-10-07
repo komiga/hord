@@ -29,13 +29,16 @@ enum class MetaFieldType : uint8_t;
 
 	@note The bitflag layout is only for Rule::type_info to
 	restrict use; Fields must use a single value.
-	@sa Field
+
+	@sa Data::Field
 */
 enum class FieldType : uint8_t {
 	/** Textual field. */
 	Text	= 1 << 0,
+
 	/** Numeric field. */
 	Number	= 1 << 1,
+
 	/** Boolean field. */
 	Boolean	= 1 << 2
 };
@@ -48,17 +51,20 @@ enum class FieldType : uint8_t {
 /**
 	MetaField type.
 
-	@sa MetaField,
-		Metadata
+	@sa Data::MetaField,
+		Data::Metadata
 */
 enum class MetaFieldType : uint8_t {
-	/** StringMetaField. */
+	/** Data::StringMetaField. */
 	String = 0x01,
-	/** Int32MetaField. */
+
+	/** Data::Int32MetaField. */
 	Int32,
-	/** Int64MetaField. */
+
+	/** Data::Int64MetaField. */
 	Int64,
-	/** BoolMetaField. */
+
+	/** Data::BoolMetaField. */
 	Bool
 };
 

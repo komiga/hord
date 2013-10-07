@@ -36,7 +36,7 @@ struct Field final {
 public:
 /** @name Properties */ /// @{
 	/** Type. */
-	FieldType type{FieldType::Text};
+	Data::FieldType type{Data::FieldType::Text};
 
 	/** Value. */
 	struct {
