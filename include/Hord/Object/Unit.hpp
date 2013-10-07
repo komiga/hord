@@ -126,7 +126,7 @@ protected:
 
 		@post
 		@code
-			get_owner() == Object::NULL_ID &&
+			get_parent() == Object::NULL_ID &&
 			get_storage_state()
 			== (get_id() == Object::NULL_ID
 				? IO::StorageState::null
@@ -235,9 +235,9 @@ public:
 	}
 
 	/**
-		Set owner.
+		Set parent.
 
-		@param owner New owner.
+		@param parent New parent.
 	*/
 	void
 	set_parent(
