@@ -12,7 +12,6 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Hive/Defs.hpp>
 
 namespace Hord {
 namespace Rule {
@@ -65,48 +64,56 @@ enum class StandardTypes : Rule::Type {
 		%Rules cannot be registered with this type.
 	*/
 	None = 0,
+
 	/**
 		Composition of types.
 
 		@sa CompositionRule
 	*/
 	Composition,
+
 	/**
 		Delimited set of rules.
 
 		@sa DelimitedSetRule
 	*/
 	DelimitedSet,
+
 	/**
 		Value matcher.
 
 		@sa MatchRule
 	*/
 	Match,
+
 	/**
 		Number limiter.
 
 		@sa LimitRule
 	*/
 	Limit,
+
 	/**
 		List.
 
 		@sa ListRule
 	*/
 	List,
+
 	/**
 		Date-time.
 
 		@sa DateTimeRule
 	*/
 	DateTime,
+
 	/**
 		Timespan.
 
 		@sa TimespanRule
 	*/
 	Timespan,
+
 /// @{
 	/**
 		Reserved types (@c 8).
@@ -129,17 +136,17 @@ struct type_info final {
 	/**
 		%Rule type.
 
-		@sa StandardTypes
+		@sa Rule::StandardTypes
 	*/
 	Type const type;
 
 	/**
-		Permitted Data::FieldTypes.
+		Permitted field types.
 
 		@note This should be a nonzero combination of
 		Data::FieldTypes.
 
-		@sa FieldType
+		@sa Data::FieldType
 	*/
 	uint8_t const permitted_types;
 
@@ -149,13 +156,13 @@ struct type_info final {
 		@returns
 		- The constructed rule; or
 		- @c nullptr if construction failed.
-		@param owner Owner ID.
-		@param id %Object ID.
+		@param id Object %ID.
+		@param parent Parent %ID.
 	*/
 	Unit*
 	(&construct)(
-		Hive::ID const owner,
-		Rule::ID const id
+		Rule::ID const id,
+		Object::ID const parent
 	) noexcept;
 };
 
