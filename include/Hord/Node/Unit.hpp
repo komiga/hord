@@ -60,6 +60,26 @@ private:
 	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
 
+	void
+	deserialize_prop_primary(
+		IO::InputPropStream& prop_stream
+	);
+	void
+	serialize_prop_primary(
+		IO::OutputPropStream& prop_stream
+	) const;
+
+	void
+	deserialize_prop_auxiliary(
+		IO::InputPropStream& prop_stream
+	);
+	void
+	serialize_prop_auxiliary(
+		IO::OutputPropStream& prop_stream
+	) const;
+
+	// Object::Unit implementation
+
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
 

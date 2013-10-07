@@ -15,6 +15,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/String.hpp>
 #include <Hord/Rule/Defs.hpp>
 
+#include <iosfwd>
+
 namespace Hord {
 namespace Node {
 
@@ -44,13 +46,13 @@ public:
 
 /** @name Properties */ /// @{
 	/** Rule type. */
-	Rule::Type m_type{static_cast<Rule::Type>(Rule::StandardTypes::None)};
+	Rule::Type type{static_cast<Rule::Type>(Rule::StandardTypes::None)};
 
 	/** Title. */
-	String m_title{};
+	String title{};
 
 	/** Attached rules. */
-	rule_id_vector_type m_rules{};
+	rule_id_vector_type rules{};
 /// @}
 
 private:
@@ -70,6 +72,38 @@ public:
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Column& operator=(Column&&) = default;
+/// @}
+
+/** @name Serialization */ /// @{
+	/**
+		Deserialize from stream.
+
+		@note State will be retained if an exception is thrown.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		If an input operation failed.
+
+		@param stream Input stream.
+	*/
+	void
+	deserialize(
+		std::istream& stream
+	);
+
+	/**
+		Serialize to stream.
+
+		@note State will be retained if an exception is thrown.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		If an input operation failed.
+
+		@param stream Output stream.
+	*/
+	void
+	serialize(
+		std::ostream& stream
+	) const;
 /// @}
 };
 
