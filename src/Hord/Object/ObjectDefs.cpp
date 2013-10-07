@@ -1,4 +1,5 @@
 
+#include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Object/Defs.hpp>
 
@@ -19,7 +20,7 @@ s_object_type_invalid[]{HORD_STR_LIT("INVALID")},
 } // anonymous namespace
 
 static_assert(
-	static_cast<std::size_t>(Object::Type::LAST)
+	enum_cast(Object::Type::LAST)
 	== std::extent<decltype(s_object_type_names)>::value,
 	"Object::Type name list is incomplete"
 );

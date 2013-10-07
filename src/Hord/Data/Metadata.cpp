@@ -1,4 +1,5 @@
 
+#include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Error.hpp>
 #include <Hord/Data/Metadata.hpp>
@@ -10,6 +11,7 @@
 
 #include <ceformat/print.hpp>
 
+#include <type_traits>
 #include <new>
 
 namespace Hord {
@@ -284,6 +286,11 @@ namespace meta_impl {
 		{{s_comp_int64 }, s_type_info_int64 },
 		{{s_comp_bool  }, s_type_info_bool  }
 	};
+	static_assert(
+		std::extent<decltype(fields)>::value + 1u
+		== enum_cast(Data::MetaFieldType::LAST),
+		"fields needs to be updated"
+	);
 }
 } // anonymous namespace
 
@@ -366,6 +373,7 @@ Metadata::deserialize(
 			} else {
 				meta_impl::field_data& fd = meta_impl::fields[field_type - 1];
 				it->reset(fd.info.construct());
+				assert((*it).operator bool());
 				fd.tcomp
 					.bind_object_mutable(**it)
 				;

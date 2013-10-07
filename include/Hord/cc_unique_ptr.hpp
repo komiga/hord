@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_CC_UNIQUE_PTR_HPP_
 
 #include <Hord/config.hpp>
+
 #include <type_traits>
 #include <utility>
 #include <memory>

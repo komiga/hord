@@ -1,4 +1,5 @@
 
+#include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
@@ -22,7 +23,7 @@ s_prop_type_invalid[]{HORD_STR_LIT("INVALID")},
 } // anonymous namespace
 
 static_assert(
-	static_cast<std::size_t>(IO::PropType::LAST)
+	enum_cast(IO::PropType::LAST)
 	== std::extent<decltype(s_prop_type_names)>::value,
 	"PropType name list is incomplete"
 );

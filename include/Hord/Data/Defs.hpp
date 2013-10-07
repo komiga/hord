@@ -65,7 +65,11 @@ enum class MetaFieldType : uint8_t {
 	Int64,
 
 	/** Data::BoolMetaField. */
-	Bool
+	Bool,
+
+/** @cond INTERNAL */
+	LAST
+/** @endcond */
 };
 
 /** @} */ // end of doc-group metadata

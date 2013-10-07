@@ -1,4 +1,5 @@
 
+#include <Hord/utility.hpp>
 #include <Hord/ErrorCode.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Error.hpp>
@@ -61,7 +62,7 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 } // anonymous namespace
 
 static_assert(
-	static_cast<std::size_t>(ErrorCode::LAST)
+	enum_cast(ErrorCode::LAST)
 	== std::extent<decltype(s_error_names)>::value,
 	"ErrorCode name list is incomplete"
 );
