@@ -1,6 +1,7 @@
 
 #include <Hord/Error.hpp>
 #include <Hord/Object/Unit.hpp>
+#include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
 
 #include <murk/Desc.hpp>

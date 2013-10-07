@@ -63,6 +63,8 @@ private:
 	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
 
+	// Object::Unit implementation
+
 	Object::type_info const&
 	get_type_info_impl() const noexcept override;
 
