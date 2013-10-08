@@ -35,6 +35,24 @@ Context::~Context() noexcept = default;
 
 //Context& Context::operator=(Context&&) = default;
 
+// collections
+
+#define HORD_SCOPE_FUNC_IDENT__ get_hive_pair
+Driver::hive_datastore_pair_type&
+Context::get_hive_pair() {
+	auto const it = m_driver.find_hive(m_hive_id);
+	if (m_driver.get_hives().end() == it) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::context_invalid_hive,
+			"context's hive ID is no longer valid"
+		);
+	}
+	return it->second;
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
+// commands
+
 Cmd::ID
 Context::next_id() noexcept {
 	if (Cmd::MAX_ID == m_genid) {

@@ -55,6 +55,8 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("cmd_construct_stage_type_invalid"),
 
 // context
+	HORD_STR_LIT("context_invalid_hive"),
+
 	HORD_STR_LIT("context_output_detached"),
 	HORD_STR_LIT("context_execute_not_active"),
 	HORD_STR_LIT("context_execute_already_active"),

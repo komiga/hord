@@ -43,19 +43,14 @@ public:
 	*/
 	enum class Type : unsigned {
 		/**
-			Host view for a client session.
+			Host view.
 		*/
 		host,
 
 		/**
-			Full revision tracking.
+			Client view.
 		*/
-		client,
-
-		/**
-			No revision tracking.
-		*/
-		untracked
+		client
 	};
 
 	/** Command stage map. */
@@ -176,6 +171,33 @@ public:
 	get_output() noexcept {
 		return m_output;
 	}
+
+	/**
+		Check if context is a host.
+	*/
+	bool
+	is_host() const noexcept {
+		return Context::Type::host == m_type;
+	}
+
+	/**
+		Check if context is a client.
+	*/
+	bool
+	is_client() const noexcept {
+		return Context::Type::client == m_type;
+	}
+/// @}
+
+/** @name Collections */ /// @{
+	/**
+		Get the context's datastore-hive pair.
+
+		@throws Error{ErrorCode::context_invalid_hive}
+		If context's hive ID is not longer valid.
+	*/
+	Driver::hive_datastore_pair_type&
+	get_hive_pair();
 /// @}
 
 /** @name Operations */ /// @{

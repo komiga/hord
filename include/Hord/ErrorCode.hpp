@@ -194,6 +194,11 @@ enum class ErrorCode : unsigned {
 
 /** @name Context */ /// @{
 	/**
+		Context's hive ID is no longer valid.
+	*/
+	context_invalid_hive,
+
+	/**
 		Origin stage does not belong to an active command.
 	*/
 	context_output_detached,
