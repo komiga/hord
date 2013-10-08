@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_OBJECT_UNIT_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/aux.hpp>
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -62,9 +63,16 @@ public:
 		>
 	{};
 
+	/** ID set. */
+	using id_set_type
+	= aux::unordered_set<
+		Object::ID
+	>;
+
 private:
 	Object::ID m_id;
 	IO::PropStateStore m_prop_states;
+	id_set_type m_children{}; // runtime
 
 	Object::ID m_parent;
 	String m_slug{};
@@ -126,7 +134,6 @@ protected:
 
 		@post
 		@code
-			get_parent() == Object::NULL_ID &&
 			get_storage_state()
 			== (get_id() == Object::NULL_ID
 				? IO::StorageState::null
@@ -215,6 +222,22 @@ public:
 	}
 
 	/**
+		Get children set.
+	*/
+	id_set_type const&
+	get_children() const noexcept {
+		return m_children;
+	}
+
+	/**
+		Get mutable children set.
+	*/
+	id_set_type&
+	get_children() noexcept {
+		return m_children;
+	}
+
+	/**
 		Set ID.
 
 		@param id New ID.
@@ -235,9 +258,25 @@ public:
 	}
 
 	/**
+		Check if object is identified.
+
+		@note An object is identified iff its ID is non-null.
+	*/
+	bool
+	is_identified() const noexcept {
+		return Object::NULL_ID != m_id;
+	}
+
+	/**
 		Set parent.
 
+		@warning This should not be used directly. See the
+		referenced functions.
+
 		@param parent New parent.
+
+		@sa Object::unset_parent()
+			Object::set_parent()
 	*/
 	void
 	set_parent(
