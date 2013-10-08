@@ -35,7 +35,7 @@ Unit::Unit()
 	: base(
 		s_type_info.supplies_prop_primary,
 		s_type_info.supplies_prop_auxiliary,
-		Object::NULL_ID,
+		static_cast<Object::ID>(Hive::NULL_ID),
 		Object::NULL_ID
 	)
 {}

@@ -42,6 +42,16 @@ struct type_info;
 using ID = Object::ID;
 
 /**
+	Rule::ID constants.
+*/
+enum : Rule::ID {
+	/**
+		Null object.
+	*/
+	NULL_ID = static_cast<Rule::ID>(Object::NULL_ID)
+};
+
+/**
 	Rule type.
 */
 using Type = uint32_t;

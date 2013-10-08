@@ -59,7 +59,7 @@ Unit::set_layout_ref(
 	Node::ID const node_id
 ) noexcept {
 	m_layout_ref = node_id;
-	if (Object::NULL_ID != static_cast<Object::ID>(m_layout_ref)) {
+	if (Node::NULL_ID != m_layout_ref) {
 		m_layout.clear();
 	}
 }
@@ -346,7 +346,7 @@ Unit::deserialize_prop_auxiliary(
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_read_failed);
 
-	if (Object::NULL_ID != static_cast<Object::ID>(des_layout_ref)) {
+	if (Node::NULL_ID != des_layout_ref) {
 		// commit
 		set_layout_ref(des_layout_ref);
 	} else {
@@ -394,7 +394,7 @@ Unit::serialize_prop_auxiliary(
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_write_failed);
 
-	if (Object::NULL_ID == static_cast<Object::ID>(m_layout_ref)) {
+	if (Node::NULL_ID == m_layout_ref) {
 		duct::IO::write_arithmetic<uint32_t>(
 			stream,
 			static_cast<uint32_t>(m_layout.size()),

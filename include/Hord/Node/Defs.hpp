@@ -39,6 +39,16 @@ namespace Node {
 */
 using ID = Object::ID;
 
+/**
+	Node::ID constants.
+*/
+enum : Node::ID {
+	/**
+		Null object.
+	*/
+	NULL_ID = static_cast<Node::ID>(Object::NULL_ID)
+};
+
 /** @} */ // end of doc-group node
 /** @} */ // end of doc-group object
 

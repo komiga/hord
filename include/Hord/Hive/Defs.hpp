@@ -39,6 +39,16 @@ namespace Hive {
 */
 using ID = Object::ID;
 
+/**
+	Hive::ID constants.
+*/
+enum : Hive::ID {
+	/**
+		Null object.
+	*/
+	NULL_ID = static_cast<Hive::ID>(Object::NULL_ID)
+};
+
 /** @} */ // end of doc-group hive
 /** @} */ // end of doc-group object
 
