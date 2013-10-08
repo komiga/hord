@@ -29,6 +29,9 @@ namespace Cmd {
 // Forward declarations
 class Stage;
 
+template<Cmd::Type, Cmd::StageType, class Data>
+class StageImpl;
+
 /**
 	@addtogroup cmd
 	@{
@@ -179,6 +182,37 @@ class Stage;
 /** @} */ // end of name-group Macros
 
 /**
+	@name Utilities
+	@{
+*/
+
+/**
+	Make stage shadow.
+
+	@note Local initiator stages use this to pass a copy of
+	themselves to the remote endpoint without incurring extra
+	memory costs. The shadow acts as a new distinct stage, but
+	internally passes through to the implementation of the
+	shadowed stage.
+
+	@par
+	@note The result stage has @c !is_identified().
+
+	@warning This does not extend the lifetime of the shadowed
+	stage; more generally: the shadowed stage must be active
+	within its context (ergo: it must be an active initiator).
+
+	@returns Owning pointer to a shadow of @a stage.
+	@param stage %Stage to shadow.
+*/
+Cmd::StageUPtr
+make_stage_shadow(
+	Stage& stage
+) noexcept;
+
+/** @} */ // end of name-group Utilities
+
+/**
 	Command stage base class.
 */
 class Stage {
@@ -230,6 +264,8 @@ public:
 	{};
 
 private:
+	friend class StageShadow;
+
 	union {
 		Cmd::ID const serial;
 		Cmd::IDFields fields;
@@ -386,6 +422,16 @@ public:
 	bool
 	is_host() const noexcept {
 		return m_id.fields.flag_host;
+	}
+
+	/**
+		Check if the stage belongs to a local-initiated command.
+
+		@sa Cmd::IDFields
+	*/
+	bool
+	is_local() const noexcept {
+		return !m_id.fields.flag_host;
 	}
 
 	/**

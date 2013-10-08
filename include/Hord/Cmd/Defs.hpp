@@ -99,6 +99,20 @@ struct IDFields final {
 		this->flag_host = flag_host;
 		this->flag_initiator = flag_initiator;
 	}
+
+	/**
+		Assign.
+
+		@param other Fields.
+	*/
+	void
+	assign(
+		IDFields const& other
+	) noexcept {
+		this->base = other.base;
+		this->flag_host = other.flag_host;
+		this->flag_initiator = other.flag_initiator;
+	}
 /// @}
 };
 
@@ -387,14 +401,13 @@ enum class Status : unsigned {
 		removed from the active group and a @c GenericTerminate
 		pseudo-stage is emitted to the remote endpoint.
 
+		@par
 		@note This is implicit if stage execution throws an exception.
 	*/
 	error,
 
 	/**
 		Command has terminated because of a remote error.
-
-
 	*/
 	error_remote
 };
