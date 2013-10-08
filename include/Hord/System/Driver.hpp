@@ -34,15 +34,26 @@ class Driver;
 	@addtogroup system
 	@{
 */
-/**
-	@addtogroup driver
-	@{
-*/
 
 /**
 	Driver.
 */
 class Driver final {
+public:
+	/** Datastore-hive pair. */
+	using hive_datastore_pair_type
+	= std::pair<
+		cc_unique_ptr<IO::Datastore>,
+		Hive::Unit
+	>;
+
+	/** Datastore-hive collection. */
+	using hive_map_type
+	= aux::unordered_map<
+		Hive::ID,
+		hive_datastore_pair_type
+	>;
+
 private:
 	using rule_type_map_type
 	= aux::unordered_map<
@@ -55,22 +66,10 @@ private:
 		Cmd::type_info_table const*
 	>;
 
-	using hive_map_type
-	= aux::unordered_map<
-		Hive::ID,
-		std::pair<
-			cc_unique_ptr<IO::Datastore>,
-			Hive::Unit
-		>
-	>;
-
-	using hive_id_vector_type = aux::vector<Hive::ID>;
-
 	System::IDGenerator m_id_generator;
 	rule_type_map_type m_rule_types;
 	command_table_vector_type m_command_tables;
 	hive_map_type m_hives;
-	hive_id_vector_type m_hive_order;
 
 	Driver(Driver const&) = delete;
 	Driver& operator=(Driver const&) = delete;
@@ -86,6 +85,24 @@ public:
 	Driver(Driver&&);
 	/** Destructor. */
 	~Driver() noexcept;
+/// @}
+
+/** @name Properties */ /// @{
+	/**
+		Get ID generator.
+	*/
+	System::IDGenerator&
+	get_id_generator() noexcept {
+		return m_id_generator;
+	}
+
+	/**
+		Get hive collection.
+	*/
+	hive_map_type&
+	get_hives() noexcept {
+		return m_hives;
+	}
 /// @}
 
 /** @name Type information */ /// @{
@@ -164,13 +181,14 @@ public:
 	/**
 		Placehold hive.
 
-		@remarks %Hives are initially ordered in placehold order.
-
 		@warning @c ErrorCode::driver_hive_root_shared is only caused
 		by string comparison. It is possible for multiple placeheld
 		hives to share the same actual directory, but the second one
 		to attempt deserialization will fail
 		with @c ErrorCode::driver_datastore_locked.
+
+		@post Emplaced hive with @a root_path
+		and @c IO::StorageState::placeholder.
 
 		@throws Error{ErrorCode::driver_hive_root_empty}
 		If @c true==root_path.empty().
@@ -182,9 +200,6 @@ public:
 		If the datastore failed to construct (see
 		IO::Datastore::type_info::construct()).
 
-		@post Emplaced hive with @a root_path
-		and @c IO::StorageState::placeholder.
-
 		@returns The placeheld hive.
 		@param type_info %Datastore type for the hive.
 		@param root_path Root path.
@@ -195,9 +210,24 @@ public:
 		String root_path
 	);
 /// @}
+
+/** @name Collections */ /// @{
+	/**
+		Lookup a hive.
+
+		@returns Iterator to datastore-hive pair, or hive
+		collection's end iterator if @a id was not found.
+		@param id Hive ID.
+	*/
+	Driver::hive_map_type::iterator
+	find_hive(
+		Hive::ID const id
+	) noexcept {
+		return m_hives.find(id);
+	}
+/// @}
 };
 
-/** @} */ // end of doc-group driver
 /** @} */ // end of doc-group system
 
 } // namespace System

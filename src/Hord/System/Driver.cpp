@@ -50,7 +50,6 @@ Driver::Driver() /*noexcept*/
 	, m_rule_types{}
 	, m_command_tables{{&s_std_cmd_table}}
 	, m_hives{}
-	, m_hive_order{}
 {
 	static_assert(
 		8u == sizeof(std::chrono::steady_clock::rep),
@@ -171,7 +170,6 @@ Driver::get_command_type_info(
 #undef HORD_SCOPE_FUNC_IDENT__
 
 #define HORD_SCOPE_FUNC_IDENT__ placehold_hive
-
 namespace {
 HORD_FMT_SCOPED_FQN(
 	s_err_root_shared,
@@ -218,7 +216,6 @@ Driver::placehold_hive(
 			"failed to construct datastore"
 		);
 	}
-	m_hive_order.emplace_back(id);
 	auto const& result_pair = m_hives.emplace(
 		id,
 		hive_map_type::mapped_type(
