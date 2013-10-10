@@ -36,8 +36,8 @@ InputPropStream::acquire() {
 void
 InputPropStream::release() {
 	if (nullptr != m_stream) {
-		m_datastore.release_input_stream(m_info);
 		m_stream = nullptr;
+		m_datastore.release_input_stream(m_info);
 	}
 }
 
@@ -70,8 +70,8 @@ OutputPropStream::acquire() {
 void
 OutputPropStream::release() {
 	if (nullptr != m_stream) {
-		m_datastore.release_output_stream(m_info);
 		m_stream = nullptr;
+		m_datastore.release_output_stream(m_info);
 	}
 }
 

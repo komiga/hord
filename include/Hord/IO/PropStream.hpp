@@ -36,6 +36,10 @@ class OutputPropStream;
 
 /**
 	Base prop stream.
+
+	@warning This class only provides the base interface for
+	InputPropStream and OutputPropStream and does not supply a
+	virtual destructor for base-class destruction.
 */
 class PropStream {
 protected:
@@ -51,7 +55,7 @@ private:
 	PropStream& operator=(PropStream const&) = delete;
 	PropStream& operator=(PropStream&&) = delete;
 
-public:
+protected:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with datastore and prop info.
@@ -76,6 +80,7 @@ public:
 	~PropStream() noexcept = default;
 /// @}
 
+public:
 /** @name Properties */ /// @{
 	/**
 		Get datastore.
