@@ -84,10 +84,8 @@ s_controller;
 
 /**
 	Get the log controller.
-
-	@returns The log controller.
 */
-Controller&
+inline Controller&
 get_controller() noexcept {
 	return s_controller;
 }
@@ -305,10 +303,9 @@ public:
 /**
 	Acquire log output stream for type.
 
-	@returns The log output stream for @a type.
 	@param type Stream type.
 */
-OutputStream
+inline OutputStream
 acquire(
 	StreamType const type
 ) noexcept {
