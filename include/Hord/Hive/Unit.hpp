@@ -51,7 +51,7 @@ public:
 	using object_map_type
 	= aux::unordered_map<
 		Object::ID,
-		cc_unique_ptr<Object::Unit>
+		Object::UPtr
 	>;
 
 private:
@@ -145,7 +145,6 @@ public:
 	get_objects() noexcept {
 		return m_objects;
 	}
-	/** @} */
 /// @}
 
 /** @name Objects */ /// @{

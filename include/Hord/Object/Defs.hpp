@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_OBJECT_DEFS_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/cc_unique_ptr.hpp>
 
 namespace Hord {
 namespace Object {
@@ -18,6 +19,7 @@ namespace Object {
 // Forward declarations
 enum class Type : unsigned;
 struct type_info;
+class Unit; // external
 
 /**
 	@addtogroup object
@@ -79,7 +81,7 @@ get_type_name(
 */
 struct type_info final {
 	/**
-		%Object type.
+		Object type.
 
 		@sa Object::Type
 	*/
@@ -95,6 +97,11 @@ struct type_info final {
 	*/
 	bool const supplies_prop_auxiliary;
 };
+
+/**
+	Owning pointer to object unit.
+*/
+using UPtr = cc_unique_ptr<Object::Unit>;
 
 /** @} */ // end of doc-group object
 
