@@ -10,6 +10,7 @@
 //#include <Hord/Data/Field.hpp>
 //#include <Hord/Data/Record.hpp>
 //#include <Hord/Object/Unit.hpp>
+#include <Hord/Object/Ops.hpp>
 #include <Hord/Rule/Unit.hpp>
 //#include <Hord/Node/Column.hpp>
 #include <Hord/Node/Unit.hpp>
@@ -115,10 +116,12 @@ main() {
 	try {
 		std::cout
 			<< "first hive id: "
-			<< std::hex << driver.placehold_hive(
-				DummyDatastore::s_type_info,
-				"./bork"
-			).get_id()
+			<< Hord::Object::IDPrinter{
+				driver.placehold_hive(
+					DummyDatastore::s_type_info,
+					"./bork"
+				).hive
+			}
 		<< std::endl;
 		driver.placehold_hive(
 			DummyDatastore::s_type_info,

@@ -177,7 +177,7 @@ HORD_FMT_SCOPED_FQN(
 );
 } // anonymous namespace
 
-Hive::Unit const&
+System::Driver::datastore_hive_pair&
 Driver::placehold_hive(
 	IO::Datastore::type_info const& type_info,
 	String root_path
@@ -193,7 +193,7 @@ Driver::placehold_hive(
 		!= std::find_if(m_hives.cbegin(), m_hives.cend(),
 			[&root_path](hive_map_type::value_type const& pair) -> bool {
 				return 0 == root_path.compare(
-					pair.second.first->get_root_path()
+					pair.second.datastore->get_root_path()
 				);
 			}
 		)
@@ -206,8 +206,6 @@ Driver::placehold_hive(
 	}
 
 	// Phew. Now let's try to construct and insert this guy
-	Object::ID const
-		id = m_id_generator.generate_unique(m_hives);
 	IO::Datastore* const
 		datastore_ptr = type_info.construct(std::move(root_path));
 	if (nullptr == datastore_ptr) {
@@ -216,14 +214,16 @@ Driver::placehold_hive(
 			"failed to construct datastore"
 		);
 	}
+
+	Object::ID const id = m_id_generator.generate_unique(m_hives);
 	auto const& result_pair = m_hives.emplace(
 		id,
-		hive_map_type::mapped_type(
+		datastore_hive_pair{
 			cc_unique_ptr<IO::Datastore>{datastore_ptr},
 			Hive::Unit{id}
-		)
+		}
 	);
-	return result_pair.first->second.second;
+	return result_pair.first->second;
 }
 #undef HORD_SCOPE_FUNC_IDENT__
 

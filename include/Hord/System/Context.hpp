@@ -13,6 +13,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/Hive/Defs.hpp>
+#include <Hord/Hive/Unit.hpp>
+#include <Hord/IO/Datastore.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
 #include <Hord/System/Driver.hpp>
@@ -32,6 +34,9 @@ class Context;
 
 /**
 	%Context.
+
+	@warning The context requires the attached datastore and hive
+	exist as long as the context exists.
 
 	@remarks This class mediates the behavior of commands one layer
 	above the command transmission protocol for a server or client.
@@ -73,7 +78,8 @@ public:
 private:
 	Type const m_type;
 	System::Driver& m_driver;
-	Hive::ID const m_hive_id;
+	IO::Datastore& m_datastore;
+	Hive::Unit& m_hive;
 	Cmd::ID m_genid;
 
 	// NB: Stores initiator stages
@@ -96,10 +102,19 @@ private:
 	Context& operator=(Context const&) = delete;
 	Context& operator=(Context&&) = delete;
 
+	Context(
+		Type const type,
+		System::Driver& driver,
+		System::Driver::datastore_hive_pair& hive_pair
+	);
+
 public:
 /** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with type, driver, and hive ID.
+
+		@throws Error{ErrorCode::context_invalid_hive}
+		If @a hive_id does not exist within @a driver.
 
 		@param type %Type.
 		@param driver %Driver.
@@ -109,7 +124,7 @@ public:
 		Type const type,
 		System::Driver& driver,
 		Hive::ID const hive_id
-	) noexcept;
+	);
 
 	/** Move constructor. */
 	Context(Context&&) noexcept;
@@ -130,23 +145,43 @@ public:
 		Get driver.
 		@{
 	*/
-	Driver&
+	System::Driver&
 	get_driver() noexcept {
 		return m_driver;
 	}
-	Driver const&
+	System::Driver const&
 	get_driver() const noexcept {
 		return m_driver;
 	}
 	/** @} */
 
 	/**
-		Get hive ID.
+		Get datastore.
+		@{
 	*/
-	Hive::ID
-	get_hive_id() const noexcept {
-		return m_hive_id;
+	IO::Datastore&
+	get_datastore() noexcept {
+		return m_datastore;
 	}
+	IO::Datastore const&
+	get_datastore() const noexcept {
+		return m_datastore;
+	}
+	/** @} */
+
+	/**
+		Get hive.
+		@{
+	*/
+	Hive::Unit&
+	get_hive() noexcept {
+		return m_hive;
+	}
+	Hive::Unit const&
+	get_hive() const noexcept {
+		return m_hive;
+	}
+	/** @} */
 
 	/**
 		Get active commands.
@@ -187,17 +222,6 @@ public:
 	is_client() const noexcept {
 		return Context::Type::client == m_type;
 	}
-/// @}
-
-/** @name Collections */ /// @{
-	/**
-		Get the context's datastore-hive pair.
-
-		@throws Error{ErrorCode::context_invalid_hive}
-		If context's hive ID is not longer valid.
-	*/
-	Driver::hive_datastore_pair_type&
-	get_hive_pair();
 /// @}
 
 /** @name Operations */ /// @{

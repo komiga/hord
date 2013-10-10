@@ -1,6 +1,7 @@
 
 #include <Hord/utility.hpp>
 #include <Hord/Error.hpp>
+#include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
 #include <cassert>
@@ -16,40 +17,52 @@ enum : Cmd::ID {
 
 #define HORD_SCOPE_CLASS_IDENT__ System::Context
 
+#define HORD_SCOPE_FUNC_IDENT__ ctor // pseudo
+System::Driver::datastore_hive_pair&
+get_hive_pair(
+	System::Driver& driver,
+	Hive::ID const hive_id
+) {
+	auto const it = driver.find_hive(hive_id);
+	if (driver.get_hives().end() == it) {
+		HORD_THROW_ERROR_SCOPED_FQN(
+			ErrorCode::context_invalid_hive,
+			"hive ID does not exist within driver"
+		);
+	}
+	return it->second;
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
 Context::Context(
 	Type const type,
 	System::Driver& driver,
-	Hive::ID const hive_id
-) noexcept
+	System::Driver::datastore_hive_pair& hive_pair
+)
 	: m_type(type)
 	, m_driver(driver)
-	, m_hive_id(hive_id)
+	, m_datastore(*hive_pair.datastore)
+	, m_hive(hive_pair.hive)
 	, m_genid(Cmd::NULL_ID)
 	, m_active()
 	, m_input()
 	, m_output()
 {}
 
+Context::Context(
+	Type const type,
+	System::Driver& driver,
+	Hive::ID const hive_id
+)
+	: Context(
+		type,
+		driver,
+		get_hive_pair(driver, hive_id)
+	)
+{}
+
 Context::Context(Context&&) noexcept = default;
 Context::~Context() noexcept = default;
-
-//Context& Context::operator=(Context&&) = default;
-
-// collections
-
-#define HORD_SCOPE_FUNC_IDENT__ get_hive_pair
-Driver::hive_datastore_pair_type&
-Context::get_hive_pair() {
-	auto const it = m_driver.find_hive(m_hive_id);
-	if (m_driver.get_hives().end() == it) {
-		HORD_THROW_ERROR_SCOPED_FQN(
-			ErrorCode::context_invalid_hive,
-			"context's hive ID is no longer valid"
-		);
-	}
-	return it->second;
-}
-#undef HORD_SCOPE_FUNC_IDENT__
 
 // commands
 
@@ -94,8 +107,8 @@ Context::push_input(
 	//   Type::host == m_type &&
 	//   stage->is_host() &&
 	//   stage->is_initiator()
-	// (initiate() should've been used instead; also, client cannot
-	// generate such a stage).
+	// (initiate() should've been used instead; also, client
+	// is not permitted to generate such a stage).
 	m_input.emplace_back(std::move(stage));
 }
 #undef HORD_SCOPE_FUNC_IDENT__

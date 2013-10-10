@@ -194,7 +194,7 @@ enum class ErrorCode : unsigned {
 
 /** @name Context */ /// @{
 	/**
-		Context's hive ID is no longer valid.
+		Hive ID does not exist in driver.
 	*/
 	context_invalid_hive,
 

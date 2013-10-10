@@ -41,17 +41,16 @@ class Driver;
 class Driver final {
 public:
 	/** Datastore-hive pair. */
-	using hive_datastore_pair_type
-	= std::pair<
-		cc_unique_ptr<IO::Datastore>,
-		Hive::Unit
-	>;
+	struct datastore_hive_pair final {
+		cc_unique_ptr<IO::Datastore> datastore;
+		Hive::Unit hive;
+	};
 
 	/** Datastore-hive collection. */
 	using hive_map_type
 	= aux::unordered_map<
 		Hive::ID,
-		hive_datastore_pair_type
+		datastore_hive_pair
 	>;
 
 private:
@@ -182,8 +181,9 @@ public:
 		Placehold hive.
 
 		@warning @c ErrorCode::driver_hive_root_shared is only caused
-		by string comparison. It is possible for multiple placeheld
-		hives to share the same actual directory, but the second one
+		by string comparison. It is possible for multiple hives to
+		share the same actual directory (which is often used by a
+		datastore to lock access to the hive), but the second one
 		to attempt deserialization will fail
 		with @c ErrorCode::driver_datastore_locked.
 
@@ -201,10 +201,10 @@ public:
 		IO::Datastore::type_info::construct()).
 
 		@returns The placeheld hive.
-		@param type_info %Datastore type for the hive.
+		@param type_info Datastore type for the hive.
 		@param root_path Root path.
 	*/
-	Hive::Unit const&
+	System::Driver::datastore_hive_pair&
 	placehold_hive(
 		IO::Datastore::type_info const& type_info,
 		String root_path
@@ -219,7 +219,7 @@ public:
 		collection's end iterator if @a id was not found.
 		@param id Hive ID.
 	*/
-	Driver::hive_map_type::iterator
+	System::Driver::hive_map_type::iterator
 	find_hive(
 		Hive::ID const id
 	) noexcept {
