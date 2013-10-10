@@ -2,7 +2,10 @@
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Ops.hpp>
 
+#include <ceformat/print.hpp>
+
 #include <cassert>
+#include <iostream>
 
 namespace Hord {
 namespace Object {
@@ -36,6 +39,39 @@ set_parent(
 		);
 		return true;
 	}
+}
+
+namespace {
+static constexpr ceformat::Format const
+	s_fmt_object_id{"%08x"},
+	s_fmt_object_identity{"%08x$%s@%s"}
+;
+} // anonymous namespace
+
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Object::IDPrinter const& printer
+) {
+	ceformat::write<s_fmt_object_id>(
+		stream,
+		printer.id
+	);
+	return stream;
+}
+
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Object::Unit const& object
+) {
+	ceformat::write<s_fmt_object_identity>(
+		stream,
+		object.get_id(),
+		Object::get_type_name(object.get_type()),
+		object.get_slug()
+	);
+	return stream;
 }
 
 } // namespace Object

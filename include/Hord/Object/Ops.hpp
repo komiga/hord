@@ -14,6 +14,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
 
+#include <iosfwd>
+
 namespace Hord {
 namespace Object {
 
@@ -75,6 +77,80 @@ set_parent(
 	Object::Unit& object,
 	Object::Unit& new_parent
 ) noexcept;
+
+/**
+	Object %ID printer.
+*/
+struct IDPrinter {
+/** @name Properties */ /// @{
+	/**
+		Object %ID.
+	*/
+	Object::ID id;
+/// @}
+
+/** @name Constructors and destructor */ /// @{
+	/**
+		Constructor with object id.
+
+		@param id %ID.
+	*/
+	constexpr
+	IDPrinter(
+		Object::ID const id
+	) noexcept
+		: id(id)
+	{}
+
+	/**
+		Constructor with object.
+
+		@post @c id == object.get_id()
+
+		@param object Object.
+	*/
+	IDPrinter(
+		Object::Unit& object
+	) noexcept
+		: id(object.get_id())
+	{}
+
+	/** Copy constructor. */
+	IDPrinter(IDPrinter const&) noexcept = default;
+	/** Move constructor. */
+	IDPrinter(IDPrinter&&) noexcept = default;
+	/** Destructor. */
+	~IDPrinter() noexcept = default;
+/// @}
+};
+
+/**
+	Output object %ID to stream.
+
+	@param stream Stream.
+	@param printer %ID printer.
+
+	@sa IDPrinter
+*/
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Object::IDPrinter const& printer
+);
+
+/**
+	Output object identity to stream.
+
+	In the form <code><em>id</em>$<em>type</em>@<em>slug</em></code>.
+
+	@param stream Stream.
+	@param object Object.
+*/
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Object::Unit const& object
+);
 
 /** @} */ // end of doc-group object
 
