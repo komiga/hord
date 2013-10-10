@@ -190,22 +190,6 @@ public:
 	}
 
 	/**
-		Get storage state.
-	*/
-	IO::StorageState
-	get_storage_state() const noexcept {
-		return
-			  Object::NULL_ID == m_id
-				? IO::StorageState::null
-			: m_prop_states.all_original()
-				? IO::StorageState::original
-			: m_prop_states.any_modified()
-				? IO::StorageState::modified
-			: IO::StorageState::placeholder
-		;
-	}
-
-	/**
 		Get prop state store.
 	*/
 	IO::PropStateStore const&
@@ -258,13 +242,35 @@ public:
 	}
 
 	/**
-		Check if object is identified.
+		Check if object is null.
 
-		@note An object is identified iff its ID is non-null.
+		@note An object is null iff its ID is Object::NULL_ID.
+
+		@remarks Despite the hive being considered @c NULL_ID, at
+		runtime it has a valid non-null ID outside of the ID space
+		of its children.
 	*/
 	bool
-	is_identified() const noexcept {
-		return Object::NULL_ID != m_id;
+	is_null() const noexcept {
+		return Object::NULL_ID == m_id;
+	}
+
+	/**
+		Get storage state.
+	*/
+	IO::StorageState
+	get_storage_state() const noexcept {
+		return
+			  is_null()
+				? IO::StorageState::null
+			: m_prop_states.all_original()
+				? IO::StorageState::original
+			: m_prop_states.any_modified()
+				? IO::StorageState::modified
+			: !m_slug.empty()
+				? IO::StorageState::placeholder_identified
+			: IO::StorageState::placeholder
+		;
 	}
 
 	/**

@@ -146,6 +146,14 @@ enum class StorageState : unsigned {
 	placeholder,
 
 	/**
+		Fully identified placeholder.
+
+		Object has non-empty slug and typically has an assigned
+		parent.
+	*/
+	placeholder_identified,
+
+	/**
 		Fully matches external storage.
 
 		Specifically, after successful serialization or
