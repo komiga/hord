@@ -5,6 +5,8 @@ out/
 
 general/headers
 
+object/print
+
 io/prop_state_store
 
 etc/lockfile
