@@ -102,8 +102,6 @@ get_prop_type_name(
 /**
 	Prop state.
 
-	@warning States should only be combined when testing a prop state.
-
 	@sa IO::PropStateStore
 */
 enum class PropState : unsigned {
@@ -112,7 +110,7 @@ enum class PropState : unsigned {
 
 		@note This includes IO::PropState::original.
 	*/
-	not_supplied = (1 << 0) | (1 << 1),
+	unsupplied = 1 << 0,
 
 	/**
 		Prop matches external storage.

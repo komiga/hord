@@ -66,6 +66,9 @@ state_fill(
 /**
 	Prop state store.
 
+	@note Within the state store, all unsupplied props imply
+	IO::PropState::original.
+
 	@sa IO::PropState
 */
 class PropStateStore final {
@@ -78,14 +81,22 @@ private:
 	enum : unsigned {
 		// 4 bits per prop
 		state_mask = 0x0F,
+		// 5 states
+		full_mask = 0x000FFFFF,
 
 		// (PropType << type_shift) gives the number of bits
 		// to move left for the prop's state
 		type_shift = 2u,
 
-		prop_not_supplied = enum_cast(IO::PropState::not_supplied),
-		prop_not_supplied_single = (1 << 0),
+		prop_unsupplied_implied
+			= enum_cast(IO::PropState::unsupplied)
+			| enum_cast(IO::PropState::original)
+		,
+		prop_unsupplied_single = enum_cast(IO::PropState::unsupplied),
 
+		data_mask_unsupplied = 0x000FF000,
+
+		all_mask_unsupplied = state_fill(IO::PropState::unsupplied),
 		all_mask_original = state_fill(IO::PropState::original),
 		all_mask_modified = state_fill(IO::PropState::modified),
 	};
@@ -125,7 +136,7 @@ private:
 		;
 	}
 
-	unsigned m_states_not_supplied;
+	unsigned m_states_supplied;
 	unsigned m_states;
 
 	PropStateStore() = delete;
@@ -147,17 +158,20 @@ public:
 		bool const supplies_primary,
 		bool const supplies_auxiliary
 	) noexcept
-		: m_states_not_supplied(0u
-			| shift_up(
-				supplies_primary ? prop_not_supplied : 0u,
+		: m_states_supplied(
+			full_mask
+			& ~shift_up(
+				supplies_primary ? 0u : state_mask,
 				IO::PropType::primary
 			)
-			| shift_up(
-				supplies_auxiliary ? prop_not_supplied : 0u,
+			& ~shift_up(
+				supplies_auxiliary ? 0u : state_mask,
 				IO::PropType::auxiliary
 			)
 		)
-		, m_states(m_states_not_supplied)
+		, m_states(
+			~m_states_supplied & data_mask_unsupplied
+		)
 	{}
 
 	/** Copy constructor. */
@@ -177,11 +191,6 @@ public:
 	/**
 		Check if prop has a state.
 
-		@note Because IO::PropState::not_supplied includes
-		IO::PropState::original, is_supplied() should be used
-		instead.
-
-		@par
 		@note If @a state is a state combination, the return
 		value will be @c true if <em>any</em> of the combined
 		states are set.
@@ -195,23 +204,6 @@ public:
 		IO::PropState const state
 	) const noexcept {
 		return shift_down(m_states, prop_type, enum_cast(state));
-	}
-
-	/**
-		Check if prop has a state exactly.
-
-		@param prop_type Prop type.
-		@param state Prop state.
-	*/
-	bool
-	has_exact(
-		IO::PropType const prop_type,
-		IO::PropState const state
-	) const noexcept {
-		return
-			enum_cast(state)
-			== shift_down(m_states, prop_type, state_mask)
-		;
 	}
 
 	/**
@@ -235,7 +227,18 @@ public:
 	*/
 	bool
 	all_uninitialized() const noexcept {
-		return 0u == (m_states & ~m_states_not_supplied);
+		return 0u == (m_states & m_states_supplied);
+	}
+
+	/**
+		Check if all supplied data props are initialized.
+	*/
+	bool
+	all_data_initialized() const noexcept {
+		// NB: Non-supplied props "are" original within the store
+		// and all other states imply the prop is initialized
+		return shift_down(m_states, IO::PropType::primary)
+			&& shift_down(m_states, IO::PropType::auxiliary);
 	}
 
 	/**
@@ -259,11 +262,7 @@ public:
 	is_supplied(
 		IO::PropType const prop_type
 	) const noexcept {
-		return shift_down(
-			m_states_not_supplied,
-			prop_type,
-			prop_not_supplied_single
-		);
+		return shift_down(m_states_supplied, prop_type);
 	}
 
 	/**
@@ -299,7 +298,7 @@ public:
 	*/
 	PropStateStore&
 	reset_all() noexcept {
-		m_states = m_states_not_supplied;
+		m_states = ~m_states_supplied & data_mask_unsupplied;
 		return *this;
 	}
 
@@ -315,7 +314,7 @@ public:
 	reset(
 		PropType const prop_type
 	) noexcept {
-		if (!is_supplied(prop_type)) {
+		if (is_supplied(prop_type)) {
 			m_states = mask_off(m_states, prop_type);
 		}
 		return *this;
@@ -327,7 +326,7 @@ public:
 		@note If the prop is not supplied, this has no effect.
 
 		@par
-		@note IO::PropState::not_supplied is masked out
+		@note IO::PropState::unsupplied is masked out
 		of @a state before assignment. Only the constructor can
 		assign this state.
 
@@ -340,11 +339,11 @@ public:
 		IO::PropType const prop_type,
 		IO::PropState const state
 	) noexcept {
-		if (!is_supplied(prop_type)) {
+		if (is_supplied(prop_type)) {
 			m_states
 				= mask_off(m_states, prop_type)
 				| shift_up(
-					~prop_not_supplied_single & enum_cast(state),
+					~prop_unsupplied_single & enum_cast(state),
 					prop_type
 				)
 			;

@@ -68,40 +68,41 @@ main() {
 	assert(s_all.all_uninitialized());
 	assert(s_neither.all_uninitialized());
 
-	assert(0u == value_init_neither);
+	assert(0u == value_init_all);
 
 	assert(!s_all.all_original());
 	assert(!s_all.any_modified());
 
-	assert(s_all.has(Type::primary, State::original));
-	assert(s_all.has(Type::auxiliary, State::original));
+	assert(!s_all.has(Type::primary, State::original));
+	assert(!s_all.has(Type::auxiliary, State::original));
 
-	assert(!s_neither.has(Type::primary, State::original));
-	assert(!s_neither.has(Type::auxiliary, State::original));
+	assert(s_neither.has(Type::primary, State::original));
+	assert(s_neither.has(Type::auxiliary, State::original));
 
 	assert(s_all.is_supplied(Type::primary));
-	assert(s_all.has_exact(Type::primary, State::not_supplied));
 	assert(s_all.is_supplied(Type::auxiliary));
-	assert(s_all.has_exact(Type::auxiliary, State::not_supplied));
 
 	assert(!s_neither.is_supplied(Type::primary));
-	assert(!s_neither.has_exact(Type::primary, State::not_supplied));
 	assert(!s_neither.is_supplied(Type::auxiliary));
-	assert(!s_neither.has_exact(Type::auxiliary, State::not_supplied));
 
 	// Unchanged when resetting while all_uninitialized()
 	s_all.reset_all();
 	assert(s_all.get_value() == value_init_all);
 
-	// not_supplied are unassignable
-	s_all.reset(Type::primary);
-	s_all.assign(Type::auxiliary, State::modified);
-	assert(s_all.get_value() == value_init_all);
+	s_neither.reset_all();
+	assert(s_neither.get_value() == value_init_neither);
+
+	// Unsupplied props are unassignable
+	s_neither.reset(Type::primary);
+	s_neither.assign(Type::auxiliary, State::modified);
+	assert(s_neither.get_value() == value_init_neither);
 
 	// Assignments
 	s_all.assign(Type::identity, State::original);
 	s_all.assign(Type::metadata, State::original);
 	s_all.assign(Type::scratch, State::original);
+	s_all.assign(Type::primary, State::original);
+	s_all.assign(Type::auxiliary, State::original);
 
 	print_store(s_all);
 
@@ -116,6 +117,8 @@ main() {
 	s_all.assign(Type::identity, State::modified);
 	s_all.assign(Type::metadata, State::modified);
 	s_all.assign(Type::scratch, State::modified);
+	s_all.assign(Type::primary, State::modified);
+	s_all.assign(Type::auxiliary, State::modified);
 
 	print_store(s_all);
 
