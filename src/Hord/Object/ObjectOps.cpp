@@ -12,7 +12,8 @@ unset_parent(
 	Object::Unit& object,
 	Object::Unit& parent
 ) noexcept {
-	assert(object.is_identified());
+	assert(!object.is_null());
+
 	parent.get_children().erase(object.get_id());
 	object.set_parent(Object::NULL_ID);
 }
@@ -22,7 +23,8 @@ set_parent(
 	Object::Unit& object,
 	Object::Unit& new_parent
 ) noexcept {
-	assert(object.is_identified());
+	assert(!object.is_null());
+
 	if (object.get_id() == new_parent.get_id()) {
 		return false;
 	} else {

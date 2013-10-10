@@ -28,7 +28,7 @@ namespace Object {
 	Unset object parent.
 
 	@pre @code
-		object.is_identified()
+		!object.is_null()
 	@endcode
 
 	@post @code
@@ -47,8 +47,16 @@ unset_parent(
 /**
 	Set object parent.
 
+	@note If @c object.get_id()==new_parent.get_id(), the object is
+	unmodified and @c false is returned.
+
+	@par
+	@note This should be paired with Object::unset_parent() to ensure
+	the object is properly unlinked from its old parent and linked
+	to its new parent (especially when its parent is its hive).
+
 	@pre @code
-		object.is_identified()
+		!object.is_null()
 	@end
 
 	@post @code
@@ -57,14 +65,6 @@ unset_parent(
 			? Object::NULL_ID
 			: new_parent.get_id()
 	@endcode
-
-	@note If @c object.get_id()==new_parent.get_id(), the object is
-	unmodified and @c false is returned.
-
-	@par
-	@note This should be paired with Object::unset_parent() to ensure
-	the object is properly unlinked from its old parent and linked
-	to its new parent (especially when its parent is its hive).
 
 	@returns @c true if @a object was parented to @a new_parent.
 	@param object Object to reparent.
