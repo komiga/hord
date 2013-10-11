@@ -1,6 +1,7 @@
 
 #include <Hord/utility.hpp>
-#include <Hord/IO/Prop.hpp>
+#include <Hord/IO/Defs.hpp>
+#include <Hord/IO/PropStateStore.hpp>
 
 #include <cassert>
 #include <iostream>

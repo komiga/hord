@@ -1,6 +1,6 @@
 /**
-@file IO/serialization.hpp
-@brief Serialization.
+@file IO/Ops.hpp
+@brief IO operations.
 
 @author Tim Howard
 @copyright 2013 Tim Howard under the MIT license;
@@ -33,7 +33,7 @@ namespace IO {
 	@returns Whether the prop was loaded.
 	@param datastore %Datastore.
 	@param object Object to operate on.
-	@param type Prop to load.
+	@param prop_type Prop to load.
 
 	@sa IO::PropState::uninitialized
 */
@@ -50,7 +50,7 @@ load_prop(
 	@returns Whether the prop was loaded.
 	@param datastore %Datastore.
 	@param object Object.
-	@param type Prop to store.
+	@param prop_type Prop to store.
 
 	@sa IO::PropState::modified
 */

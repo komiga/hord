@@ -2,7 +2,6 @@
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/IO/Defs.hpp>
-#include <Hord/IO/Prop.hpp>
 
 #include <type_traits>
 #include <utility>
@@ -32,7 +31,7 @@ char const*
 get_prop_type_name(
 	IO::PropType const prop_type
 ) noexcept {
-	std::size_t const index = static_cast<std::size_t>(prop_type);
+	std::size_t const index = enum_cast(prop_type);
 	if (index < std::extent<decltype(s_prop_type_names)>::value) {
 		return s_prop_type_names[index];
 	} else {

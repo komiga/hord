@@ -22,27 +22,27 @@ bool
 load_prop(
 	IO::Datastore& datastore,
 	Object::Unit& object,
-	IO::PropType const type
+	IO::PropType const prop_type
 ) {
 	auto& states = object.get_prop_states(); 
-	if (!states.is_initialized(type)) {
+	if (!states.is_initialized(prop_type)) {
 		return false;
 	}
 
 	IO::InputPropStream stream{
 		datastore,
-		{object.get_id(), type}
+		{object, prop_type}
 	};
 	try {
 		stream.acquire();
 		object.deserialize(stream);
 		stream.release();
-	} catch (Error& e) {
+	} catch (...) {
 		stream.release(); // will not double-throw
 		throw;
 	}
 
-	states.assign(type, IO::PropState::original);
+	states.assign(prop_type, IO::PropState::original);
 
 	return true;
 }
@@ -51,16 +51,16 @@ bool
 store_prop(
 	IO::Datastore& datastore,
 	Object::Unit& object,
-	IO::PropType const type
+	IO::PropType const prop_type
 ) {
 	auto& states = object.get_prop_states(); 
-	if (!states.is_initialized(type)) {
+	if (!states.is_initialized(prop_type)) {
 		return false;
 	}
 
 	IO::OutputPropStream stream{
 		datastore,
-		{object.get_id(), type}
+		{object, prop_type}
 	};
 	try {
 		stream.acquire();
@@ -71,7 +71,7 @@ store_prop(
 		throw;
 	}
 
-	states.assign(type, IO::PropState::original);
+	states.assign(prop_type, IO::PropState::original);
 
 	return true;
 }
