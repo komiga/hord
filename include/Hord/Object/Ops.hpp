@@ -59,7 +59,7 @@ unset_parent(
 
 	@pre @code
 		!object.is_null()
-	@end
+	@endcode
 
 	@post @code
 		object.get_parent()
@@ -105,12 +105,14 @@ struct IDPrinter {
 	/**
 		Constructor with object.
 
-		@post @c id == object.get_id()
+		@post @code
+			this->id == object.get_id()
+		@endcode
 
 		@param object Object.
 	*/
 	IDPrinter(
-		Object::Unit& object
+		Object::Unit const& object
 	) noexcept
 		: id(object.get_id())
 	{}
@@ -141,7 +143,7 @@ operator<<(
 /**
 	Output object identity to stream.
 
-	In the form <code><em>id</em>$<em>type</em>@<em>slug</em></code>.
+	In the form <code>id$type\@slug</code>.
 
 	@param stream Stream.
 	@param object Object.
