@@ -42,7 +42,10 @@ class Driver final {
 public:
 	/** Datastore-hive pair. */
 	struct datastore_hive_pair final {
+		/** Datastore. */
 		cc_unique_ptr<IO::Datastore> datastore;
+
+		/** Hive. */
 		Hive::Unit hive;
 	};
 

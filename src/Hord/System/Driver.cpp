@@ -46,10 +46,10 @@ static_assert(
 // NB: See note about stdlib defect in System/IDGenerator.cpp
 
 Driver::Driver() /*noexcept*/
-	: m_id_generator{}
-	, m_rule_types{}
-	, m_command_tables{{&s_std_cmd_table}}
-	, m_hives{}
+	: m_id_generator()
+	, m_rule_types()
+	, m_command_tables({&s_std_cmd_table})
+	, m_hives()
 {
 	static_assert(
 		8u == sizeof(std::chrono::steady_clock::rep),
