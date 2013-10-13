@@ -87,6 +87,13 @@ public:
 	/** Destructor. */
 	~PropInfo() noexcept = default;
 /// @}
+
+/** @name Operators */ /// @{
+	/** Copy assignment operator. */
+	PropInfo& operator=(PropInfo const&) noexcept = default;
+	/** Move assignment operator. */
+	PropInfo& operator=(PropInfo&&) noexcept = default;
+/// @}
 };
 
 /** @} */ // end of doc-group prop
