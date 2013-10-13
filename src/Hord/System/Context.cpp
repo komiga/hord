@@ -154,9 +154,9 @@ Context::execute_input(
 
 	// NB: If the stage is not an initiator (i.e., not emplaced),
 	// it will be destroyed when this function terminates.
-	Cmd::StageUPtr stage_ptr{std::move(m_input.back())};
+	Cmd::StageUPtr stage_ptr{std::move(m_input.front())};
 	Cmd::Stage& stage = *stage_ptr.get();
-	m_input.pop_back();
+	m_input.pop_front();
 
 	// NB: Precondition ensured by initiate() and push_input().
 	assert(stage.is_identified());

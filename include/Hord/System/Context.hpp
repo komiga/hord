@@ -64,8 +64,8 @@ public:
 		Cmd::StageUPtr
 	>;
 
-	/** Command stage vector. */
-	using stage_vector_type = aux::vector<
+	/** Command stage deque. */
+	using stage_deque_type = aux::deque<
 		Cmd::StageUPtr
 	>;
 
@@ -86,8 +86,8 @@ private:
 	stage_map_type m_active;
 
 	// Remote results and local results
-	stage_vector_type m_input;
-	stage_vector_type m_output;
+	stage_deque_type m_input;
+	stage_deque_type m_output;
 
 	Cmd::ID
 	next_id() noexcept;
@@ -194,7 +194,7 @@ public:
 	/**
 		Get input stages.
 	*/
-	stage_vector_type&
+	stage_deque_type&
 	get_input() noexcept {
 		return m_input;
 	}
@@ -202,7 +202,7 @@ public:
 	/**
 		Get output stages.
 	*/
-	stage_vector_type&
+	stage_deque_type&
 	get_output() noexcept {
 		return m_output;
 	}
