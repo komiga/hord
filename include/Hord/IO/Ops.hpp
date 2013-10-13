@@ -34,8 +34,6 @@ namespace IO {
 	@param datastore %Datastore.
 	@param object Object to operate on.
 	@param prop_type Prop to load.
-
-	@sa IO::PropState::uninitialized
 */
 bool
 load_prop(

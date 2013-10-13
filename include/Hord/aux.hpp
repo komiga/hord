@@ -14,6 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <string>
 #include <vector>
+#include <deque>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -50,6 +51,18 @@ template<
 >
 using vector
 = std::vector<
+	T,
+	HORD_AUX_ALLOCATOR<T>
+>;
+
+/**
+	@c std::deque<T>.
+*/
+template<
+	typename T
+>
+using deque
+= std::deque<
 	T,
 	HORD_AUX_ALLOCATOR<T>
 >;
