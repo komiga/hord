@@ -17,6 +17,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <murk/DescCompound.hpp>
 #include <murk/TieCompound.hpp>
 
+#include <iosfwd>
+
 namespace Hord {
 
 // Forward declarations (external)
@@ -147,30 +149,30 @@ class StageImpl;
 */
 #define HORD_CMD_STAGE_DEF_BIND_S(stagen__, mems__, subn__, constness__) \
 	template<> void								\
-	stagen__::impl::bind ## subn__ ## _impl(	\
-		murk::TieBinder& binder					\
+	stagen__::impl::bind_base ## subn__(	\
+		::murk::TieBinder& binder				\
 	) constness__ noexcept {					\
 		binder mems__;							\
 	}											\
 
 /**
-	Define bind_impl() and bind_const_impl() individually by stage
+	Define bind_base() and bind_base_const() individually by stage
 	name.
 
-	@remarks See Stage::bind_impl() for visible parameters.
+	@remarks See Stage::bind_base() for visible parameters.
 
 	@param stagen__ Identifier for the stage name.
-	@param mems__ Sequence for bind_impl().
-	@param mems_const__ Sequence for bind_const_impl().
+	@param mems__ Sequence for bind_base().
+	@param mems_const__ Sequence for bind_base_const().
 */
 #define HORD_CMD_STAGE_DEF_BIND_EACH(stagen__, mems__, mems_const__)\
 	HORD_CMD_STAGE_DEF_BIND_S(stagen__, mems__      ,,)				\
 	HORD_CMD_STAGE_DEF_BIND_S(stagen__, mems_const__, _const, const)
 
 /**
-	Define bind_impl() and bind_const_impl() by stage name.
+	Define bind_base() and bind_base_const() by stage name.
 
-	@remarks See Stage::bind_impl() for visible parameters.
+	@remarks See Stage::bind_base() for visible parameters.
 
 	@param stagen__ Identifier for the stage name.
 	@param mems__ Sequence of adjacent parentheses-enclosed pointers
@@ -178,6 +180,34 @@ class StageImpl;
 */
 #define HORD_CMD_STAGE_DEF_BIND(stagen__, mems__) \
 	HORD_CMD_STAGE_DEF_BIND_EACH(stagen__, mems__, mems__)
+
+/**
+	Define deserialize_complex() by name.
+
+	Function body should follow macro.
+	See Stage::deserialize_complex() for visible parameters.
+
+	@param stagen__ Identifier for the stage name.
+*/
+#define HORD_CMD_STAGE_DEF_DESERIALIZE_COMPLEX(stagen__) \
+	template<> void							\
+	stagen__::impl::deserialize_complex(	\
+		std::istream& stream				\
+	)
+
+/**
+	Define serialize_complex() by name.
+
+	Function body should follow macro.
+	See Stage::serialize_complex() for visible parameters.
+
+	@param stagen__ Identifier for the stage name.
+*/
+#define HORD_CMD_STAGE_DEF_SERIALIZE_COMPLEX(stagen__) \
+	template<> void							\
+	stagen__::impl::serialize_complex(		\
+		std::ostream& stream				\
+	) const
 
 /** @} */ // end of name-group Macros
 
@@ -295,21 +325,44 @@ protected:
 	/**
 		bind() implementation.
 
-		@note bind() will bind base properties; implementations shall
-		bind only their own properties.
+		@note deserialize() will bind base properties;
+		implementations shall bind only their own base properties.
 	*/
 	virtual void
-	bind_impl(
+	bind_base(
 		murk::TieBinder& binder
 	) noexcept = 0;
 
 	/**
 		bind_const() implementation.
+
+		@note serialize() will bind base properties;
+		implementations shall bind only their own base properties.
 	*/
 	virtual void
-	bind_const_impl(
+	bind_base_const(
 		murk::TieBinder& binder
 	) const noexcept = 0;
+
+	/**
+		Deserialize complex data from stream.
+
+		@note This is optional. The base implementation does nothing.
+	*/
+	virtual void
+	deserialize_complex(
+		std::istream& stream
+	);
+
+	/**
+		Serialize complex data to stream.
+
+		@note This is optional. The base implementation does nothing.
+	*/
+	virtual void
+	serialize_complex(
+		std::ostream& stream
+	) const;
 
 	/**
 		execute() implementation.
@@ -447,27 +500,37 @@ public:
 
 /** @name Serialization */ /// @{
 	/**
-		Bind stage.
+		Deserialize from stream.
 
-		@param binder Tie binder.
-		@{
+		@warning State may not be retained if an exception is thrown.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		If an input operation failed.
+
+		@throws Error{ErrorCode::serialization_data_malformed}
+		If malformed data was encountered.
+
+		@param stream Stream.
 	*/
 	void
-	bind(
-		murk::TieBinder& binder
-	) noexcept {
-		binder(&m_id.serial);
-		bind_impl(binder);
-	}
+	deserialize(
+		std::istream& stream
+	);
 
+	/**
+		Serialize to stream.
+
+		@warning State may not be retained if an exception is thrown.
+
+		@throws Error{ErrorCode::serialization_io_failed}
+		If an output operation failed.
+
+		@param stream Stream.
+	*/
 	void
-	bind(
-		murk::TieBinder& binder
-	) const noexcept {
-		binder(&m_id.serial);
-		bind_const_impl(binder);
-	}
-	/** @} */
+	serialize(
+		std::ostream& stream
+	) const;
 /// @}
 
 /** @name Operations */ /// @{
@@ -521,8 +584,8 @@ private:
 	StageImpl(StageImpl const&) = delete;
 	StageImpl& operator=(StageImpl const&) = delete;
 
-/** @name Constructors and destructor */ /// @{
 public:
+/** @name Constructors and destructor */ /// @{
 	/**
 		Data constructor.
 
@@ -551,14 +614,24 @@ private:
 	get_stage_type_info_impl() const noexcept override;
 
 	void
-	bind_impl(
+	bind_base(
 		murk::TieBinder& binder
 	) noexcept override;
 
 	void
-	bind_const_impl(
+	bind_base_const(
 		murk::TieBinder& binder
 	) const noexcept override;
+
+	void
+	deserialize_complex(
+		std::istream& /*stream*/
+	) override {}
+
+	void
+	serialize_complex(
+		std::ostream& /*stream*/
+	) const override {}
 
 	Cmd::Status
 	execute_impl(

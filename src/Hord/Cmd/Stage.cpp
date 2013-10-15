@@ -1,6 +1,15 @@
 
+#include <Hord/Error.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
+
+#include <murk/Desc.hpp>
+#include <murk/TieCompound.hpp>
+#include <murk/serialize.hpp>
+
+#include <ceformat/print.hpp>
+
+#include <iostream>
 
 namespace Hord {
 namespace Cmd {
@@ -22,6 +31,105 @@ static_assert(
 		uint32_t
 	>::value, ""
 );
+
+// serialization
+
+void
+Stage::deserialize_complex(
+	std::istream&
+) {}
+
+void
+Stage::serialize_complex(
+	std::ostream&
+) const {}
+
+#define HORD_STAGE_MURK_MSG__(func__)								\
+	"failed to " func__ " base at desc=(%#08p, %s);"				\
+	" murk error:\n"												\
+	"  >%s"
+//
+
+#define HORD_STAGE_THROW_MURK_ERROR__(err__, ex__)					\
+	HORD_THROW_ERROR_F(												\
+		ErrorCode::serialization_io_failed,							\
+		err__,														\
+		&(ex__.get_tie().get_desc()),								\
+		murk::get_desc_name(ex__.get_tie().get_desc().get_type()),	\
+		ex__.what()													\
+	)
+//
+
+#define HORD_SCOPE_FUNC_IDENT__ deserialize
+namespace {
+HORD_FMT_SCOPED_FQN(
+	s_err_deserialize_murk,
+	HORD_STAGE_MURK_MSG__("deserialize")
+);
+} // anonymous namespace
+
+void
+Stage::deserialize(
+	std::istream& stream
+) {
+	murk::TieCompound tcomp{
+		get_stage_type_info().comp
+	};
+	auto& binder = tcomp.bind_begin(murk::BindMutable);
+		binder(&m_id.serial);
+		bind_base(binder);
+	binder.bind_end();
+
+	try {
+		murk::deserialize(
+			stream, tcomp, murk::Endian::LITTLE
+		);
+	} catch (murk::SerializeError& murk_err) {
+		HORD_STAGE_THROW_MURK_ERROR__(
+			s_err_deserialize_murk,
+			murk_err
+		);
+	}
+
+	deserialize_complex(stream);
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
+#define HORD_SCOPE_FUNC_IDENT__ serialize
+namespace {
+HORD_FMT_SCOPED_FQN(
+	s_err_serialize_murk,
+	HORD_STAGE_MURK_MSG__("serialize")
+);
+} // anonymous namespace
+
+void
+Stage::serialize(
+	std::ostream& stream
+) const {
+	murk::TieCompound tcomp{
+		get_stage_type_info().comp
+	};
+	auto& binder = tcomp.bind_begin(murk::BindImmutable);
+		binder(&m_id.serial);
+		bind_base_const(binder);
+	binder.bind_end();
+
+	try {
+		murk::serialize(
+			stream, tcomp, murk::Endian::LITTLE
+		);
+	} catch (murk::SerializeError& murk_err) {
+		HORD_STAGE_THROW_MURK_ERROR__(
+			s_err_serialize_murk,
+			murk_err
+		);
+	}
+
+	serialize_complex(stream);
+}
+#undef HORD_SCOPE_FUNC_IDENT__
+
 
 // class StageShadow implementation
 
@@ -58,17 +166,17 @@ private:
 	}
 
 	void
-	bind_impl(
+	bind_base(
 		murk::TieBinder& binder
 	) noexcept override {
-		m_stage->bind_impl(binder);
+		m_stage->bind_base(binder);
 	}
 
 	void
-	bind_const_impl(
+	bind_base_const(
 		murk::TieBinder& binder
 	) const noexcept override {
-		m_stage->bind_const_impl(binder);
+		m_stage->bind_base_const(binder);
 	}
 
 	Cmd::Status
