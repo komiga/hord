@@ -292,7 +292,7 @@ enum class Type : uint32_t {
 /** @} */
 
 /** @cond INTERNAL */
-		// One-past-end
+	// One-past-end
 	STANDARD_END,
 	STANDARD_COUNT_DEFINED = STANDARD_END - STANDARD_BASE
 /** @endcond */

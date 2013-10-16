@@ -32,6 +32,9 @@ class IDGenerator;
 
 /**
 	Object ID generator.
+
+	@warning Objects of this class are rather large due to the
+	internal @c std::mt19937 object, which maintains a hefty state.
 */
 class IDGenerator final {
 private:

@@ -520,8 +520,6 @@ public:
 	/**
 		Serialize to stream.
 
-		@warning State may not be retained if an exception is thrown.
-
 		@throws Error{ErrorCode::serialization_io_failed}
 		If an output operation failed.
 
