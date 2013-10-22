@@ -27,6 +27,7 @@ enum class ErrorCode : unsigned;
 
 /**
 	%Error codes.
+
 	@sa Error
 */
 enum class ErrorCode : unsigned {

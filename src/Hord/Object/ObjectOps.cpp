@@ -2,6 +2,7 @@
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Ops.hpp>
 
+#include <ceformat/Format.hpp>
 #include <ceformat/print.hpp>
 
 #include <cassert>
