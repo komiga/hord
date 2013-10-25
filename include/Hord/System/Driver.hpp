@@ -11,7 +11,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_SYSTEM_DRIVER_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
 #include <Hord/System/IDGenerator.hpp>
@@ -21,8 +20,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/Cmd/Defs.hpp>
 
+#include <duct/cc_unique_ptr.hpp>
+
 #include <utility>
-#include <memory>
 
 namespace Hord {
 namespace System {
@@ -43,7 +43,7 @@ public:
 	/** Datastore-hive pair. */
 	struct datastore_hive_pair final {
 		/** Datastore. */
-		cc_unique_ptr<IO::Datastore> datastore;
+		duct::cc_unique_ptr<IO::Datastore> datastore;
 
 		/** Hive. */
 		Hive::Unit hive;

@@ -51,10 +51,12 @@ see @ref index or the accompanying LICENSE file for full text.
 	@note <Hord/String.hpp> and <Hord/Error.hpp> are required to use
 	these.
 
+	@par
 	@note <ceformat/Format.hpp> is required for
 	the @c HORD_FMT_SCOPED_* macros, and <ceformat/print.hpp> is
 	required for #HORD_THROW_ERROR_F.
 
+	@par
 	@note All throw macros except for #HORD_THROW_ERROR_S encapsulate
 	the final message in #HORD_STR_LIT (that is, @a m__ needn't be
 	#HORD_STR_LIT-ized).

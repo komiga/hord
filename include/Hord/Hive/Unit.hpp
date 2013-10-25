@@ -11,14 +11,11 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_HIVE_UNIT_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/Hive/Defs.hpp>
-
-#include <memory>
 
 namespace Hord {
 namespace Hive {

@@ -11,7 +11,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_OBJECT_DEFS_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/cc_unique_ptr.hpp>
+
+#include <duct/cc_unique_ptr.hpp>
 
 namespace Hord {
 namespace Object {
@@ -101,7 +102,7 @@ struct type_info final {
 /**
 	Owning pointer to object unit.
 */
-using UPtr = cc_unique_ptr<Object::Unit>;
+using UPtr = duct::cc_unique_ptr<Object::Unit>;
 
 /** @} */ // end of doc-group object
 

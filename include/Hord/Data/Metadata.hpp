@@ -11,7 +11,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_DATA_METADATA_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
@@ -20,7 +19,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <murk/DescCompound.hpp>
 #include <murk/TieCompound.hpp>
 
-#include <memory>
+#include <duct/cc_unique_ptr.hpp>
 
 namespace Hord {
 namespace Data {
@@ -441,7 +440,10 @@ public:
 struct Metadata final {
 public:
 	/** MetaField vector. */
-	using field_vector_type = aux::vector<cc_unique_ptr<MetaField>>;
+	using field_vector_type
+	= aux::vector<
+		duct::cc_unique_ptr<MetaField>
+	>;
 
 /** @name Properties */ /// @{
 	/** Fields. */

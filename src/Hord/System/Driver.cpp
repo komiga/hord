@@ -1,5 +1,4 @@
 
-#include <Hord/cc_unique_ptr.hpp>
 #include <Hord/Error.hpp>
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
@@ -7,6 +6,8 @@
 #include <Hord/System/Driver.hpp>
 
 #include <ceformat/print.hpp>
+
+#include <duct/cc_unique_ptr.hpp>
 
 #include <type_traits>
 #include <algorithm>
@@ -219,7 +220,7 @@ Driver::placehold_hive(
 	auto const& result_pair = m_hives.emplace(
 		id,
 		datastore_hive_pair{
-			cc_unique_ptr<IO::Datastore>{datastore_ptr},
+			duct::cc_unique_ptr<IO::Datastore>{datastore_ptr},
 			Hive::Unit{id}
 		}
 	);

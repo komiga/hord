@@ -11,8 +11,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_CMD_DEFS_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/cc_unique_ptr.hpp>
 
+#include <duct/cc_unique_ptr.hpp>
 #include <duct/StateStore.hpp>
 
 namespace Hord {
@@ -238,7 +238,7 @@ struct type_info_table final {
 /**
 	Owning pointer to command stage.
 */
-using StageUPtr = cc_unique_ptr<Cmd::Stage>;
+using StageUPtr = duct::cc_unique_ptr<Cmd::Stage>;
 
 /**
 	Command type.
