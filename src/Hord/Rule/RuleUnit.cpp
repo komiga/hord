@@ -6,7 +6,7 @@ namespace Rule {
 
 // class Unit implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ Rule::Unit
+#define HORD_SCOPE_CLASS Rule::Unit
 
 namespace {
 static constexpr Object::type_info const
@@ -39,7 +39,7 @@ Unit::~Unit() noexcept = default;
 
 Unit& Unit::operator=(Unit&&) = default;
 
-#undef HORD_SCOPE_CLASS_IDENT__
+#undef HORD_SCOPE_CLASS
 
 } // namespace Rule
 } // namespace Hord

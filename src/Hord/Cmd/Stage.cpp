@@ -1,13 +1,11 @@
 
-#include <Hord/Error.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
 
 #include <murk/Desc.hpp>
 #include <murk/TieCompound.hpp>
 #include <murk/serialize.hpp>
-
-#include <ceformat/print.hpp>
 
 #include <iostream>
 
@@ -51,7 +49,7 @@ Stage::serialize_complex(
 //
 
 #define HORD_STAGE_THROW_MURK_ERROR__(err__, ex__)					\
-	HORD_THROW_ERROR_F(												\
+	HORD_THROW_FMT(													\
 		ErrorCode::serialization_io_failed,							\
 		err__,														\
 		&(ex__.get_tie().get_desc()),								\
@@ -60,9 +58,9 @@ Stage::serialize_complex(
 	)
 //
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize
+#define HORD_SCOPE_FUNC deserialize
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_deserialize_murk,
 	HORD_STAGE_MURK_MSG__("deserialize")
 );
@@ -93,11 +91,11 @@ Stage::deserialize(
 
 	deserialize_complex(stream);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize
+#define HORD_SCOPE_FUNC serialize
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_serialize_murk,
 	HORD_STAGE_MURK_MSG__("serialize")
 );
@@ -128,7 +126,7 @@ Stage::serialize(
 
 	serialize_complex(stream);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 
 // class StageShadow implementation

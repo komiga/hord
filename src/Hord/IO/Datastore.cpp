@@ -1,5 +1,5 @@
 
-#include <Hord/Error.hpp>
+#include <Hord/detail/gr_core.hpp>
 #include <Hord/IO/Datastore.hpp>
 
 #include <utility>
@@ -9,7 +9,7 @@ namespace IO {
 
 // class Datastore implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ IO::Datastore
+#define HORD_SCOPE_CLASS IO::Datastore
 
 Datastore::Datastore(
 	String root_path
@@ -21,7 +21,7 @@ Datastore::~Datastore() = default;
 
 #define HORD_CLOSED_CHECK__								\
 	if (!is_open()) {									\
-		HORD_THROW_ERROR_SCOPED_FQN(					\
+		HORD_THROW_FQN(									\
 			ErrorCode::datastore_closed,				\
 			"cannot perform this operation while"		\
 			" datastore is closed"						\
@@ -30,42 +30,42 @@ Datastore::~Datastore() = default;
 
 #define HORD_LOCKED_CHECK__								\
 	if (is_locked()) {									\
-		HORD_THROW_ERROR_SCOPED_FQN(					\
+		HORD_THROW_FQN(									\
 			ErrorCode::datastore_locked,				\
 			"cannot perform this operation while"		\
 			" datastore is locked"						\
 		);												\
 	}
 
-#define HORD_SCOPE_FUNC_IDENT__ set_root_path
+#define HORD_SCOPE_FUNC set_root_path
 void
 Datastore::set_root_path(
 	String root_path
 ) {
 	if (is_open()) {
-		HORD_THROW_ERROR_SCOPED_FQN(
+		HORD_THROW_FQN(
 			ErrorCode::datastore_property_immutable,
 			"cannot change root path while datastore is open"
 		);
 	}
 	m_root_path.assign(std::move(root_path));
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ open
+#define HORD_SCOPE_FUNC open
 void
 Datastore::open() {
 	if (is_open()) {
-		HORD_THROW_ERROR_SCOPED_FQN(
+		HORD_THROW_FQN(
 			ErrorCode::datastore_open_already,
 			"datastore is already open"
 		);
 	}
 	open_impl();
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ close
+#define HORD_SCOPE_FUNC close
 void
 Datastore::close() {
 	HORD_LOCKED_CHECK__;
@@ -73,11 +73,11 @@ Datastore::close() {
 		close_impl();
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 // acquire
 
-#define HORD_SCOPE_FUNC_IDENT__ acquire_input_stream
+#define HORD_SCOPE_FUNC acquire_input_stream
 std::istream&
 Datastore::acquire_input_stream(
 	IO::PropInfo const& prop_info
@@ -86,9 +86,9 @@ Datastore::acquire_input_stream(
 	HORD_LOCKED_CHECK__;
 	return acquire_input_stream_impl(prop_info);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ acquire_output_stream
+#define HORD_SCOPE_FUNC acquire_output_stream
 std::ostream&
 Datastore::acquire_output_stream(
 	IO::PropInfo const& prop_info
@@ -97,19 +97,19 @@ Datastore::acquire_output_stream(
 	HORD_LOCKED_CHECK__;
 	return acquire_output_stream_impl(prop_info);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 // release
 
 #define HORD_RELEASE_CHECK__							\
 	if (!is_locked()) {									\
-		HORD_THROW_ERROR_SCOPED_FQN(					\
+		HORD_THROW_FQN(									\
 			ErrorCode::datastore_prop_not_locked,		\
 			"prop is not locked"						\
 		);												\
 	}
 
-#define HORD_SCOPE_FUNC_IDENT__ release_input_stream
+#define HORD_SCOPE_FUNC release_input_stream
 void
 Datastore::release_input_stream(
 	IO::PropInfo const& prop_info
@@ -118,9 +118,9 @@ Datastore::release_input_stream(
 	HORD_RELEASE_CHECK__;
 	release_input_stream_impl(prop_info);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ release_output_stream
+#define HORD_SCOPE_FUNC release_output_stream
 void
 Datastore::release_output_stream(
 	IO::PropInfo const& prop_info
@@ -129,13 +129,13 @@ Datastore::release_output_stream(
 	HORD_RELEASE_CHECK__;
 	release_output_stream_impl(prop_info);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 #undef HORD_RELEASE_CHECK__
 
 // objects
 
-#define HORD_SCOPE_FUNC_IDENT__ generate_id
+#define HORD_SCOPE_FUNC generate_id
 Object::ID
 Datastore::generate_id(
 	System::IDGenerator& generator
@@ -143,16 +143,16 @@ Datastore::generate_id(
 	HORD_CLOSED_CHECK__;
 	return generate_id_impl(generator);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ create_object
+#define HORD_SCOPE_FUNC create_object
 void
 Datastore::create_object(
 	Object::ID const object_id,
 	Object::Type const object_type
 ) {
 	if (Object::Type::Node != object_type) {
-		HORD_THROW_ERROR_SCOPED_FQN(
+		HORD_THROW_FQN(
 			ErrorCode::datastore_object_type_prohibited,
 			"cannot create object other than Node"
 		);
@@ -162,9 +162,9 @@ Datastore::create_object(
 	HORD_LOCKED_CHECK__;
 	create_object_impl(object_id, object_type);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ destroy_object
+#define HORD_SCOPE_FUNC destroy_object
 void
 Datastore::destroy_object(
 	Object::ID const object_id
@@ -173,12 +173,12 @@ Datastore::destroy_object(
 	HORD_LOCKED_CHECK__;
 	destroy_object_impl(object_id);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 #undef HORD_CLOSED_CHECK__
 #undef HORD_LOCKED_CHECK__
 
-#undef HORD_SCOPE_CLASS_IDENT__
+#undef HORD_SCOPE_CLASS
 
 } // namespace IO
 } // namespace Hord

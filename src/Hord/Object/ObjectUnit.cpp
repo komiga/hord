@@ -1,5 +1,5 @@
 
-#include <Hord/Error.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
@@ -8,14 +8,12 @@
 #include <murk/TieCompound.hpp>
 #include <murk/serialize.hpp>
 
-#include <ceformat/print.hpp>
-
 namespace Hord {
 namespace Object {
 
 // class Unit implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ Object::Unit
+#define HORD_SCOPE_CLASS Object::Unit
 
 Unit::Unit(
 	bool const supplies_primary,
@@ -52,7 +50,7 @@ Unit::set_slug(
 // serialization
 
 #define HORD_UNIT_THROW_MURK_ERROR__(err__, fqn__, des_ser__, ex__)	\
-	HORD_THROW_ERROR_F(												\
+	HORD_THROW_FMT(													\
 		ErrorCode::serialization_io_failed,							\
 		err__,														\
 		fqn__,														\
@@ -68,7 +66,7 @@ Unit::set_slug(
 
 #define HORD_UNIT_CHECK_UNSUPPLIED__(err__)						\
 	if (!m_prop_states.is_supplied(type)) {						\
-		HORD_THROW_ERROR_F(										\
+		HORD_THROW_FMT(											\
 			ErrorCode::serialization_prop_unsupplied,			\
 			err__,												\
 			m_id,												\
@@ -94,7 +92,7 @@ namespace prop_comp {
 	};
 }
 
-HORD_FMT_UNSCOPED(
+HORD_DEF_FMT(
 	s_err_prop_murk,
 	"%s: failed to %s prop at desc=(%#08p, %s);"
 	" murk error:\n"
@@ -102,7 +100,7 @@ HORD_FMT_UNSCOPED(
 );
 } // anonymous namespace
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize_base_prop
+#define HORD_SCOPE_FUNC deserialize_base_prop
 void
 deserialize_base_prop(
 	IO::InputPropStream& prop_stream,
@@ -115,15 +113,15 @@ deserialize_base_prop(
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
 			s_err_prop_murk,
-			HORD_SCOPE_FQN,
+			HORD_SCOPE_FQN_STR_LIT,
 			"deserialize",
 			murk_err
 		);
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize_base_prop
+#define HORD_SCOPE_FUNC serialize_base_prop
 void
 serialize_base_prop(
 	IO::OutputPropStream& prop_stream,
@@ -136,17 +134,17 @@ serialize_base_prop(
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
 			s_err_prop_murk,
-			HORD_SCOPE_FQN,
+			HORD_SCOPE_FQN_STR_LIT,
 			"serialize",
 			murk_err
 		);
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize
+#define HORD_SCOPE_FUNC deserialize
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_deserialize_unsupplied,
 	HORD_UNIT_ERR_MSG_UNSUPPLIED__
 );
@@ -203,16 +201,16 @@ Unit::deserialize(
 
 	m_prop_states.assign(type, IO::PropState::original);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize
+#define HORD_SCOPE_FUNC serialize
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_serialize_unsupplied,
 	HORD_UNIT_ERR_MSG_UNSUPPLIED__
 );
 
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_serialize_improper_state,
 	"prop %08x -> %s cannot be serialized while uninitialized"
 );
@@ -226,7 +224,7 @@ Unit::serialize(
 
 	HORD_UNIT_CHECK_UNSUPPLIED__(s_err_serialize_unsupplied);
 	if (!m_prop_states.is_initialized(type)) {
-		HORD_THROW_ERROR_F(
+		HORD_THROW_FMT(
 			ErrorCode::serialization_prop_improper_state,
 			s_err_serialize_improper_state,
 			m_id,
@@ -265,9 +263,9 @@ Unit::serialize(
 
 	m_prop_states.assign(type, IO::PropState::original);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#undef HORD_SCOPE_CLASS_IDENT__
+#undef HORD_SCOPE_CLASS
 
 } // namespace Object
 } // namespace Hord

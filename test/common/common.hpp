@@ -11,8 +11,8 @@ report_error(
 	Hord::Error const& e
 ) {
 	std::cerr
-		<< '[' << Hord::get_error_name(e.error_code()) << ']'
-		<< '\n' << e.what_str()
+		<< '[' << Hord::get_error_name(e.get_code()) << ']'
+		<< '\n' << e.get_message()
 		<< '\n'
 	<< std::endl;
 }

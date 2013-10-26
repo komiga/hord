@@ -1,15 +1,13 @@
 
 #include <Hord/utility.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/String.hpp>
-#include <Hord/Error.hpp>
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Node/Column.hpp>
 
 #include <murk/Desc.hpp>
 #include <murk/TieCompound.hpp>
 #include <murk/serialize.hpp>
-
-#include <ceformat/print.hpp>
 
 #include <iostream>
 
@@ -21,7 +19,7 @@ namespace Node {
 // serialization
 
 #define HORD_UNIT_THROW_MURK_ERROR__(err__, fqn__, des_ser__, ex__)	\
-	HORD_THROW_ERROR_F(												\
+	HORD_THROW_FMT(													\
 		ErrorCode::serialization_io_failed,							\
 		err__,														\
 		fqn__,														\
@@ -43,7 +41,7 @@ namespace comp {
 	};
 }
 
-HORD_FMT_UNSCOPED(
+HORD_DEF_FMT(
 	s_err_io_murk,
 	"%s: failed to %s at desc=(%#08p, %s);"
 	" murk error:\n"
@@ -51,7 +49,7 @@ HORD_FMT_UNSCOPED(
 );
 } // anonymous namespace
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize
+#define HORD_SCOPE_FUNC deserialize
 void
 Column::deserialize(
 	std::istream& stream
@@ -74,7 +72,7 @@ Column::deserialize(
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
 			s_err_io_murk,
-			HORD_SCOPE_FQN,
+			HORD_SCOPE_FQN_STR_LIT,
 			"deserialize",
 			murk_err
 		);
@@ -85,9 +83,9 @@ Column::deserialize(
 	this->title.operator=(std::move(des_title));
 	this->rules.operator=(std::move(des_rules));
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize
+#define HORD_SCOPE_FUNC serialize
 void
 Column::serialize(
 	std::ostream& stream
@@ -106,13 +104,13 @@ Column::serialize(
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
 			s_err_io_murk,
-			HORD_SCOPE_FQN,
+			HORD_SCOPE_FQN_STR_LIT,
 			"serialize",
 			murk_err
 		);
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 } // namespace Node
 } // namespace Hord

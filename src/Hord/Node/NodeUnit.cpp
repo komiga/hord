@@ -1,7 +1,6 @@
 
-#include <Hord/utility.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/String.hpp>
-#include <Hord/Error.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -11,8 +10,6 @@
 #include <duct/IO/arithmetic.hpp>
 #include <duct/IO/unicode.hpp>
 
-#include <ceformat/print.hpp>
-
 #include <cassert>
 #include <limits>
 
@@ -21,7 +18,7 @@ namespace Node {
 
 // class Unit implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ Node::Unit
+#define HORD_SCOPE_CLASS Node::Unit
 
 namespace {
 static constexpr Object::type_info const
@@ -68,7 +65,7 @@ Unit::set_layout_ref(
 
 #define HORD_NODE_CHECK_IO_ERROR__(err__)						\
 	if (stream.fail()) {										\
-		HORD_THROW_ERROR_F(										\
+		HORD_THROW_FMT(											\
 			ErrorCode::serialization_io_failed,					\
 			err__,												\
 			get_id()											\
@@ -105,13 +102,13 @@ static_assert(
 	"serialization form assumes String has 1-byte code units"
 );
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize_prop_primary
+#define HORD_SCOPE_FUNC deserialize_prop_primary
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_primary_read_failed,
 	"failed to deserialize prop %08x -> primary: read error"
 );
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_primary_malformed_field_type,
 	"failed to deserialize prop %08x -> primary:"
 	" invalid field type encountered"
@@ -198,7 +195,7 @@ Unit::deserialize_prop_primary(
 			} break;
 
 			default:
-				HORD_THROW_ERROR_F(
+				HORD_THROW_FMT(
 					ErrorCode::serialization_data_malformed,
 					s_err_primary_malformed_field_type,
 					get_id()
@@ -217,11 +214,11 @@ Unit::deserialize_prop_primary(
 		m_records.clear();
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize_prop_primary
+#define HORD_SCOPE_FUNC serialize_prop_primary
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_primary_write_failed,
 	"failed to serialize prop %08x -> primary: write error"
 );
@@ -320,14 +317,14 @@ Unit::serialize_prop_primary(
 		HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
 	}} // for for
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 
 // - auxiliary
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize_prop_auxiliary
+#define HORD_SCOPE_FUNC deserialize_prop_auxiliary
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_auxiliary_read_failed,
 	"failed to serialize prop %08x -> auxiliary: read error"
 );
@@ -371,11 +368,11 @@ Unit::deserialize_prop_auxiliary(
 		m_layout.operator=(std::move(des_layout));
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize_prop_auxiliary
+#define HORD_SCOPE_FUNC serialize_prop_auxiliary
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_auxiliary_write_failed,
 	"failed to serialize prop %08x -> auxiliary: write error"
 );
@@ -412,11 +409,11 @@ Unit::serialize_prop_auxiliary(
 		}
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 // - impl
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize_impl
+#define HORD_SCOPE_FUNC deserialize_impl
 void
 Unit::deserialize_impl(
 	IO::InputPropStream& prop_stream
@@ -435,9 +432,9 @@ Unit::deserialize_impl(
 		assert(false);
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize_impl
+#define HORD_SCOPE_FUNC serialize_impl
 void
 Unit::serialize_impl(
 	IO::OutputPropStream& prop_stream
@@ -456,9 +453,9 @@ Unit::serialize_impl(
 		assert(false);
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#undef HORD_SCOPE_CLASS_IDENT__
+#undef HORD_SCOPE_CLASS
 
 } // namespace Node
 } // namespace Hord

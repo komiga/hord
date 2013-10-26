@@ -1,9 +1,6 @@
 
-#include <Hord/ErrorCode.hpp>
-#include <Hord/Error.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/LockFile.hpp>
-
-#include <ceformat/print.hpp>
 
 #include <cstdlib>
 #include <cstdio>
@@ -16,7 +13,7 @@ namespace Hord {
 
 // class LockFile implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ LockFile
+#define HORD_SCOPE_CLASS LockFile
 
 LockFile::LockFile(LockFile&&) = default;
 LockFile& LockFile::operator=(LockFile&&) = default;
@@ -32,9 +29,9 @@ LockFile::~LockFile() {
 	release();
 }
 
-#define HORD_SCOPE_FUNC_IDENT__ set_path
+#define HORD_SCOPE_FUNC set_path
 
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_immutable,
 	"cannot change path to `%s` while lock is active"
 );
@@ -44,7 +41,7 @@ LockFile::set_path(
 	String path
 ) {
 	if (is_active()) {
-		HORD_THROW_ERROR_F(
+		HORD_THROW_FMT(
 			ErrorCode::lockfile_immutable,
 			s_err_immutable,
 			m_path
@@ -53,11 +50,11 @@ LockFile::set_path(
 		m_path.assign(std::move(path));
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ acquire
+#define HORD_SCOPE_FUNC acquire
 
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_acquire_failed,
 	"failed to acquire lock for `%s`"
 );
@@ -78,7 +75,8 @@ LockFile::acquire() {
 			}
 		}
 		if (NULL_HANDLE == m_handle) {
-			HORD_THROW_ERROR_F(
+			// TODO: add std::strerror()
+			HORD_THROW_FMT(
 				ErrorCode::lockfile_acquire_failed,
 				s_err_acquire_failed,
 				m_path
@@ -86,9 +84,9 @@ LockFile::acquire() {
 		}
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ release
+#define HORD_SCOPE_FUNC release
 void
 LockFile::release() noexcept {
 	if (is_active()) {
@@ -97,9 +95,9 @@ LockFile::release() noexcept {
 		m_handle = NULL_HANDLE;
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#undef HORD_SCOPE_CLASS_IDENT__
+#undef HORD_SCOPE_CLASS
 
 } // namespace Hord
 

@@ -1,6 +1,6 @@
 /**
 @file Error.hpp
-@brief Generic exception classes.
+@brief %Error class.
 
 @author Tim Howard
 @copyright 2013 Tim Howard under the MIT license;
@@ -14,17 +14,27 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/ErrorCode.hpp>
 #include <Hord/String.hpp>
 
-#include <exception>
+#include <duct/GR/Error.hpp>
 
 namespace Hord {
 
 // Forward declarations
-class Error;
 
 /**
 	@addtogroup error
 	@{
 */
+
+/**
+	%Error class.
+
+	See @c duct::GR::Error.
+*/
+using Error
+= duct::GR::Error<
+	Hord::ErrorCode,
+	Hord::String
+>;
 
 /**
 	Get the name of an error.
@@ -37,70 +47,6 @@ char const*
 get_error_name(
 	ErrorCode const error_code
 ) noexcept;
-
-/**
-	%Error.
-*/
-class Error final
-	: public std::exception {
-private:
-	ErrorCode const m_errc;
-	String const m_msg;
-
-	Error() = delete;
-	Error(Error const&) = delete;
-	Error& operator=(Error const&) = delete;
-	Error& operator=(Error&&) = delete;
-
-public:
-/** @name Constructors and destructor */ /// @{
-	/**
-		Constructor with error code and message.
-
-		@param errc Error code.
-		@param msg Error message.
-	*/
-	Error(
-		ErrorCode const errc,
-		String msg
-	) noexcept;
-
-	/** Move constructor. */
-	Error(Error&&);
-	/** Destructor. */
-	~Error() noexcept override;
-/// @}
-
-/** @name Properties */ /// @{
-	/**
-		Get error code.
-	*/
-	ErrorCode
-	error_code() const noexcept {
-		return m_errc;
-	}
-
-	/**
-		Get error message.
-	*/
-	String const&
-	what_str() const noexcept {
-		return m_msg;
-	}
-
-	/**
-		Get C-string error message.
-
-		@note This is UTF-8 encoded (per String).
-
-		@returns C-string of the error message.
-	*/
-	char const*
-	what() const noexcept override {
-		return m_msg.c_str();
-	}
-/// @}
-};
 
 /** @} */ // end of doc-group error
 

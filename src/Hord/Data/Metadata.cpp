@@ -1,15 +1,13 @@
 
 #include <Hord/utility.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/String.hpp>
-#include <Hord/Error.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 
 #include <murk/Desc.hpp>
 #include <murk/TieCompound.hpp>
 #include <murk/serialize.hpp>
-
-#include <ceformat/print.hpp>
 
 #include <type_traits>
 #include <new>
@@ -254,7 +252,7 @@ BoolMetaField& BoolMetaField::operator=(BoolMetaField&&) = default;
 
 // class Metadata implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ Metadata
+#define HORD_SCOPE_CLASS Metadata
 
 namespace {
 namespace meta_impl {
@@ -295,7 +293,7 @@ namespace meta_impl {
 } // anonymous namespace
 
 #define HORD_THROW_MURK_ERROR__(err__, part__, ex__)				\
-	HORD_THROW_ERROR_F(												\
+	HORD_THROW_FMT(													\
 		ErrorCode::serialization_io_failed,							\
 		err__,														\
 		HORD_STR_LIT(part__),										\
@@ -307,9 +305,9 @@ namespace meta_impl {
 
 // Just stop reading here. Save your sanity
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize
+#define HORD_SCOPE_FUNC deserialize
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_metadata_murk_deserialize,
 	"failed to deserialize %s at desc=(%#08p, %s);"
 	" murk message:\n"
@@ -366,7 +364,7 @@ Metadata::deserialize(
 				MetaFieldType::String > static_cast<MetaFieldType>(field_type)
 			||	MetaFieldType::Bool   < static_cast<MetaFieldType>(field_type)
 			) {
-				HORD_THROW_ERROR_SCOPED_FQN(
+				HORD_THROW_FQN(
 					ErrorCode::serialization_data_malformed,
 					"invalid field type encountered"
 				);
@@ -393,11 +391,11 @@ Metadata::deserialize(
 	// commit
 	this->fields.operator=(std::move(des_fields));
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize
+#define HORD_SCOPE_FUNC serialize
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_metadata_murk_serialize,
 	"failed to serialize %s at desc=(%#08p, %s);"
 	" murk message:\n"
@@ -465,11 +463,11 @@ Metadata::serialize(
 		);
 	}
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
 #undef HORD_THROW_MURK_ERROR__
 
-#undef HORD_SCOPE_CLASS_IDENT__ // Metadata
+#undef HORD_SCOPE_CLASS // Metadata
 
 } // namespace Data
 } // namespace Hord

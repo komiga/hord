@@ -81,18 +81,4 @@ get_error_name(
 	}
 }
 
-// class Error implementation
-
-Error::Error(
-	ErrorCode const errc,
-	String msg
-) noexcept
-	: std::exception()
-	, m_errc(errc)
-	, m_msg(std::move(msg))
-{}
-
-Error::Error(Error&&) = default;
-Error::~Error() noexcept = default;
-
 } // namespace Hord

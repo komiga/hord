@@ -1,5 +1,5 @@
 
-#include <Hord/Error.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -8,14 +8,12 @@
 #include <duct/EndianUtils.hpp>
 #include <duct/IO/arithmetic.hpp>
 
-#include <ceformat/print.hpp>
-
 namespace Hord {
 namespace Hive {
 
 // class Unit implementation
 
-#define HORD_SCOPE_CLASS_IDENT__ Hive::Unit
+#define HORD_SCOPE_CLASS Hive::Unit
 
 namespace {
 static constexpr Object::type_info const
@@ -77,7 +75,7 @@ enum : std::size_t {
 
 #define HORD_HIVE_CHECK_IO_ERROR__(err__)						\
 	if (stream.fail()) {										\
-		HORD_THROW_ERROR_F(										\
+		HORD_THROW_FMT(											\
 			ErrorCode::serialization_io_failed,					\
 			err__,												\
 			get_id()											\
@@ -85,9 +83,9 @@ enum : std::size_t {
 	}
 //
 
-#define HORD_SCOPE_FUNC_IDENT__ deserialize_impl
+#define HORD_SCOPE_FUNC deserialize_impl
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_read_failed,
 	"failed to deserialize prop %08x -> primary: read error"
 );
@@ -132,11 +130,11 @@ Unit::deserialize_impl(
 	// commit
 	m_idset.operator=(std::move(des_idset));
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC_IDENT__ serialize_impl
+#define HORD_SCOPE_FUNC serialize_impl
 namespace {
-HORD_FMT_SCOPED_FQN(
+HORD_DEF_FMT_FQN(
 	s_err_write_failed,
 	"failed to serialize prop %08x -> primary: write error"
 );
@@ -191,9 +189,9 @@ Unit::serialize_impl(
 	// Should be at end after writing
 	assert(m_idset.cend() == it);
 }
-#undef HORD_SCOPE_FUNC_IDENT__
+#undef HORD_SCOPE_FUNC
 
-#undef HORD_SCOPE_CLASS_IDENT__
+#undef HORD_SCOPE_CLASS
 
 } // namespace Hive
 } // namespace Hord
