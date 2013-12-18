@@ -7,7 +7,24 @@ equivalent to *hoard*. Fascinating, yes, I know.
 
 ## Dependencies
 
-See `dep/README.md`.
+Hord uses:
+
+1. [trait_wrangler](https://github.com/komiga/trait_wrangler) (HEAD)
+2. [ceformat](https://github.com/komiga/ceformat) (HEAD)
+3. [duct++](https://github.com/komiga/duct-cpp) (HEAD)
+4. [murk](https://github.com/komiga/murk) (HEAD)
+
+See `dep/README.md` for dependency setup.
+
+## Building
+
+Hord is a compiled shared library (by default).
+
+All features support Clang 3.5+ with libc++ (SVN head). GCC is not supported
+due to the ceformat dependency.
+
+Once dependencies are setup (see `dep/README.md`), the library and tests can be
+compiled using plash's standard project protocol: http://komiga.com/pp-cpp
 
 ## License
 
