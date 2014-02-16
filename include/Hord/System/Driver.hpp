@@ -194,7 +194,7 @@ public:
 		and @c IO::StorageState::placeholder.
 
 		@throws Error{ErrorCode::driver_hive_root_empty}
-		If @c true==root_path.empty().
+		If <code>root_path.empty() == true</code>.
 
 		@throws Error{ErrorCode::driver_hive_root_shared}
 		If the root path has already been placeheld.

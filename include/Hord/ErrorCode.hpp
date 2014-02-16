@@ -1,6 +1,6 @@
 /**
 @file ErrorCode.hpp
-@brief Error codes.
+@brief %Error codes.
 
 @author Tim Howard
 @copyright 2013 Tim Howard under the MIT license;

@@ -248,8 +248,7 @@ using StageUPtr = duct::cc_unique_ptr<Cmd::Stage>;
 	standard types. Userspace is permitted the range
 	<code>[0x00010000, 0xFFFFFFFF]</code>.
 
-	@sa
-		Cmd::StageType
+	@sa Cmd::StageType
 */
 enum class Type : uint32_t {
 /** @name Standard range */ /// @{
