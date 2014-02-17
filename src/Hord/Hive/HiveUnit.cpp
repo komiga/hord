@@ -101,7 +101,7 @@ Unit::deserialize_impl(
 	std::size_t count
 	= duct::IO::read_arithmetic<uint32_t>(
 		stream,
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 
 	HORD_HIVE_CHECK_IO_ERROR__(s_err_read_failed);
@@ -119,7 +119,7 @@ Unit::deserialize_impl(
 			stream,
 			id_block,
 			read_count,
-			duct::Endian::LITTLE
+			duct::Endian::little
 		);
 		HORD_HIVE_CHECK_IO_ERROR__(s_err_read_failed);
 
@@ -151,7 +151,7 @@ Unit::serialize_impl(
 	duct::IO::write_arithmetic(
 		stream,
 		count,
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 
 	HORD_HIVE_CHECK_IO_ERROR__(s_err_write_failed);
@@ -179,7 +179,7 @@ Unit::serialize_impl(
 			stream,
 			id_block,
 			write_count,
-			duct::Endian::LITTLE
+			duct::Endian::little
 		);
 		HORD_HIVE_CHECK_IO_ERROR__(s_err_write_failed);
 

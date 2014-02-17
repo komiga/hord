@@ -80,7 +80,7 @@ Stage::deserialize(
 
 	try {
 		murk::deserialize(
-			stream, tcomp, murk::Endian::LITTLE
+			stream, tcomp, murk::Endian::little
 		);
 	} catch (murk::SerializeError& murk_err) {
 		HORD_STAGE_THROW_MURK_ERROR__(
@@ -115,7 +115,7 @@ Stage::serialize(
 
 	try {
 		murk::serialize(
-			stream, tcomp, murk::Endian::LITTLE
+			stream, tcomp, murk::Endian::little
 		);
 	} catch (murk::SerializeError& murk_err) {
 		HORD_STAGE_THROW_MURK_ERROR__(

@@ -332,7 +332,7 @@ Metadata::deserialize(
 			.bind_end()
 		;
 		murk::deserialize(
-			stream, meta_impl::tcomp_header, murk::Endian::LITTLE
+			stream, meta_impl::tcomp_header, murk::Endian::little
 		);
 	} catch (murk::SerializeError& se) {
 		HORD_THROW_MURK_ERROR__(
@@ -357,7 +357,7 @@ Metadata::deserialize(
 				.bind_end()
 			;
 			murk::deserialize(
-				stream, meta_impl::tcomp_entry, murk::Endian::LITTLE
+				stream, meta_impl::tcomp_entry, murk::Endian::little
 			);
 
 			if (
@@ -376,7 +376,7 @@ Metadata::deserialize(
 					.bind_object_mutable(**it)
 				;
 				murk::deserialize(
-					stream, fd.tcomp, murk::Endian::LITTLE
+					stream, fd.tcomp, murk::Endian::little
 				);
 			}
 		}
@@ -419,7 +419,7 @@ Metadata::serialize(
 			.bind_end()
 		;
 		murk::serialize(
-			stream, meta_impl::tcomp_header, murk::Endian::LITTLE
+			stream, meta_impl::tcomp_header, murk::Endian::little
 		);
 	} catch (murk::SerializeError& se) {
 		HORD_THROW_MURK_ERROR__(
@@ -445,14 +445,14 @@ Metadata::serialize(
 				.bind_end()
 			;
 			murk::serialize(
-				stream, meta_impl::tcomp_entry, murk::Endian::LITTLE
+				stream, meta_impl::tcomp_entry, murk::Endian::little
 			);
 			meta_impl::field_data& fd = meta_impl::fields[field_type - 1];
 			fd.tcomp
 				.bind_object_immutable(**it)
 			;
 			murk::serialize(
-				stream, fd.tcomp, murk::Endian::LITTLE
+				stream, fd.tcomp, murk::Endian::little
 			);
 		}
 	} catch (murk::SerializeError& se) {

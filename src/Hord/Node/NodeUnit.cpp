@@ -124,7 +124,7 @@ Unit::deserialize_prop_primary(
 	std::size_t const field_count
 	= duct::IO::read_arithmetic<uint32_t>(
 		stream,
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
 
@@ -132,7 +132,7 @@ Unit::deserialize_prop_primary(
 		std::size_t const record_count
 		= duct::IO::read_arithmetic<uint32_t>(
 			stream,
-			duct::Endian::LITTLE
+			duct::Endian::little
 		);
 		HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
 
@@ -156,7 +156,7 @@ Unit::deserialize_prop_primary(
 			duct::IO::read_arithmetic(
 				stream,
 				field_type,
-				duct::Endian::LITTLE
+				duct::Endian::little
 			);
 			HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
 
@@ -165,7 +165,7 @@ Unit::deserialize_prop_primary(
 				field_string_size
 				= duct::IO::read_arithmetic<uint16_t>(
 					stream,
-					duct::Endian::LITTLE
+					duct::Endian::little
 				);
 				HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
 
@@ -174,7 +174,7 @@ Unit::deserialize_prop_primary(
 					stream,
 					field_it->value.str,
 					field_string_size,
-					duct::Endian::SYSTEM
+					duct::Endian::system
 				);
 			} break;
 
@@ -182,7 +182,7 @@ Unit::deserialize_prop_primary(
 				duct::IO::read_arithmetic(
 					stream,
 					field_it->value.num,
-					duct::Endian::LITTLE
+					duct::Endian::little
 				);
 			} break;
 
@@ -190,7 +190,7 @@ Unit::deserialize_prop_primary(
 				field_it->value.bin
 				= static_cast<bool>(duct::IO::read_arithmetic<uint8_t>(
 					stream,
-					duct::Endian::LITTLE
+					duct::Endian::little
 				));
 			} break;
 
@@ -234,7 +234,7 @@ Unit::serialize_prop_primary(
 	duct::IO::write_arithmetic(
 		stream,
 		static_cast<uint32_t>(m_layout.size()),
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
 
@@ -242,7 +242,7 @@ Unit::serialize_prop_primary(
 	duct::IO::write_arithmetic(
 		stream,
 		static_cast<uint32_t>(m_records.size()),
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
 
@@ -267,7 +267,7 @@ Unit::serialize_prop_primary(
 		duct::IO::write_arithmetic<uint8_t>(
 			stream,
 			static_cast<uint8_t>(field_it->type),
-			duct::Endian::LITTLE
+			duct::Endian::little
 		);
 		HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
 
@@ -280,7 +280,7 @@ Unit::serialize_prop_primary(
 			duct::IO::write_arithmetic(
 				stream,
 				static_cast<uint16_t>(field_it->value.str.size()),
-				duct::Endian::LITTLE
+				duct::Endian::little
 			);
 			HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
 
@@ -300,7 +300,7 @@ Unit::serialize_prop_primary(
 			duct::IO::write_arithmetic(
 				stream,
 				field_it->value.num,
-				duct::Endian::LITTLE
+				duct::Endian::little
 			);
 		break;
 
@@ -308,7 +308,7 @@ Unit::serialize_prop_primary(
 			duct::IO::write_arithmetic(
 				stream,
 				static_cast<uint8_t>(field_it->value.bin),
-				duct::Endian::LITTLE
+				duct::Endian::little
 			);
 		break;
 		}
@@ -339,7 +339,7 @@ Unit::deserialize_prop_auxiliary(
 	Node::ID const des_layout_ref
 	= duct::IO::read_arithmetic<Node::ID>(
 		stream,
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_read_failed);
 
@@ -350,7 +350,7 @@ Unit::deserialize_prop_auxiliary(
 		std::size_t const column_count
 		= duct::IO::read_arithmetic<uint32_t>(
 			stream,
-			duct::Endian::LITTLE
+			duct::Endian::little
 		);
 		HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_read_failed);
 
@@ -365,6 +365,7 @@ Unit::deserialize_prop_auxiliary(
 		}
 
 		// commit
+		set_layout_ref(Node::NULL_ID);
 		m_layout.operator=(std::move(des_layout));
 	}
 }
@@ -387,7 +388,7 @@ Unit::serialize_prop_auxiliary(
 	duct::IO::write_arithmetic<Node::ID>(
 		stream,
 		m_layout_ref,
-		duct::Endian::LITTLE
+		duct::Endian::little
 	);
 	HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_write_failed);
 
@@ -395,7 +396,7 @@ Unit::serialize_prop_auxiliary(
 		duct::IO::write_arithmetic<uint32_t>(
 			stream,
 			static_cast<uint32_t>(m_layout.size()),
-			duct::Endian::LITTLE
+			duct::Endian::little
 		);
 		HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_write_failed);
 

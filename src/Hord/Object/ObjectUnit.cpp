@@ -108,7 +108,7 @@ deserialize_base_prop(
 ) {
 	try {
 		murk::deserialize(
-			prop_stream.get_stream(), tcomp, murk::Endian::LITTLE
+			prop_stream.get_stream(), tcomp, murk::Endian::little
 		);
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
@@ -129,7 +129,7 @@ serialize_base_prop(
 ) {
 	try {
 		murk::serialize(
-			prop_stream.get_stream(), tcomp, murk::Endian::LITTLE
+			prop_stream.get_stream(), tcomp, murk::Endian::little
 		);
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(

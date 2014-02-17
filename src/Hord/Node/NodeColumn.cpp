@@ -67,7 +67,7 @@ Column::deserialize(
 			(&des_rules)
 		.bind_end();
 		murk::deserialize(
-			stream, tcomp, murk::Endian::LITTLE
+			stream, tcomp, murk::Endian::little
 		);
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
@@ -99,7 +99,7 @@ Column::serialize(
 			(&this->rules)
 		.bind_end();
 		murk::serialize(
-			stream, tcomp, murk::Endian::LITTLE
+			stream, tcomp, murk::Endian::little
 		);
 	} catch (murk::SerializeError& murk_err) {
 		HORD_UNIT_THROW_MURK_ERROR__(
