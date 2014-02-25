@@ -172,7 +172,7 @@ public:
 	/**
 		Enable or disable standard output.
 
-		@param enable @c true to enable, @c false to disable.
+		@param enable Whether to enable or disable output.
 	*/
 	void
 	stdout(
@@ -184,9 +184,9 @@ public:
 
 		@returns
 		- @c true if the operation succeeded (i.e., opening or closing
-		the log file stream);
+		  the log file stream);
 		- @c false if the operation failed.
-		@param enable @c true to enable, @c false to disable.
+		@param enable Whether to enable or disable output.
 	*/
 	bool
 	file(
@@ -196,7 +196,7 @@ public:
 	/**
 		Enable or disable datastore-local file output.
 
-		@param enable @c true to enable, @c false to disable.
+		@param enable Whether to enable or disable output.
 	*/
 	void
 	datastore(
@@ -238,14 +238,14 @@ class OutputStream final
 	: public std::ostream
 {
 private:
+	using base = std::ostream;
+
 	StreamType const m_type;
 
 	OutputStream() = delete;
 	OutputStream(OutputStream const&) = delete;
 	OutputStream& operator=(OutputStream const&) = delete;
 	OutputStream& operator=(OutputStream&&) = delete;
-
-	using base = std::ostream;
 
 public:
 /** @name Constructors and destructor */ /// @{
