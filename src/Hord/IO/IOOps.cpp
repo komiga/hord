@@ -96,7 +96,6 @@ identify_all(
 		auto it = idset.find(Object::NULL_ID);
 		if (idset.end() == it) {
 			Log::acquire(Log::error)
-				<< Log::Pre::current
 				<< "null ID encountered in hive idset\n"
 			;
 			idset.erase(it);
@@ -122,7 +121,6 @@ identify_all(
 			idset.cend() == idset.find(obj.get_parent())
 		) {
 			Log::acquire(Log::error)
-				<< Log::Pre::current
 				<< "Object " << obj << " points to invalid parent "
 				<< Object::IDPrinter{obj.get_parent()}
 				<< "\n"

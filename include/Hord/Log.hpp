@@ -253,17 +253,12 @@ public:
 		Constructor with type and streambuf.
 
 		@param type Stream type.
+		@param put_prefix Whether to write Pre::current.
 	*/
 	OutputStream(
-		StreamType const type
-	) noexcept
-		: base(
-			&s_controller.m_mc_streambufs[
-				static_cast<unsigned>(type)
-			]
-		)
-		, m_type(type)
-	{}
+		StreamType const type,
+		bool const put_prefix
+	) noexcept;
 
 	// FIXME: Defect in libstdc++ 4.7.3: basic_ostream
 	// move ctor is deleted and swap() is not defined
@@ -307,9 +302,10 @@ public:
 */
 inline OutputStream
 acquire(
-	StreamType const type
+	StreamType const type = Log::StreamType::general,
+	bool const put_prefix = true
 ) noexcept {
-	return OutputStream(type);
+	return OutputStream(type, put_prefix);
 }
 
 /** @cond INTERNAL */

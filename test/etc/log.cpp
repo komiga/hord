@@ -14,7 +14,7 @@ main() {
 	controller.set_file_path("./log.log");
 	controller.file(true);
 	{
-		Log::acquire(Log::general)
+		Log::acquire(Log::general, false)
 			<< "test " << 3.141592 << '\n'
 			<< Log::Pre::current << "current prefix\n"
 			<< Log::Pre::debug   << "debug prefix\n"
@@ -24,13 +24,13 @@ main() {
 	controller.file(false);
 	{
 		Log::acquire(Log::debug)
-			<< Log::Pre::current << "stdlog (file disabled)\n"
+			<< "stdlog (file disabled)\n"
 		;
 	}
 	controller.file(true);
 	{
 		Log::acquire(Log::error)
-			<< Log::Pre::current << "stderr (file enabled)\n"
+			<< "stderr (file enabled)\n"
 		;
 	}
 	return 0;

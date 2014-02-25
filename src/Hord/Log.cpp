@@ -139,7 +139,6 @@ Controller::open_file() {
 		if (m_file_stream.fail()) {
 			disable_file_stream();
 			Log::acquire(Log::error)
-				<< Log::Pre::current
 				<< "failed to open log file: '"
 				<< m_file_path
 				<< "'\n"
@@ -150,8 +149,8 @@ Controller::open_file() {
 			std::time_t const systime = std::chrono::system_clock::to_time_t(
 				std::chrono::system_clock::now()
 			);
-			Log::acquire(Log::general)
-				<< Log::Pre::current << '['
+			Log::acquire()
+				<< '['
 				<< std::put_time(std::localtime(&systime), s_iso8601_fmt)
 				<< "] opened log file: '"
 				<< m_file_path
@@ -173,8 +172,8 @@ Controller::close_file() {
 		std::time_t const systime = std::chrono::system_clock::to_time_t(
 			std::chrono::system_clock::now()
 		);
-		Log::acquire(Log::general)
-			<< Log::Pre::current << '['
+		Log::acquire()
+			<< '['
 			<< std::put_time(std::localtime(&systime), s_iso8601_fmt)
 			<< "] closing log file: '"
 			<< m_file_path
@@ -184,7 +183,6 @@ Controller::close_file() {
 		m_file_stream.close();
 		if (m_file_stream.fail()) {
 			Log::acquire(Log::error)
-				<< Log::Pre::current
 				<< "failed to close log file\n"
 			;
 			success = false;
@@ -249,6 +247,24 @@ Controller::set_file_path(
 	close_file();
 	m_file_path.assign(std::move(path));
 	return open_file();
+}
+
+// class OutputStream implementation
+
+OutputStream::OutputStream(
+	StreamType const type,
+	bool const put_prefix
+) noexcept
+	: base(
+		&s_controller.m_mc_streambufs[
+			static_cast<unsigned>(type)
+		]
+	)
+	, m_type(type)
+{
+	if (put_prefix) {
+		(*this) << Pre::current;
+	}
 }
 
 } // namespace Log
