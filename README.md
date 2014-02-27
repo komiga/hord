@@ -32,7 +32,7 @@ Hord carries the MIT license, which can be found below and in the `LICENSE`
 file.
 
 ```
-Copyright (c) 2013 Tim Howard
+Copyright (c) 2013-2014 Tim Howard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
