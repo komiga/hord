@@ -180,7 +180,15 @@ public:
 	) noexcept;
 
 	/**
-		Enable or disable log file output.
+		Check whether standard output is enabled.
+	*/
+	bool
+	stdout_enabled() const noexcept {
+		return m_flags.test(Flag::write_stdout);
+	}
+
+	/**
+		Enable or disable file output.
 
 		@returns
 		- @c true if the operation succeeded (i.e., opening or closing
@@ -194,6 +202,25 @@ public:
 	) noexcept;
 
 	/**
+		Check whether file output is enabled.
+	*/
+	bool
+	file_enabled() const noexcept {
+		return m_flags.test(Flag::write_file);
+	}
+
+	/**
+		Check whether the file stream is open.
+
+		@remarks If this returns @c true, it implies
+		<code>file_enabled() == true</code>.
+	*/
+	bool
+	file_active() const noexcept {
+		return m_file_stream.is_open();
+	}
+
+	/**
 		Enable or disable datastore-local file output.
 
 		@param enable Whether to enable or disable output.
@@ -202,6 +229,14 @@ public:
 	datastore(
 		bool const enable
 	) noexcept;
+
+	/**
+		Check whether datastore-local file output is enabled.
+	*/
+	bool
+	datastore_enabled() const noexcept {
+		return m_flags.test(Flag::write_datastore);
+	}
 
 	/**
 		Set the log file path.
