@@ -158,7 +158,7 @@ Controller::open_file() {
 			;
 		}
 	}
-	return true;
+	return m_file_stream.is_open();
 }
 
 bool
