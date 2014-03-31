@@ -334,6 +334,8 @@ public:
 	Acquire log output stream for type.
 
 	@param type Stream type.
+	@param put_prefix Whether to put the current prefix before
+	returning.
 */
 inline OutputStream
 acquire(
