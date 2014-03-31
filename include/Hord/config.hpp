@@ -32,6 +32,8 @@ see @ref index or the accompanying LICENSE file for full text.
 //#define CEFORMAT_CONFIG_STRING_TYPE
 //#define CEFORMAT_CONFIG_OSTRINGSTREAM_TYPE
 
+#define HORD_DATA_ENDIAN duct::Endian::little
+
 /** @endcond */
 
 #include <duct/config.hpp>
