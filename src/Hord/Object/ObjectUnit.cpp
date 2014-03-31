@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
@@ -7,6 +6,7 @@
 #include <murk/Desc.hpp>
 #include <murk/TieCompound.hpp>
 #include <murk/serialize.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 namespace Object {

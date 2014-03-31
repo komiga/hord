@@ -1,8 +1,9 @@
 
-#include <Hord/detail/gr_core.hpp>
 #include <Hord/IO/Datastore.hpp>
 
 #include <utility>
+
+#include <Hord/detail/gr_core.hpp>
 
 namespace Hord {
 namespace IO {

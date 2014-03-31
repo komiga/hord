@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
 
@@ -8,6 +7,8 @@
 #include <murk/serialize.hpp>
 
 #include <iostream>
+
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 namespace Cmd {

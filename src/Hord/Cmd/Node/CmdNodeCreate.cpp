@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_core.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
@@ -14,6 +13,8 @@
 
 #include <utility>
 #include <new>
+
+#include <Hord/detail/gr_core.hpp>
 
 namespace Hord {
 namespace Cmd {

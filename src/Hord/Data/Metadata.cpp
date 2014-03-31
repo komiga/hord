@@ -1,6 +1,5 @@
 
 #include <Hord/utility.hpp>
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -11,6 +10,8 @@
 
 #include <type_traits>
 #include <new>
+
+#include <Hord/detail/gr_core.hpp>
 
 namespace Hord {
 namespace Data {

@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_core.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
 #include <Hord/Cmd/Generic.hpp>
@@ -12,6 +11,7 @@
 
 #include <new>
 
+#include <Hord/detail/gr_core.hpp>
 namespace Hord {
 namespace Cmd {
 

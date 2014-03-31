@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -7,6 +6,8 @@
 
 #include <duct/EndianUtils.hpp>
 #include <duct/IO/arithmetic.hpp>
+
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 namespace Hive {

@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Unit.hpp>
@@ -12,6 +11,8 @@
 
 #include <cassert>
 #include <limits>
+
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 namespace Node {

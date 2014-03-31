@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/type_info.hpp>
@@ -11,6 +10,8 @@
 #include <algorithm>
 #include <utility>
 #include <chrono>
+
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 namespace System {

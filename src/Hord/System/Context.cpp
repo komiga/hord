@@ -1,10 +1,11 @@
 
 #include <Hord/utility.hpp>
-#include <Hord/detail/gr_core.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
 #include <cassert>
+
+#include <Hord/detail/gr_core.hpp>
 
 namespace Hord {
 namespace System {

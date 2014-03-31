@@ -1,5 +1,4 @@
 
-#include <Hord/detail/gr_ceformat.hpp>
 #include <Hord/LockFile.hpp>
 
 #include <cstdlib>
@@ -8,6 +7,8 @@
 
 #include <unistd.h>
 #include <sys/file.h>
+
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 
