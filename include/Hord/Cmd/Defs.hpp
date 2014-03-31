@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_CMD_DEFS_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/utility.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
 #include <duct/StateStore.hpp>
@@ -297,6 +298,14 @@ enum class Type : uint32_t {
 /** @endcond */
 };
 
+/** @cond INTERNAL */
+static_assert(
+	enum_cast(Cmd::Type::STANDARD_LIMIT) >=
+	enum_cast(Cmd::Type::STANDARD_END) - 1,
+	"standard command types exceed the limit for standard types"
+);
+/** @endcond */
+
 /**
 	Command flags.
 */
@@ -375,6 +384,14 @@ enum class StageType : uint8_t {
 	STANDARD_COUNT_DEFINED = STANDARD_END - STANDARD_BASE
 /** @endcond */
 };
+
+/** @cond INTERNAL */
+static_assert(
+	enum_cast(Cmd::StageType::STANDARD_LIMIT) >=
+	enum_cast(Cmd::StageType::STANDARD_END) - 1,
+	"standard stage types exceed the limit for standard types"
+);
+/** @endcond */
 
 /**
 	Command status.
