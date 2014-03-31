@@ -133,9 +133,10 @@ s_type_info_NodeCreate{
 // Group
 
 namespace Node {
+namespace Create {
 
 Cmd::StageUPtr
-make_create(
+make_request(
 	Hord::Object::ID const parent,
 	String slug,
 	Hord::Node::ID const layout_ref
@@ -147,6 +148,7 @@ make_create(
 	})};
 }
 
+} // namespace Create
 } // namespace Node
 
 #undef HORD_SCOPE_CLASS

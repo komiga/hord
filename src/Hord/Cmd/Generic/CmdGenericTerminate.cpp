@@ -80,12 +80,14 @@ s_type_info_GenericTerminate{
 // Group
 
 namespace Generic {
+namespace Terminate {
 
 Cmd::StageUPtr
-make_terminate() {
+make_statement() {
 	return Cmd::StageUPtr{new Statement::impl()};
 }
 
+} // namespace Terminate
 } // namespace Generic
 
 #undef HORD_SCOPE_CLASS

@@ -30,6 +30,8 @@ namespace Generic {
 	@{
 */
 
+namespace Terminate {
+
 /**
 	Allocate @c Statement stage for the @c GenericTerminator pseudo-
 	command.
@@ -40,7 +42,9 @@ namespace Generic {
 	@returns Pointer to @c Statement stage.
 */
 Cmd::StageUPtr
-make_terminate();
+make_statement();
+
+} // namespace Terminate
 
 /** @} */ // end of doc-group cmd_generic
 /** @} */ // end of doc-group cmd

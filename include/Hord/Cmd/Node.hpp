@@ -30,8 +30,10 @@ namespace Node {
 	@{
 */
 
+namespace Create {
+
 /**
-	Allocate initiator stage for the NodeCreate command.
+	Allocate @c Request stage for the NodeCreate command.
 
 	@throws std::bad_alloc
 	If allocation fails.
@@ -42,11 +44,13 @@ namespace Node {
 	@param layout_ref Layout reference.
 */
 Cmd::StageUPtr
-make_create(
+make_request(
 	Hord::Object::ID const parent,
 	String slug,
 	Hord::Node::ID const layout_ref
 );
+
+} // namespace Create
 
 /** @} */ // end of doc-group cmd_node
 /** @} */ // end of doc-group cmd
