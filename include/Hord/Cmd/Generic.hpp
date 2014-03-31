@@ -42,7 +42,7 @@ namespace Generic {
 Cmd::StageUPtr
 make_terminate();
 
-/** @} */ // end of doc-group cmd_node
+/** @} */ // end of doc-group cmd_generic
 /** @} */ // end of doc-group cmd
 
 } // namespace Generic
