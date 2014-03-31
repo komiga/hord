@@ -39,17 +39,27 @@ public:
 /// @}
 
 private:
-	Record(Record const&) = delete;
 	Record& operator=(Record const&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	Record() = default;
+	/** Copy constructor. */
+	Record(Record const&) = default;
 	/** Move constructor. */
 	Record(Record&&) = default;
 	/** Destructor. */
 	~Record() noexcept = default;
+
+	/**
+		Construct record with size.
+	*/
+	Record(
+		std::size_t const size
+	)
+		: fields(size)
+	{}
 /// @}
 
 /** @name Operators */ /// @{
