@@ -51,13 +51,20 @@ public:
 /// @}
 
 private:
-	Field(Field const& other) = delete;
 	Field& operator=(Field const&) = delete;
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
 	Field() = default;
+
+	/** Copy constructor. */
+	Field(Field const& other)
+		: type(other.type)
+		, value(other.value)
+		, state(nullptr)
+	{}
+
 	/** Move constructor. */
 	Field(Field&&) = default;
 	/** Destructor. */
