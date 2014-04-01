@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_IO_PROPSTREAM_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/Datastore.hpp>
@@ -160,6 +161,14 @@ public:
 
 /** @name Operations */ /// @{
 	/**
+		Make an input serializer for the prop stream.
+	*/
+	InputSerializer
+	make_serializer() noexcept {
+		return make_input_serializer(get_stream());
+	}
+
+	/**
 		See IO::Datastore::acquire_input_stream().
 	*/
 	void
@@ -225,6 +234,14 @@ public:
 /// @}
 
 /** @name Operations */ /// @{
+	/**
+		Make an output serializer for the prop stream.
+	*/
+	OutputSerializer
+	make_serializer() noexcept {
+		return make_output_serializer(get_stream());
+	}
+
 	/**
 		See IO::Datastore::acquire_output_stream().
 	*/

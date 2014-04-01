@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_IO_DEFS_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/serialization.hpp>
 
 // TODO: docs for Rule
 
@@ -248,6 +249,30 @@ enum class PropSerializationFlags : unsigned {
 		| auxiliary
 };
 
+/**
+	PropType serialization functions.
+	@{
+*/
+inline ser_result_type
+read(
+	ser_tag_read,
+	InputSerializer& ser,
+	PropType& value
+) {
+	uint8_t u8 = 0;
+	ser(u8);
+	value = static_cast<PropType>(u8);
+}
+
+inline ser_result_type
+write(
+	ser_tag_write,
+	OutputSerializer& ser,
+	PropType const& value
+) {
+	ser(static_cast<uint8_t>(value));
+}
+/** @} */
 /** @} */ // end of doc-group io
 
 } // namespace IO

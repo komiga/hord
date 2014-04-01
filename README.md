@@ -9,10 +9,10 @@ equivalent to *hoard*. Fascinating, yes, I know.
 
 Hord uses:
 
-1. [trait_wrangler](https://github.com/komiga/trait_wrangler) (HEAD)
-2. [ceformat](https://github.com/komiga/ceformat) (HEAD)
-3. [duct++](https://github.com/komiga/duct-cpp) (HEAD)
-4. [murk](https://github.com/komiga/murk) (HEAD)
+1. [duct++](https://github.com/komiga/duct-cpp) (HEAD)
+2. [trait_wrangler](https://github.com/komiga/trait_wrangler) (HEAD)
+3. [ceformat](https://github.com/komiga/ceformat) (HEAD)
+4. [Cacophony](https://github.com/komiga/Cacophony) (HEAD)
 
 See `dep/README.md` for dependency setup.
 

@@ -1,4 +1,5 @@
 
+#include <Hord/serialization.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -6,6 +7,9 @@
 
 #include <duct/EndianUtils.hpp>
 #include <duct/IO/arithmetic.hpp>
+
+#include <cassert>
+#include <limits>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
@@ -74,38 +78,21 @@ enum : std::size_t {
 };
 } // anonymous namespace
 
-#define HORD_HIVE_CHECK_IO_ERROR__(err__)						\
-	if (stream.fail()) {										\
-		HORD_THROW_FMT(											\
-			ErrorCode::serialization_io_failed,					\
-			err__,												\
-			get_id()											\
-		);														\
-	}
-//
-
 #define HORD_SCOPE_FUNC deserialize_impl
 namespace {
 HORD_DEF_FMT_FQN(
 	s_err_read_failed,
-	"failed to deserialize prop %08x -> primary: read error"
+	HORD_SER_ERR_MSG_IO_PROP("read")
 );
 } // anonymous namespace
 
 void
 Unit::deserialize_impl(
 	IO::InputPropStream& prop_stream
-) {
-	std::istream& stream = prop_stream.get_stream();
-
-	// header
-	std::size_t count
-	= duct::IO::read_arithmetic<uint32_t>(
-		stream,
-		duct::Endian::little
-	);
-
-	HORD_HIVE_CHECK_IO_ERROR__(s_err_read_failed);
+) try {
+	auto ser = prop_stream.make_serializer();
+	uint32_t count = 0;
+	ser(count);
 
 	// entries
 	Object::ID id_block[ID_BLOCK_COUNT];
@@ -116,20 +103,20 @@ Unit::deserialize_impl(
 		if (count < ID_BLOCK_COUNT) {
 			read_count = count;
 		}
-		duct::IO::read_arithmetic_array(
-			stream,
-			id_block,
-			read_count,
-			duct::Endian::little
-		);
-		HORD_HIVE_CHECK_IO_ERROR__(s_err_read_failed);
-
+		ser(Cacophony::make_sequence(id_block, read_count));
 		des_idset.insert(id_block, id_block + read_count);
 		count -= read_count;
 	}
 
 	// commit
 	m_idset.operator=(std::move(des_idset));
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_read_failed,
+		serr,
+		get_id(),
+		"primary"
+	);
 }
 #undef HORD_SCOPE_FUNC
 
@@ -137,27 +124,19 @@ Unit::deserialize_impl(
 namespace {
 HORD_DEF_FMT_FQN(
 	s_err_write_failed,
-	"failed to serialize prop %08x -> primary: write error"
+	HORD_SER_ERR_MSG_IO_PROP("write")
 );
 } // anonymous namespace
 
 void
 Unit::serialize_impl(
 	IO::OutputPropStream& prop_stream
-) const {
-	std::ostream& stream = prop_stream.get_stream();
-
-	// header
+) const try {
+	auto ser = prop_stream.make_serializer();
 	std::size_t count = m_idset.size();
-	duct::IO::write_arithmetic(
-		stream,
-		count,
-		duct::Endian::little
-	);
+	assert(std::numeric_limits<uint32_t>::max() >= count);
+	ser(static_cast<uint32_t>(count));
 
-	HORD_HIVE_CHECK_IO_ERROR__(s_err_write_failed);
-
-	// entries
 	Object::ID id_block[ID_BLOCK_COUNT];
 	std::size_t write_count = ID_BLOCK_COUNT;
 	std::size_t copy_count = 0u;
@@ -175,20 +154,19 @@ Unit::serialize_impl(
 			assert(m_idset.cend() != it);
 			id_block[write_count - copy_count] = *it;
 		}
-
-		duct::IO::write_arithmetic_array(
-			stream,
-			id_block,
-			write_count,
-			duct::Endian::little
-		);
-		HORD_HIVE_CHECK_IO_ERROR__(s_err_write_failed);
-
+		ser(Cacophony::make_sequence(id_block, write_count));
 		count -= write_count;
 	}
 
 	// Should be at end after writing
 	assert(m_idset.cend() == it);
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_write_failed,
+		serr,
+		get_id(),
+		"primary"
+	);
 }
 #undef HORD_SCOPE_FUNC
 

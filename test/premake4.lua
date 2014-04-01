@@ -11,8 +11,7 @@ precore.make_solution(
 	{
 		"precore-generic",
 		"hord-deps",
-		"hord-import",
-		"murk-import"
+		"hord-import"
 	}
 )
 

@@ -1,13 +1,9 @@
 
+#include <Hord/serialization.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
 #include <Hord/Cmd/Generic.hpp>
 #include <Hord/System/Context.hpp>
-
-#include <murk/Desc.hpp>
-#include <murk/DescCompound.hpp>
-#include <murk/TieCompound.hpp>
-#include <murk/serialize.hpp>
 
 #include <new>
 
@@ -15,39 +11,19 @@
 namespace Hord {
 namespace Cmd {
 
-#define HORD_CMD_TYPE__ GenericTerminate
+#define HORD_CMD_TYPE_ GenericTerminate
 #define HORD_SCOPE_CLASS Cmd::Generic::Terminate // pseudo
 
 // Stage: Statement
 
-namespace {
-static murk::DescCompound const
-s_comp_statement{
-	{murk::RefDesc{Cmd::Stage::s_comp_base}},
-	{murk::DescType::terminate}
-};
+#define HORD_CMD_STAGE_TYPE_ Statement
 
-static Cmd::Stage::type_info const
-s_type_info_GenericTerminate_Statement{
-	Cmd::StageType::Statement,
-	{s_comp_statement}
-};
-} // anonymous namespace
+HORD_CMD_STAGE_DEF_TYPE_INFO();
+HORD_CMD_STAGE_DATA_OPEN()
+	HORD_CMD_STAGE_DATA_EMPTY();
+HORD_CMD_STAGE_DATA_CLOSE()
 
-HORD_CMD_STAGE_DECL(
-	Statement,
-);
-
-HORD_CMD_STAGE_DEF_BIND(
-	Statement,
-);
-
-#define HORD_SCOPE_FUNC Statement::execute_impl
-HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
-	(void)context; (void)initiator;
-	return Cmd::Status::complete;
-}
-#undef HORD_SCOPE_FUNC
+#undef HORD_CMD_STAGE_TYPE_ // Statement
 
 // Type info
 
@@ -77,7 +53,25 @@ s_type_info_GenericTerminate{
 	{construct_stage}
 };
 
-// Group
+// Implementation
+
+/*
+
+* H -> Statement
+	C: * & ~
+
+*/
+
+// Stage: Statement
+
+#define HORD_SCOPE_FUNC Statement::execute_impl
+HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
+	(void)context; (void)initiator;
+	return Cmd::Status::complete;
+}
+#undef HORD_SCOPE_FUNC
+
+// Public interface
 
 namespace Generic {
 namespace Terminate {
@@ -91,7 +85,7 @@ make_statement() {
 } // namespace Generic
 
 #undef HORD_SCOPE_CLASS
-#undef HORD_CMD_TYPE__ // GenericTerminate
+#undef HORD_CMD_TYPE_ // GenericTerminate
 
 } // namespace Cmd
 } // namespace Hord

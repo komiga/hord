@@ -1,10 +1,7 @@
 
+#include <Hord/serialization.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
-
-#include <murk/Desc.hpp>
-#include <murk/TieCompound.hpp>
-#include <murk/serialize.hpp>
 
 #include <iostream>
 
@@ -15,120 +12,6 @@ namespace Cmd {
 
 // Forward declarations
 class StageShadow;
-
-// class Stage implementation
-
-murk::Desc const
-Stage::s_comp_base[2]{
-	{murk::DescType::uint32},
-	{murk::DescType::terminate}
-};
-
-static_assert(
-	std::is_same<
-		Cmd::ID,
-		uint32_t
-	>::value, ""
-);
-
-// serialization
-
-void
-Stage::deserialize_complex(
-	std::istream&
-) {}
-
-void
-Stage::serialize_complex(
-	std::ostream&
-) const {}
-
-#define HORD_STAGE_MURK_MSG__(func__)								\
-	"failed to " func__ " base at desc=(%#08p, %s);"				\
-	" murk error:\n"												\
-	"  >%s"
-//
-
-#define HORD_STAGE_THROW_MURK_ERROR__(err__, ex__)					\
-	HORD_THROW_FMT(													\
-		ErrorCode::serialization_io_failed,							\
-		err__,														\
-		&(ex__.get_tie().get_desc()),								\
-		murk::get_desc_name(ex__.get_tie().get_desc().get_type()),	\
-		ex__.what()													\
-	)
-//
-
-#define HORD_SCOPE_FUNC deserialize
-namespace {
-HORD_DEF_FMT_FQN(
-	s_err_deserialize_murk,
-	HORD_STAGE_MURK_MSG__("deserialize")
-);
-} // anonymous namespace
-
-void
-Stage::deserialize(
-	std::istream& stream
-) {
-	murk::TieCompound tcomp{
-		get_stage_type_info().comp
-	};
-	auto& binder = tcomp.bind_begin(murk::BindMutable);
-		binder(&m_id.serial);
-		bind_base(binder);
-	binder.bind_end();
-
-	try {
-		murk::deserialize(
-			stream, tcomp, murk::Endian::little
-		);
-	} catch (murk::SerializeError& murk_err) {
-		HORD_STAGE_THROW_MURK_ERROR__(
-			s_err_deserialize_murk,
-			murk_err
-		);
-	}
-
-	deserialize_complex(stream);
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC serialize
-namespace {
-HORD_DEF_FMT_FQN(
-	s_err_serialize_murk,
-	HORD_STAGE_MURK_MSG__("serialize")
-);
-} // anonymous namespace
-
-void
-Stage::serialize(
-	std::ostream& stream
-) const {
-	murk::TieCompound tcomp{
-		get_stage_type_info().comp
-	};
-	auto& binder = tcomp.bind_begin(murk::BindImmutable);
-		binder(&m_id.serial);
-		bind_base_const(binder);
-	binder.bind_end();
-
-	try {
-		murk::serialize(
-			stream, tcomp, murk::Endian::little
-		);
-	} catch (murk::SerializeError& murk_err) {
-		HORD_STAGE_THROW_MURK_ERROR__(
-			s_err_serialize_murk,
-			murk_err
-		);
-	}
-
-	serialize_complex(stream);
-}
-#undef HORD_SCOPE_FUNC
-
 
 // class StageShadow implementation
 
@@ -165,17 +48,17 @@ private:
 	}
 
 	void
-	bind_base(
-		murk::TieBinder& binder
-	) noexcept override {
-		m_stage->bind_base(binder);
+	read_impl(
+		InputSerializer& ser
+	) override {
+		m_stage->read_impl(ser);
 	}
 
 	void
-	bind_base_const(
-		murk::TieBinder& binder
-	) const noexcept override {
-		m_stage->bind_base_const(binder);
+	write_impl(
+		OutputSerializer& ser
+	) const override {
+		m_stage->write_impl(ser);
 	}
 
 	Cmd::Status

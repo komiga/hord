@@ -64,22 +64,9 @@ Unit::set_layout_ref(
 
 // serialization
 
-#define HORD_NODE_CHECK_IO_ERROR__(err__)						\
-	if (stream.fail()) {										\
-		HORD_THROW_FMT(											\
-			ErrorCode::serialization_io_failed,					\
-			err__,												\
-			get_id()											\
-		);														\
-	}
-//
-
-// - primary
-
 /*
-Avoiding murk for extra speed. Note that a serialized value is used
-for the field count instead of relying on m_layout, whose prop might
-be uninitialized.
+Note that a serialized value is used for the field count instead of
+relying on m_layout, whose prop might be uninitialized.
 
 Field structure:
 
@@ -106,10 +93,6 @@ static_assert(
 #define HORD_SCOPE_FUNC deserialize_prop_primary
 namespace {
 HORD_DEF_FMT_FQN(
-	s_err_primary_read_failed,
-	"failed to deserialize prop %08x -> primary: read error"
-);
-HORD_DEF_FMT_FQN(
 	s_err_primary_malformed_field_type,
 	"failed to deserialize prop %08x -> primary:"
 	" invalid field type encountered"
@@ -118,95 +101,52 @@ HORD_DEF_FMT_FQN(
 
 void
 Unit::deserialize_prop_primary(
-	IO::InputPropStream& prop_stream
+	IO::InputPropStream& /*prop_stream*/,
+	InputSerializer& ser
 ) {
-	std::istream& stream = prop_stream.get_stream();
-
-	std::size_t const field_count
-	= duct::IO::read_arithmetic<uint32_t>(
-		stream,
-		duct::Endian::little
-	);
-	HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
+	uint32_t field_count = 0;
+	ser(field_count);
 
 	if (0u < field_count) {
-		std::size_t const record_count
-		= duct::IO::read_arithmetic<uint32_t>(
-			stream,
-			duct::Endian::little
-		);
-		HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
+		uint32_t record_count = 0;
+		ser(record_count);
 
-		// records
-		record_vector_type des_records{record_count};
+		record_vector_type des_records{
+			record_count,
+			Data::Record{field_count}
+		};
 		uint8_t field_type = 0x00u;
-		std::size_t field_string_size = 0u;
-		for (
-			auto record_it = des_records.begin();
-			des_records.end() != record_it;
-			++record_it
-		) {
-			record_it->fields.resize(field_count);
+		for (auto& record : des_records) {
+			for (auto& field : record.fields) {
+				ser(field_type);
+				switch (static_cast<Data::FieldType>(field_type)) {
+				case Data::FieldType::Text:
+					ser(Cacophony::make_string_cfg<uint16_t>(
+						field.value.str
+					));
+					break;
 
-		// fields
-		for (
-			auto field_it = record_it->fields.begin();
-			record_it->fields.end() != field_it;
-			++field_it
-		) {
-			duct::IO::read_arithmetic(
-				stream,
-				field_type,
-				duct::Endian::little
-			);
-			HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
+				case Data::FieldType::Number:
+					ser(field.value.num);
+					break;
 
-			switch (static_cast<Data::FieldType>(field_type)) {
-			case Data::FieldType::Text: {
-				field_string_size
-				= duct::IO::read_arithmetic<uint16_t>(
-					stream,
-					duct::Endian::little
-				);
-				HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
+				case Data::FieldType::Boolean: {
+					uint8_t boolu8 = 0;
+					ser(boolu8);
+					field.value.bin = static_cast<bool>(boolu8);
+				} break;
 
-				field_it->value.str.reserve(field_string_size);
-				duct::IO::read_string_copy(
-					stream,
-					field_it->value.str,
-					field_string_size,
-					duct::Endian::system
-				);
-			} break;
-
-			case Data::FieldType::Number: {
-				duct::IO::read_arithmetic(
-					stream,
-					field_it->value.num,
-					duct::Endian::little
-				);
-			} break;
-
-			case Data::FieldType::Boolean: {
-				field_it->value.bin
-				= static_cast<bool>(duct::IO::read_arithmetic<uint8_t>(
-					stream,
-					duct::Endian::little
-				));
-			} break;
-
-			default:
-				HORD_THROW_FMT(
-					ErrorCode::serialization_data_malformed,
-					s_err_primary_malformed_field_type,
-					get_id()
-				);
-				break;
+				default:
+					HORD_THROW_FMT(
+						ErrorCode::serialization_data_malformed,
+						s_err_primary_malformed_field_type,
+						get_id()
+					);
+					break;
+				}
+				field.type = static_cast<Data::FieldType>(field_type);
 			}
-
-			// For last IO operation in switch case
-			HORD_NODE_CHECK_IO_ERROR__(s_err_primary_read_failed);
-		}} // for for
+		}
 
 		// commit
 		m_records.operator=(std::move(des_records));
@@ -218,105 +158,40 @@ Unit::deserialize_prop_primary(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC serialize_prop_primary
-namespace {
-HORD_DEF_FMT_FQN(
-	s_err_primary_write_failed,
-	"failed to serialize prop %08x -> primary: write error"
-);
-} // anonymous namespace
-
 void
 Unit::serialize_prop_primary(
-	IO::OutputPropStream& prop_stream
+	IO::OutputPropStream& /*prop_stream*/,
+	OutputSerializer& ser
 ) const {
-	std::ostream& stream = prop_stream.get_stream();
-
-	// field_count
-	duct::IO::write_arithmetic(
-		stream,
-		static_cast<uint32_t>(m_layout.size()),
-		duct::Endian::little
-	);
-	HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
-
-	// record_count
-	duct::IO::write_arithmetic(
-		stream,
-		static_cast<uint32_t>(m_records.size()),
-		duct::Endian::little
-	);
-	HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
+	assert(std::numeric_limits<uint32_t>::max() >= m_layout.size());
+	ser(static_cast<uint32_t>(m_layout.size()));
+	assert(std::numeric_limits<uint32_t>::max() >= m_records.size());
+	ser(static_cast<uint32_t>(m_records.size()));
 
 	// Quick exit
 	if (0u == m_layout.size() || 0u == m_records.size()) {
 		return;
 	}
+	for (auto const& record : m_records) {
+		for (auto const& field : record.fields) {
+			ser(static_cast<uint8_t>(field.type));
+			switch (field.type) {
+			case Data::FieldType::Text:
+				ser(Cacophony::make_string_cfg<uint16_t>(
+					field.value.str
+				));
+				break;
 
-	// records
-	for (
-		auto record_it = m_records.cbegin();
-		m_records.cend() != record_it;
-		++record_it
-	) {
-	// fields
-	for (
-		auto field_it = record_it->fields.cbegin();
-		record_it->fields.cend() != field_it;
-		++field_it
-	) {
-		// field type
-		duct::IO::write_arithmetic<uint8_t>(
-			stream,
-			static_cast<uint8_t>(field_it->type),
-			duct::Endian::little
-		);
-		HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
+			case Data::FieldType::Number:
+				ser(field.value.num);
+				break;
 
-		switch (field_it->type) {
-		case Data::FieldType::Text:
-			assert(
-				std::numeric_limits<uint16_t>::max()
-				>= field_it->value.str.size()
-			);
-			duct::IO::write_arithmetic(
-				stream,
-				static_cast<uint16_t>(field_it->value.str.size()),
-				duct::Endian::little
-			);
-			HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
-
-			if (0u < field_it->value.str.size()) {
-				duct::IO::write(
-					stream,
-					field_it->value.str.data(),
-					field_it->value.str.size()
-				);
-			} else {
-				// Skip redundant IO check after switch
-				continue;
+			case Data::FieldType::Boolean:
+				ser(static_cast<uint8_t>(field.value.bin));
+				break;
 			}
-		break;
-
-		case Data::FieldType::Number:
-			duct::IO::write_arithmetic(
-				stream,
-				field_it->value.num,
-				duct::Endian::little
-			);
-		break;
-
-		case Data::FieldType::Boolean:
-			duct::IO::write_arithmetic(
-				stream,
-				static_cast<uint8_t>(field_it->value.bin),
-				duct::Endian::little
-			);
-		break;
 		}
-
-		// For last IO operation in switch case
-		HORD_NODE_CHECK_IO_ERROR__(s_err_primary_write_failed);
-	}} // for for
+	}
 }
 #undef HORD_SCOPE_FUNC
 
@@ -324,46 +199,19 @@ Unit::serialize_prop_primary(
 // - auxiliary
 
 #define HORD_SCOPE_FUNC deserialize_prop_auxiliary
-namespace {
-HORD_DEF_FMT_FQN(
-	s_err_auxiliary_read_failed,
-	"failed to serialize prop %08x -> auxiliary: read error"
-);
-} // anonymous namespace
-
 void
 Unit::deserialize_prop_auxiliary(
-	IO::InputPropStream& prop_stream
+	IO::InputPropStream& /*prop_stream*/,
+	InputSerializer& ser
 ) {
-	std::istream& stream = prop_stream.get_stream();
-
-	Node::ID const des_layout_ref
-	= duct::IO::read_arithmetic<Node::ID>(
-		stream,
-		duct::Endian::little
-	);
-	HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_read_failed);
-
+	Node::ID des_layout_ref = 0;
+	ser(des_layout_ref);
 	if (Node::NULL_ID != des_layout_ref) {
 		// commit
 		set_layout_ref(des_layout_ref);
 	} else {
-		std::size_t const column_count
-		= duct::IO::read_arithmetic<uint32_t>(
-			stream,
-			duct::Endian::little
-		);
-		HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_read_failed);
-
-		column_vector_type des_layout{column_count};
-		for (
-			auto it = des_layout.begin();
-			des_layout.end() != it;
-			++it
-		) {
-			// Will throw if a read error occurs
-			it->deserialize(stream);
-		}
+		column_vector_type des_layout{};
+		ser(Cacophony::make_vector_cfg<uint32_t>(des_layout));
 
 		// commit
 		set_layout_ref(Node::NULL_ID);
@@ -373,42 +221,18 @@ Unit::deserialize_prop_auxiliary(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC serialize_prop_auxiliary
-namespace {
-HORD_DEF_FMT_FQN(
-	s_err_auxiliary_write_failed,
-	"failed to serialize prop %08x -> auxiliary: write error"
-);
-} // anonymous namespace
-
 void
 Unit::serialize_prop_auxiliary(
-	IO::OutputPropStream& prop_stream
+	IO::OutputPropStream& /*prop_stream*/,
+	OutputSerializer& ser
 ) const {
-	std::ostream& stream = prop_stream.get_stream();
-
-	duct::IO::write_arithmetic<Node::ID>(
-		stream,
-		m_layout_ref,
-		duct::Endian::little
-	);
-	HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_write_failed);
-
-	if (Node::NULL_ID == m_layout_ref) {
-		duct::IO::write_arithmetic<uint32_t>(
-			stream,
-			static_cast<uint32_t>(m_layout.size()),
-			duct::Endian::little
+	if (Node::NULL_ID != m_layout_ref) {
+		ser(m_layout_ref);
+	} else {
+		ser(
+			m_layout_ref,
+			Cacophony::make_vector_cfg<uint32_t>(m_layout)
 		);
-		HORD_NODE_CHECK_IO_ERROR__(s_err_auxiliary_write_failed);
-
-		for (
-			auto it = m_layout.cbegin();
-			m_layout.cend() != it;
-			++it
-		) {
-			// Will throw if a write error occurs
-			it->serialize(stream);
-		}
 	}
 }
 #undef HORD_SCOPE_FUNC
@@ -416,44 +240,74 @@ Unit::serialize_prop_auxiliary(
 // - impl
 
 #define HORD_SCOPE_FUNC deserialize_impl
+namespace {
+HORD_DEF_FMT_FQN(
+	s_err_read_failed,
+	HORD_SER_ERR_MSG_IO_PROP("read")
+);
+} // anonymous namespace
+
 void
 Unit::deserialize_impl(
 	IO::InputPropStream& prop_stream
-) {
+) try {
+	auto ser = prop_stream.make_serializer();
 	switch (prop_stream.get_type()) {
 	case IO::PropType::primary:
-		deserialize_prop_primary(prop_stream);
+		deserialize_prop_primary(prop_stream, ser);
 		break;
 
 	case IO::PropType::auxiliary:
-		deserialize_prop_auxiliary(prop_stream);
+		deserialize_prop_auxiliary(prop_stream, ser);
 		break;
 
 	default:
 		// Object::Unit should protect us from this
 		assert(false);
 	}
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_read_failed,
+		serr,
+		get_id(),
+		IO::get_prop_type_name(prop_stream.get_type())
+	);
 }
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC serialize_impl
+namespace {
+HORD_DEF_FMT_FQN(
+	s_err_write_failed,
+	HORD_SER_ERR_MSG_IO_PROP("write")
+);
+} // anonymous namespace
+
 void
 Unit::serialize_impl(
 	IO::OutputPropStream& prop_stream
-) const {
+) const try {
+	auto ser = prop_stream.make_serializer();
 	switch (prop_stream.get_type()) {
 	case IO::PropType::primary:
-		serialize_prop_primary(prop_stream);
+		serialize_prop_primary(prop_stream, ser);
 		break;
 
 	case IO::PropType::auxiliary:
-		serialize_prop_auxiliary(prop_stream);
+		serialize_prop_auxiliary(prop_stream, ser);
 		break;
 
 	default:
 		// Object::Unit should protect us from this
 		assert(false);
 	}
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_write_failed,
+		serr,
+		get_id(),
+		IO::get_prop_type_name(prop_stream.get_type())
+	);
 }
 #undef HORD_SCOPE_FUNC
 

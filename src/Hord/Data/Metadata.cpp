@@ -1,79 +1,31 @@
 
+#include <Hord/serialization.hpp>
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 
-#include <murk/Desc.hpp>
-#include <murk/TieCompound.hpp>
-#include <murk/serialize.hpp>
-
+#include <cassert>
 #include <type_traits>
 #include <new>
+#include <limits>
 
-#include <Hord/detail/gr_core.hpp>
+#include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
 namespace Data {
 
-// class MetaField implementation
-
-murk::DescCompound const
-MetaField::s_comp_base{
-	{murk::StringDesc{0u}},
-	{murk::DescType::terminate}
-};
-
-MetaField::MetaField() = default;
-MetaField::MetaField(MetaField&&) = default;
-MetaField::~MetaField() noexcept = default;
-
-MetaField& MetaField::operator=(MetaField&&) = default;
-
-#define MURK_METAFIELD_BIND__	\
-	binder						\
-		(&this->name)
-
-void
-MetaField::bind_base(
-	murk::TieBinder& binder
-) noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-void
-MetaField::bind_const_base(
-	murk::TieBinder& binder
-) const noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-#undef MURK_METAFIELD_BIND__
-
-#define MURK_METAFIELD_BIND__	\
-	binder						\
-		(&this->value)
-
-
 // class StringMetaField implementation
 
 namespace {
-static murk::DescCompound const
-s_comp_string{
-	{murk::RefDesc{MetaField::s_comp_base}},
-	{murk::StringDesc{0u}},
-	{murk::DescType::terminate}
-};
-
 MetaField*
 s_construct_string() noexcept {
 	return new (std::nothrow) StringMetaField();
 }
 
-static MetaField::type_info const
+static constexpr MetaField::type_info const
 s_type_info_string{
 	MetaFieldType::String,
-	{s_comp_string},
 	s_construct_string
 };
 } // anonymous namespace
@@ -83,46 +35,17 @@ StringMetaField::get_type_info_impl() const noexcept {
 	return s_type_info_string;
 }
 
-void
-StringMetaField::bind_impl(
-	murk::TieBinder& binder
-) noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-void
-StringMetaField::bind_const_impl(
-	murk::TieBinder& binder
-) const noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-StringMetaField::StringMetaField() = default;
-StringMetaField::StringMetaField(StringMetaField&&) = default;
-StringMetaField::~StringMetaField() noexcept = default;
-
-StringMetaField& StringMetaField::operator=(StringMetaField&&) = default;
-
-
 // class Int32MetaField implementation
 
 namespace {
-static murk::DescCompound const
-s_comp_int32{
-	{murk::RefDesc{MetaField::s_comp_base}},
-	{murk::DescType::int32},
-	{murk::DescType::terminate}
-};
-
 MetaField*
 s_construct_int32() noexcept {
 	return new (std::nothrow) Int32MetaField();
 }
 
-static MetaField::type_info const
+static constexpr MetaField::type_info const
 s_type_info_int32{
 	MetaFieldType::Int32,
-	{s_comp_int32},
 	s_construct_int32
 };
 } // anonymous namespace
@@ -132,46 +55,17 @@ Int32MetaField::get_type_info_impl() const noexcept {
 	return s_type_info_int32;
 }
 
-void
-Int32MetaField::bind_impl(
-	murk::TieBinder& binder
-) noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-void
-Int32MetaField::bind_const_impl(
-	murk::TieBinder& binder
-) const noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-Int32MetaField::Int32MetaField() = default;
-Int32MetaField::Int32MetaField(Int32MetaField&&) = default;
-Int32MetaField::~Int32MetaField() noexcept = default;
-
-Int32MetaField& Int32MetaField::operator=(Int32MetaField&&) = default;
-
-
 // class Int64MetaField implementation
 
 namespace {
-static murk::DescCompound const
-s_comp_int64{
-	{murk::RefDesc{MetaField::s_comp_base}},
-	{murk::DescType::int64},
-	{murk::DescType::terminate}
-};
-
 MetaField*
 s_construct_int64() noexcept {
 	return new (std::nothrow) Int64MetaField();
 }
 
-static MetaField::type_info const
+static constexpr MetaField::type_info const
 s_type_info_int64{
 	MetaFieldType::Int64,
-	{s_comp_int64},
 	s_construct_int64
 };
 } // anonymous namespace
@@ -181,46 +75,17 @@ Int64MetaField::get_type_info_impl() const noexcept {
 	return s_type_info_int64;
 }
 
-void
-Int64MetaField::bind_impl(
-	murk::TieBinder& binder
-) noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-void
-Int64MetaField::bind_const_impl(
-	murk::TieBinder& binder
-) const noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-Int64MetaField::Int64MetaField() = default;
-Int64MetaField::Int64MetaField(Int64MetaField&&) = default;
-Int64MetaField::~Int64MetaField() noexcept = default;
-
-Int64MetaField& Int64MetaField::operator=(Int64MetaField&&) = default;
-
-
 // class BoolMetaField implementation
 
 namespace {
-static murk::DescCompound const
-s_comp_bool{
-	{murk::RefDesc{MetaField::s_comp_base}},
-	{murk::DescType::boolean},
-	{murk::DescType::terminate}
-};
-
 MetaField*
 s_construct_bool() noexcept {
 	return new (std::nothrow) BoolMetaField();
 }
 
-static MetaField::type_info const
+static constexpr MetaField::type_info const
 s_type_info_bool{
 	MetaFieldType::Bool,
-	{s_comp_bool},
 	s_construct_bool
 };
 } // anonymous namespace
@@ -230,239 +95,110 @@ BoolMetaField::get_type_info_impl() const noexcept {
 	return s_type_info_bool;
 }
 
-void
-BoolMetaField::bind_impl(
-	murk::TieBinder& binder
-) noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-void
-BoolMetaField::bind_const_impl(
-	murk::TieBinder& binder
-) const noexcept {
-	MURK_METAFIELD_BIND__;
-}
-
-BoolMetaField::BoolMetaField() = default;
-BoolMetaField::BoolMetaField(BoolMetaField&&) = default;
-BoolMetaField::~BoolMetaField() noexcept = default;
-
-BoolMetaField& BoolMetaField::operator=(BoolMetaField&&) = default;
-
-
 // class Metadata implementation
 
 #define HORD_SCOPE_CLASS Metadata
 
 namespace {
 namespace meta_impl {
-	static murk::DescCompound const
-	comp_header{
-		{murk::DescType::uint32}, // size
-		{murk::DescType::terminate}
-	};
-	static murk::TieCompound
-	tcomp_header{comp_header};
-
-	static murk::DescCompound const
-	comp_entry{
-		{murk::DescType::uint8}, // type
-		{murk::DescType::terminate}
-	};
-	static murk::TieCompound
-	tcomp_entry{comp_entry};
-
-	struct field_data final {
-		murk::TieCompound tcomp;
-		MetaField::type_info const& info;
+	static MetaField::type_info const* const
+	info[]{
+		// Allow direct indexing (MetaFieldType starts at 0x01)
+		nullptr,
+		&s_type_info_string,
+		&s_type_info_int32,
+		&s_type_info_int64,
+		&s_type_info_bool
 	};
 
-	static field_data
-	fields[]{
-		{{s_comp_string}, s_type_info_string},
-		{{s_comp_int32 }, s_type_info_int32 },
-		{{s_comp_int64 }, s_type_info_int64 },
-		{{s_comp_bool  }, s_type_info_bool  }
-	};
 	static_assert(
-		std::extent<decltype(fields)>::value + 1u
+		std::extent<decltype(info)>::value
 		== enum_cast(Data::MetaFieldType::LAST),
-		"fields needs to be updated"
+		"field_info needs to be updated"
 	);
 }
 } // anonymous namespace
 
-#define HORD_THROW_MURK_ERROR__(err__, part__, ex__)				\
-	HORD_THROW_FMT(													\
-		ErrorCode::serialization_io_failed,							\
-		err__,														\
-		HORD_STR_LIT(part__),										\
-		&(ex__.get_tie().get_desc()),								\
-		murk::get_desc_name(ex__.get_tie().get_desc().get_type()),	\
-		ex__.what()													\
-	)
-//
-
-// Just stop reading here. Save your sanity
-
 #define HORD_SCOPE_FUNC deserialize
 namespace {
 HORD_DEF_FMT_FQN(
-	s_err_metadata_murk_deserialize,
-	"failed to deserialize %s at desc=(%#08p, %s);"
-	" murk message:\n"
-	"  >%s"
+	s_err_read_failed,
+	HORD_SER_ERR_MSG_IO_PROP("read")
 );
 } // anonymous namespace
 
 void
 Metadata::deserialize(
 	IO::InputPropStream& prop_stream
-) {
+) try {
 	assert(IO::PropType::metadata == prop_stream.get_type());
-	std::istream& stream = prop_stream.get_stream();
-
-	// header
-	uint32_t size = 0u;
-	try {
-		meta_impl::tcomp_header
-			.unbind()
-			.bind_begin(murk::BindMutable)
-				(&size)
-			.bind_end()
-		;
-		murk::deserialize(
-			stream, meta_impl::tcomp_header, murk::Endian::little
-		);
-	} catch (murk::SerializeError& se) {
-		HORD_THROW_MURK_ERROR__(
-			s_err_metadata_murk_deserialize,
-			"header",
-			se
-		);
-	}
+	auto ser = prop_stream.make_serializer();
+	uint32_t size = 0;
+	ser(size);
 
 	// fields
 	field_vector_type des_fields{static_cast<std::size_t>(size)};
 	uint8_t field_type = 0x00u;
-	try {
-		for (
-			auto it = des_fields.begin();
-			it != des_fields.end();
-			++it
+	for (auto& field : des_fields) {
+		ser(field_type);
+		if (
+			MetaFieldType::String > static_cast<MetaFieldType>(field_type)
+		||	MetaFieldType::Bool   < static_cast<MetaFieldType>(field_type)
 		) {
-			meta_impl::tcomp_entry
-				.bind_begin(murk::BindMutable)
-					(&field_type)
-				.bind_end()
-			;
-			murk::deserialize(
-				stream, meta_impl::tcomp_entry, murk::Endian::little
+			HORD_THROW_FQN(
+				ErrorCode::serialization_data_malformed,
+				"invalid field type encountered"
 			);
-
-			if (
-				MetaFieldType::String > static_cast<MetaFieldType>(field_type)
-			||	MetaFieldType::Bool   < static_cast<MetaFieldType>(field_type)
-			) {
-				HORD_THROW_FQN(
-					ErrorCode::serialization_data_malformed,
-					"invalid field type encountered"
-				);
-			} else {
-				meta_impl::field_data& fd = meta_impl::fields[field_type - 1];
-				it->reset(fd.info.construct());
-				assert((*it).operator bool());
-				fd.tcomp
-					.bind_object_mutable(**it)
-				;
-				murk::deserialize(
-					stream, fd.tcomp, murk::Endian::little
-				);
-			}
 		}
-	} catch (murk::SerializeError& se) {
-		HORD_THROW_MURK_ERROR__(
-			s_err_metadata_murk_deserialize,
-			"entry",
-			se
-		);
+		field.reset(meta_impl::info[field_type]->construct());
+		assert(static_cast<bool>(field));
+		ser(*field);
 	}
 
 	// commit
 	this->fields.operator=(std::move(des_fields));
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_read_failed,
+		serr,
+		prop_stream.get_info().object_id,
+		"metadata"
+	);
 }
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC serialize
 namespace {
 HORD_DEF_FMT_FQN(
-	s_err_metadata_murk_serialize,
-	"failed to serialize %s at desc=(%#08p, %s);"
-	" murk message:\n"
-	"  >%s"
+	s_err_write_failed,
+	HORD_SER_ERR_MSG_IO_PROP("write")
 );
 } // anonymous namespace
 
 void
 Metadata::serialize(
 	IO::OutputPropStream& prop_stream
-) const {
+) const try {
 	assert(IO::PropType::metadata == prop_stream.get_type());
-	std::ostream& stream = prop_stream.get_stream();
-
-	// header
-	uint32_t const size = static_cast<uint32_t>(this->fields.size());
-	try {
-		meta_impl::tcomp_header
-			.bind_begin(murk::BindImmutable)
-				(&size)
-			.bind_end()
-		;
-		murk::serialize(
-			stream, meta_impl::tcomp_header, murk::Endian::little
-		);
-	} catch (murk::SerializeError& se) {
-		HORD_THROW_MURK_ERROR__(
-			s_err_metadata_murk_serialize,
-			"header",
-			se
-		);
-	}
+	auto ser = prop_stream.make_serializer();
+	assert(std::numeric_limits<uint32_t>::max() >= this->fields.size());
+	ser(static_cast<uint32_t>(this->fields.size()));
 
 	// fields
-	try {
-		for (
-			auto it = this->fields.cbegin();
-			it != this->fields.cend();
-			++it
-		) {
-			uint8_t field_type = static_cast<uint8_t>(
-				(*it)->get_type_info().type
-			);
-			meta_impl::tcomp_entry
-				.bind_begin(murk::BindImmutable)
-					(&field_type)
-				.bind_end()
-			;
-			murk::serialize(
-				stream, meta_impl::tcomp_entry, murk::Endian::little
-			);
-			meta_impl::field_data& fd = meta_impl::fields[field_type - 1];
-			fd.tcomp
-				.bind_object_immutable(**it)
-			;
-			murk::serialize(
-				stream, fd.tcomp, murk::Endian::little
-			);
-		}
-	} catch (murk::SerializeError& se) {
-		HORD_THROW_MURK_ERROR__(
-			s_err_metadata_murk_serialize,
-			"entry",
-			se
+	for (auto const& field : this->fields) {
+		assert(static_cast<bool>(field));
+		ser(
+			static_cast<uint8_t>(field->get_type_info().type),
+			*field
 		);
 	}
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_write_failed,
+		serr,
+		prop_stream.get_info().object_id,
+		"metadata"
+	);
 }
 #undef HORD_SCOPE_FUNC
 

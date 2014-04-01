@@ -94,28 +94,10 @@ project = function()
 	configuration {}
 		includedirs {
 			precore.subst("${ROOT}/dep/duct/"),
-			precore.subst("${ROOT}/dep/murk/include/"),
 			precore.subst("${ROOT}/dep/trait_wrangler/"),
-			precore.subst("${ROOT}/dep/ceformat/")
+			precore.subst("${ROOT}/dep/ceformat/"),
+			precore.subst("${ROOT}/dep/Cacophony/"),
 		}
-end}})
-
-precore.make_config(
-"murk-import", {{
-project = function()
-	configuration {}
-		includedirs {
-			precore.subst("${ROOT}/dep/murk/include/")
-		}
-		libdirs {
-			precore.subst("${ROOT}/dep/murk/lib/")
-		}
-
-	configuration {"debug"}
-		links {"murk_d"}
-
-	configuration {"release"}
-		links {"murk"}
 end}})
 
 precore.make_config(

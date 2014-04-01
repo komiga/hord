@@ -13,11 +13,9 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Data/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
-
-#include <murk/DescCompound.hpp>
-#include <murk/TieCompound.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
 
@@ -43,28 +41,18 @@ struct Metadata;
 
 /**
 	Base Metadata field.
+
+	@note read() and write() will serialize base properties;
+	implementations shall serialize only their own properties.
 */
 class MetaField {
 public:
-	/**
-		Base descriptor compound.
-	*/
-	static murk::DescCompound const s_comp_base;
-
 	/**
 		Type info.
 	*/
 	struct type_info final {
 		/** Type. */
 		MetaFieldType const type;
-
-		/**
-			Descriptor compound for type.
-
-			@note This must begin with a reference
-			to @c MetaField::s_comp_base.
-		*/
-		murk::DescCompoundRef const comp;
 
 		/**
 			Default-construct field of this type.
@@ -90,16 +78,6 @@ private:
 	MetaField(MetaField const&) = delete;
 	MetaField& operator=(MetaField const&) = delete;
 
-	void
-	bind_base(
-		murk::TieBinder& binder
-	) noexcept;
-
-	void
-	bind_const_base(
-		murk::TieBinder& binder
-	) const noexcept;
-
 protected:
 /** @name Implementation */ /// @{
 	/**
@@ -109,33 +87,33 @@ protected:
 	get_type_info_impl() const noexcept = 0;
 
 	/**
-		bind() implementation.
+		read() implementation.
 
-		@note bind() will bind base properties; implementations shall
-		bind only their own properties.
-		@{
+		@throws SerializerError{..}
 	*/
-	virtual void
-	bind_impl(
-		murk::TieBinder&
-	) noexcept = 0;
+	virtual ser_result_type
+	read_impl(
+		InputSerializer& ser
+	) = 0;
 
-	virtual void
-	bind_const_impl(
-		murk::TieBinder&
-	) const noexcept = 0;
-	/** @} */
+	/**
+		write() implementation.
+
+		@throws SerializerError{..}
+	*/
+	virtual ser_result_type
+	write_impl(
+		OutputSerializer& ser
+	) const = 0;
 /// @}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	MetaField();
+	MetaField() = default;
 
 	/**
 		Constructor with name.
-
-		@param name Name.
 	*/
 	explicit
 	MetaField(
@@ -145,7 +123,7 @@ public:
 	{}
 
 	/** Move constructor. */
-	MetaField(MetaField&&);
+	MetaField(MetaField&&) = default;
 	/** Destructor. */
 	virtual
 	~MetaField() noexcept = 0;
@@ -153,7 +131,7 @@ public:
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	MetaField& operator=(MetaField&&);
+	MetaField& operator=(MetaField&&) = default;
 /// @}
 
 /** @name Properties */ /// @{
@@ -168,29 +146,40 @@ public:
 
 /** @name Serialization */ /// @{
 	/**
-		Bind field.
+		Read from input serializer.
 
-		@param binder Tie binder.
-		@{
+		@throws SerializerError{..}
+		If a serialization operation failed.
 	*/
-	void
-	bind(
-		murk::TieBinder& binder
-	) noexcept {
-		bind_base(binder);
-		bind_impl(binder);
+	ser_result_type
+	read(
+		ser_tag_read,
+		InputSerializer& ser
+	) {
+		ser(Cacophony::make_string_cfg<uint8_t>(this->name));
+		read_impl(ser);
 	}
 
-	void
-	bind(
-		murk::TieBinder& binder
-	) const noexcept {
-		bind_const_base(binder);
-		bind_const_impl(binder);
+	/**
+		Write to output serializer.
+
+		@throws SerializerError{..}
+		If a serialization operation failed.
+	*/
+	ser_result_type
+	write(
+		ser_tag_write,
+		OutputSerializer& ser
+	) const {
+		if (0xFF < this->name.size()) {
+			this->name.resize(0xFF);
+		}
+		ser(Cacophony::make_string_cfg<uint8_t>(this->name));
+		write_impl(ser);
 	}
-	/** @} */
 /// @}
 };
+inline MetaField::~MetaField() noexcept = default;
 
 /**
 	String MetaField.
@@ -211,26 +200,27 @@ private:
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
 
-	void
-	bind_impl(
-		murk::TieBinder&
-	) noexcept override;
+	ser_result_type
+	read_impl(
+		InputSerializer& ser
+	) override {
+		ser(this->value);
+	}
 
-	void
-	bind_const_impl(
-		murk::TieBinder&
-	) const noexcept override;
+	ser_result_type
+	write_impl(
+		OutputSerializer& ser
+	) const override {
+		ser(this->value);
+	}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	StringMetaField();
+	StringMetaField() = default;
 
 	/**
 		Constructor with name and value.
-
-		@param name Name.
-		@param value Value.
 	*/
 	StringMetaField(
 		String name,
@@ -241,14 +231,14 @@ public:
 	{}
 
 	/** Move constructor. */
-	StringMetaField(StringMetaField&&);
+	StringMetaField(StringMetaField&&) = default;
 	/** Destructor. */
-	~StringMetaField() noexcept override;
+	~StringMetaField() noexcept override = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	StringMetaField& operator=(StringMetaField&&);
+	StringMetaField& operator=(StringMetaField&&) = default;
 /// @}
 };
 
@@ -271,26 +261,27 @@ private:
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
 
-	void
-	bind_impl(
-		murk::TieBinder&
-	) noexcept override;
+	ser_result_type
+	read_impl(
+		InputSerializer& ser
+	) override {
+		ser(this->value);
+	}
 
-	void
-	bind_const_impl(
-		murk::TieBinder&
-	) const noexcept override;
+	ser_result_type
+	write_impl(
+		OutputSerializer& ser
+	) const override {
+		ser(this->value);
+	}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Int32MetaField();
+	Int32MetaField() = default;
 
 	/**
 		Constructor with name and value.
-
-		@param name Name.
-		@param value Value.
 	*/
 	Int32MetaField(
 		String name,
@@ -301,14 +292,14 @@ public:
 	{}
 
 	/** Move constructor. */
-	Int32MetaField(Int32MetaField&&);
+	Int32MetaField(Int32MetaField&&) = default;
 	/** Destructor. */
-	~Int32MetaField() noexcept override;
+	~Int32MetaField() noexcept override = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Int32MetaField& operator=(Int32MetaField&&);
+	Int32MetaField& operator=(Int32MetaField&&) = default;
 /// @}
 };
 
@@ -331,26 +322,27 @@ private:
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
 
-	void
-	bind_impl(
-		murk::TieBinder&
-	) noexcept override;
+	ser_result_type
+	read_impl(
+		InputSerializer& ser
+	) override {
+		ser(this->value);
+	}
 
-	void
-	bind_const_impl(
-		murk::TieBinder&
-	) const noexcept override;
+	ser_result_type
+	write_impl(
+		OutputSerializer& ser
+	) const override {
+		ser(this->value);
+	}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	Int64MetaField();
+	Int64MetaField() = default;
 
 	/**
 		Constructor with name and value.
-
-		@param name Name.
-		@param value Value.
 	*/
 	Int64MetaField(
 		String name,
@@ -361,14 +353,14 @@ public:
 	{}
 
 	/** Move constructor. */
-	Int64MetaField(Int64MetaField&&);
+	Int64MetaField(Int64MetaField&&) = default;
 	/** Destructor. */
-	~Int64MetaField() noexcept override;
+	~Int64MetaField() noexcept override = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	Int64MetaField& operator=(Int64MetaField&&);
+	Int64MetaField& operator=(Int64MetaField&&) = default;
 /// @}
 };
 
@@ -391,26 +383,27 @@ private:
 	MetaField::type_info const&
 	get_type_info_impl() const noexcept override;
 
-	void
-	bind_impl(
-		murk::TieBinder&
-	) noexcept override;
+	ser_result_type
+	read_impl(
+		InputSerializer& ser
+	) override {
+		ser(this->value);
+	}
 
-	void
-	bind_const_impl(
-		murk::TieBinder&
-	) const noexcept override;
+	ser_result_type
+	write_impl(
+		OutputSerializer& ser
+	) const override {
+		ser(this->value);
+	}
 
 public:
 /** @name Constructors and destructor */ /// @{
 	/** Default constructor. */
-	BoolMetaField();
+	BoolMetaField() = default;
 
 	/**
 		Constructor with name and value.
-
-		@param name Name.
-		@param value Value.
 	*/
 	BoolMetaField(
 		String name,
@@ -421,14 +414,14 @@ public:
 	{}
 
 	/** Move constructor. */
-	BoolMetaField(BoolMetaField&&);
+	BoolMetaField(BoolMetaField&&) = default;
 	/** Destructor. */
-	~BoolMetaField() noexcept override;
+	~BoolMetaField() noexcept override = default;
 /// @}
 
 /** @name Operators */ /// @{
 	/** Move assignment operator. */
-	BoolMetaField& operator=(BoolMetaField&&);
+	BoolMetaField& operator=(BoolMetaField&&) = default;
 /// @}
 };
 

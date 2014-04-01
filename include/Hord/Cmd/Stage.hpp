@@ -12,10 +12,8 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Cmd/Defs.hpp>
-
-#include <murk/DescCompound.hpp>
-#include <murk/TieCompound.hpp>
 
 #include <iosfwd>
 
@@ -31,7 +29,7 @@ namespace Cmd {
 // Forward declarations
 class Stage;
 
-template<Cmd::Type, Cmd::StageType, class Data>
+template<Cmd::Type const, Cmd::StageType const, class>
 class StageImpl;
 
 /**
@@ -43,6 +41,10 @@ class StageImpl;
 	@name Macros
 
 	Command implementation helpers.
+
+	TODO[check] Unless a macro takes a @a stagen_ parameter, it requires
+	@c HORD_CMD_STAGE_TYPE_ to be defined to the stage name.
+	HORD_CMD_STAGE_DATA_CLOSE() also requires @c HORD_CMD_TYPE_.
 
 	@note Due to an arbitrary limitation in C++, the implementation
 	definition macros must be placed in the same scope as %StageImpl
@@ -56,158 +58,171 @@ class StageImpl;
 	@{
 */
 
-/**
-	Generic command stage declaration.
-
-	@note @a cmdt__ and @a staget__ are typecast to Cmd::Type and
-	Cmd::StageType, respectively.
-
-	@param stagen__ Identifier for the stage name.
-	@param cmdt__ Command type.
-	@param staget__ %Stage type.
-	@param cti__ Command type info.
-	@param sti__ %Stage type info.
-	@param mems__ Data members.
-*/
-#define HORD_CMD_STAGE_DECL_G(stagen__, cmdt__, staget__, cti__, sti__, mems__)\
-	struct stagen__ final {												\
-		using impl = ::Hord::Cmd::StageImpl<							\
-			static_cast<::Hord::Cmd::Type>(cmdt__),						\
-			static_cast<::Hord::Cmd::StageType>(staget__),				\
-			stagen__													\
-		>;																\
-		mems__															\
-	};																	\
-	template<> ::Hord::Cmd::type_info const&							\
-	stagen__::impl::get_command_type_info_impl() const noexcept {		\
-		return cti__;													\
-	}																	\
-	template<> ::Hord::Cmd::Stage::type_info const&						\
-	stagen__::impl::get_stage_type_info_impl() const noexcept {			\
-		return sti__;													\
-	}
-
 /** @cond INTERNAL */
 // Forgive me
-#define HORD_CMD_STAGE__JOIN_CT__(cmdn__) \
-	HORD_CMD_STAGE__JOIN_CT_I__(cmdn__)
-#define HORD_CMD_STAGE__JOIN_CT_I__(cmdn__) \
-	s_type_info_ ## cmdn__
+#define HORD_CMD_STAGE__JOIN_CT_(cmdn_) \
+	HORD_CMD_STAGE__JOIN_CT_I_(cmdn_)
+#define HORD_CMD_STAGE__JOIN_CT_I_(cmdn_) \
+	s_type_info_ ## cmdn_
 
-#define HORD_CMD_STAGE__JOIN_ST__(cmdn__, stagen__) \
-	HORD_CMD_STAGE__JOIN_ST_I__(cmdn__, stagen__)
-#define HORD_CMD_STAGE__JOIN_ST_I__(cmdn__, stagen__) \
-	s_type_info_ ## cmdn__ ## _ ## stagen__
+#define HORD_CMD_STAGE__JOIN_ST_(cmdn_, stagen_) \
+	HORD_CMD_STAGE__JOIN_ST_I_(cmdn_, stagen_)
+#define HORD_CMD_STAGE__JOIN_ST_I_(cmdn_, stagen_) \
+	s_type_info_ ## cmdn_ ## _ ## stagen_
 /** @endcond */ // INTERNAL
 
 /**
-	Standard command stage declaration.
+	Generic close stage definition.
 
-	This requires @c HORD_CMD_TYPE__ to be defined to the command
+	@note @a cmdt_ and @a staget_ are typecast to Cmd::Type and
+	Cmd::StageType, respectively.
+
+	@param stagen_ Identifier of the stage name.
+	@param cmdt_ Command type.
+	@param staget_ %Stage type.
+	@param cti_ Command type info.
+	@param sti_ %Stage type info.
+*/
+#define HORD_CMD_STAGE_CLOSE_G(stagen_, cmdt_, staget_, cti_, sti_) \
+		using impl = ::Hord::Cmd::StageImpl<							\
+			static_cast<::Hord::Cmd::Type>(cmdt_),						\
+			static_cast<::Hord::Cmd::StageType>(staget_),				\
+			stagen_														\
+		>;																\
+	};																	\
+	template<> ::Hord::Cmd::type_info const&							\
+	stagen_::impl::get_command_type_info_impl() const noexcept {		\
+		return cti_;													\
+	}																	\
+	template<> ::Hord::Cmd::Stage::type_info const&						\
+	stagen_::impl::get_stage_type_info_impl() const noexcept {			\
+		return sti_;													\
+	}
+
+/**
+	Define stage type information.
+
+	@note This is encapsulated in an anonymous namespace.
+*/
+#define HORD_CMD_STAGE_DEF_TYPE_INFO()									\
+	namespace {															\
+	static ::Hord::Cmd::Stage::type_info const							\
+	HORD_CMD_STAGE__JOIN_ST_(HORD_CMD_TYPE_, HORD_CMD_STAGE_TYPE_){		\
+		::Hord::Cmd::StageType:: HORD_CMD_STAGE_TYPE_					\
+	};																	\
+	}
+
+/**
+	Open stage definition.
+
+	Stage data body should follow macro (without braces).
+*/
+#define HORD_CMD_STAGE_DATA_OPEN() \
+	struct HORD_CMD_STAGE_TYPE_ final {
+
+/**
+	Standard close stage definition.
+
+	This requires @c HORD_CMD_TYPE_ to be defined to the command
 	type for the stages. This also requires accessible static
 	@c Cmd::type_info and @c Cmd::Stage::type_info objects with the
 	names:
 
-	- @c s_type_info_ ## HORD_CMD_TYPE__
-	- @c s_type_info_ ## HORD_CMD_TYPE__ ## _ ## stagen__
-
-	@param stagen__ Identifier for the stage name.
-	@param mems__ Data members.
+	- <code>s_type_info_ ## HORD_CMD_TYPE_</code>
+	- <code>s_type_info_ ## HORD_CMD_TYPE_ ## _ ## stagen_</code>
 */
-#define HORD_CMD_STAGE_DECL(stagen__, mems__)					\
-	HORD_CMD_STAGE_DECL_G(										\
-		stagen__,												\
-		::Hord::Cmd::Type::HORD_CMD_TYPE__,						\
-		::Hord::Cmd::StageType::stagen__,						\
-		HORD_CMD_STAGE__JOIN_CT__(HORD_CMD_TYPE__),				\
-		HORD_CMD_STAGE__JOIN_ST__(HORD_CMD_TYPE__, stagen__),	\
-		mems__													\
+#define HORD_CMD_STAGE_DATA_CLOSE()											\
+	HORD_CMD_STAGE_CLOSE_G(													\
+		HORD_CMD_STAGE_TYPE_,												\
+		::Hord::Cmd::Type::HORD_CMD_TYPE_,									\
+		::Hord::Cmd::StageType::HORD_CMD_STAGE_TYPE_,						\
+		HORD_CMD_STAGE__JOIN_CT_(HORD_CMD_TYPE_),							\
+		HORD_CMD_STAGE__JOIN_ST_(HORD_CMD_TYPE_, HORD_CMD_STAGE_TYPE_)		\
 	)
 
 /**
-	Define execute_impl() by name.
+	Open stage data serialize() function definition.
 
-	Function body should follow macro. See Stage::execute_impl()
-	for visible parameters.
-
-	@param stagen__ Identifier for the stage name.
+	Function body should follow macro (without braces).
+	This should be placed within the stage data definition.
 */
-#define HORD_CMD_STAGE_DEF_EXECUTE(stagen__)	\
+#define HORD_CMD_STAGE_DATA_SERIALIZE_OPEN()			\
+	template<class Ser>									\
+	::Hord::ser_result_type								\
+	serialize(											\
+		::Hord::ser_tag_serialize,						\
+		Ser& ser										\
+	) {													\
+		auto& self = ::Hord::const_safe<Ser>(*this);	\
+		(void)self;
+
+/**
+	Open stage data read() function definition.
+
+	Function body should follow macro (without braces).
+	This should be placed within the stage data definition.
+*/
+#define HORD_CMD_STAGE_DATA_READ_OPEN()					\
+	::Hord::ser_result_type								\
+	read(												\
+		::Hord::ser_tag_read,							\
+		::Hord::InputSerializer& ser					\
+	) {
+
+/**
+	Open stage data write() function definition.
+
+	Function body should follow macro (without braces).
+	This should be placed within the stage data definition.
+*/
+#define HORD_CMD_STAGE_DATA_WRITE_OPEN()				\
+	::Hord::ser_result_type								\
+	write(												\
+		::Hord::ser_tag_write,							\
+		::Hord::OutputSerializer& ser					\
+	) const {
+
+/**
+	Close stage data serialize() function definition.
+*/
+#define HORD_CMD_STAGE_DATA_SERIALIZE_CLOSE() \
+	}
+
+/**
+	Close stage data read() function definition.
+*/
+#define HORD_CMD_STAGE_DATA_READ_CLOSE() \
+	HORD_CMD_STAGE_DATA_SERIALIZE_CLOSE()
+
+/**
+	Close stage data write() function definition.
+*/
+#define HORD_CMD_STAGE_DATA_WRITE_CLOSE() \
+	HORD_CMD_STAGE_DATA_SERIALIZE_CLOSE()
+
+/**
+	Define an empty serialization function.
+*/
+#define HORD_CMD_STAGE_DATA_EMPTY()				\
+	HORD_CMD_STAGE_DATA_SERIALIZE_OPEN()		\
+		(void)ser;								\
+	HORD_CMD_STAGE_DATA_SERIALIZE_CLOSE()
+
+/**
+	Define execute_impl() by stage name.
+
+	Function body should follow macro (with braces).
+	This should be placed outside of the stage data definition.
+	See Stage::execute_impl() for visible parameters.
+
+	@param stagen_ Identifier of the stage name.
+*/
+#define HORD_CMD_STAGE_DEF_EXECUTE(stagen_)		\
 	template<> ::Hord::Cmd::Status				\
-	stagen__::impl::execute_impl(				\
+	stagen_::impl::execute_impl(				\
 		::Hord::System::Context& context,		\
 		::Hord::Cmd::Stage& initiator			\
 	)
-
-/**
-	Define sub-bind with specified constness.
-
-	@param stagen__ Identifier for the stage name.
-	@param mems__ Sequence for the bind.
-	@param subn__ Sub-name of bind.
-	@param constness__ Constness of bind.
-*/
-#define HORD_CMD_STAGE_DEF_BIND_S(stagen__, mems__, subn__, constness__) \
-	template<> void								\
-	stagen__::impl::bind_base ## subn__(	\
-		::murk::TieBinder& binder				\
-	) constness__ noexcept {					\
-		binder mems__;							\
-	}											\
-
-/**
-	Define bind_base() and bind_base_const() individually by stage
-	name.
-
-	@remarks See Stage::bind_base() for visible parameters.
-
-	@param stagen__ Identifier for the stage name.
-	@param mems__ Sequence for bind_base().
-	@param mems_const__ Sequence for bind_base_const().
-*/
-#define HORD_CMD_STAGE_DEF_BIND_EACH(stagen__, mems__, mems_const__)\
-	HORD_CMD_STAGE_DEF_BIND_S(stagen__, mems__      ,,)				\
-	HORD_CMD_STAGE_DEF_BIND_S(stagen__, mems_const__, _const, const)
-
-/**
-	Define bind_base() and bind_base_const() by stage name.
-
-	@remarks See Stage::bind_base() for visible parameters.
-
-	@param stagen__ Identifier for the stage name.
-	@param mems__ Sequence of adjacent parentheses-enclosed pointers
-	to data members to be bound.
-*/
-#define HORD_CMD_STAGE_DEF_BIND(stagen__, mems__) \
-	HORD_CMD_STAGE_DEF_BIND_EACH(stagen__, mems__, mems__)
-
-/**
-	Define deserialize_complex() by name.
-
-	Function body should follow macro.
-	See Stage::deserialize_complex() for visible parameters.
-
-	@param stagen__ Identifier for the stage name.
-*/
-#define HORD_CMD_STAGE_DEF_DESERIALIZE_COMPLEX(stagen__) \
-	template<> void							\
-	stagen__::impl::deserialize_complex(	\
-		std::istream& stream				\
-	)
-
-/**
-	Define serialize_complex() by name.
-
-	Function body should follow macro.
-	See Stage::serialize_complex() for visible parameters.
-
-	@param stagen__ Identifier for the stage name.
-*/
-#define HORD_CMD_STAGE_DEF_SERIALIZE_COMPLEX(stagen__) \
-	template<> void							\
-	stagen__::impl::serialize_complex(		\
-		std::ostream& stream				\
-	) const
 
 /** @} */ // end of name-group Macros
 
@@ -248,28 +263,13 @@ make_stage_shadow(
 class Stage {
 public:
 	/**
-		Base descriptor compound.
-	*/
-	static murk::Desc const s_comp_base[2];
-
-	/**
 		Type info.
 	*/
 	struct type_info final {
-	/** @name name_group_name */ /// @{
 		/**
 			%Stage type.
 		*/
 		Cmd::StageType const type;
-
-		/**
-			Descriptor compound for type.
-
-			@note This must begin with a reference
-			to @c Stage::s_comp_base.
-		*/
-		murk::DescCompoundRef const comp;
-	/// @}
 	};
 
 	/**
@@ -317,52 +317,30 @@ protected:
 	get_command_type_info_impl() const noexcept = 0;
 
 	/**
-		get_stage_type() implementation.
+		get_stage_type_info() implementation.
 	*/
 	virtual Cmd::Stage::type_info const&
 	get_stage_type_info_impl() const noexcept = 0;
 
 	/**
-		bind() implementation.
+		read() implementation.
 
-		@note deserialize() will bind base properties;
-		implementations shall bind only their own base properties.
+		@throws SerializerError{..}
 	*/
-	virtual void
-	bind_base(
-		murk::TieBinder& binder
-	) noexcept = 0;
+	virtual ser_result_type
+	read_impl(
+		InputSerializer& ser
+	) = 0;
 
 	/**
-		bind_const() implementation.
+		write() implementation.
 
-		@note serialize() will bind base properties;
-		implementations shall bind only their own base properties.
+		@throws SerializerError{..}
 	*/
-	virtual void
-	bind_base_const(
-		murk::TieBinder& binder
-	) const noexcept = 0;
-
-	/**
-		Deserialize complex data from stream.
-
-		@note This is optional. The base implementation does nothing.
-	*/
-	virtual void
-	deserialize_complex(
-		std::istream& stream
-	);
-
-	/**
-		Serialize complex data to stream.
-
-		@note This is optional. The base implementation does nothing.
-	*/
-	virtual void
-	serialize_complex(
-		std::ostream& stream
-	) const;
+	virtual ser_result_type
+	write_impl(
+		OutputSerializer& ser
+	) const = 0;
 
 	/**
 		execute() implementation.
@@ -499,36 +477,48 @@ public:
 /// @}
 
 /** @name Serialization */ /// @{
-	/**
-		Deserialize from stream.
-
-		@warning State may not be retained if an exception is thrown.
-
-		@throws Error{ErrorCode::serialization_io_failed}
-		If an input operation failed.
-
-		@throws Error{ErrorCode::serialization_data_malformed}
-		If malformed data was encountered.
-
-		@param stream Stream.
-	*/
-	void
-	deserialize(
-		std::istream& stream
+public:
+	static_assert(
+		std::is_same<
+			Cmd::ID,
+			uint32_t
+		>::value, ""
 	);
 
 	/**
-		Serialize to stream.
+		Read from input serializer.
 
-		@throws Error{ErrorCode::serialization_io_failed}
-		If an output operation failed.
+		@warning State may not be retained if an exception is thrown.
 
-		@param stream Stream.
+		@throws SerializerError{..}
+		If a serialization operation failed.
+
+		@throws Error{ErrorCode::serialization_data_malformed}
+		If malformed data was encountered.
 	*/
-	void
-	serialize(
-		std::ostream& stream
-	) const;
+	ser_result_type
+	read(
+		ser_tag_read,
+		InputSerializer& ser
+	) {
+		ser(const_cast<Cmd::ID&>(m_id.serial));
+		read_impl(ser);
+	}
+
+	/**
+		Write to output serializer.
+
+		@throws SerializerError{..}
+		If a serialization operation failed.
+	*/
+	ser_result_type
+	write(
+		ser_tag_write,
+		OutputSerializer& ser
+	) const {
+		ser(m_id.serial);
+		write_impl(ser);
+	}
 /// @}
 
 /** @name Operations */ /// @{
@@ -564,20 +554,32 @@ inline Stage::~Stage() noexcept = default;
 /**
 	Generic command stage implementation.
 
+	@note @a Data must satisfy input and output serialization
+	operations for Cacophony.
+
 	@tparam command_type Command type.
 	@tparam stage_type %Stage type.
 	@tparam Data Data class for the stage.
 */
 template<
-	Cmd::Type command_type,
-	Cmd::StageType stage_type,
+	Cmd::Type const command_type,
+	Cmd::StageType const stage_type,
 	class Data
 >
 class StageImpl final
 	: public Cmd::Stage
 {
 private:
-	Data m_data;
+	using data_type = Data;
+
+	static_assert(
+		Cacophony::is_input_serializable<InputSerializer, data_type>::value &&
+		Cacophony::is_output_serializable<OutputSerializer, data_type>::value,
+		"Data type must satisfy input and output serialization for"
+		" Cacophony"
+	);
+
+	data_type m_data;
 
 	StageImpl(StageImpl const&) = delete;
 	StageImpl& operator=(StageImpl const&) = delete;
@@ -591,7 +593,7 @@ public:
 	*/
 	explicit
 	StageImpl(
-		Data&& data
+		data_type&& data
 	)
 		: m_data(std::move(data))
 	{}
@@ -605,6 +607,7 @@ public:
 /// @}
 
 private:
+// Implementation
 	Cmd::type_info const&
 	get_command_type_info_impl() const noexcept override;
 
@@ -612,24 +615,18 @@ private:
 	get_stage_type_info_impl() const noexcept override;
 
 	void
-	bind_base(
-		murk::TieBinder& binder
-	) noexcept override;
+	read_impl(
+		InputSerializer& ser
+	) override {
+		ser(m_data);
+	}
 
 	void
-	bind_base_const(
-		murk::TieBinder& binder
-	) const noexcept override;
-
-	void
-	deserialize_complex(
-		std::istream& /*stream*/
-	) override {}
-
-	void
-	serialize_complex(
-		std::ostream& /*stream*/
-	) const override {}
+	write_impl(
+		OutputSerializer& ser
+	) const override {
+		ser(m_data);
+	}
 
 	Cmd::Status
 	execute_impl(

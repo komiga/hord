@@ -12,6 +12,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Data/Record.hpp>
 #include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -62,20 +63,24 @@ private:
 
 	void
 	deserialize_prop_primary(
-		IO::InputPropStream& prop_stream
+		IO::InputPropStream& prop_stream,
+		InputSerializer& ser
 	);
 	void
 	serialize_prop_primary(
-		IO::OutputPropStream& prop_stream
+		IO::OutputPropStream& prop_stream,
+		OutputSerializer& ser
 	) const;
 
 	void
 	deserialize_prop_auxiliary(
-		IO::InputPropStream& prop_stream
+		IO::InputPropStream& prop_stream,
+		InputSerializer& ser
 	);
 	void
 	serialize_prop_auxiliary(
-		IO::OutputPropStream& prop_stream
+		IO::OutputPropStream& prop_stream,
+		OutputSerializer& ser
 	) const;
 
 	// Object::Unit implementation

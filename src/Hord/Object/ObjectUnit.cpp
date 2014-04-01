@@ -1,11 +1,9 @@
 
+#include <Hord/serialization.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
 
-#include <murk/Desc.hpp>
-#include <murk/TieCompound.hpp>
-#include <murk/serialize.hpp>
 #include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
@@ -49,127 +47,49 @@ Unit::set_slug(
 
 // serialization
 
-#define HORD_UNIT_THROW_MURK_ERROR__(err__, fqn__, des_ser__, ex__)	\
-	HORD_THROW_FMT(													\
-		ErrorCode::serialization_io_failed,							\
-		err__,														\
-		fqn__,														\
-		des_ser__,													\
-		&(ex__.get_tie().get_desc()),								\
-		murk::get_desc_name(ex__.get_tie().get_desc().get_type()),	\
-		ex__.what()													\
-	)
-//
-
-#define HORD_UNIT_ERR_MSG_UNSUPPLIED__ \
+#define HORD_UNIT_ERR_MSG_UNSUPPLIED_ \
 	"prop %08x -> %s is not supplied for type %s"
 
-#define HORD_UNIT_CHECK_UNSUPPLIED__(err__)						\
+#define HORD_UNIT_CHECK_UNSUPPLIED_(err_)						\
 	if (!m_prop_states.is_supplied(type)) {						\
 		HORD_THROW_FMT(											\
 			ErrorCode::serialization_prop_unsupplied,			\
-			err__,												\
-			m_id,												\
+			err_,												\
+			get_id(),											\
 			IO::get_prop_type_name(type),						\
 			Object::get_type_name(get_type())					\
 		);														\
 	}
 //
 
-namespace {
-namespace prop_comp {
-	static murk::DescCompound const
-	identity{
-		{murk::DescType::uint32}, // parent
-		{murk::StringDesc{0u}}, // slug
-		{murk::DescType::terminate}
-	};
-
-	static murk::DescCompound const
-	scratch{
-		{murk::StringDesc{0u}}, // data
-		{murk::DescType::terminate}
-	};
-}
-
-HORD_DEF_FMT(
-	s_err_prop_murk,
-	"%s: failed to %s prop at desc=(%#08p, %s);"
-	" murk error:\n"
-	"  >%s"
-);
-} // anonymous namespace
-
-#define HORD_SCOPE_FUNC deserialize_base_prop
-void
-deserialize_base_prop(
-	IO::InputPropStream& prop_stream,
-	murk::TieCompound& tcomp
-) {
-	try {
-		murk::deserialize(
-			prop_stream.get_stream(), tcomp, murk::Endian::little
-		);
-	} catch (murk::SerializeError& murk_err) {
-		HORD_UNIT_THROW_MURK_ERROR__(
-			s_err_prop_murk,
-			HORD_SCOPE_FQN_STR_LIT,
-			"deserialize",
-			murk_err
-		);
-	}
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC serialize_base_prop
-void
-serialize_base_prop(
-	IO::OutputPropStream& prop_stream,
-	murk::TieCompound const& tcomp
-) {
-	try {
-		murk::serialize(
-			prop_stream.get_stream(), tcomp, murk::Endian::little
-		);
-	} catch (murk::SerializeError& murk_err) {
-		HORD_UNIT_THROW_MURK_ERROR__(
-			s_err_prop_murk,
-			HORD_SCOPE_FQN_STR_LIT,
-			"serialize",
-			murk_err
-		);
-	}
-}
-#undef HORD_SCOPE_FUNC
-
 #define HORD_SCOPE_FUNC deserialize
 namespace {
 HORD_DEF_FMT_FQN(
 	s_err_deserialize_unsupplied,
-	HORD_UNIT_ERR_MSG_UNSUPPLIED__
+	HORD_UNIT_ERR_MSG_UNSUPPLIED_
+);
+HORD_DEF_FMT_FQN(
+	s_err_read_failed,
+	HORD_SER_ERR_MSG_IO_PROP("read")
 );
 } // anonymous namespace
 
 void
 Unit::deserialize(
 	IO::InputPropStream& prop_stream
-) {
+) try {
 	IO::PropType const type = prop_stream.get_type();
+	HORD_UNIT_CHECK_UNSUPPLIED_(s_err_deserialize_unsupplied);
 
-	HORD_UNIT_CHECK_UNSUPPLIED__(s_err_deserialize_unsupplied);
-
+	auto ser = prop_stream.make_serializer();
 	switch (type) {
 	case IO::PropType::identity: {
 		Object::ID parent{Object::NULL_ID};
 		String slug{};
-
-		murk::TieCompound tcomp{prop_comp::identity};
-		tcomp
-		.bind_begin(murk::BindMutable)
-			(&parent)
-			(&slug)
-		.bind_end();
-		deserialize_base_prop(prop_stream, tcomp);
+		ser(
+			parent,
+			Cacophony::make_string_cfg<uint8_t>(slug)
+		);
 
 		// commit
 		set_parent(parent);
@@ -182,13 +102,7 @@ Unit::deserialize(
 
 	case IO::PropType::scratch: {
 		String scratch_space{};
-
-		murk::TieCompound tcomp{prop_comp::scratch};
-		tcomp
-		.bind_begin(murk::BindMutable)
-			(&scratch_space)
-		.bind_end();
-		deserialize_base_prop(prop_stream, tcomp);
+		ser(Cacophony::make_string_cfg<uint32_t>(scratch_space));
 
 		// commit
 		m_scratch_space.assign(std::move(scratch_space));
@@ -200,6 +114,13 @@ Unit::deserialize(
 	}
 
 	m_prop_states.assign(type, IO::PropState::original);
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_read_failed,
+		serr,
+		get_id(),
+		IO::get_prop_type_name(prop_stream.get_type())
+	);
 }
 #undef HORD_SCOPE_FUNC
 
@@ -207,22 +128,24 @@ Unit::deserialize(
 namespace {
 HORD_DEF_FMT_FQN(
 	s_err_serialize_unsupplied,
-	HORD_UNIT_ERR_MSG_UNSUPPLIED__
+	HORD_UNIT_ERR_MSG_UNSUPPLIED_
 );
-
 HORD_DEF_FMT_FQN(
 	s_err_serialize_improper_state,
 	"prop %08x -> %s cannot be serialized while uninitialized"
+);
+HORD_DEF_FMT_FQN(
+	s_err_write_failed,
+	HORD_SER_ERR_MSG_IO_PROP("write")
 );
 } // anonymous namespace
 
 void
 Unit::serialize(
 	IO::OutputPropStream& prop_stream
-) {
+) try {
 	IO::PropType const type = prop_stream.get_type();
-
-	HORD_UNIT_CHECK_UNSUPPLIED__(s_err_serialize_unsupplied);
+	HORD_UNIT_CHECK_UNSUPPLIED_(s_err_serialize_unsupplied);
 	if (!m_prop_states.is_initialized(type)) {
 		HORD_THROW_FMT(
 			ErrorCode::serialization_prop_improper_state,
@@ -232,29 +155,22 @@ Unit::serialize(
 		);
 	}
 
+	auto ser = prop_stream.make_serializer();
 	switch (type) {
-	case IO::PropType::identity: {
-		murk::TieCompound tcomp{prop_comp::identity};
-		tcomp
-		.bind_begin(murk::BindImmutable)
-			(&m_parent)
-			(&m_slug)
-		.bind_end();
-		serialize_base_prop(prop_stream, tcomp);
-	} break;
+	case IO::PropType::identity:
+		ser(
+			m_parent,
+			Cacophony::make_string_cfg<uint8_t>(m_slug)
+		);
+		break;
 
 	case IO::PropType::metadata:
 		m_metadata.serialize(prop_stream);
 		break;
 
-	case IO::PropType::scratch: {
-		murk::TieCompound tcomp{prop_comp::scratch};
-		tcomp
-		.bind_begin(murk::BindImmutable)
-			(&m_scratch_space)
-		.bind_end();
-		serialize_base_prop(prop_stream, tcomp);
-	} break;
+	case IO::PropType::scratch:
+		ser(Cacophony::make_string_cfg<uint32_t>(m_scratch_space));
+		break;
 
 	default:
 		serialize_impl(prop_stream);
@@ -262,6 +178,13 @@ Unit::serialize(
 	}
 
 	m_prop_states.assign(type, IO::PropState::original);
+} catch (SerializerError& serr) {
+	HORD_THROW_SER_PROP(
+		s_err_write_failed,
+		serr,
+		get_id(),
+		IO::get_prop_type_name(prop_stream.get_type())
+	);
 }
 #undef HORD_SCOPE_FUNC
 

@@ -13,9 +13,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Rule/Defs.hpp>
-
-#include <iosfwd>
 
 namespace Hord {
 namespace Node {
@@ -76,33 +75,35 @@ public:
 
 /** @name Serialization */ /// @{
 	/**
-		Deserialize from stream.
+		Read from input serializer.
 
 		@note State will be retained if an exception is thrown.
 
-		@throws Error{ErrorCode::serialization_io_failed}
-		If an input operation failed.
+		@throws SerializerError{..}
+		If a serialization operation failed.
 
-		@param stream Input stream.
+		@param ser Input serializer.
 	*/
-	void
-	deserialize(
-		std::istream& stream
+	ser_result_type
+	read(
+		ser_tag_read,
+		InputSerializer& ser
 	);
 
 	/**
-		Serialize to stream.
+		Write to output serializer.
 
 		@note State will be retained if an exception is thrown.
 
-		@throws Error{ErrorCode::serialization_io_failed}
-		If an input operation failed.
+		@throws SerializerError{..}
+		If a serialization operation failed.
 
-		@param stream Output stream.
+		@param ser Output serializer.
 	*/
-	void
-	serialize(
-		std::ostream& stream
+	ser_result_type
+	write(
+		ser_tag_write,
+		OutputSerializer& ser
 	) const;
 /// @}
 };
