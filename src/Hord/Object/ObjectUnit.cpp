@@ -41,8 +41,8 @@ Unit::set_slug(
 	m_slug.assign(std::move(slug));
 	if (64u < m_slug.size()) {
 		m_slug.resize(64u);
+		// TODO: Truncate invalid unit sequence (if any) after resize
 	}
-	// TODO: Truncate invalid unit sequence (if any) after resize
 }
 
 // serialization

@@ -142,6 +142,20 @@ public:
 	get_type_info() const noexcept {
 		return get_type_info_impl();
 	}
+
+	/**
+		Set name.
+	*/
+	void
+	set_name(
+		String new_name
+	) noexcept {
+		this->name.assign(std::move(new_name));
+		if (0xFF < this->name.size()) {
+			this->name.resize(0xFF);
+			// TODO: Truncate invalid unit sequence (if any) after resize
+		}
+	}
 /// @}
 
 /** @name Serialization */ /// @{
@@ -171,9 +185,6 @@ public:
 		ser_tag_write,
 		OutputSerializer& ser
 	) const {
-		if (0xFF < this->name.size()) {
-			this->name.resize(0xFF);
-		}
 		ser(Cacophony::make_string_cfg<uint8_t>(this->name));
 		write_impl(ser);
 	}
