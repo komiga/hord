@@ -300,7 +300,7 @@ public:
 	/**
 		Set slug.
 
-		@warning This property is truncated to 64 code units.
+		@warning This property is truncated to 255 code units.
 
 		@param slug New slug.
 	*/
