@@ -13,6 +13,11 @@ namespace Object {
 
 #define HORD_SCOPE_CLASS Object::Unit
 
+Unit::~Unit() noexcept = default;
+
+Unit::Unit(Unit&&) = default;
+Unit& Unit::operator=(Unit&&) = default;
+
 Unit::Unit(
 	bool const supplies_primary,
 	bool const supplies_auxiliary,
@@ -26,11 +31,6 @@ Unit::Unit(
 	)
 	, m_parent(parent)
 {}
-
-Unit::Unit(Unit&&) = default;
-Unit::~Unit() noexcept = default;
-
-Unit& Unit::operator=(Unit&&) = default;
 
 // properties
 

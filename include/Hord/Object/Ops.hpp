@@ -89,7 +89,19 @@ struct IDPrinter {
 	Object::ID id;
 /// @}
 
-/** @name Constructors and destructor */ /// @{
+private:
+	IDPrinter() = delete;
+
+public:
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~IDPrinter() noexcept = default;
+
+	/** Copy constructor. */
+	IDPrinter(IDPrinter const&) noexcept = default;
+	/** Move constructor. */
+	IDPrinter(IDPrinter&&) noexcept = default;
+
 	/**
 		Constructor with object id.
 
@@ -116,13 +128,6 @@ struct IDPrinter {
 	) noexcept
 		: id(object.get_id())
 	{}
-
-	/** Copy constructor. */
-	IDPrinter(IDPrinter const&) noexcept = default;
-	/** Move constructor. */
-	IDPrinter(IDPrinter&&) noexcept = default;
-	/** Destructor. */
-	~IDPrinter() noexcept = default;
 /// @}
 };
 

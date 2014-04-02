@@ -63,7 +63,15 @@ private:
 	);
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Buffer() noexcept;
+
+	/** Move constructor. */
+	Buffer(Buffer&&);
+	/** Move assignment operator. */
+	Buffer& operator=(Buffer&&);
+
 	/**
 		Constructor with capacity.
 
@@ -73,16 +81,6 @@ public:
 	Buffer(
 		std::size_t const capacity
 	);
-
-	/** Move constructor. */
-	Buffer(Buffer&&);
-	/** Destructor. */
-	~Buffer() noexcept;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Buffer& operator=(Buffer&&);
 /// @}
 
 /** @name Properties */ /// @{

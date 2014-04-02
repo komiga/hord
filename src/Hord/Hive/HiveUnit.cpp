@@ -34,6 +34,11 @@ Unit::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
+Unit::~Unit() noexcept = default;
+
+Unit::Unit(Unit&&) = default;
+Unit& Unit::operator=(Unit&&) = default;
+
 Unit::Unit()
 	: base(
 		s_type_info.supplies_prop_primary,
@@ -53,11 +58,6 @@ Unit::Unit(
 		Object::NULL_ID
 	)
 {}
-
-Unit::Unit(Unit&&) = default;
-Unit::~Unit() noexcept = default;
-
-Unit& Unit::operator=(Unit&&) = default;
 
 bool
 Unit::has_child(

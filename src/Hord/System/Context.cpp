@@ -50,6 +50,10 @@ Context::Context(
 	, m_output()
 {}
 
+Context::~Context() noexcept = default;
+
+Context::Context(Context&&) noexcept = default;
+
 Context::Context(
 	Type const type,
 	System::Driver& driver,
@@ -61,9 +65,6 @@ Context::Context(
 		get_hive_pair(driver, hive_id)
 	)
 {}
-
-Context::Context(Context&&) noexcept = default;
-Context::~Context() noexcept = default;
 
 // commands
 

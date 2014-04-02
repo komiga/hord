@@ -108,9 +108,17 @@ protected:
 /// @}
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	virtual
+	~MetaField() noexcept = 0;
+
 	/** Default constructor. */
 	MetaField() = default;
+	/** Move constructor. */
+	MetaField(MetaField&&) = default;
+	/** Move assignment operator. */
+	MetaField& operator=(MetaField&&) = default;
 
 	/**
 		Constructor with name.
@@ -121,19 +129,9 @@ public:
 	) noexcept
 		: name(std::move(name))
 	{}
-
-	/** Move constructor. */
-	MetaField(MetaField&&) = default;
-	/** Destructor. */
-	virtual
-	~MetaField() noexcept = 0;
 /// @}
 
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	MetaField& operator=(MetaField&&) = default;
-/// @}
-
+public:
 /** @name Properties */ /// @{
 	/**
 		Get type info.
@@ -226,9 +224,16 @@ private:
 	}
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~StringMetaField() noexcept override = default;
+
 	/** Default constructor. */
 	StringMetaField() = default;
+	/** Move constructor. */
+	StringMetaField(StringMetaField&&) = default;
+	/** Move assignment operator. */
+	StringMetaField& operator=(StringMetaField&&) = default;
 
 	/**
 		Constructor with name and value.
@@ -240,16 +245,6 @@ public:
 		: MetaField(std::move(name))
 		, value(std::move(value))
 	{}
-
-	/** Move constructor. */
-	StringMetaField(StringMetaField&&) = default;
-	/** Destructor. */
-	~StringMetaField() noexcept override = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	StringMetaField& operator=(StringMetaField&&) = default;
 /// @}
 };
 
@@ -287,9 +282,16 @@ private:
 	}
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Int32MetaField() noexcept override = default;
+
 	/** Default constructor. */
 	Int32MetaField() = default;
+	/** Move constructor. */
+	Int32MetaField(Int32MetaField&&) = default;
+	/** Move assignment operator. */
+	Int32MetaField& operator=(Int32MetaField&&) = default;
 
 	/**
 		Constructor with name and value.
@@ -301,16 +303,6 @@ public:
 		: MetaField(std::move(name))
 		, value(value)
 	{}
-
-	/** Move constructor. */
-	Int32MetaField(Int32MetaField&&) = default;
-	/** Destructor. */
-	~Int32MetaField() noexcept override = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Int32MetaField& operator=(Int32MetaField&&) = default;
 /// @}
 };
 
@@ -348,9 +340,16 @@ private:
 	}
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Int64MetaField() noexcept override = default;
+
 	/** Default constructor. */
 	Int64MetaField() = default;
+	/** Move constructor. */
+	Int64MetaField(Int64MetaField&&) = default;
+	/** Move assignment operator. */
+	Int64MetaField& operator=(Int64MetaField&&) = default;
 
 	/**
 		Constructor with name and value.
@@ -362,16 +361,6 @@ public:
 		: MetaField(std::move(name))
 		, value(value)
 	{}
-
-	/** Move constructor. */
-	Int64MetaField(Int64MetaField&&) = default;
-	/** Destructor. */
-	~Int64MetaField() noexcept override = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Int64MetaField& operator=(Int64MetaField&&) = default;
 /// @}
 };
 
@@ -409,9 +398,16 @@ private:
 	}
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~BoolMetaField() noexcept override = default;
+
 	/** Default constructor. */
 	BoolMetaField() = default;
+	/** Move constructor. */
+	BoolMetaField(BoolMetaField&&) = default;
+	/** Move assignment operator. */
+	BoolMetaField& operator=(BoolMetaField&&) = default;
 
 	/**
 		Constructor with name and value.
@@ -423,16 +419,6 @@ public:
 		: MetaField(std::move(name))
 		, value(value)
 	{}
-
-	/** Move constructor. */
-	BoolMetaField(BoolMetaField&&) = default;
-	/** Destructor. */
-	~BoolMetaField() noexcept override = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	BoolMetaField& operator=(BoolMetaField&&) = default;
 /// @}
 };
 
@@ -459,16 +445,14 @@ private:
 	Metadata& operator=(Metadata const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Metadata() noexcept = default;
+
 	/** Default constructor. */
 	Metadata() = default;
 	/** Move constructor. */
 	Metadata(Metadata&&) = default;
-	/** Destructor. */
-	~Metadata() noexcept = default;
-/// @}
-
-/** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Metadata& operator=(Metadata&&) = default;
 /// @}

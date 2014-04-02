@@ -109,7 +109,13 @@ private:
 	);
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Context() noexcept;
+
+	/** Move constructor. */
+	Context(Context&&) noexcept;
+
 	/**
 		Constructor with type, driver, and hive ID.
 
@@ -125,14 +131,9 @@ public:
 		System::Driver& driver,
 		Hive::ID const hive_id
 	);
-
-	/** Move constructor. */
-	Context(Context&&) noexcept;
-	/** Destructor. */
-	~Context() noexcept;
 /// @}
 
-/** @name Operations */ /// @{
+/** @name Properties */ /// @{
 	/**
 		Get type.
 	*/

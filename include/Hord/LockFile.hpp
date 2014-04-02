@@ -44,9 +44,20 @@ private:
 	LockFile& operator=(LockFile const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/**
+		Destructor.
+
+		@remarks Will automatically @c release() the lock.
+	*/
+	~LockFile();
+
 	/** Default constructor. */
 	LockFile() = default;
+	/** Move constructor. */
+	LockFile(LockFile&&) = default;
+	/** Move assignment operator. */
+	LockFile& operator=(LockFile&&) = default;
 
 	/**
 		Constructor with path.
@@ -60,20 +71,6 @@ public:
 	LockFile(
 		String path
 	) noexcept;
-
-	/** Move constructor. */
-	LockFile(LockFile&&);
-	/**
-		Destructor.
-
-		@remarks Will automatically @c release() the lock.
-	*/
-	~LockFile();
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	LockFile& operator=(LockFile&&);
 /// @}
 
 /** @name Properties */ /// @{

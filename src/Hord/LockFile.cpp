@@ -16,8 +16,9 @@ namespace Hord {
 
 #define HORD_SCOPE_CLASS LockFile
 
-LockFile::LockFile(LockFile&&) = default;
-LockFile& LockFile::operator=(LockFile&&) = default;
+LockFile::~LockFile() {
+	release();
+}
 
 LockFile::LockFile(
 	String path
@@ -26,16 +27,13 @@ LockFile::LockFile(
 	, m_path(std::move(path))
 {}
 
-LockFile::~LockFile() {
-	release();
-}
-
 #define HORD_SCOPE_FUNC set_path
-
+namespace {
 HORD_DEF_FMT_FQN(
 	s_err_immutable,
 	"cannot change path to `%s` while lock is active"
 );
+} // anonymous namespace
 
 void
 LockFile::set_path(
@@ -54,11 +52,12 @@ LockFile::set_path(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC acquire
-
+namespace {
 HORD_DEF_FMT_FQN(
 	s_err_acquire_failed,
 	"failed to acquire lock for `%s`"
 );
+} // anonymous namespace
 
 void
 LockFile::acquire() {

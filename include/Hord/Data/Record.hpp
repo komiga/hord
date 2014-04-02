@@ -42,15 +42,18 @@ private:
 	Record& operator=(Record const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Record() noexcept = default;
+
 	/** Default constructor. */
 	Record() = default;
 	/** Copy constructor. */
 	Record(Record const&) = default;
 	/** Move constructor. */
 	Record(Record&&) = default;
-	/** Destructor. */
-	~Record() noexcept = default;
+	/** Move assignment operator. */
+	Record& operator=(Record&&) = default;
 
 	/**
 		Construct record with size.
@@ -60,11 +63,6 @@ public:
 	)
 		: fields(size)
 	{}
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Record& operator=(Record&&) = default;
 /// @}
 };
 

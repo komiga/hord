@@ -45,7 +45,19 @@ public:
 	IO::PropType prop_type;
 /// @}
 
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~PropInfo() noexcept = default;
+
+	/** Copy constructor. */
+	PropInfo(PropInfo const&) noexcept = default;
+	/** Move constructor. */
+	PropInfo(PropInfo&&) noexcept = default;
+	/** Copy assignment operator. */
+	PropInfo& operator=(PropInfo const&) noexcept = default;
+	/** Move assignment operator. */
+	PropInfo& operator=(PropInfo&&) noexcept = default;
+
 	/**
 		Constructor with object id, object type, and prop type.
 
@@ -79,20 +91,6 @@ public:
 		Object::Unit const& object,
 		IO::PropType const prop_type
 	) noexcept;
-
-	/** Copy constructor. */
-	PropInfo(PropInfo const&) noexcept = default;
-	/** Move constructor. */
-	PropInfo(PropInfo&&) noexcept = default;
-	/** Destructor. */
-	~PropInfo() noexcept = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Copy assignment operator. */
-	PropInfo& operator=(PropInfo const&) noexcept = default;
-	/** Move assignment operator. */
-	PropInfo& operator=(PropInfo&&) noexcept = default;
 /// @}
 };
 

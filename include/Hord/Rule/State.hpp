@@ -35,20 +35,17 @@ private:
 	State(State const&) = delete;
 	State& operator=(State const&) = delete;
 
-protected:
-/** @name Constructors and destructor */ /// @{
-	/** Default constructor. */
-	State() noexcept;
-	/** Move constructor. */
-	State(State&&) noexcept;
+/** @name Special member functions */ /// @{
 public:
 	/** Destructor. */
 	virtual
 	~State() noexcept = 0;
-/// @}
 
 protected:
-/** @name Operators */ /// @{
+	/** Default constructor. */
+	State() noexcept;
+	/** Move constructor. */
+	State(State&&) noexcept;
 	/** Move assignment operator. */
 	State& operator=(State&&) noexcept;
 /// @}

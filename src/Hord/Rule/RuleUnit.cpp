@@ -22,6 +22,11 @@ Unit::get_type_info_impl() const noexcept {
 	return s_type_info;
 }
 
+Unit::~Unit() noexcept = default;
+
+Unit::Unit(Unit&&) = default;
+Unit& Unit::operator=(Unit&&) = default;
+
 Unit::Unit(
 	Rule::ID const id,
 	Object::ID const parent
@@ -33,11 +38,6 @@ Unit::Unit(
 		parent
 	)
 {}
-
-Unit::Unit(Unit&&) = default;
-Unit::~Unit() noexcept = default;
-
-Unit& Unit::operator=(Unit&&) = default;
 
 #undef HORD_SCOPE_CLASS
 

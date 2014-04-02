@@ -76,7 +76,10 @@ private:
 	) const override;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Unit() noexcept override;
+
 	/**
 		Default constructor.
 
@@ -86,6 +89,11 @@ public:
 		@endcode
 	*/
 	Unit();
+
+	/** Move constructor. */
+	Unit(Unit&&);
+	/** Move assignment operator. */
+	Unit& operator=(Unit&&);
 
 	/**
 		Constructor with ID.
@@ -98,16 +106,6 @@ public:
 	Unit(
 		Hive::ID const id
 	) noexcept;
-
-	/** Move constructor. */
-	Unit(Unit&&);
-	/** Destructor. */
-	~Unit() noexcept override;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Unit& operator=(Unit&&);
 /// @}
 
 /** @name Properties */ /// @{

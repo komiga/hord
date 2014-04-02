@@ -129,7 +129,17 @@ private:
 	PropStateStore& operator=(PropStateStore const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~PropStateStore() = default;
+
+	/** Copy constructor. */
+	PropStateStore(PropStateStore const&) = default;
+	/** Move constructor. */
+	PropStateStore(PropStateStore&&) = default;
+	/** Move assignment operator. */
+	PropStateStore& operator=(PropStateStore&&) = default;
+
 	/**
 		Constructor with object data prop availability.
 
@@ -159,18 +169,6 @@ public:
 			~m_states_supplied & data_mask_unsupplied
 		)
 	{}
-
-	/** Copy constructor. */
-	PropStateStore(PropStateStore const&) = default;
-	/** Move constructor. */
-	PropStateStore(PropStateStore&&) = default;
-	/** Destructor. */
-	~PropStateStore() = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	PropStateStore& operator=(PropStateStore&&) = default;
 /// @}
 
 /** @name Properties */ /// @{

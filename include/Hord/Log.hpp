@@ -147,7 +147,10 @@ private:
 	Controller& operator=(Controller&&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Controller() noexcept;
+
 	/**
 		Constructor with flags and log file path.
 
@@ -163,9 +166,6 @@ public:
 		bool const enable_datastore,
 		String path
 	) noexcept;
-
-	/** Destructor. */
-	~Controller() noexcept;
 /// @}
 
 /** @name Configuration */ /// @{
@@ -283,17 +283,14 @@ private:
 	OutputStream& operator=(OutputStream&&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
-	/**
-		Constructor with type and streambuf.
-
-		@param type Stream type.
-		@param put_prefix Whether to write Pre::current.
-	*/
-	OutputStream(
-		StreamType const type,
-		bool const put_prefix
-	) noexcept;
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~OutputStream() noexcept override {
+		// Force-write streambuf to multicast streams
+		static_cast<duct::IO::multistreambuf*>(
+			this->rdbuf()
+		)->multicast();
+	}
 
 	// FIXME: Defect in libstdc++ 4.7.3: basic_ostream
 	// move ctor is deleted and swap() is not defined
@@ -310,13 +307,16 @@ public:
 		, m_type(other.m_type)
 	{}
 
-	/** Destructor. */
-	~OutputStream() noexcept override {
-		// Force-write streambuf to multicast streams
-		static_cast<duct::IO::multistreambuf*>(
-			this->rdbuf()
-		)->multicast();
-	}
+	/**
+		Constructor with type and streambuf.
+
+		@param type Stream type.
+		@param put_prefix Whether to write Pre::current.
+	*/
+	OutputStream(
+		StreamType const type,
+		bool const put_prefix
+	) noexcept;
 /// @}
 
 /** @name Properties */ /// @{

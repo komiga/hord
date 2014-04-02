@@ -44,16 +44,14 @@ private:
 	IDGenerator& operator=(IDGenerator const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~IDGenerator() noexcept;
+
 	/** Default constructor. */
 	IDGenerator() /*noexcept*/;
 	/** Move constructor. */
 	IDGenerator(IDGenerator&&) noexcept;
-	/** Destructor. */
-	~IDGenerator() noexcept;
-/// @}
-
-/** @name Operators */ /// @{
 	/** Move assignment operator. */
 	IDGenerator& operator=(IDGenerator&&) noexcept;
 /// @}

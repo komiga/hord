@@ -128,8 +128,18 @@ protected:
 	) const = 0;
 /// @}
 
+/** @name Special member functions */ /// @{
+public:
+	/** Destructor. */
+	virtual
+	~Unit() noexcept = 0;
+
 protected:
-/** @name Constructors and destructor */ /// @{
+	/** Move constructor. */
+	Unit(Unit&&);
+	/** Move assignment operator. */
+	Unit& operator=(Unit&&);
+
 	/**
 		Constructor with supplied props, %ID, and parent.
 
@@ -157,19 +167,6 @@ protected:
 		Object::ID const id,
 		Object::ID const parent
 	) noexcept;
-
-	/** Move constructor. */
-	Unit(Unit&&);
-public:
-	/** Destructor. */
-	virtual
-	~Unit() noexcept = 0;
-/// @}
-
-protected:
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Unit& operator=(Unit&&);
 /// @}
 
 public:

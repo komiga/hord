@@ -6,6 +6,11 @@ namespace Msg {
 
 // class Buffer implementation
 
+Buffer::~Buffer() noexcept = default;
+
+Buffer::Buffer(Buffer&&) = default;
+Buffer& Buffer::operator=(Buffer&&) = default;
+
 void
 Buffer::grow(
 	std::size_t const new_size
@@ -23,11 +28,6 @@ Buffer::Buffer(
 {
 	m_buffer.reserve(capacity);
 }
-
-Buffer::Buffer(Buffer&&) = default;
-Buffer::~Buffer() noexcept = default;
-
-Buffer& Buffer::operator=(Buffer&&) = default;
 
 void
 Buffer::push_back(

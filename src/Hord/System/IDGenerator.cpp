@@ -16,10 +16,10 @@ namespace System {
 
 // There is sadness. We are sad. This is a great crime.
 
-IDGenerator::IDGenerator() /*noexcept*/ = default;
-IDGenerator::IDGenerator(IDGenerator&&) noexcept = default;
 IDGenerator::~IDGenerator() noexcept = default;
 
+IDGenerator::IDGenerator() /*noexcept*/ = default;
+IDGenerator::IDGenerator(IDGenerator&&) noexcept = default;
 IDGenerator& IDGenerator::operator=(IDGenerator&&) noexcept = default;
 
 void

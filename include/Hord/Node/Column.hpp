@@ -59,16 +59,14 @@ private:
 	Column& operator=(Column const&) = delete;
 
 public:
-/** @name Constructor and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Column() noexcept = default;
+
 	/** Default constructor. */
 	Column() = default;
 	/** Move constructor. */
 	Column(Column&&) = default;
-	/** Destructor. */
-	~Column() noexcept = default;
-/// @}
-
-/** @name Operators */ /// @{
 	/** Move assignment operator. */
 	Column& operator=(Column&&) = default;
 /// @}

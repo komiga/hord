@@ -54,9 +54,16 @@ private:
 	Field& operator=(Field const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Field() noexcept = default;
+
 	/** Default constructor. */
 	Field() = default;
+	/** Move constructor. */
+	Field(Field&&) = default;
+	/** Move assignment operator. */
+	Field& operator=(Field&&) = default;
 
 	/** Copy constructor. */
 	Field(Field const& other)
@@ -64,16 +71,6 @@ public:
 		, value(other.value)
 		, state(nullptr)
 	{}
-
-	/** Move constructor. */
-	Field(Field&&) = default;
-	/** Destructor. */
-	~Field() noexcept = default;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Field& operator=(Field&&) = default;
 /// @}
 };
 

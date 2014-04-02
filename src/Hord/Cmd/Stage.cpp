@@ -5,8 +5,6 @@
 
 #include <iostream>
 
-#include <Hord/detail/gr_ceformat.hpp>
-
 namespace Hord {
 namespace Cmd {
 
@@ -26,15 +24,16 @@ private:
 	StageShadow& operator=(StageShadow const&) = delete;
 
 public:
+	~StageShadow() noexcept override = default;
+
+	StageShadow(StageShadow&&) = default;
+
 	explicit
 	StageShadow(
 		Cmd::Stage& stage
 	)
 		: m_stage(&stage)
 	{}
-
-	StageShadow(StageShadow&&) = default;
-	~StageShadow() noexcept override = default;
 
 private:
 	Cmd::type_info const&

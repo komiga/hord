@@ -10,6 +10,9 @@ namespace IO {
 
 // class InputPropStream implementation
 
+InputPropStream::~InputPropStream() noexcept = default;
+InputPropStream::InputPropStream(InputPropStream&&) noexcept = default;
+
 InputPropStream::InputPropStream(
 	IO::Datastore& datastore,
 	IO::PropInfo info
@@ -17,9 +20,6 @@ InputPropStream::InputPropStream(
 	: base(datastore, std::move(info))
 	, m_stream(nullptr)
 {}
-
-InputPropStream::InputPropStream(InputPropStream&&) noexcept = default;
-InputPropStream::~InputPropStream() noexcept = default;
 
 std::istream&
 InputPropStream::get_stream() {
@@ -44,6 +44,9 @@ InputPropStream::release() {
 
 // class OutputPropStream implementation
 
+OutputPropStream::~OutputPropStream() noexcept = default;
+OutputPropStream::OutputPropStream(OutputPropStream&&) noexcept = default;
+
 OutputPropStream::OutputPropStream(
 	IO::Datastore& datastore,
 	IO::PropInfo info
@@ -51,9 +54,6 @@ OutputPropStream::OutputPropStream(
 	: base(datastore, std::move(info))
 	, m_stream(nullptr)
 {}
-
-OutputPropStream::OutputPropStream(OutputPropStream&&) noexcept = default;
-OutputPropStream::~OutputPropStream() noexcept = default;
 
 std::ostream&
 OutputPropStream::get_stream() {

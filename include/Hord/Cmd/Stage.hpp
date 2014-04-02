@@ -354,19 +354,17 @@ protected:
 	) = 0;
 /// @}
 
-/** @name Constructors and destructor */ /// @{
-	/** Default constructor. */
-	Stage() = default;
-	/** Move constructor. */
-	Stage(Stage&&) = default;
+/** @name Special member functions */ /// @{
 public:
 	/** Destructor. */
 	virtual
 	~Stage() noexcept = 0;
-/// @}
 
 protected:
-/** @name Operators */ /// @{
+	/** Default constructor. */
+	Stage() = default;
+	/** Move constructor. */
+	Stage(Stage&&) = default;
 	/** Move assignment operator. */
 	Stage& operator=(Stage&&) = default;
 /// @}
@@ -585,7 +583,17 @@ private:
 	StageImpl& operator=(StageImpl const&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~StageImpl() noexcept override = default;
+
+	/** Default constructor. */
+	StageImpl() = default;
+	/** Move constructor. */
+	StageImpl(StageImpl&&) = default;
+	/** Move assignment operator. */
+	StageImpl& operator=(StageImpl&&) = default;
+
 	/**
 		Data constructor.
 
@@ -597,13 +605,6 @@ public:
 	)
 		: m_data(std::move(data))
 	{}
-
-	/** Default constructor. */
-	StageImpl() = default;
-	/** Move constructor. */
-	StageImpl(StageImpl&&) = default;
-	/** Destructor. */
-	~StageImpl() noexcept override = default;
 /// @}
 
 private:

@@ -306,8 +306,13 @@ private:
 	Datastore& operator=(Datastore const&) = delete;
 	Datastore& operator=(Datastore&&) = delete;
 
+/** @name Special member functions */ /// @{
+public:
+	/** Destructor. */
+	virtual
+	~Datastore() = 0;
+
 protected:
-/** @name Constructors and destructor */ /// @{
 	/**
 		Constructor with root path.
 
@@ -316,10 +321,6 @@ protected:
 	Datastore(
 		String root_path
 	) noexcept;
-public:
-	/** Destructor. */
-	virtual
-	~Datastore() = 0;
 /// @}
 
 public:

@@ -78,15 +78,14 @@ private:
 	Driver& operator=(Driver&&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
-	/**
-		Default constructor.
-	*/
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Driver() noexcept;
+
+	/** Default constructor. */
 	Driver() /*noexcept*/;
 	/** Move constructor. */
 	Driver(Driver&&);
-	/** Destructor. */
-	~Driver() noexcept;
 /// @}
 
 /** @name Properties */ /// @{

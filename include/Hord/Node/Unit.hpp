@@ -99,7 +99,15 @@ private:
 	) const override;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Unit() noexcept override;
+
+	/** Move constructor. */
+	Unit(Unit&&);
+	/** Move assignment operator. */
+	Unit& operator=(Unit&&);
+
 	/**
 		Constructor with ID and parent.
 
@@ -112,16 +120,6 @@ public:
 		Node::ID const id,
 		Object::ID const parent
 	) noexcept;
-
-	/** Move constructor. */
-	Unit(Unit&&);
-	/** Destructor. */
-	~Unit() noexcept override;
-/// @}
-
-/** @name Operators */ /// @{
-	/** Move assignment operator. */
-	Unit& operator=(Unit&&);
 /// @}
 
 /** @name Properties */ /// @{

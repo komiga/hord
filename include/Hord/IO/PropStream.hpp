@@ -57,7 +57,13 @@ private:
 	PropStream& operator=(PropStream&&) = delete;
 
 protected:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~PropStream() noexcept = default;
+
+	/** Move constructor. */
+	PropStream(PropStream&&) noexcept = default;
+
 	/**
 		Constructor with datastore and prop info.
 
@@ -71,14 +77,6 @@ protected:
 		: m_datastore(datastore)
 		, m_info(std::move(info))
 	{}
-
-	/** Move constructor. */
-	PropStream(PropStream&&) noexcept = default;
-
-	/**
-		Destructor.
-	*/
-	~PropStream() noexcept = default;
 /// @}
 
 public:
@@ -126,7 +124,13 @@ private:
 	InputPropStream& operator=(InputPropStream&&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~InputPropStream() noexcept;
+
+	/** Move constructor. */
+	InputPropStream(InputPropStream&&) noexcept;
+
 	/**
 		Constructor with datastore and prop info.
 
@@ -137,14 +141,6 @@ public:
 		IO::Datastore& datastore,
 		IO::PropInfo info
 	);
-
-	/** Move constructor. */
-	InputPropStream(InputPropStream&&) noexcept;
-
-	/**
-		Destructor.
-	*/
-	~InputPropStream() noexcept;
 /// @}
 
 /** @name Properties */ /// @{
@@ -199,7 +195,13 @@ private:
 	OutputPropStream& operator=(OutputPropStream&&) = delete;
 
 public:
-/** @name Constructors and destructor */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~OutputPropStream() noexcept;
+
+	/** Move constructor. */
+	OutputPropStream(OutputPropStream&&) noexcept;
+
 	/**
 		Constructor with datastore and prop info.
 
@@ -210,14 +212,6 @@ public:
 		IO::Datastore& datastore,
 		IO::PropInfo info
 	);
-
-	/** Move constructor. */
-	OutputPropStream(OutputPropStream&&) noexcept;
-
-	/**
-		Destructor.
-	*/
-	~OutputPropStream() noexcept;
 /// @}
 
 public:

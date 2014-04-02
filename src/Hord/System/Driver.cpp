@@ -45,6 +45,10 @@ static_assert(
 
 // NB: See note about stdlib defect in System/IDGenerator.cpp
 
+Driver::~Driver() noexcept = default;
+
+Driver::Driver(Driver&&) = default;
+
 Driver::Driver() /*noexcept*/
 	: m_id_generator()
 	, m_rule_types()
@@ -62,9 +66,6 @@ Driver::Driver() /*noexcept*/
 	);
 	// TODO: Register standard rule types.
 }
-
-Driver::Driver(Driver&&) = default;
-Driver::~Driver() noexcept = default;
 
 #define HORD_SCOPE_FUNC register_rule_type
 void
