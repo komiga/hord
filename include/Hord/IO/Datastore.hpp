@@ -230,10 +230,10 @@ protected:
 	};
 
 /** @cond INTERNAL */
-#define HORD_STATE_ASSERT_VALID__(x__)	\
+#define HORD_STATE_ASSERT_VALID_(x_)	\
 	assert(								\
-		State::RESERVED_FIRST > x__ &&	\
-		State::RESERVED_LAST  < x__		\
+		State::RESERVED_FIRST > x_ &&	\
+		State::RESERVED_LAST  < x_		\
 	);
 /** @endcond */
 
@@ -246,7 +246,7 @@ protected:
 	enable_state(
 		State const state
 	) noexcept {
-		HORD_STATE_ASSERT_VALID__(state);
+		HORD_STATE_ASSERT_VALID_(state);
 		m_states.enable(state);
 	}
 
@@ -259,7 +259,7 @@ protected:
 	disable_state(
 		State const state
 	) noexcept {
-		HORD_STATE_ASSERT_VALID__(state);
+		HORD_STATE_ASSERT_VALID_(state);
 		m_states.disable(state);
 	}
 
@@ -274,7 +274,7 @@ protected:
 		State const state,
 		bool const enable
 	) noexcept {
-		HORD_STATE_ASSERT_VALID__(state);
+		HORD_STATE_ASSERT_VALID_(state);
 		m_states.set(state, enable);
 	}
 
@@ -290,10 +290,10 @@ protected:
 	test_state(
 		State const state
 	) const noexcept {
-		HORD_STATE_ASSERT_VALID__(state);
+		HORD_STATE_ASSERT_VALID_(state);
 		return m_states.test(state);
 	}
-#undef HORD_STATE_ASSERT_VALID__
+#undef HORD_STATE_ASSERT_VALID_
 /// @}
 
 private:

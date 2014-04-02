@@ -20,7 +20,7 @@ Datastore::Datastore(
 
 Datastore::~Datastore() = default;
 
-#define HORD_CLOSED_CHECK__								\
+#define HORD_CLOSED_CHECK_								\
 	if (!is_open()) {									\
 		HORD_THROW_FQN(									\
 			ErrorCode::datastore_closed,				\
@@ -29,7 +29,7 @@ Datastore::~Datastore() = default;
 		);												\
 	}
 
-#define HORD_LOCKED_CHECK__								\
+#define HORD_LOCKED_CHECK_								\
 	if (is_locked()) {									\
 		HORD_THROW_FQN(									\
 			ErrorCode::datastore_locked,				\
@@ -69,7 +69,7 @@ Datastore::open() {
 #define HORD_SCOPE_FUNC close
 void
 Datastore::close() {
-	HORD_LOCKED_CHECK__;
+	HORD_LOCKED_CHECK_;
 	if (is_open()) {
 		close_impl();
 	}
@@ -83,8 +83,8 @@ std::istream&
 Datastore::acquire_input_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_CLOSED_CHECK__;
-	HORD_LOCKED_CHECK__;
+	HORD_CLOSED_CHECK_;
+	HORD_LOCKED_CHECK_;
 	return acquire_input_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC
@@ -94,15 +94,15 @@ std::ostream&
 Datastore::acquire_output_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_CLOSED_CHECK__;
-	HORD_LOCKED_CHECK__;
+	HORD_CLOSED_CHECK_;
+	HORD_LOCKED_CHECK_;
 	return acquire_output_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC
 
 // release
 
-#define HORD_RELEASE_CHECK__							\
+#define HORD_RELEASE_CHECK_							\
 	if (!is_locked()) {									\
 		HORD_THROW_FQN(									\
 			ErrorCode::datastore_prop_not_locked,		\
@@ -115,8 +115,8 @@ void
 Datastore::release_input_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_CLOSED_CHECK__;
-	HORD_RELEASE_CHECK__;
+	HORD_CLOSED_CHECK_;
+	HORD_RELEASE_CHECK_;
 	release_input_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC
@@ -126,13 +126,13 @@ void
 Datastore::release_output_stream(
 	IO::PropInfo const& prop_info
 ) {
-	HORD_CLOSED_CHECK__;
-	HORD_RELEASE_CHECK__;
+	HORD_CLOSED_CHECK_;
+	HORD_RELEASE_CHECK_;
 	release_output_stream_impl(prop_info);
 }
 #undef HORD_SCOPE_FUNC
 
-#undef HORD_RELEASE_CHECK__
+#undef HORD_RELEASE_CHECK_
 
 // objects
 
@@ -141,7 +141,7 @@ Object::ID
 Datastore::generate_id(
 	System::IDGenerator& generator
 ) const {
-	HORD_CLOSED_CHECK__;
+	HORD_CLOSED_CHECK_;
 	return generate_id_impl(generator);
 }
 #undef HORD_SCOPE_FUNC
@@ -159,8 +159,8 @@ Datastore::create_object(
 		);
 	}
 
-	HORD_CLOSED_CHECK__;
-	HORD_LOCKED_CHECK__;
+	HORD_CLOSED_CHECK_;
+	HORD_LOCKED_CHECK_;
 	create_object_impl(object_id, object_type);
 }
 #undef HORD_SCOPE_FUNC
@@ -170,14 +170,14 @@ void
 Datastore::destroy_object(
 	Object::ID const object_id
 ) {
-	HORD_CLOSED_CHECK__;
-	HORD_LOCKED_CHECK__;
+	HORD_CLOSED_CHECK_;
+	HORD_LOCKED_CHECK_;
 	destroy_object_impl(object_id);
 }
 #undef HORD_SCOPE_FUNC
 
-#undef HORD_CLOSED_CHECK__
-#undef HORD_LOCKED_CHECK__
+#undef HORD_CLOSED_CHECK_
+#undef HORD_LOCKED_CHECK_
 
 #undef HORD_SCOPE_CLASS
 

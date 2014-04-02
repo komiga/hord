@@ -202,8 +202,6 @@ Metadata::serialize(
 }
 #undef HORD_SCOPE_FUNC
 
-#undef HORD_THROW_MURK_ERROR__
-
 #undef HORD_SCOPE_CLASS // Metadata
 
 } // namespace Data

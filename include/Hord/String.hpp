@@ -27,9 +27,9 @@ namespace Hord {
 /**
 	Turn input into a UTF-8 encoded string literal.
 
-	@param x__ C-string literal.
+	@param x_ C-string literal.
 */
-#define HORD_STR_LIT(x__) u8 ## x__
+#define HORD_STR_LIT(x_) u8 ## x_
 
 /**
 	String type.
