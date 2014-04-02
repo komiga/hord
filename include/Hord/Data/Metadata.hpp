@@ -387,14 +387,16 @@ private:
 	read_impl(
 		InputSerializer& ser
 	) override {
-		ser(this->value);
+		std::uint8_t boolu8 = 0;
+		ser(boolu8);
+		this->value = static_cast<bool>(boolu8);
 	}
 
 	ser_result_type
 	write_impl(
 		OutputSerializer& ser
 	) const override {
-		ser(this->value);
+		ser(static_cast<std::uint8_t>(this->value));
 	}
 
 public:
