@@ -16,8 +16,8 @@ namespace Hord {
 namespace Data {
 
 // Forward declarations
-enum class FieldType : uint8_t;
-enum class MetaFieldType : uint8_t;
+enum class FieldType : std::uint8_t;
+enum class MetaFieldType : std::uint8_t;
 
 /**
 	@addtogroup data
@@ -32,7 +32,7 @@ enum class MetaFieldType : uint8_t;
 
 	@sa Data::Field
 */
-enum class FieldType : uint8_t {
+enum class FieldType : std::uint8_t {
 	/** Textual field. */
 	Text	= 1 << 0,
 
@@ -54,7 +54,7 @@ enum class FieldType : uint8_t {
 	@sa Data::MetaField,
 		Data::Metadata
 */
-enum class MetaFieldType : uint8_t {
+enum class MetaFieldType : std::uint8_t {
 	/** Data::StringMetaField. */
 	String = 0x01,
 

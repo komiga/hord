@@ -24,9 +24,9 @@ struct IDFields;
 struct type_info;
 struct type_info_table;
 class Stage; // external
-enum class Type : uint32_t;
-enum class Flags : uint32_t;
-enum class StageType : uint8_t;
+enum class Type : std::uint32_t;
+enum class Flags : std::uint32_t;
+enum class StageType : std::uint8_t;
 enum class Status : unsigned;
 
 /**
@@ -40,7 +40,7 @@ enum class Status : unsigned;
 	@note Value only takes up bits @c 0x3FFFFFFF.
 	See @c Cmd::IDFields.
 */
-using ID = uint32_t;
+using ID = std::uint32_t;
 
 /**
 	%ID constants.
@@ -251,7 +251,7 @@ using StageUPtr = duct::cc_unique_ptr<Cmd::Stage>;
 
 	@sa Cmd::StageType
 */
-enum class Type : uint32_t {
+enum class Type : std::uint32_t {
 /** @name Standard range */ /// @{
 	/** Base standard type. */
 	STANDARD_BASE = 0x100,
@@ -309,7 +309,7 @@ static_assert(
 /**
 	Command flags.
 */
-enum class Flags : uint32_t {
+enum class Flags : std::uint32_t {
 	/**
 		No flags.
 	*/
@@ -338,7 +338,7 @@ enum class Flags : uint32_t {
 
 	@remarks Most commands use only a subset of the standard stages.
 */
-enum class StageType : uint8_t {
+enum class StageType : std::uint8_t {
 /** @name Standard range */ /// @{
 	/** Base standard type. */
 	STANDARD_BASE = 0x00,

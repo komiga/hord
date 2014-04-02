@@ -259,7 +259,7 @@ read(
 	InputSerializer& ser,
 	PropType& value
 ) {
-	uint8_t u8 = 0;
+	std::uint8_t u8 = 0;
 	ser(u8);
 	value = static_cast<PropType>(u8);
 }
@@ -270,7 +270,7 @@ write(
 	OutputSerializer& ser,
 	PropType const& value
 ) {
-	ser(static_cast<uint8_t>(value));
+	ser(static_cast<std::uint8_t>(value));
 }
 /** @} */
 /** @} */ // end of doc-group io

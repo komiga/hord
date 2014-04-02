@@ -24,7 +24,7 @@ IDGenerator& IDGenerator::operator=(IDGenerator&&) noexcept = default;
 
 void
 IDGenerator::seed(
-	int64_t seed_value
+	std::int64_t seed_value
 ) noexcept {
 	m_rng.seed(static_cast<std::mt19937::result_type>(
 		seed_value

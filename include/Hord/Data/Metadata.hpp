@@ -168,7 +168,7 @@ public:
 		ser_tag_read,
 		InputSerializer& ser
 	) {
-		ser(Cacophony::make_string_cfg<uint8_t>(this->name));
+		ser(Cacophony::make_string_cfg<std::uint8_t>(this->name));
 		read_impl(ser);
 	}
 
@@ -183,7 +183,7 @@ public:
 		ser_tag_write,
 		OutputSerializer& ser
 	) const {
-		ser(Cacophony::make_string_cfg<uint8_t>(this->name));
+		ser(Cacophony::make_string_cfg<std::uint8_t>(this->name));
 		write_impl(ser);
 	}
 /// @}
@@ -257,7 +257,7 @@ class Int32MetaField final
 public:
 /** @name Properties */ /// @{
 	/** Value. */
-	int32_t value{0};
+	std::int32_t value{0};
 /// @}
 
 private:
@@ -298,7 +298,7 @@ public:
 	*/
 	Int32MetaField(
 		String name,
-		int32_t value
+		std::int32_t value
 	) noexcept
 		: MetaField(std::move(name))
 		, value(value)
@@ -315,7 +315,7 @@ class Int64MetaField final
 public:
 /** @name Properties */ /// @{
 	/** Value. */
-	int64_t value{0};
+	std::int64_t value{0};
 /// @}
 
 private:
@@ -356,7 +356,7 @@ public:
 	*/
 	Int64MetaField(
 		String name,
-		int64_t value
+		std::int64_t value
 	) noexcept
 		: MetaField(std::move(name))
 		, value(value)

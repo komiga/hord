@@ -40,14 +40,14 @@ public:
 	/**
 		Buffer type.
 	*/
-	using buffer_type = aux::vector<uint8_t>;
+	using buffer_type = aux::vector<std::uint8_t>;
 
 	/**
 		Message header.
 	*/
 	struct msg_header final {
 		MessageID id; /**< Message ID. */
-		uint32_t size; /**< Message size. */
+		std::uint32_t size; /**< Message size. */
 	};
 
 private:

@@ -41,7 +41,7 @@ public:
 	struct {
 		String str{}; /**< String value. */
 		union {
-			int64_t num{0}; /**< Integer value. */
+			std::int64_t num{0}; /**< Integer value. */
 			bool bin; /**< Boolean value. */
 		};
 	} value{};

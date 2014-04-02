@@ -64,7 +64,7 @@ public:
 	*/
 	void
 	seed(
-		int64_t const seed_value
+		std::int64_t const seed_value
 	) noexcept;
 
 	/**

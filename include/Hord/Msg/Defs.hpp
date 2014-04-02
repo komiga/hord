@@ -28,7 +28,7 @@ namespace Msg {
 
 	@sa Msg::Buffer
 */
-using MessageID = uint32_t;
+using MessageID = std::uint32_t;
 
 /** @} */ // end of doc-group msg
 

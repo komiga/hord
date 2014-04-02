@@ -67,7 +67,7 @@ main() {
 			static_cast<Hord::Rule::Type>(
 				Hord::Rule::StandardTypes::ReservedLast
 			),
-			0u | static_cast<uint8_t>(Hord::Data::FieldType::Text),
+			0u | static_cast<std::uint8_t>(Hord::Data::FieldType::Text),
 			dummy_rule_type_construct
 		},
 		rti_zero_permitted{
@@ -81,7 +81,7 @@ main() {
 			1 + static_cast<Hord::Rule::Type>(
 				Hord::Rule::StandardTypes::ReservedLast
 			),
-			0u | static_cast<uint8_t>(Hord::Data::FieldType::Text),
+			0u | static_cast<std::uint8_t>(Hord::Data::FieldType::Text),
 			dummy_rule_type_construct
 		}
 	;

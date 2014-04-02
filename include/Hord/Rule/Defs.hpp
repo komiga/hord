@@ -54,7 +54,7 @@ enum : Rule::ID {
 /**
 	Rule type.
 */
-using Type = uint32_t;
+using Type = std::uint32_t;
 
 /**
 	Standard rule types.
@@ -158,7 +158,7 @@ struct type_info final {
 
 		@sa Data::FieldType
 	*/
-	uint8_t const permitted_types;
+	std::uint8_t const permitted_types;
 
 	/**
 		Construct a rule of this type.

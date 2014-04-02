@@ -38,19 +38,19 @@ Buffer::push_back(
 	msg_header const
 	header{
 		id,
-		static_cast<uint32_t>(size)
+		static_cast<std::uint32_t>(size)
 	};
 	auto const offset = get_size();
 	grow(offset + sizeof(msg_header) + size);
 	auto out_it = m_buffer.data() + offset;
 	out_it = std::copy(
-		reinterpret_cast<uint8_t const*>(&header),
-		reinterpret_cast<uint8_t const*>(&header) + sizeof(msg_header),
+		reinterpret_cast<std::uint8_t const*>(&header),
+		reinterpret_cast<std::uint8_t const*>(&header) + sizeof(msg_header),
 		out_it
 	);
 	std::copy(
-		static_cast<uint8_t const* const>(data),
-		static_cast<uint8_t const* const>(data) + size,
+		static_cast<std::uint8_t const* const>(data),
+		static_cast<std::uint8_t const* const>(data) + size,
 		out_it
 	);
 }

@@ -34,7 +34,7 @@ class Unit; // external
 		Rule::ID,
 		Node::ID
 */
-using ID = uint32_t;
+using ID = std::uint32_t;
 
 /**
 	Object::ID constants.

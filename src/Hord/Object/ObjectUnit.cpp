@@ -88,7 +88,7 @@ Unit::deserialize(
 		String slug{};
 		ser(
 			parent,
-			Cacophony::make_string_cfg<uint8_t>(slug)
+			Cacophony::make_string_cfg<std::uint8_t>(slug)
 		);
 
 		// commit
@@ -102,7 +102,7 @@ Unit::deserialize(
 
 	case IO::PropType::scratch: {
 		String scratch_space{};
-		ser(Cacophony::make_string_cfg<uint32_t>(scratch_space));
+		ser(Cacophony::make_string_cfg<std::uint32_t>(scratch_space));
 
 		// commit
 		m_scratch_space.assign(std::move(scratch_space));
@@ -160,7 +160,7 @@ Unit::serialize(
 	case IO::PropType::identity:
 		ser(
 			m_parent,
-			Cacophony::make_string_cfg<uint8_t>(m_slug)
+			Cacophony::make_string_cfg<std::uint8_t>(m_slug)
 		);
 		break;
 
@@ -169,7 +169,7 @@ Unit::serialize(
 		break;
 
 	case IO::PropType::scratch:
-		ser(Cacophony::make_string_cfg<uint32_t>(m_scratch_space));
+		ser(Cacophony::make_string_cfg<std::uint32_t>(m_scratch_space));
 		break;
 
 	default:

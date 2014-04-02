@@ -104,24 +104,24 @@ Unit::deserialize_prop_primary(
 	IO::InputPropStream& /*prop_stream*/,
 	InputSerializer& ser
 ) {
-	uint32_t field_count = 0;
+	std::uint32_t field_count = 0;
 	ser(field_count);
 
 	if (0u < field_count) {
-		uint32_t record_count = 0;
+		std::uint32_t record_count = 0;
 		ser(record_count);
 
 		record_vector_type des_records{
 			record_count,
 			Data::Record{field_count}
 		};
-		uint8_t field_type = 0x00u;
+		std::uint8_t field_type = 0x00u;
 		for (auto& record : des_records) {
 			for (auto& field : record.fields) {
 				ser(field_type);
 				switch (static_cast<Data::FieldType>(field_type)) {
 				case Data::FieldType::Text:
-					ser(Cacophony::make_string_cfg<uint16_t>(
+					ser(Cacophony::make_string_cfg<std::uint16_t>(
 						field.value.str
 					));
 					break;
@@ -131,7 +131,7 @@ Unit::deserialize_prop_primary(
 					break;
 
 				case Data::FieldType::Boolean: {
-					uint8_t boolu8 = 0;
+					std::uint8_t boolu8 = 0;
 					ser(boolu8);
 					field.value.bin = static_cast<bool>(boolu8);
 				} break;
@@ -163,10 +163,10 @@ Unit::serialize_prop_primary(
 	IO::OutputPropStream& /*prop_stream*/,
 	OutputSerializer& ser
 ) const {
-	assert(std::numeric_limits<uint32_t>::max() >= m_layout.size());
-	ser(static_cast<uint32_t>(m_layout.size()));
-	assert(std::numeric_limits<uint32_t>::max() >= m_records.size());
-	ser(static_cast<uint32_t>(m_records.size()));
+	assert(std::numeric_limits<std::uint32_t>::max() >= m_layout.size());
+	ser(static_cast<std::uint32_t>(m_layout.size()));
+	assert(std::numeric_limits<std::uint32_t>::max() >= m_records.size());
+	ser(static_cast<std::uint32_t>(m_records.size()));
 
 	// Quick exit
 	if (0u == m_layout.size() || 0u == m_records.size()) {
@@ -174,10 +174,10 @@ Unit::serialize_prop_primary(
 	}
 	for (auto const& record : m_records) {
 		for (auto const& field : record.fields) {
-			ser(static_cast<uint8_t>(field.type));
+			ser(static_cast<std::uint8_t>(field.type));
 			switch (field.type) {
 			case Data::FieldType::Text:
-				ser(Cacophony::make_string_cfg<uint16_t>(
+				ser(Cacophony::make_string_cfg<std::uint16_t>(
 					field.value.str
 				));
 				break;
@@ -187,7 +187,7 @@ Unit::serialize_prop_primary(
 				break;
 
 			case Data::FieldType::Boolean:
-				ser(static_cast<uint8_t>(field.value.bin));
+				ser(static_cast<std::uint8_t>(field.value.bin));
 				break;
 			}
 		}
@@ -211,7 +211,7 @@ Unit::deserialize_prop_auxiliary(
 		set_layout_ref(des_layout_ref);
 	} else {
 		column_vector_type des_layout{};
-		ser(Cacophony::make_vector_cfg<uint32_t>(des_layout));
+		ser(Cacophony::make_vector_cfg<std::uint32_t>(des_layout));
 
 		// commit
 		set_layout_ref(Node::NULL_ID);
@@ -231,7 +231,7 @@ Unit::serialize_prop_auxiliary(
 	} else {
 		ser(
 			m_layout_ref,
-			Cacophony::make_vector_cfg<uint32_t>(m_layout)
+			Cacophony::make_vector_cfg<std::uint32_t>(m_layout)
 		);
 	}
 }

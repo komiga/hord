@@ -133,12 +133,12 @@ Metadata::deserialize(
 ) try {
 	assert(IO::PropType::metadata == prop_stream.get_type());
 	auto ser = prop_stream.make_serializer();
-	uint32_t size = 0;
+	std::uint32_t size = 0;
 	ser(size);
 
 	// fields
 	field_vector_type des_fields{static_cast<std::size_t>(size)};
-	uint8_t field_type = 0x00u;
+	std::uint8_t field_type = 0x00u;
 	for (auto& field : des_fields) {
 		ser(field_type);
 		if (
@@ -181,14 +181,14 @@ Metadata::serialize(
 ) const try {
 	assert(IO::PropType::metadata == prop_stream.get_type());
 	auto ser = prop_stream.make_serializer();
-	assert(std::numeric_limits<uint32_t>::max() >= this->fields.size());
-	ser(static_cast<uint32_t>(this->fields.size()));
+	assert(std::numeric_limits<std::uint32_t>::max() >= this->fields.size());
+	ser(static_cast<std::uint32_t>(this->fields.size()));
 
 	// fields
 	for (auto const& field : this->fields) {
 		assert(static_cast<bool>(field));
 		ser(
-			static_cast<uint8_t>(field->get_type_info().type),
+			static_cast<std::uint8_t>(field->get_type_info().type),
 			*field
 		);
 	}

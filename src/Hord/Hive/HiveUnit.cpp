@@ -91,7 +91,7 @@ Unit::deserialize_impl(
 	IO::InputPropStream& prop_stream
 ) try {
 	auto ser = prop_stream.make_serializer();
-	uint32_t count = 0;
+	std::uint32_t count = 0;
 	ser(count);
 
 	// entries
@@ -134,8 +134,8 @@ Unit::serialize_impl(
 ) const try {
 	auto ser = prop_stream.make_serializer();
 	std::size_t count = m_idset.size();
-	assert(std::numeric_limits<uint32_t>::max() >= count);
-	ser(static_cast<uint32_t>(count));
+	assert(std::numeric_limits<std::uint32_t>::max() >= count);
+	ser(static_cast<std::uint32_t>(count));
 
 	Object::ID id_block[ID_BLOCK_COUNT];
 	std::size_t write_count = ID_BLOCK_COUNT;

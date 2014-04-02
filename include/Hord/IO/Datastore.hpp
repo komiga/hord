@@ -217,7 +217,7 @@ protected:
 		Implementations are permitted to define states @c 1<<8
 		to @c 1<<31.
 	*/
-	enum class State : uint32_t {
+	enum class State : std::uint32_t {
 		/** %Datastore is open. */
 		opened = 1 << 0,
 		/** %Datastore is locked. */

@@ -479,7 +479,7 @@ public:
 	static_assert(
 		std::is_same<
 			Cmd::ID,
-			uint32_t
+			std::uint32_t
 		>::value, ""
 	);
 
