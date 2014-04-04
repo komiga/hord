@@ -415,7 +415,8 @@ enum class Status : unsigned {
 
 		@note Commands which terminate with an error are immediately
 		removed from the active group and a @c GenericTerminate
-		pseudo-stage is emitted to the remote endpoint.
+		pseudo-stage is emitted to the remote endpoint if the stage isn't
+		a local initiator.
 
 		@par
 		@note This is implicit if stage execution throws an exception.
