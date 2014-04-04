@@ -223,6 +223,49 @@ public:
 	is_client() const noexcept {
 		return Context::Type::client == m_type;
 	}
+
+	/**
+		Check if stage is local to the context.
+	*/
+	bool
+	is_local(
+		Cmd::Stage const& stage
+	) const noexcept {
+		return is_host()
+			? stage.is_host()
+			: stage.is_client()
+		;
+	}
+
+	/**
+		Check if stage is remote to the context.
+	*/
+	bool
+	is_remote(
+		Cmd::Stage const& stage
+	) const noexcept {
+		return !is_local(stage);
+	}
+
+	/**
+		Check if stage is a context-local initiator.
+	*/
+	bool
+	is_local_initiator(
+		Cmd::Stage const& stage
+	) const noexcept {
+		return is_local(stage) && stage.is_initiator();
+	}
+
+	/**
+		Check if stage is a context-remote initiator.
+	*/
+	bool
+	is_remote_initiator(
+		Cmd::Stage const& stage
+	) const noexcept {
+		return is_remote(stage) && stage.is_initiator();
+	}
 /// @}
 
 /** @name Operations */ /// @{
