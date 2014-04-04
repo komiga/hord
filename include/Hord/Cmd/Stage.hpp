@@ -454,12 +454,12 @@ public:
 	}
 
 	/**
-		Check if the stage belongs to a local-initiated command.
+		Check if the stage belongs to a client-initiated command.
 
 		@sa Cmd::IDFields
 	*/
 	bool
-	is_local() const noexcept {
+	is_client() const noexcept {
 		return !m_id.fields.flag_host;
 	}
 
