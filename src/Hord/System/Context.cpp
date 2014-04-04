@@ -2,6 +2,7 @@
 #include <Hord/utility.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
+#include <Hord/Cmd/Generic.hpp>
 
 #include <cassert>
 
@@ -79,9 +80,47 @@ Context::next_id() noexcept {
 
 void
 Context::terminate(
-	Cmd::ID const /*id*/
+	stage_map_type::iterator it,
+	bool const transmitted
 ) noexcept {
-	// TODO
+	if (m_active.end() == it) {
+		// TODO: Log that remote tried to terminate an inactive
+		// command
+		return;
+	}
+
+	auto const id = it->second->get_id();
+	// TODO: Log that an active command is terminating
+	// TODO: Log discarded stages
+	// Discard pending stage input and output for this command
+	for (
+		auto in_it = m_input.begin();
+		m_input.end() != in_it;
+	) {
+		if ((*in_it)->get_id() == id) {
+			// FIXME: Is this valid in the stdlib?
+			m_input.erase(in_it++);
+		} else {
+			++in_it;
+		}
+	}
+	for (
+		auto out_it = m_output.begin();
+		m_output.end() != out_it;
+	) {
+		if ((*out_it)->get_id() == id) {
+			// FIXME: Is this valid in the stdlib?
+			m_output.erase(out_it++);
+		} else {
+			++out_it;
+		}
+	}
+	// Push GenericTerminate and inactivate stage
+	if (transmitted) {
+		auto terminator = Cmd::Generic::Terminate::make_statement();
+		push_output(*it->second, terminator, false);
+	}
+	m_active.erase(it);
 }
 
 void
@@ -92,7 +131,7 @@ Context::initiate(
 
 	initiator->get_id_fields().assign(
 		next_id(),
-		(Type::host == m_type),
+		is_host(),
 		true
 	);
 	m_input.emplace_back(std::move(initiator));
@@ -124,6 +163,16 @@ Context::push_output(
 ) {
 	assert(origin.is_identified());
 	assert(!stage->is_identified());
+	// TODO: Throw if command's type info doesn't have Cmd::Flags::remote?
+	// Is it better to have the userspace handle it, since they're going
+	// to handle the output queue anyways? Seems to make sense to allow
+	// commands to "output" results locally. Userspace needs to be aware
+	// of this so that they don't push non-remote command stages to the
+	// remote. Should the "destination" be embedded in the stage?
+	// i.e., allow stages to be output for local or remote?
+	// Seems more likely that commands won't even output locally
+	// if they're Cmd::Flags::remote. I can certainly see a use for having
+	// commands that are completely local, though.
 
 	auto const it = make_const(m_active).find(origin.get_id());
 	if (m_active.cend() == it) {
@@ -134,7 +183,7 @@ Context::push_output(
 	} else {
 		stage->get_id_fields().assign(
 			origin.get_id(),
-			(Type::host == m_type),
+			is_host(),
 			remote_initiator
 		);
 		m_output.emplace_back(std::move(stage));
@@ -173,11 +222,13 @@ Context::execute_input(
 			);
 		}
 	} else if (!stage.is_initiator()) {
-		HORD_THROW_FQN(
-			ErrorCode::context_execute_not_active,
-			"non-initiating stage carries an ID which is not"
-			" active"
-		);
+		if (Cmd::Type::GenericTerminate != stage.get_command_type()) {
+			HORD_THROW_FQN(
+				ErrorCode::context_execute_not_active,
+				"non-initiating stage carries an ID which is not"
+				" active"
+			);
+		}
 	} else {
 		// NB: stage is a *ref* to the stage itself, so there's
 		// no issue with the uptr move here.
@@ -190,15 +241,21 @@ Context::execute_input(
 	}
 
 	// execute
-	// TODO: specially handle GenericTerminate input
 	result.first = stage.get_id();
-	try {
-		result.second = stage.execute(*this, *it->second.get());
-	} catch (...) {
-		// TODO: terminate command
-		// TODO: push GenericTerminate output
-		result.second = Cmd::Status::error; // implicit
-		throw;
+	if (Cmd::Type::GenericTerminate == stage.get_command_type()) {
+		terminate(it, false);
+		result.second = Cmd::Status::error_remote;
+	} else {
+		try {
+			result.second = stage.execute(*this, *it->second.get());
+			if (Cmd::Status::error == result.second) {
+				terminate(it, !is_local_initiator(stage));
+			}
+		} catch (...) {
+			terminate(it, !is_local_initiator(stage));
+			result.second = Cmd::Status::error; // implicit
+			throw;
+		}
 	}
 	return m_input.size();
 }

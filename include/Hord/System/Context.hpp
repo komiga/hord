@@ -94,7 +94,8 @@ private:
 
 	void
 	terminate(
-		Cmd::ID const id
+		stage_map_type::iterator it,
+		bool const transmitted
 	) noexcept;
 
 	Context() = delete;
