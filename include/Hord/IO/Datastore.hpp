@@ -480,7 +480,7 @@ public:
 		Create an object in the datastore.
 
 		@throws Error{ErrorCode::datastore_object_type_prohibited}
-		If @c object_type!=Object::Type::Node, which is
+		If <code>object_type != Object::Type::Node</code>, which is
 		currently the only object type that can be created.
 
 		@throws Error{ErrorCode::datastore_closed}
