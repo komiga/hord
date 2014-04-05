@@ -123,6 +123,7 @@ Context::terminate(
 	m_active.erase(it);
 }
 
+#define HORD_SCOPE_FUNC initiate
 void
 Context::initiate(
 	Cmd::StageUPtr& initiator
@@ -136,6 +137,7 @@ Context::initiate(
 	);
 	m_input.emplace_back(std::move(initiator));
 }
+#undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC push_input
 void
@@ -161,7 +163,7 @@ Context::push_output(
 	Cmd::StageUPtr& stage,
 	bool const remote_initiator
 ) {
-	assert(origin.is_identified());
+	assert( origin.is_identified());
 	assert(!stage->is_identified());
 	// TODO: Throw if command's type info doesn't have Cmd::Flags::remote?
 	// Is it better to have the userspace handle it, since they're going
@@ -182,8 +184,7 @@ Context::push_output(
 		);
 	} else {
 		stage->get_id_fields().assign(
-			origin.get_id(),
-			is_host(),
+			origin.get_id_fields(),
 			remote_initiator
 		);
 		m_output.emplace_back(std::move(stage));
