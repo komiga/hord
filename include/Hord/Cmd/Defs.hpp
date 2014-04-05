@@ -414,25 +414,25 @@ static_assert(
 */
 enum class Status : unsigned {
 	/**
-		Command is waiting for a stage to return.
-	*/
-	waiting = 1,
-
-	/**
 		Command has completed without explicit error.
 
 		@note This will be the command status even if an Error stage
 		is emitted.
 	*/
-	complete,
+	complete = 1,
+
+	/**
+		Command is waiting for a stage to return.
+	*/
+	waiting,
 
 	/**
 		Command has terminated with an error.
 
 		@note Commands which terminate with an error are immediately
 		removed from the active group and a @c GenericTerminate
-		pseudo-stage is emitted to the remote endpoint if the stage isn't
-		a local initiator.
+		pseudo-stage is emitted to the remote endpoint if the stage
+		isn't a local initiator.
 
 		@par
 		@note This is implicit if stage execution throws an exception.
