@@ -92,7 +92,7 @@ struct IDFields final {
 	*/
 	void
 	assign(
-		Cmd::ID base,
+		Cmd::ID const base,
 		bool const flag_host,
 		bool const flag_initiator
 	) noexcept {
@@ -104,7 +104,7 @@ struct IDFields final {
 	/**
 		Assign.
 
-		@param other Fields.
+		@param other Fields to copy.
 	*/
 	void
 	assign(
@@ -113,6 +113,22 @@ struct IDFields final {
 		this->base = other.base;
 		this->flag_host = other.flag_host;
 		this->flag_initiator = other.flag_initiator;
+	}
+
+	/**
+		Assign with @c flag_initiator.
+
+		@param other Fields.
+		@param flag_initiator @c flag_initiator.
+	*/
+	void
+	assign(
+		IDFields const& other,
+		bool const flag_initiator
+	) noexcept {
+		this->base = other.base;
+		this->flag_host = other.flag_host;
+		this->flag_initiator = flag_initiator;
 	}
 /// @}
 };
