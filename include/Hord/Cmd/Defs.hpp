@@ -384,6 +384,15 @@ enum class StageType : std::uint8_t {
 	Error,
 
 	/**
+		Result stage.
+
+		@remarks Commands needn't use this stage type exclusively for
+		command results, but in general it should be used as the final
+		result of a request-reply or statement-structured command.
+	*/
+	Result,
+
+	/**
 		Request stage.
 	*/
 	Request,
