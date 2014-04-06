@@ -116,8 +116,11 @@ class StageImpl;
 	Open stage definition.
 
 	Stage data body should follow macro (without braces).
+
+	@note This calls HORD_CMD_STAGE_DEF_TYPE_INFO().
 */
-#define HORD_CMD_STAGE_DATA_OPEN() \
+#define HORD_CMD_STAGE_DATA_OPEN()				\
+	HORD_CMD_STAGE_DEF_TYPE_INFO();				\
 	struct HORD_CMD_STAGE_TYPE_ final {
 
 /**
@@ -125,9 +128,12 @@ class StageImpl;
 
 	Stage data body should follow macro (without braces).
 
+	@note This calls HORD_CMD_STAGE_DEF_TYPE_INFO().
+
 	@param base_ Base class.
 */
-#define HORD_CMD_STAGE_DATA_OPEN_INHERIT(base_) \
+#define HORD_CMD_STAGE_DATA_OPEN_INHERIT(base_)	\
+	HORD_CMD_STAGE_DEF_TYPE_INFO();				\
 	struct HORD_CMD_STAGE_TYPE_ final : public base_ {
 
 /**
