@@ -45,7 +45,8 @@ class StageImpl;
 
 	TODO[check] Unless a macro takes a @a stagen_ parameter, it requires
 	@c HORD_CMD_STAGE_TYPE_ to be defined to the stage name.
-	HORD_CMD_STAGE_DATA_CLOSE() also requires @c HORD_CMD_TYPE_.
+	HORD_CMD_CONSTRUCT_CLOSE() and HORD_CMD_STAGE_DATA_CLOSE() also
+	require @c HORD_CMD_TYPE_.
 
 	@note Due to an arbitrary limitation in C++, the implementation
 	definition macros must be placed in the same scope as %StageImpl
@@ -73,6 +74,50 @@ class StageImpl;
 /** @endcond */ // INTERNAL
 
 /**
+	Open @c construct_stage() function for command type info.
+
+	%Stage type switch body should follow macro (without braces).
+	This should be placed outside of the stage data definition.
+	See Cmd::type_info for visible parameters.
+*/
+#define HORD_CMD_CONSTRUCT_OPEN()				\
+	static ::Hord::Cmd::Stage*					\
+	construct_stage(							\
+		::Hord::Cmd::StageType const type		\
+	) {											\
+		switch (type) {
+
+/**
+	Make stage type switch in @c construct_stage() definition.
+
+	@param stagen_ Identifier of the stage name.
+*/
+#define HORD_CMD_CONSTRUCT_CASE(stagen_)	\
+	case ::Hord::Cmd::StageType::stagen_:	\
+		return new stagen_::impl();
+
+/**
+	Close @c construct_stage() function for command type info.
+
+	This requires @c HORD_CMD_TYPE_ to be defined to the command
+	type for the stages.
+
+	This should be placed outside of the stage data definition.
+*/
+#define HORD_CMD_CONSTRUCT_CLOSE()										\
+		default:														\
+			DUCT_GR_THROW_IMPL_(										\
+				::Hord::ErrorCode::cmd_construct_stage_type_invalid,	\
+				DUCT_GR_MSG(											\
+					DUCT_GR_SCOPE_CLASS_STR "::construct_stage",		\
+					"stage type not implemented for command"			\
+					" " HORD_STRINGIFY(HORD_CMD_TYPE_)					\
+				)														\
+			);															\
+		}																\
+	}
+
+/**
 	Generic close stage definition.
 
 	@note @a cmdt_ and @a staget_ are typecast to Cmd::Type and
@@ -84,7 +129,7 @@ class StageImpl;
 	@param cti_ Command type info.
 	@param sti_ %Stage type info.
 */
-#define HORD_CMD_STAGE_CLOSE_G(stagen_, cmdt_, staget_, cti_, sti_) \
+#define HORD_CMD_STAGE_CLOSE_G(stagen_, cmdt_, staget_, cti_, sti_)		\
 		using impl = ::Hord::Cmd::StageImpl<							\
 			static_cast<::Hord::Cmd::Type>(cmdt_),						\
 			static_cast<::Hord::Cmd::StageType>(staget_),				\

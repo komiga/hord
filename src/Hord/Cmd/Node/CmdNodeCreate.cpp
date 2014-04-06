@@ -48,7 +48,7 @@ HORD_CMD_STAGE_DATA_CLOSE()
 #define HORD_CMD_STAGE_TYPE_ Error
 
 HORD_CMD_STAGE_DATA_OPEN()
-	HORD_CMD_STAGE_DATA_NO_SERIALIZATION();
+	HORD_CMD_STAGE_DATA_NO_SERIALIZATION()
 HORD_CMD_STAGE_DATA_CLOSE()
 
 #undef HORD_CMD_STAGE_TYPE_ // Error
@@ -89,32 +89,14 @@ HORD_CMD_STAGE_DATA_CLOSE()
 
 // Type info
 
-#define HORD_SCOPE_FUNC construct_stage
-static Cmd::Stage*
-construct_stage(
-	Cmd::StageType const type
-) {
-	switch (type) {
-	case Cmd::StageType::Statement:
-		return new Statement::impl();
+HORD_CMD_CONSTRUCT_OPEN()
+	HORD_CMD_CONSTRUCT_CASE(Statement)
+	HORD_CMD_CONSTRUCT_CASE(Error)
+	HORD_CMD_CONSTRUCT_CASE(Request)
+	HORD_CMD_CONSTRUCT_CASE(Response)
+HORD_CMD_CONSTRUCT_CLOSE()
 
-	case Cmd::StageType::Error:
-		return new Error::impl();
 
-	case Cmd::StageType::Request:
-		return new Request::impl();
-
-	case Cmd::StageType::Response:
-		return new Response::impl();
-
-	default:
-		HORD_THROW_FQN(
-			ErrorCode::cmd_construct_stage_type_invalid,
-			"stage type not implemented"
-		);
-	}
-}
-#undef HORD_SCOPE_FUNC
 
 Cmd::type_info const
 s_type_info_NodeCreate{

@@ -19,29 +19,16 @@ namespace Cmd {
 #define HORD_CMD_STAGE_TYPE_ Statement
 
 HORD_CMD_STAGE_DATA_OPEN()
-	HORD_CMD_STAGE_DATA_NO_SERIALIZATION();
+	HORD_CMD_STAGE_DATA_NO_SERIALIZATION()
 HORD_CMD_STAGE_DATA_CLOSE()
 
 #undef HORD_CMD_STAGE_TYPE_ // Statement
 
 // Type info
 
-#define HORD_SCOPE_FUNC construct_stage
-static Cmd::Stage*
-construct_stage(
-	Cmd::StageType const type
-) {
-	switch (type) {
-	case Cmd::StageType::Statement:
-		return new Statement::impl();
-	default:
-		HORD_THROW_FQN(
-			ErrorCode::cmd_construct_stage_type_invalid,
-			"stage type not implemented"
-		);
-	}
-}
-#undef HORD_SCOPE_FUNC
+HORD_CMD_CONSTRUCT_OPEN()
+	HORD_CMD_CONSTRUCT_CASE(Statement)
+HORD_CMD_CONSTRUCT_CLOSE()
 
 Cmd::type_info const
 s_type_info_GenericTerminate{
