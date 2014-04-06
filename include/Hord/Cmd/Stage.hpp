@@ -15,6 +15,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/serialization.hpp>
 #include <Hord/Cmd/Defs.hpp>
 
+#include <type_traits>
 #include <iosfwd>
 
 namespace Hord {
@@ -607,6 +608,11 @@ private:
 		Cacophony::is_output_serializable<OutputSerializer, data_type>::value,
 		"Data type must satisfy input and output serialization for"
 		" Cacophony"
+	);
+
+	static_assert(
+		std::is_standard_layout<data_type>::value,
+		"Data type must be standard layout"
 	);
 
 	data_type m_data;
