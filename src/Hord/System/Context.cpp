@@ -192,6 +192,33 @@ Context::push_output(
 }
 #undef HORD_SCOPE_FUNC
 
+#define HORD_SCOPE_FUNC push_result
+void
+Context::push_result(
+	Cmd::Stage const& origin,
+	Cmd::StageUPtr& stage
+) {
+	assert(origin.is_identified());
+
+	auto const it = make_const(m_active).find(origin.get_id());
+	if (m_active.cend() == it) {
+		HORD_THROW_FQN(
+			ErrorCode::context_output_detached,
+			"origin stage does not belong to an active command"
+		);
+	}
+	if (!stage->is_identified()) {
+		stage->get_id_fields().assign(
+			origin.get_id_fields(),
+			false
+		);
+	} else {
+		assert(stage->get_id() == origin.get_id());
+	}
+	m_output.emplace_back(std::move(stage));
+}
+#undef HORD_SCOPE_FUNC
+
 #define HORD_SCOPE_FUNC execute_input
 std::size_t
 Context::execute_input(

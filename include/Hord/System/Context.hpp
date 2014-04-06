@@ -86,6 +86,7 @@ private:
 	stage_map_type m_active;
 
 	// Remote results and local results
+	stage_deque_type m_results;
 	stage_deque_type m_input;
 	stage_deque_type m_output;
 
@@ -191,6 +192,14 @@ public:
 	stage_map_type&
 	get_active() noexcept {
 		return m_active;
+	}
+
+	/**
+		Get command results.
+	*/
+	stage_deque_type&
+	get_results() noexcept {
+		return m_results;
 	}
 
 	/**
@@ -339,6 +348,41 @@ public:
 		Cmd::Stage const& origin,
 		Cmd::StageUPtr& stage,
 		bool const remote_initiator
+	);
+
+	/**
+		Push command result.
+
+		@note This is only used by command stages to emplace stage
+		results to the local endpoint.
+
+		@par
+		@warning If @a stage is already identified, it must have the
+		same canonical ID as @a origin.
+
+		@par
+		@note If @a stage is pushed, the context takes ownership
+		(@a stage is moved). Otherwise, the callee retains
+		ownership.
+
+		@pre @code
+			origin->is_identified() &&
+			(
+				!stage->is_identified() ||
+				stage->get_id() == origin->get_id()
+			)
+		@endcode
+
+		@throws Error{ErrorCode::context_output_detached}
+		If @a origin is not part of an active command.
+
+		@param origin Origin stage.
+		@param stage %Stage to push.
+	*/
+	void
+	push_result(
+		Cmd::Stage const& origin,
+		Cmd::StageUPtr& stage
 	);
 
 	/**
