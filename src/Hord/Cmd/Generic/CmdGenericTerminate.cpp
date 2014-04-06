@@ -30,14 +30,9 @@ HORD_CMD_CONSTRUCT_OPEN()
 	HORD_CMD_CONSTRUCT_CASE(Statement)
 HORD_CMD_CONSTRUCT_CLOSE()
 
-Cmd::type_info const
-s_type_info_GenericTerminate{
-	Cmd::Type::GenericTerminate,
-	{
-		Cmd::Flags::none
-	},
-	{construct_stage}
-};
+HORD_CMD_DEF_TYPE_INFO(
+	Cmd::Flags::none
+);
 
 // Implementation
 

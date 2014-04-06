@@ -118,6 +118,19 @@ class StageImpl;
 	}
 
 /**
+	Define command type info.
+
+	@param ... Type flags.
+*/
+#define HORD_CMD_DEF_TYPE_INFO(...)						\
+	::Hord::Cmd::type_info const						\
+	HORD_CMD_STAGE__JOIN_CT_(HORD_CMD_TYPE_){			\
+		::Hord::Cmd::Type::HORD_CMD_TYPE_,				\
+		{__VA_ARGS__},									\
+		{construct_stage}								\
+	};
+
+/**
 	Generic close stage definition.
 
 	@note @a cmdt_ and @a staget_ are typecast to Cmd::Type and

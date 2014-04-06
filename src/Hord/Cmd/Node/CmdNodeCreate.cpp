@@ -96,17 +96,10 @@ HORD_CMD_CONSTRUCT_OPEN()
 	HORD_CMD_CONSTRUCT_CASE(Response)
 HORD_CMD_CONSTRUCT_CLOSE()
 
-
-
-Cmd::type_info const
-s_type_info_NodeCreate{
-	Cmd::Type::NodeCreate,
-	{
-		Cmd::Flags::remote,
-		Cmd::Flags::revertible
-	},
-	{construct_stage}
-};
+HORD_CMD_DEF_TYPE_INFO(
+	Cmd::Flags::remote,
+	Cmd::Flags::revertible
+);
 
 // Implementation
 
