@@ -322,8 +322,8 @@ public:
 	/**
 		Push command output.
 
-		@note This is only used by command stages to emplace local
-		results.
+		@note This is only used by command stages to emplace stage
+		output to the remote endpoint.
 
 		@par
 		@note If @a stage is pushed, the context takes ownership
