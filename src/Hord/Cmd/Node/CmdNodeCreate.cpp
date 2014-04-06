@@ -28,7 +28,7 @@ namespace Cmd {
 HORD_CMD_STAGE_DEF_TYPE_INFO();
 HORD_CMD_STAGE_DATA_OPEN()
 	Hord::Node::ID id;
-	Hord::Object::ID parent;
+	Object::ID parent;
 	Hord::Node::ID layout_ref;
 	String slug;
 
@@ -50,7 +50,7 @@ HORD_CMD_STAGE_DATA_CLOSE()
 
 HORD_CMD_STAGE_DEF_TYPE_INFO();
 HORD_CMD_STAGE_DATA_OPEN()
-	HORD_CMD_STAGE_DATA_EMPTY();
+	HORD_CMD_STAGE_DATA_NO_SERIALIZATION();
 HORD_CMD_STAGE_DATA_CLOSE()
 
 #undef HORD_CMD_STAGE_TYPE_ // Error
@@ -61,7 +61,7 @@ HORD_CMD_STAGE_DATA_CLOSE()
 
 HORD_CMD_STAGE_DEF_TYPE_INFO();
 HORD_CMD_STAGE_DATA_OPEN()
-	Hord::Object::ID parent;
+	Object::ID parent;
 	Hord::Node::ID layout_ref;
 	String slug;
 
@@ -138,6 +138,12 @@ s_type_info_NodeCreate{
 	C: W <- [Response | Error] & ~
 	H: * -> [Response | Error] & ~
 
+* C -> Statement (OOB)
+	H: * -> Error & ~
+
+* H -> Statement
+	C: * & ~
+
 */
 
 enum class CanCreate : unsigned {
@@ -151,8 +157,7 @@ enum class CanCreate : unsigned {
 /*CanCreate
 can_create(
 	Hive::Unit const& hive,
-	Hord::Node::ID const id,
-	Hord::Object::ID const parent,
+	Object::ID const parent,
 	String const& slug,
 	Hord::Node::ID const layout_ref
 ) noexcept {
@@ -225,7 +230,7 @@ namespace Create {
 
 Cmd::StageUPtr
 make_request(
-	Hord::Object::ID const parent,
+	Object::ID const parent,
 	String slug,
 	Hord::Node::ID const layout_ref
 ) {

@@ -203,7 +203,7 @@ class StageImpl;
 /**
 	Define an empty serialization function.
 */
-#define HORD_CMD_STAGE_DATA_EMPTY()				\
+#define HORD_CMD_STAGE_DATA_NO_SERIALIZATION()	\
 	HORD_CMD_STAGE_DATA_SERIALIZE_OPEN()		\
 		(void)ser;								\
 	HORD_CMD_STAGE_DATA_SERIALIZE_CLOSE()

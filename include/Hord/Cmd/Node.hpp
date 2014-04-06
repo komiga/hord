@@ -45,7 +45,7 @@ namespace Create {
 */
 Cmd::StageUPtr
 make_request(
-	Hord::Object::ID const parent,
+	Object::ID const parent,
 	String slug,
 	Hord::Node::ID const layout_ref
 );
