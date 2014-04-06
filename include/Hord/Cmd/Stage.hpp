@@ -184,7 +184,9 @@ class StageImpl;
 	read(												\
 		::Hord::ser_tag_read,							\
 		::Hord::InputSerializer& ser					\
-	) {
+	) {													\
+		auto& self = *this;								\
+		(void)self;
 
 /**
 	Open stage data write() function definition.
@@ -197,7 +199,9 @@ class StageImpl;
 	write(												\
 		::Hord::ser_tag_write,							\
 		::Hord::OutputSerializer& ser					\
-	) const {
+	) const {											\
+		auto& self = *this;								\
+		(void)self;
 
 /**
 	Close stage data serialize() function definition.
