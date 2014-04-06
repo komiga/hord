@@ -69,11 +69,15 @@ public:
 		Cmd::StageUPtr
 	>;
 
-	/** Command %ID and status pair. */
-	using id_status_pair_type = std::pair<
-		Cmd::ID,
-		Cmd::Status
-	>;
+	/**
+		Stage execution result.
+	*/
+	struct Result {
+		/** Canonical stage %ID. */
+		Cmd::ID id;
+		/** Command status. */
+		Cmd::Status status;
+	};
 
 private:
 	Type const m_type;
@@ -93,10 +97,17 @@ private:
 	Cmd::ID
 	next_id() noexcept;
 
+	static void
+	purge_id(
+		Cmd::ID const id,
+		stage_deque_type& deque
+	);
+
 	void
 	terminate(
+		Cmd::Stage& input_stage,
 		stage_map_type::iterator it,
-		bool const transmitted
+		bool const push_terminator
 	) noexcept;
 
 	Context() = delete;
@@ -388,13 +399,25 @@ public:
 	/**
 		Execute command on the context.
 
-		@note Before an exception is rethrown,
-		-# The local command will be terminated;
-		-# @a result will be assigned to the offending command %ID
-		   and @c Cmd::Status::error; and
-		-# a @c GenericTerminate stage will be emitted if either the
-		   command is active (i.e., the stage is not a local
-		   initiator) or the remote command is waiting for a result.
+		@par
+		@note Commands are terminated (i.e., removed from the active
+		collection) when a stage returns a status other than
+		Cmd::Status::waiting.
+
+		@note
+		If the stage returns Cmd::Status::complete, termination just
+		removes the initiator stage from the active collection.
+
+		@note
+		If the stage returns an error or throws an exception, the
+		local instance is terminated, existing input and output is
+		removed, and GenericTerminate is emitted to the remote, which
+		does the same termination, sans GenericTerminate emittance.
+
+		@note
+		If GenericTerminate is received as input, the result status
+		is Cmd::Status::error_remote. Local errors or exceptions
+		should have Cmd::Status::error.
 
 		@par
 		@note If there are no stages to execute, @a result holds
@@ -415,7 +438,7 @@ public:
 	*/
 	std::size_t
 	execute_input(
-		id_status_pair_type& result
+		Result& result
 	);
 /// @}
 };

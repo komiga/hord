@@ -1,7 +1,9 @@
 
 #include <Hord/utility.hpp>
+#include <Hord/Log.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
+#include <Hord/Cmd/Ops.hpp>
 #include <Hord/Cmd/Generic.hpp>
 
 #include <cassert>
@@ -78,50 +80,61 @@ Context::next_id() noexcept {
 	}
 }
 
+#define HORD_SCOPE_FUNC terminate // pseudo
+void
+Context::purge_id(
+	Cmd::ID const id,
+	stage_deque_type& deque
+) {
+	for (
+		stage_deque_type::size_type idx = 0;
+		deque.size() > idx;
+		++idx
+	) {
+		if (deque[idx]->get_id() == id) {
+			Log::acquire()
+				<< "discarding stage (command termination): "
+				<< *deque[idx]
+			;
+			deque.erase(deque.cbegin() + idx);
+		}
+	}
+}
+#undef HORD_SCOPE_FUNC
+
+#define HORD_SCOPE_FUNC terminate
 void
 Context::terminate(
+	Cmd::Stage& input_stage,
 	stage_map_type::iterator it,
-	bool const transmitted
+	bool const push_terminator
 ) noexcept {
 	if (m_active.end() == it) {
-		// TODO: Log that remote tried to terminate an inactive
-		// command
+		Log::acquire()
+			<< "remote terminated inactive command: "
+			<< Cmd::IDFieldsPrinter{input_stage}
+		;
 		return;
 	}
 
+	Log::acquire()
+		<< "terminating command: "
+		<< input_stage
+	;
 	auto const id = it->second->get_id();
-	// TODO: Log that an active command is terminating
-	// TODO: Log discarded stages
-	// Discard pending stage input and output for this command
-	for (
-		auto in_it = m_input.begin();
-		m_input.end() != in_it;
-	) {
-		if ((*in_it)->get_id() == id) {
-			// FIXME: Is this valid in the stdlib?
-			m_input.erase(in_it++);
-		} else {
-			++in_it;
-		}
-	}
-	for (
-		auto out_it = m_output.begin();
-		m_output.end() != out_it;
-	) {
-		if ((*out_it)->get_id() == id) {
-			// FIXME: Is this valid in the stdlib?
-			m_output.erase(out_it++);
-		} else {
-			++out_it;
-		}
-	}
-	// Push GenericTerminate and inactivate stage
-	if (transmitted) {
+	purge_id(id, m_input);
+	purge_id(id, m_output);
+	if (push_terminator && !is_local_initiator(input_stage)) {
 		auto terminator = Cmd::Generic::Terminate::make_statement();
-		push_output(*it->second, terminator, false);
+		terminator->get_id_fields().assign(
+			it->second->get_id_fields(),
+			false
+		);
+		m_output.emplace_back(std::move(terminator));
 	}
 	m_active.erase(it);
 }
+#undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC initiate
 void
@@ -222,11 +235,11 @@ Context::push_result(
 #define HORD_SCOPE_FUNC execute_input
 std::size_t
 Context::execute_input(
-	id_status_pair_type& result
+	Result& result
 ) {
 	// TODO: logging & more-verbose errors
-	result.first = Cmd::NULL_ID;
-	result.second = static_cast<Cmd::Status>(0u);
+	result.id = Cmd::NULL_ID;
+	result.status = static_cast<Cmd::Status>(0u);
 	if (m_input.empty()) {
 		return 0u;
 	}
@@ -241,6 +254,12 @@ Context::execute_input(
 	assert(stage.is_identified());
 
 	stage_map_type::iterator it = m_active.find(stage.get_id());
+	if (Cmd::Type::GenericTerminate == stage.get_command_type()) {
+		result.id = stage.get_id();
+		result.status = Cmd::Status::error_remote;
+		terminate(stage, it, false);
+		goto l_normal_exit;
+	}
 	if (m_active.end() != it) {
 		if (stage.is_initiator()) {
 			HORD_THROW_FQN(
@@ -250,13 +269,11 @@ Context::execute_input(
 			);
 		}
 	} else if (!stage.is_initiator()) {
-		if (Cmd::Type::GenericTerminate != stage.get_command_type()) {
-			HORD_THROW_FQN(
-				ErrorCode::context_execute_not_active,
-				"non-initiating stage carries an ID which is not"
-				" active"
-			);
-		}
+		HORD_THROW_FQN(
+			ErrorCode::context_execute_not_active,
+			"non-initiating stage carries an ID which is not"
+			" active"
+		);
 	} else {
 		// NB: stage is a *ref* to the stage itself, so there's
 		// no issue with the uptr move here.
@@ -269,22 +286,32 @@ Context::execute_input(
 	}
 
 	// execute
-	result.first = stage.get_id();
-	if (Cmd::Type::GenericTerminate == stage.get_command_type()) {
-		terminate(it, false);
-		result.second = Cmd::Status::error_remote;
-	} else {
-		try {
-			result.second = stage.execute(*this, *it->second.get());
-			if (Cmd::Status::error == result.second) {
-				terminate(it, !is_local_initiator(stage));
-			}
-		} catch (...) {
-			terminate(it, !is_local_initiator(stage));
-			result.second = Cmd::Status::error; // implicit
-			throw;
-		}
+	result.id = stage.get_id();
+	try {
+		result.status = stage.execute(*this, *it->second.get());
+	} catch (...) {
+		terminate(stage, it, true);
+		result.status = Cmd::Status::error; // implicit
+		throw;
 	}
+
+	// handle normal result
+	switch (result.status) {
+	case Cmd::Status::complete:
+		m_active.erase(it);
+		break;
+
+	case Cmd::Status::waiting:
+		// Do nothing
+		break;
+
+	case Cmd::Status::error: // fall-through
+	case Cmd::Status::error_remote:
+		terminate(stage, it, true);
+		break;
+	}
+
+l_normal_exit:
 	return m_input.size();
 }
 #undef HORD_SCOPE_FUNC
