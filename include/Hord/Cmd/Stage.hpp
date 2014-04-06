@@ -121,6 +121,16 @@ class StageImpl;
 	struct HORD_CMD_STAGE_TYPE_ final {
 
 /**
+	Open stage definition with base class.
+
+	Stage data body should follow macro (without braces).
+
+	@param base_ Base class.
+*/
+#define HORD_CMD_STAGE_DATA_OPEN_INHERIT(base_) \
+	struct HORD_CMD_STAGE_TYPE_ final : public base_ {
+
+/**
 	Standard close stage definition.
 
 	This requires @c HORD_CMD_TYPE_ to be defined to the command
@@ -323,6 +333,12 @@ protected:
 	get_stage_type_info_impl() const noexcept = 0;
 
 	/**
+		get_data() implementation.
+	*/
+	virtual void const*
+	get_data_impl() const noexcept = 0;
+
+	/**
 		read() implementation.
 
 		@throws SerializerError{..}
@@ -401,6 +417,16 @@ public:
 	Cmd::StageType
 	get_stage_type() const noexcept {
 		return get_stage_type_info_impl().type;
+	}
+
+	/**
+		Get stage data.
+
+		@returns Pointer to stage data, or @c nullptr if none.
+	*/
+	void const*
+	get_data() const noexcept {
+		return get_data_impl();
 	}
 
 	/**
@@ -614,6 +640,11 @@ private:
 
 	Cmd::Stage::type_info const&
 	get_stage_type_info_impl() const noexcept override;
+
+	void const*
+	get_data_impl() const noexcept override {
+		return &m_data;
+	}
 
 	void
 	read_impl(

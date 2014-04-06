@@ -46,6 +46,11 @@ private:
 		return m_stage->get_stage_type_info();
 	}
 
+	void const*
+	get_data_impl() const noexcept override {
+		return m_stage->get_data_impl();
+	}
+
 	void
 	read_impl(
 		InputSerializer& ser
