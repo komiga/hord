@@ -256,7 +256,7 @@ Context::execute_input(
 	stage_map_type::iterator it = m_active.find(stage.get_id());
 	if (Cmd::Type::GenericTerminate == stage.get_command_type()) {
 		result.id = stage.get_id();
-		result.status = Cmd::Status::error_remote;
+		result.status = Cmd::Status::fatal_remote;
 		terminate(stage, it, false);
 		goto l_normal_exit;
 	}
@@ -291,23 +291,25 @@ Context::execute_input(
 		result.status = stage.execute(*this, *it->second.get());
 	} catch (...) {
 		terminate(stage, it, true);
-		result.status = Cmd::Status::error; // implicit
+		result.status = Cmd::Status::fatal; // implicit
 		throw;
 	}
 
 	// handle normal result
 	switch (result.status) {
-	case Cmd::Status::complete:
-		m_active.erase(it);
-		break;
-
 	case Cmd::Status::waiting:
 		// Do nothing
 		break;
 
+	case Cmd::Status::fatal: // fall-through
+	case Cmd::Status::fatal_remote:
+		terminate(stage, it, true);
+		break;
+
+	case Cmd::Status::complete: // fall-through
 	case Cmd::Status::error: // fall-through
 	case Cmd::Status::error_remote:
-		terminate(stage, it, true);
+		m_active.erase(it);
 		break;
 	}
 

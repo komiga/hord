@@ -423,10 +423,7 @@ static_assert(
 */
 enum class Status : unsigned {
 	/**
-		Command has completed without explicit error.
-
-		@note This will be the command status even if an Error stage
-		is emitted.
+		Command has completed normally.
 	*/
 	complete = 1,
 
@@ -436,7 +433,17 @@ enum class Status : unsigned {
 	waiting,
 
 	/**
-		Command has terminated with an error.
+		Command has completed with an error.
+	*/
+	error,
+
+	/**
+		Command has completed with a remote error.
+	*/
+	error_remote,
+
+	/**
+		Command has terminated with an unrecoverable error.
 
 		@note Commands which terminate with an error are immediately
 		removed from the active group and a @c GenericTerminate
@@ -446,12 +453,12 @@ enum class Status : unsigned {
 		@par
 		@note This is implicit if stage execution throws an exception.
 	*/
-	error,
+	fatal,
 
 	/**
-		Command has terminated because of a remote error.
+		Command has terminated with an unrecoverable remote error.
 	*/
-	error_remote
+	fatal_remote
 };
 
 /** @} */ // end of doc-group cmd

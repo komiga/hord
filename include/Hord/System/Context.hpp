@@ -403,24 +403,20 @@ public:
 		Execute command on the context.
 
 		@par
-		@note Commands are terminated (i.e., removed from the active
-		collection) when a stage returns a status other than
+		@note Commands are removed (and destroyed) from the active group
+		when execution status is anything other than
 		Cmd::Status::waiting.
 
 		@note
-		If the stage returns Cmd::Status::complete, termination just
-		removes the initiator stage from the active collection.
-
-		@note
-		If the stage returns an error or throws an exception, the
-		local instance is terminated, existing input and output is
-		removed, and GenericTerminate is emitted to the remote, which
-		does the same termination, sans GenericTerminate emittance.
+		If the stage returns a fatal error or throws an exception,
+		the local instance is terminated, existing input and output
+		are removed, and GenericTerminate is emitted to the remote,
+		which does the same termination, sans GenericTerminate
+		emittance.
 
 		@note
 		If GenericTerminate is received as input, the result status
-		is Cmd::Status::error_remote. Local errors or exceptions
-		should have Cmd::Status::error.
+		is Cmd::Status::fatal_remote.
 
 		@par
 		@note If there are no stages to execute, @a result holds
