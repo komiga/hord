@@ -80,28 +80,6 @@ Context::next_id() noexcept {
 	}
 }
 
-#define HORD_SCOPE_FUNC terminate // pseudo
-void
-Context::purge_id(
-	Cmd::ID const id,
-	stage_deque_type& deque
-) {
-	for (
-		stage_deque_type::size_type idx = 0;
-		deque.size() > idx;
-		++idx
-	) {
-		if (deque[idx]->get_id() == id) {
-			Log::acquire()
-				<< "discarding stage (command termination): "
-				<< *deque[idx]
-			;
-			deque.erase(deque.cbegin() + idx);
-		}
-	}
-}
-#undef HORD_SCOPE_FUNC
-
 #define HORD_SCOPE_FUNC terminate
 void
 Context::terminate(
@@ -122,16 +100,48 @@ Context::terminate(
 		<< input_stage
 	;
 	auto const id = it->second->get_id();
-	purge_id(id, m_input);
-	purge_id(id, m_output);
+	// Purge input
+	for (
+		input_deque_type::size_type idx = 0;
+		m_input.size() > idx;
+		++idx
+	) {
+		if (m_input[idx]->get_id() == id) {
+			Log::acquire()
+				<< "discarding input stage (command termination): "
+				<< *m_input[idx]
+			;
+			m_input.erase(m_input.cbegin() + idx);
+		}
+	}
+
+	// Purge output
+	for (
+		output_deque_type::size_type idx = 0;
+		m_output.size() > idx;
+		++idx
+	) {
+		auto& output = m_output[idx];
+		if (Dest::local != output.dest && output.stage->get_id() == id) {
+			Log::acquire()
+				<< "discarding output stage (command termination): "
+				<< *output.stage
+			;
+			m_output.erase(m_output.cbegin() + idx);
+		}
+	}
+
+	// Push terminator
 	if (push_terminator && !is_local_initiator(input_stage)) {
 		auto terminator = Cmd::Generic::Terminate::make_statement();
 		terminator->get_id_fields().assign(
 			it->second->get_id_fields(),
 			false
 		);
-		m_output.emplace_back(std::move(terminator));
+		m_output.emplace_back(Dest::remote, std::move(terminator));
 	}
+
+	// Finally, terminate the damned thing locally
 	m_active.erase(it);
 }
 #undef HORD_SCOPE_FUNC
@@ -169,25 +179,16 @@ Context::push_input(
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC push_output
+#define HORD_SCOPE_FUNC push_remote
 void
-Context::push_output(
+Context::push_remote(
 	Cmd::Stage const& origin,
 	Cmd::StageUPtr& stage,
-	bool const remote_initiator
+	bool const initiator
 ) {
 	assert( origin.is_identified());
 	assert(!stage->is_identified());
 	// TODO: Throw if command's type info doesn't have Cmd::Flags::remote?
-	// Is it better to have the userspace handle it, since they're going
-	// to handle the output queue anyways? Seems to make sense to allow
-	// commands to "output" results locally. Userspace needs to be aware
-	// of this so that they don't push non-remote command stages to the
-	// remote. Should the "destination" be embedded in the stage?
-	// i.e., allow stages to be output for local or remote?
-	// Seems more likely that commands won't even output locally
-	// if they're Cmd::Flags::remote. I can certainly see a use for having
-	// commands that are completely local, though.
 
 	auto const it = make_const(m_active).find(origin.get_id());
 	if (m_active.cend() == it) {
@@ -198,16 +199,16 @@ Context::push_output(
 	} else {
 		stage->get_id_fields().assign(
 			origin.get_id_fields(),
-			remote_initiator
+			initiator
 		);
-		m_output.emplace_back(std::move(stage));
+		m_output.emplace_back(Dest::remote, std::move(stage));
 	}
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC push_result
+#define HORD_SCOPE_FUNC push_local
 void
-Context::push_result(
+Context::push_local(
 	Cmd::Stage const& origin,
 	Cmd::StageUPtr& stage
 ) {
@@ -228,7 +229,7 @@ Context::push_result(
 	} else {
 		assert(stage->get_id() == origin.get_id());
 	}
-	m_output.emplace_back(std::move(stage));
+	m_output.emplace_back(Dest::local, std::move(stage));
 }
 #undef HORD_SCOPE_FUNC
 

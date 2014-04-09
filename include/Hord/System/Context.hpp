@@ -64,13 +64,51 @@ public:
 		Cmd::StageUPtr
 	>;
 
-	/** Command stage deque. */
-	using stage_deque_type = aux::deque<
+	/** Command input deque. */
+	using input_deque_type = aux::deque<
 		Cmd::StageUPtr
 	>;
 
 	/**
-		Stage execution result.
+		%Stage output destinations.
+	*/
+	enum class Dest : unsigned {
+		/** Output to remote endpoint. */
+		remote = 1u,
+		/** Output to local endpoint. */
+		local,
+		/** Output to all other endpoints. */
+		broadcast
+	};
+
+	/**
+		Command output.
+	*/
+	struct Output {
+		/** Destination of stage. */
+		Context::Dest dest;
+		/** %Stage. */
+		Cmd::StageUPtr stage;
+
+		/**
+			Constructor with destination and stage.
+		*/
+		Output(
+			Context::Dest const dest,
+			Cmd::StageUPtr&& stage
+		) noexcept
+			: dest(dest)
+			, stage(std::move(stage))
+		{}
+	};
+
+	/** Command output deque. */
+	using output_deque_type = aux::deque<
+		Context::Output
+	>;
+
+	/**
+		%Stage execution result.
 	*/
 	struct Result {
 		/** Canonical stage %ID. */
@@ -90,18 +128,11 @@ private:
 	stage_map_type m_active;
 
 	// Remote results and local results
-	stage_deque_type m_results;
-	stage_deque_type m_input;
-	stage_deque_type m_output;
+	input_deque_type m_input;
+	output_deque_type m_output;
 
 	Cmd::ID
 	next_id() noexcept;
-
-	static void
-	purge_id(
-		Cmd::ID const id,
-		stage_deque_type& deque
-	);
 
 	void
 	terminate(
@@ -212,17 +243,9 @@ public:
 	}
 
 	/**
-		Get command results.
-	*/
-	stage_deque_type&
-	get_results() noexcept {
-		return m_results;
-	}
-
-	/**
 		Get input stages.
 	*/
-	stage_deque_type&
+	input_deque_type&
 	get_input() noexcept {
 		return m_input;
 	}
@@ -230,7 +253,7 @@ public:
 	/**
 		Get output stages.
 	*/
-	stage_deque_type&
+	output_deque_type&
 	get_output() noexcept {
 		return m_output;
 	}
@@ -336,10 +359,7 @@ public:
 	) noexcept;
 
 	/**
-		Push command output.
-
-		@note This is only used by command stages to emplace stage
-		output to the remote endpoint.
+		Push stage to remote endpoint.
 
 		@par
 		@note If @a stage is pushed, the context takes ownership
@@ -355,21 +375,18 @@ public:
 
 		@param origin Origin stage.
 		@param stage %Stage to push.
-		@param remote_initiator Whether the remote endpoint should
-		emplace the stage as an initiator (see @c Cmd::IDFields).
+		@param initiator Whether the remote endpoint should emplace
+		the stage as an initiator (see @c Cmd::IDFields).
 	*/
 	void
-	push_output(
+	push_remote(
 		Cmd::Stage const& origin,
 		Cmd::StageUPtr& stage,
-		bool const remote_initiator
+		bool const initiator
 	);
 
 	/**
-		Push command result.
-
-		@note This is only used by command stages to emplace stage
-		results to the local endpoint.
+		Push local result stage.
 
 		@par
 		@warning If @a stage is already identified, it must have the
@@ -394,8 +411,31 @@ public:
 		@param stage %Stage to push.
 	*/
 	void
-	push_result(
+	push_local(
 		Cmd::Stage const& origin,
+		Cmd::StageUPtr& stage
+	);
+
+	/**
+		Broadcast stage to all other contexts.
+
+		@note @a stage will carry no identity in the output queue.
+		Userspace should broadcast the stage by calling initiate()
+		with a clone of the stage on every <strong>other</strong>
+		context.
+
+		@par
+		@note If @a stage is pushed, the context takes ownership
+		(@a stage is moved). Otherwise, the callee retains ownership.
+
+		@pre @code
+			!stage->is_identified()
+		@endcode
+
+		@param stage %Stage to broadcast.
+	*/
+	void
+	broadcast(
 		Cmd::StageUPtr& stage
 	);
 
