@@ -20,6 +20,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Cacophony/BinarySerializer.hpp>
 #include <Cacophony/support/binary_blob.hpp>
 #include <Cacophony/support/sequence.hpp>
+#include <Cacophony/support/enum_cfg.hpp>
 #include <Cacophony/support/string_cfg.hpp>
 #include <Cacophony/support/vector_cfg.hpp>
 #include <Cacophony/support/std_string.hpp>
