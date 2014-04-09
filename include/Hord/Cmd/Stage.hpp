@@ -384,7 +384,6 @@ private:
 		} canonical;
 	} m_id{Cmd::NULL_ID};
 
-	Stage(Stage const&) = delete;
 	Stage& operator=(Stage const&) = delete;
 
 protected:
@@ -428,6 +427,14 @@ protected:
 	) const = 0;
 
 	/**
+		clone() implementation.
+
+		@throws std::bad_alloc
+	*/
+	virtual StageUPtr
+	clone_impl() = 0;
+
+	/**
 		execute() implementation.
 
 		@throws std::bad_alloc
@@ -452,6 +459,15 @@ protected:
 	Stage(Stage&&) = default;
 	/** Move assignment operator. */
 	Stage& operator=(Stage&&) = default;
+
+	/**
+		Copy constructor.
+
+		@note Copy will have no identification.
+	*/
+	Stage(Stage const&)
+		: Stage()
+	{}
 /// @}
 
 public:
@@ -569,8 +585,8 @@ public:
 	}
 /// @}
 
-/** @name Serialization */ /// @{
 public:
+/** @name Serialization */ /// @{
 	static_assert(
 		std::is_same<
 			Cmd::ID,
@@ -615,6 +631,19 @@ public:
 /// @}
 
 /** @name Operations */ /// @{
+	/**
+		Duplicate the stage.
+
+		@note The duplicate stage will have no identification.
+
+		@throws std::bad_alloc
+		If an allocation fails.
+	*/
+	StageUPtr
+	clone() {
+		return clone_impl();
+	}
+
 	/**
 		Execute the stage.
 
@@ -679,7 +708,6 @@ private:
 
 	data_type m_data;
 
-	StageImpl(StageImpl const&) = delete;
 	StageImpl& operator=(StageImpl const&) = delete;
 
 public:
@@ -689,6 +717,8 @@ public:
 
 	/** Default constructor. */
 	StageImpl() = default;
+	/** Copy constructor. */
+	StageImpl(StageImpl const&) = default;
 	/** Move constructor. */
 	StageImpl(StageImpl&&) = default;
 	/** Move assignment operator. */
@@ -732,6 +762,11 @@ private:
 		OutputSerializer& ser
 	) const override {
 		ser(m_data);
+	}
+
+	StageUPtr
+	clone_impl() override {
+		return StageUPtr{new StageImpl(*this)};
 	}
 
 	Cmd::Status

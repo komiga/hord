@@ -20,12 +20,12 @@ private:
 	Stage* const m_stage;
 
 	StageShadow() = delete;
-	StageShadow(StageShadow const&) = delete;
 	StageShadow& operator=(StageShadow const&) = delete;
 
 public:
 	~StageShadow() noexcept override = default;
 
+	StageShadow(StageShadow const&) = default;
 	StageShadow(StageShadow&&) = default;
 
 	explicit
@@ -63,6 +63,11 @@ private:
 		OutputSerializer& ser
 	) const override {
 		m_stage->write_impl(ser);
+	}
+
+	StageUPtr
+	clone_impl() override {
+		return StageUPtr{new StageShadow(*this)};
 	}
 
 	Cmd::Status
