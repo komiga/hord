@@ -157,6 +157,11 @@ Datastore::create_object(
 			ErrorCode::datastore_object_type_prohibited,
 			"cannot create object other than Node"
 		);
+	} else if (Object::NULL_ID == object_id) {
+		HORD_THROW_FQN(
+			ErrorCode::datastore_object_already_exists,
+			"null object already exists (alias to Hive)"
+		);
 	}
 
 	HORD_CLOSED_CHECK_;
