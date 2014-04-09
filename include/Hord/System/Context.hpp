@@ -157,45 +157,51 @@ public:
 
 	/**
 		Get driver.
-		@{
 	*/
 	System::Driver&
 	get_driver() noexcept {
 		return m_driver;
 	}
+
+	/**
+		Get driver.
+	*/
 	System::Driver const&
 	get_driver() const noexcept {
 		return m_driver;
 	}
-	/** @} */
 
 	/**
 		Get datastore.
-		@{
 	*/
 	IO::Datastore&
 	get_datastore() noexcept {
 		return m_datastore;
 	}
+
+	/**
+		Get datastore.
+	*/
 	IO::Datastore const&
 	get_datastore() const noexcept {
 		return m_datastore;
 	}
-	/** @} */
 
 	/**
-		Get hive.
-		@{
+		Get hive (mutable).
 	*/
 	Hive::Unit&
 	get_hive() noexcept {
 		return m_hive;
 	}
+
+	/**
+		Get hive.
+	*/
 	Hive::Unit const&
 	get_hive() const noexcept {
 		return m_hive;
 	}
-	/** @} */
 
 	/**
 		Get active commands.
@@ -318,8 +324,7 @@ public:
 
 		@par
 		@note If @a stage is pushed, the context takes ownership
-		(@a stage is moved). Otherwise, the callee retains
-		ownership.
+		(@a stage is moved). Otherwise, the callee retains ownership.
 
 		@pre @code stage->is_identified() @endcode
 
@@ -338,8 +343,7 @@ public:
 
 		@par
 		@note If @a stage is pushed, the context takes ownership
-		(@a stage is moved). Otherwise, the callee retains
-		ownership.
+		(@a stage is moved). Otherwise, the callee retains ownership.
 
 		@pre @code
 			 origin->is_identified() &&
@@ -373,8 +377,7 @@ public:
 
 		@par
 		@note If @a stage is pushed, the context takes ownership
-		(@a stage is moved). Otherwise, the callee retains
-		ownership.
+		(@a stage is moved). Otherwise, the callee retains ownership.
 
 		@pre @code
 			origin->is_identified() &&
