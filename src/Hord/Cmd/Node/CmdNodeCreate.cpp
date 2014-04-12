@@ -10,6 +10,7 @@
 #include <Hord/Cmd/type_info.hpp>
 #include <Hord/Cmd/Unit.hpp>
 #include <Hord/Cmd/Stage.hpp>
+#include <Hord/Cmd/Ops.hpp>
 #include <Hord/Cmd/Node.hpp>
 #include <Hord/System/Context.hpp>
 
@@ -282,14 +283,17 @@ HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
 
 	// NB: Client cannot generate this stage
 	assert(is_initiator());
-	if (context.is_host()) {
-		return is_host()
-			? Cmd::Status::fatal
-			: Cmd::Status::fatal_remote
-		;
+	if (context.is_host() || is_client()) {
+		return context.localized_fatal(*this);
 	}
-	// TODO
-	return Cmd::Status::complete;
+
+	command.result_data.code = can_create(context.get_hive(), m_data.props);
+	command.result_data.id = m_data.id;
+	return
+		ResultCode::ok == command.result_data.code
+		? action(context, m_data.props, command.result_data)
+		: Cmd::Status::error
+	;
 }
 #undef HORD_SCOPE_FUNC
 
@@ -300,10 +304,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Error) {
 	(void)context; (void)command;
 
 	if (context.is_host()) {
-		return is_host()
-			? Cmd::Status::fatal
-			: Cmd::Status::fatal_remote
-		;
+		return context.localized_fatal(*this);
 	}
 
 	command.result_data = ResultData{
@@ -342,21 +343,21 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 	} else {
 		auto const status = action(context, m_data.props, data);
 		switch (status) {
-		case Cmd::Status::complete: {
+		case Cmd::Status::complete:
 			context.push_remote(
 				*this, false, Cmd::StageUPtr{new Response::impl({data.id})}
 			);
 			context.broadcast(
 				Cmd::StageUPtr{new Statement::impl({data.id, m_data.props})}
 			);
-		}	break;
+			break;
 
 		case Cmd::Status::error: // fall-through
-		case Cmd::Status::error_remote: {
+		case Cmd::Status::error_remote:
 			context.push_remote(
 				*this, false, Cmd::StageUPtr{new Error::impl({data.code})}
 			);
-		}	break;
+			break;
 
 		default:
 			break;
@@ -372,11 +373,8 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 HORD_CMD_STAGE_DEF_EXECUTE(Response) {
 	(void)context; (void)command;
 
-	if (context.is_host()) {
-		return is_host()
-			? Cmd::Status::fatal
-			: Cmd::Status::fatal_remote
-		;
+	if (context.is_host() || is_client()) {
+		return context.localized_fatal(*this);
 	}
 
 	Props const& props = static_cast<Request const*>(

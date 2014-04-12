@@ -33,19 +33,24 @@ namespace Node {
 
 /*
 
-NodeCreate
+NodeCreate (Request)
 
-* C -> Request = [Response | Error]
-	C: W <- . & ~
+* C I-> Request = [(Response & B[Statement]) | Error]
+	C: W <- .
 	H: * -> . & ~
 
-* C -> Statement (OOB)
-	C: * & ~fatal
-	H: * & ~fatal_remote
-
-* H -> Statement
+* H *-> Response
 	C: * & ~
-	H: * & ~
+
+* H *-> Error
+	C: * & ~error_remote
+	H: * & ~error
+
+NodeCreate (Statement)
+
+* H I-> Statement
+	C: * & ~
+	H: * & ~fatal
 
 */
 
