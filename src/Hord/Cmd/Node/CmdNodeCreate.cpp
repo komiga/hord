@@ -244,6 +244,7 @@ action(
 	} else {
 		Object::set_parent(node, *it->second);
 	}
+	data.code = ResultCode::ok;
 	return Cmd::Status::complete;
 } catch (Hord::Error const& err) {
 	Log::acquire(Log::error)
