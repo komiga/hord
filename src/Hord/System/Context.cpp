@@ -213,6 +213,17 @@ Context::push_remote(
 }
 #undef HORD_SCOPE_FUNC
 
+#define HORD_SCOPE_FUNC broadcast
+void
+Context::broadcast(
+	Cmd::StageUPtr stage
+) {
+	assert(!stage->is_identified());
+
+	m_output.emplace_back(Dest::broadcast, std::move(stage));
+}
+#undef HORD_SCOPE_FUNC
+
 #define HORD_SCOPE_FUNC execute_input
 std::size_t
 Context::execute_input(
