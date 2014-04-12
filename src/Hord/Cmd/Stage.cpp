@@ -1,6 +1,7 @@
 
 #include <Hord/serialization.hpp>
 #include <Hord/Cmd/Defs.hpp>
+#include <Hord/Cmd/Unit.hpp>
 #include <Hord/Cmd/Stage.hpp>
 
 #include <iostream>
@@ -73,9 +74,9 @@ private:
 	Cmd::Status
 	execute_impl(
 		System::Context& context,
-		Cmd::Stage& initiator
+		Cmd::Unit& command
 	) override {
-		return m_stage->execute_impl(context, initiator);
+		return m_stage->execute_impl(context, command);
 	}
 };
 

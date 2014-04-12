@@ -16,6 +16,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/Cmd/Defs.hpp>
+#include <Hord/Cmd/Unit.hpp>
 #include <Hord/Cmd/Stage.hpp>
 #include <Hord/System/Driver.hpp>
 
@@ -58,10 +59,15 @@ public:
 		client
 	};
 
-	/** Command stage map. */
-	using stage_map_type = aux::unordered_map<
-		Cmd::ID,
-		Cmd::StageUPtr
+	/** Command map. */
+	using command_map_type = aux::unordered_map<
+		Cmd::IDValue,
+		Cmd::UnitUPtr
+	>;
+
+	/** Command deque. */
+	using command_deque_type = aux::deque<
+		Cmd::UnitUPtr
 	>;
 
 	/** Command input deque. */
@@ -75,8 +81,6 @@ public:
 	enum class Dest : unsigned {
 		/** Output to remote endpoint. */
 		remote = 1u,
-		/** Output to local endpoint. */
-		local,
 		/** Output to all other endpoints. */
 		broadcast
 	};
@@ -112,7 +116,7 @@ public:
 	*/
 	struct Result {
 		/** Canonical stage %ID. */
-		Cmd::ID id;
+		Cmd::IDValue id;
 		/** Command status. */
 		Cmd::Status status;
 	};
@@ -122,22 +126,23 @@ private:
 	System::Driver& m_driver;
 	IO::Datastore& m_datastore;
 	Hive::Unit& m_hive;
-	Cmd::ID m_genid;
+	Cmd::IDValue m_genid;
 
 	// NB: Stores initiator stages
-	stage_map_type m_active;
+	command_map_type m_active;
 
 	// Remote results and local results
+	command_deque_type m_done;
 	input_deque_type m_input;
 	output_deque_type m_output;
 
-	Cmd::ID
+	Cmd::IDValue
 	next_id() noexcept;
 
 	void
 	terminate(
 		Cmd::Stage& input_stage,
-		stage_map_type::iterator it,
+		command_map_type::iterator it,
 		bool const push_terminator
 	) noexcept;
 
@@ -237,9 +242,17 @@ public:
 	/**
 		Get active commands.
 	*/
-	stage_map_type&
+	command_map_type&
 	get_active() noexcept {
 		return m_active;
+	}
+
+	/**
+		Get done commands.
+	*/
+	command_deque_type&
+	get_done() noexcept {
+		return m_done;
 	}
 
 	/**
@@ -322,22 +335,21 @@ public:
 	/**
 		Initiate command.
 
-		@note This will push an input stage. The command will not
-		be active until the initiator stage is executed from
-		execute_input().
+		@note This will push and initiate a command as input. The
+		command will not be active until the initiator stage is
+		executed from execute_input().
 
-		@par
-		@note If @a initiator is pushed, the context takes ownership
-		(@a initiator is moved). Otherwise, the callee retains
-		ownership.
-
-		@pre @code !stage->is_identified() @endcode
-
-		@param initiator Initiator stage.
+		@pre @code
+			!command ->is_identified() &&
+			!command->has_initiator() &&
+			!initiate->is_identified() &&
+			initiator->get_command_type() == command->get_type()
+		@endcode
 	*/
 	void
 	initiate(
-		Cmd::StageUPtr& initiator
+		Cmd::UnitUPtr command,
+		Cmd::StageUPtr initiator
 	) noexcept;
 
 	/**
@@ -345,25 +357,17 @@ public:
 
 		@note This is used by userspace to emplace remote stages.
 
-		@par
-		@note If @a stage is pushed, the context takes ownership
-		(@a stage is moved). Otherwise, the callee retains ownership.
-
 		@pre @code stage->is_identified() @endcode
 
 		@param stage %Stage to push.
 	*/
 	void
 	push_input(
-		Cmd::StageUPtr& stage
+		Cmd::StageUPtr stage
 	) noexcept;
 
 	/**
 		Push stage to remote endpoint.
-
-		@par
-		@note If @a stage is pushed, the context takes ownership
-		(@a stage is moved). Otherwise, the callee retains ownership.
 
 		@pre @code
 			 origin->is_identified() &&
@@ -376,44 +380,13 @@ public:
 		@param origin Origin stage.
 		@param stage %Stage to push.
 		@param initiator Whether the remote endpoint should emplace
-		the stage as an initiator (see @c Cmd::IDFields).
+		the stage as an initiator (see @c Cmd::ID).
 	*/
 	void
 	push_remote(
 		Cmd::Stage const& origin,
-		Cmd::StageUPtr& stage,
-		bool const initiator
-	);
-
-	/**
-		Push local result stage.
-
-		@par
-		@warning If @a stage is already identified, it must have the
-		same canonical ID as @a origin.
-
-		@par
-		@note If @a stage is pushed, the context takes ownership
-		(@a stage is moved). Otherwise, the callee retains ownership.
-
-		@pre @code
-			origin->is_identified() &&
-			(
-				!stage->is_identified() ||
-				stage->get_id() == origin->get_id()
-			)
-		@endcode
-
-		@throws Error{ErrorCode::context_output_detached}
-		If @a origin is not part of an active command.
-
-		@param origin Origin stage.
-		@param stage %Stage to push.
-	*/
-	void
-	push_local(
-		Cmd::Stage const& origin,
-		Cmd::StageUPtr& stage
+		bool const initiator,
+		Cmd::StageUPtr stage
 	);
 
 	/**
@@ -436,7 +409,7 @@ public:
 	*/
 	void
 	broadcast(
-		Cmd::StageUPtr& stage
+		Cmd::StageUPtr stage
 	);
 
 	/**

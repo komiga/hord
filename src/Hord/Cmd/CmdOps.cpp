@@ -15,20 +15,20 @@ namespace Cmd {
 namespace {
 static constexpr ceformat::Format const
 	s_fmt_cmd_id_fields{"%08x[%c%c]"},
-	s_fmt_cmd_identity{"%08x[%c%c]:%08x@%02x"}
+	s_fmt_cmd_stage_identity{"%08x[%c%c]:%08x@%02x"}
 ;
 } // anonymous namespace
 
 std::ostream&
 operator<<(
 	std::ostream& stream,
-	Cmd::IDFieldsPrinter const& printer
+	Cmd::IDPrinter const& printer
 ) {
 	ceformat::write<s_fmt_cmd_id_fields>(
 		stream,
-		printer.fields.base,
-		printer.fields.flag_host ? 'H' : 'C',
-		printer.fields.flag_initiator ? 'I' : ' '
+		printer.id.base(),
+		printer.id.is_host() ? 'H' : 'C',
+		printer.id.is_initiator() ? 'I' : ' '
 	);
 	return stream;
 }
@@ -38,11 +38,11 @@ operator<<(
 	std::ostream& stream,
 	Cmd::Stage const& stage
 ) {
-	ceformat::write<s_fmt_cmd_identity>(
+	ceformat::write<s_fmt_cmd_stage_identity>(
 		stream,
-		stage.get_id_fields().base,
-		stage.get_id_fields().flag_host ? 'H' : 'C',
-		stage.get_id_fields().flag_initiator ? 'I' : ' ',
+		stage.get_id().base(),
+		stage.get_id().is_host() ? 'H' : 'C',
+		stage.get_id().is_initiator() ? 'I' : ' ',
 		enum_cast(stage.get_command_type()),
 		enum_cast(stage.get_stage_type())
 	);

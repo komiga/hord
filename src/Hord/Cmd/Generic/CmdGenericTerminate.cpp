@@ -26,44 +26,30 @@ HORD_CMD_STAGE_DATA_CLOSE()
 
 // Type info
 
-HORD_CMD_CONSTRUCT_OPEN()
-	HORD_CMD_CONSTRUCT_CASE(Statement)
-HORD_CMD_CONSTRUCT_CLOSE()
+HORD_CMD_MAKE_STAGE_OPEN()
+	HORD_CMD_MAKE_STAGE_CASE(Statement)
+HORD_CMD_MAKE_STAGE_CLOSE()
 
 HORD_CMD_DEF_TYPE_INFO(
+	HORD_SCOPE_CLASS,
 	Cmd::Flags::none
 );
 
+Cmd::StageUPtr
+HORD_SCOPE_CLASS::make_statement() {
+	return Cmd::StageUPtr{new Statement::impl()};
+}
+
 // Implementation
-
-/*
-
-* H -> Statement
-	C: * & ~
-
-*/
 
 // Stage: Statement
 
 #define HORD_SCOPE_FUNC Statement::execute_impl
 HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
-	(void)context; (void)initiator;
+	(void)context; (void)command;
 	return Cmd::Status::complete;
 }
 #undef HORD_SCOPE_FUNC
-
-// Public interface
-
-namespace Generic {
-namespace Terminate {
-
-Cmd::StageUPtr
-make_statement() {
-	return Cmd::StageUPtr{new Statement::impl()};
-}
-
-} // namespace Terminate
-} // namespace Generic
 
 #undef HORD_SCOPE_CLASS
 #undef HORD_CMD_TYPE_ // GenericTerminate

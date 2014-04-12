@@ -27,7 +27,7 @@ s_std_cmd_table_array[]{
 	&Cmd::s_type_info_GenericTerminate,
 
 	// Group: Node
-	&Cmd::s_type_info_NodeCreate
+	&Cmd::s_type_info_NodeCreate,
 };
 static Cmd::type_info_table const
 s_std_cmd_table{

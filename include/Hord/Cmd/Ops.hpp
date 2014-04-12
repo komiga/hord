@@ -13,6 +13,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Stage.hpp>
+#include <Hord/Cmd/Unit.hpp>
 
 #include <iosfwd>
 
@@ -20,7 +21,7 @@ namespace Hord {
 namespace Cmd {
 
 // Forward declarations
-struct IDFieldsPrinter;
+struct IDPrinter;
 
 /**
 	@addtogroup cmd
@@ -28,70 +29,86 @@ struct IDFieldsPrinter;
 */
 
 /**
-	Command %ID fields printer.
+	Command %ID printer.
 */
-struct IDFieldsPrinter {
+struct IDPrinter {
+public:
 /** @name Properties */ /// @{
 	/**
-		Command %ID fields.
+		Command %ID.
 	*/
-	Cmd::IDFields fields;
+	Cmd::ID id;
 /// @}
 
 private:
-	IDFieldsPrinter() = delete;
+	IDPrinter() = delete;
 
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	~IDFieldsPrinter() noexcept = default;
+	~IDPrinter() noexcept = default;
 
 	/** Copy constructor. */
-	IDFieldsPrinter(IDFieldsPrinter const&) noexcept = default;
+	IDPrinter(IDPrinter const&) noexcept = default;
 	/** Move constructor. */
-	IDFieldsPrinter(IDFieldsPrinter&&) noexcept = default;
+	IDPrinter(IDPrinter&&) noexcept = default;
 
 	/**
-		Constructor with %ID fields.
+		Constructor with %ID.
 
-		@param fields Fields.
+		@param id %ID.
 	*/
 	constexpr
-	IDFieldsPrinter(
-		Cmd::IDFields fields
+	IDPrinter(
+		Cmd::ID id
 	) noexcept
-		: fields(fields)
+		: id(id)
 	{}
 
 	/**
-		Constructor with stage.
+		Constructor with command.
 
 		@post @code
-			this->fields == stage.get_id_fields()
+			this->id == cmd.get_id()
+		@endcode
+
+		@param cmd Command.
+	*/
+	IDPrinter(
+		Cmd::Unit const& cmd
+	) noexcept
+		: id(cmd.get_id())
+	{}
+
+	/**
+		Constructor with command stage.
+
+		@post @code
+			this->id == stage.get_id()
 		@endcode
 
 		@param stage %Stage.
 	*/
-	IDFieldsPrinter(
+	IDPrinter(
 		Cmd::Stage const& stage
 	) noexcept
-		: fields(stage.get_id_fields())
+		: id(stage.get_id())
 	{}
 /// @}
 };
 
 /**
-	Output command %ID fields to stream.
+	Output command %ID to stream.
 
 	@param stream Stream.
 	@param printer %ID printer.
 
-	@sa IDFieldsPrinter
+	@sa IDPrinter
 */
 std::ostream&
 operator<<(
 	std::ostream& stream,
-	Cmd::IDFieldsPrinter const& printer
+	Cmd::IDPrinter const& printer
 );
 
 /**

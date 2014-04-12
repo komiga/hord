@@ -14,6 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/traits.hpp>
 #include <Hord/serialization.hpp>
 #include <Hord/Cmd/Defs.hpp>
+#include <Hord/Cmd/Unit.hpp>
 
 #include <type_traits>
 #include <iosfwd>
@@ -30,7 +31,7 @@ namespace Cmd {
 // Forward declarations
 class Stage;
 
-template<Cmd::Type const, Cmd::StageType const, class>
+template<Cmd::Type const, Cmd::StageType const, class, class>
 class StageImpl;
 
 /**
@@ -39,9 +40,7 @@ class StageImpl;
 */
 
 /**
-	@name Macros
-
-	Command implementation helpers.
+	@name Stage definition macros
 
 	TODO[check] Unless a macro takes a @a stagen_ parameter, it requires
 	@c HORD_CMD_STAGE_TYPE_ to be defined to the stage name.
@@ -60,102 +59,34 @@ class StageImpl;
 	@{
 */
 
-/** @cond INTERNAL */
-// Forgive me
-#define HORD_CMD_STAGE__JOIN_CT_(cmdn_) \
-	HORD_CMD_STAGE__JOIN_CT_I_(cmdn_)
-#define HORD_CMD_STAGE__JOIN_CT_I_(cmdn_) \
-	s_type_info_ ## cmdn_
-
-#define HORD_CMD_STAGE__JOIN_ST_(cmdn_, stagen_) \
-	HORD_CMD_STAGE__JOIN_ST_I_(cmdn_, stagen_)
-#define HORD_CMD_STAGE__JOIN_ST_I_(cmdn_, stagen_) \
-	s_type_info_ ## cmdn_ ## _ ## stagen_
-/** @endcond */ // INTERNAL
-
-/**
-	Open @c construct_stage() function for command type info.
-
-	%Stage type switch body should follow macro (without braces).
-	This should be placed outside of the stage data definition.
-	See Cmd::type_info for visible parameters.
-*/
-#define HORD_CMD_CONSTRUCT_OPEN()				\
-	static ::Hord::Cmd::Stage*					\
-	construct_stage(							\
-		::Hord::Cmd::StageType const type		\
-	) {											\
-		switch (type) {
-
-/**
-	Make stage type switch in @c construct_stage() definition.
-
-	@param stagen_ Identifier of the stage name.
-*/
-#define HORD_CMD_CONSTRUCT_CASE(stagen_)	\
-	case ::Hord::Cmd::StageType::stagen_:	\
-		return new stagen_::impl();
-
-/**
-	Close @c construct_stage() function for command type info.
-
-	This requires @c HORD_CMD_TYPE_ to be defined to the command
-	type for the stages.
-
-	This should be placed outside of the stage data definition.
-*/
-#define HORD_CMD_CONSTRUCT_CLOSE()										\
-		default:														\
-			DUCT_GR_THROW_IMPL_(										\
-				::Hord::ErrorCode::cmd_construct_stage_type_invalid,	\
-				DUCT_GR_MSG(											\
-					DUCT_GR_SCOPE_CLASS_STR "::construct_stage",		\
-					"stage type not implemented for command"			\
-					" " HORD_STRINGIFY(HORD_CMD_TYPE_)					\
-				)														\
-			);															\
-		}																\
-	}
-
-/**
-	Define command type info.
-
-	@param ... Type flags.
-*/
-#define HORD_CMD_DEF_TYPE_INFO(...)						\
-	::Hord::Cmd::type_info const						\
-	HORD_CMD_STAGE__JOIN_CT_(HORD_CMD_TYPE_){			\
-		::Hord::Cmd::Type::HORD_CMD_TYPE_,				\
-		{__VA_ARGS__},									\
-		{construct_stage}								\
-	};
-
 /**
 	Generic close stage definition.
 
 	@note @a cmdt_ and @a staget_ are typecast to Cmd::Type and
 	Cmd::StageType, respectively.
 
-	@param stagen_ Identifier of the stage name.
+	@param cmdn_ Identifier of the command.
+	@param stagen_ Identifier of the stage.
 	@param cmdt_ Command type.
 	@param staget_ %Stage type.
 	@param cti_ Command type info.
 	@param sti_ %Stage type info.
 */
-#define HORD_CMD_STAGE_CLOSE_G(stagen_, cmdt_, staget_, cti_, sti_)		\
-		using impl = ::Hord::Cmd::StageImpl<							\
-			static_cast<::Hord::Cmd::Type>(cmdt_),						\
-			static_cast<::Hord::Cmd::StageType>(staget_),				\
-			stagen_														\
-		>;																\
-	};																	\
-	template<> ::Hord::Cmd::type_info const&							\
-	stagen_::impl::get_command_type_info_impl() const noexcept {		\
-		return cti_;													\
-	}																	\
-	template<> ::Hord::Cmd::Stage::type_info const&						\
-	stagen_::impl::get_stage_type_info_impl() const noexcept {			\
-		return sti_;													\
+#define HORD_CMD_STAGE_CLOSE_G(cmdn_, stagen_, cmdt_, staget_, cti_, sti_)	\
+		using impl = ::Hord::Cmd::StageImpl<								\
+			static_cast<::Hord::Cmd::Type>(cmdt_),							\
+			static_cast<::Hord::Cmd::StageType>(staget_),					\
+			cmdn_,															\
+			stagen_															\
+		>;																	\
+	};																		\
+	template<> ::Hord::Cmd::type_info const&								\
+	stagen_::impl::get_command_type_info_impl() const noexcept {			\
+		return cti_;														\
+	}																		\
+	template<> ::Hord::Cmd::Stage::type_info const&							\
+	stagen_::impl::get_stage_type_info_impl() const noexcept {				\
+		return sti_;														\
 	}
 
 /**
@@ -166,7 +97,7 @@ class StageImpl;
 #define HORD_CMD_STAGE_DEF_TYPE_INFO()									\
 	namespace {															\
 	static ::Hord::Cmd::Stage::type_info const							\
-	HORD_CMD_STAGE__JOIN_ST_(HORD_CMD_TYPE_, HORD_CMD_STAGE_TYPE_){		\
+	HORD_CMD_JOIN_ST_(HORD_CMD_TYPE_, HORD_CMD_STAGE_TYPE_){			\
 		::Hord::Cmd::StageType:: HORD_CMD_STAGE_TYPE_					\
 	};																	\
 	}
@@ -199,7 +130,8 @@ class StageImpl;
 	Standard close stage definition.
 
 	This requires @c HORD_CMD_TYPE_ to be defined to the command
-	type for the stages. This also requires accessible static
+	type for the stages and @c HORD_SCOPE_CLASS to be defined to the
+	command class identifier. This also requires accessible static
 	@c Cmd::type_info and @c Cmd::Stage::type_info objects with the
 	names:
 
@@ -208,11 +140,12 @@ class StageImpl;
 */
 #define HORD_CMD_STAGE_DATA_CLOSE()											\
 	HORD_CMD_STAGE_CLOSE_G(													\
+		HORD_SCOPE_CLASS,													\
 		HORD_CMD_STAGE_TYPE_,												\
 		::Hord::Cmd::Type::HORD_CMD_TYPE_,									\
 		::Hord::Cmd::StageType::HORD_CMD_STAGE_TYPE_,						\
-		HORD_CMD_STAGE__JOIN_CT_(HORD_CMD_TYPE_),							\
-		HORD_CMD_STAGE__JOIN_ST_(HORD_CMD_TYPE_, HORD_CMD_STAGE_TYPE_)		\
+		HORD_CMD_JOIN_CT_(HORD_CMD_TYPE_),									\
+		HORD_CMD_JOIN_ST_(HORD_CMD_TYPE_, HORD_CMD_STAGE_TYPE_)				\
 	)
 
 /**
@@ -288,22 +221,22 @@ class StageImpl;
 	HORD_CMD_STAGE_DATA_SERIALIZE_CLOSE()
 
 /**
-	Define execute_impl() by stage name.
+	Define execute_typecast() by stage name.
 
 	Function body should follow macro (with braces).
 	This should be placed outside of the stage data definition.
-	See Stage::execute_impl() for visible parameters.
+	See StageImpl::execute_typecast() for visible parameters.
 
-	@param stagen_ Identifier of the stage name.
+	@param stagen_ Identifier of the stage.
 */
 #define HORD_CMD_STAGE_DEF_EXECUTE(stagen_)		\
 	template<> ::Hord::Cmd::Status				\
-	stagen_::impl::execute_impl(				\
+	stagen_::impl::execute_typecast(			\
 		::Hord::System::Context& context,		\
-		::Hord::Cmd::Stage& initiator			\
+		stagen_::impl::owner_type& command		\
 	)
 
-/** @} */ // end of name-group Macros
+/** @} */ // end of name-group Stage definition macros
 
 /**
 	@name Utilities
@@ -364,25 +297,19 @@ public:
 			D,
 			tw::capture_post<std::is_base_of, Cmd::Stage>::type,
 			tw::is_fully_moveable,
+			std::is_copy_constructible,
 			std::is_nothrow_destructible
 		>,
 		traits::disallow_t<
 			D,
-			tw::is_copyable
+			std::is_copy_assignable
 		>
 	{};
 
 private:
 	friend class StageShadow;
 
-	union {
-		Cmd::ID const serial;
-		Cmd::IDFields fields;
-		struct {
-			Cmd::ID const value : 31;
-			bool const _ : 1;
-		} canonical;
-	} m_id{Cmd::NULL_ID};
+	Cmd::ID m_id;
 
 	Stage& operator=(Stage const&) = delete;
 
@@ -431,18 +358,19 @@ protected:
 
 		@throws std::bad_alloc
 	*/
-	virtual StageUPtr
+	virtual Cmd::StageUPtr
 	clone_impl() = 0;
 
 	/**
 		execute() implementation.
 
 		@throws std::bad_alloc
+		From stage allocation.
 	*/
 	virtual Cmd::Status
 	execute_impl(
 		System::Context& context,
-		Cmd::Stage& initiator
+		Cmd::Unit& command
 	) = 0;
 /// @}
 
@@ -517,83 +445,75 @@ public:
 	/**
 		Get %ID.
 
-		@note This returns the canonical %ID value (which
-		includes @c flag_host), not the serial form.
-	*/
-	Cmd::ID
-	get_id() const noexcept {
-		return m_id.canonical.value;
-	}
-
-	/**
-		Get %ID fields.
-
 		@remarks @c System::Context uses the %ID for tracking stages
 		and results. The returned reference should not be mutated
 		elsewhere.
 		@{
 	*/
-	Cmd::IDFields&
-	get_id_fields() noexcept {
-		return m_id.fields;
+	Cmd::ID&
+	get_id() noexcept {
+		return m_id;
 	}
-	Cmd::IDFields const&
-	get_id_fields() const noexcept {
-		return m_id.fields;
+	Cmd::ID const&
+	get_id() const noexcept {
+		return m_id;
 	}
 	/** @} */
 
 	/**
+		Get canonical %ID value.
+
+		@note This returns the canonical %ID value (which
+		includes @c flag_host), not the serial form.
+	*/
+	Cmd::IDValue
+	get_id_canonical() const noexcept {
+		return m_id.canonical();
+	}
+
+	/**
 		Check if the base %ID value is non-null.
 
-		@sa Cmd::IDFields
+		@sa Cmd::ID
 	*/
 	bool
 	is_identified() const noexcept {
-		// NB: Avoid sticky flag_host by checking the base value
-		return Cmd::NULL_ID != m_id.fields.base;
+		return m_id.is_identified();
 	}
 
 	/**
-		Check if the stage belongs to a host-initiated command.
+		Check if the command is host-initiated.
 
-		@sa Cmd::IDFields
+		@sa Cmd::ID
 	*/
 	bool
 	is_host() const noexcept {
-		return m_id.fields.flag_host;
+		return m_id.is_host();
 	}
 
 	/**
-		Check if the stage belongs to a client-initiated command.
+		Check if the command is client-initiated.
 
-		@sa Cmd::IDFields
+		@sa Cmd::ID
 	*/
 	bool
 	is_client() const noexcept {
-		return !m_id.fields.flag_host;
+		return m_id.is_client();
 	}
 
 	/**
 		Check if the stage is an initiator.
 
-		@sa Cmd::IDFields
+		@sa Cmd::ID
 	*/
 	bool
 	is_initiator() const noexcept {
-		return m_id.fields.flag_initiator;
+		return m_id.is_initiator();
 	}
 /// @}
 
 public:
 /** @name Serialization */ /// @{
-	static_assert(
-		std::is_same<
-			Cmd::ID,
-			std::uint32_t
-		>::value, ""
-	);
-
 	/**
 		Read from input serializer.
 
@@ -610,7 +530,7 @@ public:
 		ser_tag_read,
 		InputSerializer& ser
 	) {
-		ser(const_cast<Cmd::ID&>(m_id.serial));
+		ser(m_id);
 		read_impl(ser);
 	}
 
@@ -625,7 +545,7 @@ public:
 		ser_tag_write,
 		OutputSerializer& ser
 	) const {
-		ser(m_id.serial);
+		ser(m_id);
 		write_impl(ser);
 	}
 /// @}
@@ -639,7 +559,7 @@ public:
 		@throws std::bad_alloc
 		If an allocation fails.
 	*/
-	StageUPtr
+	Cmd::StageUPtr
 	clone() {
 		return clone_impl();
 	}
@@ -647,27 +567,28 @@ public:
 	/**
 		Execute the stage.
 
+		@note This will call Cmd::Unit::set_status() with the return
+		value of execute_impl().
+
 		@warning This function should not be used directly.
 		See System::Context.
 
-		@note @a initiator may be equal to @c this.
-
-		@pre @code get_id() != Cmd::NULL_ID @endcode
+		@pre @code get_id().is_identified() @endcode
 
 		@throws std::bad_alloc
 		If an allocation fails.
 
 		@returns Status of the command after execution.
-		@param context %Context.
-		@param initiator Initiating stage of the command.
 	*/
 	Cmd::Status
 	execute(
 		System::Context& context,
-		Cmd::Stage& initiator
+		Cmd::Unit& command
 	) {
 		// TODO: preconditions
-		return execute_impl(context, initiator);
+		Cmd::Status const status = execute_impl(context, command);
+		command.set_status(status);
+		return status;
 	}
 /// @}
 };
@@ -681,17 +602,20 @@ inline Stage::~Stage() noexcept = default;
 
 	@tparam command_type Command type.
 	@tparam stage_type %Stage type.
+	@tparam Owner Command class for the stage.
 	@tparam Data Data class for the stage.
 */
 template<
 	Cmd::Type const command_type,
 	Cmd::StageType const stage_type,
+	class Owner,
 	class Data
 >
 class StageImpl final
 	: public Cmd::Stage
 {
 private:
+	using owner_type = Owner;
 	using data_type = Data;
 
 	static_assert(
@@ -764,16 +688,27 @@ private:
 		ser(m_data);
 	}
 
-	StageUPtr
+	Cmd::StageUPtr
 	clone_impl() override {
-		return StageUPtr{new StageImpl(*this)};
+		return Cmd::StageUPtr{new StageImpl(*this)};
 	}
 
 	Cmd::Status
 	execute_impl(
 		System::Context& context,
-		Cmd::Stage& initiator
-	) override;
+		Cmd::Unit& command
+	) override {
+		return execute_typecast(
+			context,
+			static_cast<owner_type&>(command)
+		);
+	}
+
+	Cmd::Status
+	execute_typecast(
+		System::Context& context,
+		owner_type& command
+	);
 };
 
 /** @} */ // end of doc-group cmd

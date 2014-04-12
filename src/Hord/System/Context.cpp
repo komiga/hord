@@ -15,8 +15,8 @@ namespace System {
 
 // class Context implementation
 
-enum : Cmd::ID {
-	BASE_GENID = Cmd::ID{1u}
+enum : Cmd::IDValue {
+	BASE_GENID = Cmd::IDValue{1u}
 };
 
 #define HORD_SCOPE_CLASS System::Context
@@ -49,6 +49,7 @@ Context::Context(
 	, m_hive(hive_pair.hive)
 	, m_genid(Cmd::NULL_ID)
 	, m_active()
+	, m_done()
 	, m_input()
 	, m_output()
 {}
@@ -71,7 +72,7 @@ Context::Context(
 
 // commands
 
-Cmd::ID
+Cmd::IDValue
 Context::next_id() noexcept {
 	if (Cmd::MAX_ID == m_genid) {
 		return m_genid = BASE_GENID;
@@ -84,13 +85,14 @@ Context::next_id() noexcept {
 void
 Context::terminate(
 	Cmd::Stage& input_stage,
-	stage_map_type::iterator it,
+	command_map_type::iterator it,
 	bool const push_terminator
 ) noexcept {
+	// FIXME: `it` could be invalidated from stage execution
 	if (m_active.end() == it) {
 		Log::acquire()
 			<< "remote terminated inactive command: "
-			<< Cmd::IDFieldsPrinter{input_stage}
+			<< Cmd::IDPrinter{input_stage}
 		;
 		return;
 	}
@@ -99,19 +101,20 @@ Context::terminate(
 		<< "terminating command: "
 		<< input_stage
 	;
-	auto const id = it->second->get_id();
+	auto const id = it->second->get_id_canonical();
 	// Purge input
 	for (
 		input_deque_type::size_type idx = 0;
 		m_input.size() > idx;
-		++idx
 	) {
-		if (m_input[idx]->get_id() == id) {
+		if (m_input[idx]->get_id_canonical() == id) {
 			Log::acquire()
 				<< "discarding input stage (command termination): "
 				<< *m_input[idx]
 			;
 			m_input.erase(m_input.cbegin() + idx);
+		} else {
+			++idx;
 		}
 	}
 
@@ -119,29 +122,33 @@ Context::terminate(
 	for (
 		output_deque_type::size_type idx = 0;
 		m_output.size() > idx;
-		++idx
 	) {
 		auto& output = m_output[idx];
-		if (Dest::local != output.dest && output.stage->get_id() == id) {
+		if (
+			output.stage->get_id_canonical() == id
+		) {
 			Log::acquire()
 				<< "discarding output stage (command termination): "
 				<< *output.stage
 			;
 			m_output.erase(m_output.cbegin() + idx);
+		} else {
+			++idx;
 		}
 	}
 
 	// Push terminator
 	if (push_terminator && !is_local_initiator(input_stage)) {
 		auto terminator = Cmd::Generic::Terminate::make_statement();
-		terminator->get_id_fields().assign(
-			it->second->get_id_fields(),
+		terminator->get_id().assign(
+			it->second->get_id(),
 			false
 		);
 		m_output.emplace_back(Dest::remote, std::move(terminator));
 	}
 
 	// Finally, terminate the damned thing locally
+	m_done.emplace_back(std::move(it->second));
 	m_active.erase(it);
 }
 #undef HORD_SCOPE_FUNC
@@ -149,15 +156,17 @@ Context::terminate(
 #define HORD_SCOPE_FUNC initiate
 void
 Context::initiate(
-	Cmd::StageUPtr& initiator
+	Cmd::UnitUPtr command,
+	Cmd::StageUPtr initiator
 ) noexcept {
+	assert(!command->is_identified());
+	assert(!command->has_initiator());
 	assert(!initiator->is_identified());
+	assert(initiator->get_command_type() == command->get_type());
 
-	initiator->get_id_fields().assign(
-		next_id(),
-		is_host(),
-		true
-	);
+	command->get_id().assign(next_id(), is_host(), false);
+	initiator->get_id().assign(command->get_id(), true);
+	m_active.emplace(command->get_id_canonical(), std::move(command));
 	m_input.emplace_back(std::move(initiator));
 }
 #undef HORD_SCOPE_FUNC
@@ -165,14 +174,12 @@ Context::initiate(
 #define HORD_SCOPE_FUNC push_input
 void
 Context::push_input(
-	Cmd::StageUPtr& stage
+	Cmd::StageUPtr stage
 ) noexcept {
 	assert(stage->is_identified());
 
 	// TODO: Ignore when:
-	//   Type::host == m_type &&
-	//   stage->is_host() &&
-	//   stage->is_initiator()
+	//   is_local_initiator(stage)
 	// (initiate() should've been used instead; also, client
 	// is not permitted to generate such a stage).
 	m_input.emplace_back(std::move(stage));
@@ -183,53 +190,26 @@ Context::push_input(
 void
 Context::push_remote(
 	Cmd::Stage const& origin,
-	Cmd::StageUPtr& stage,
-	bool const initiator
+	bool const initiator,
+	Cmd::StageUPtr stage
 ) {
 	assert( origin.is_identified());
 	assert(!stage->is_identified());
 	// TODO: Throw if command's type info doesn't have Cmd::Flags::remote?
 
-	auto const it = make_const(m_active).find(origin.get_id());
+	auto const it = make_const(m_active).find(origin.get_id_canonical());
 	if (m_active.cend() == it) {
 		HORD_THROW_FQN(
 			ErrorCode::context_output_detached,
 			"origin stage does not belong to an active command"
 		);
 	} else {
-		stage->get_id_fields().assign(
-			origin.get_id_fields(),
+		stage->get_id().assign(
+			origin.get_id(),
 			initiator
 		);
 		m_output.emplace_back(Dest::remote, std::move(stage));
 	}
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC push_local
-void
-Context::push_local(
-	Cmd::Stage const& origin,
-	Cmd::StageUPtr& stage
-) {
-	assert(origin.is_identified());
-
-	auto const it = make_const(m_active).find(origin.get_id());
-	if (m_active.cend() == it) {
-		HORD_THROW_FQN(
-			ErrorCode::context_output_detached,
-			"origin stage does not belong to an active command"
-		);
-	}
-	if (!stage->is_identified()) {
-		stage->get_id_fields().assign(
-			origin.get_id_fields(),
-			false
-		);
-	} else {
-		assert(stage->get_id() == origin.get_id());
-	}
-	m_output.emplace_back(Dest::local, std::move(stage));
 }
 #undef HORD_SCOPE_FUNC
 
@@ -245,8 +225,8 @@ Context::execute_input(
 		return 0u;
 	}
 
-	// NB: If the stage is not an initiator (i.e., not emplaced),
-	// it will be destroyed when this function terminates.
+	// NB: If the stage is not an initiator (i.e., command is not
+	// active), it will be destroyed when this function terminates.
 	Cmd::StageUPtr stage_ptr{std::move(m_input.front())};
 	Cmd::Stage& stage = *stage_ptr.get();
 	m_input.pop_front();
@@ -254,15 +234,29 @@ Context::execute_input(
 	// NB: Precondition ensured by initiate() and push_input().
 	assert(stage.is_identified());
 
-	stage_map_type::iterator it = m_active.find(stage.get_id());
+	command_map_type::iterator it = m_active.find(stage.get_id_canonical());
 	if (Cmd::Type::GenericTerminate == stage.get_command_type()) {
-		result.id = stage.get_id();
+		result.id = stage.get_id_canonical();
 		result.status = Cmd::Status::fatal_remote;
+		if (m_active.end() != it) {
+			it->second->set_status(result.status);
+		}
 		terminate(stage, it, false);
 		goto l_normal_exit;
 	}
 	if (m_active.end() != it) {
-		if (stage.is_initiator()) {
+		// Local input (command already constructed)
+		if (!it->second->is_active()) {
+			if (!stage.is_initiator()) {
+				HORD_THROW_FQN(
+					ErrorCode::context_execute_not_active,
+					"non-initiating stage carries an ID which is"
+					" not active (first stage)"
+				);
+			}
+			it->second->get_id().set_initiator(true);
+			it->second->get_initiator() = std::move(stage_ptr);
+		} else if (stage.is_initiator()) {
 			HORD_THROW_FQN(
 				ErrorCode::context_execute_already_active,
 				"initiating stage carries an ID which is already"
@@ -272,27 +266,29 @@ Context::execute_input(
 	} else if (!stage.is_initiator()) {
 		HORD_THROW_FQN(
 			ErrorCode::context_execute_not_active,
-			"non-initiating stage carries an ID which is not"
-			" active"
+			"non-initiating stage carries an ID which is"
+			" not active"
 		);
 	} else {
-		// NB: stage is a *ref* to the stage itself, so there's
-		// no issue with the uptr move here.
+		// Remote input (no existing command; constructed from type)
 		auto const&& emplace_result = m_active.emplace(
-			stage.get_id(),
-			std::move(stage_ptr)
+			stage.get_id_canonical(),
+			stage.get_command_type_info().make()
 		);
 		assert(emplace_result.second); // success
 		it = emplace_result.first;
+		it->second->get_id() = stage.get_id();
+		it->second->get_initiator() = std::move(stage_ptr);
 	}
 
 	// execute
-	result.id = stage.get_id();
+	result.id = stage.get_id_canonical();
 	try {
 		result.status = stage.execute(*this, *it->second.get());
 	} catch (...) {
-		terminate(stage, it, true);
 		result.status = Cmd::Status::fatal; // implicit
+		it->second->set_status(result.status);
+		terminate(stage, it, true);
 		throw;
 	}
 
@@ -310,6 +306,7 @@ Context::execute_input(
 	case Cmd::Status::complete: // fall-through
 	case Cmd::Status::error: // fall-through
 	case Cmd::Status::error_remote:
+		m_done.emplace_back(std::move(it->second));
 		m_active.erase(it);
 		break;
 	}

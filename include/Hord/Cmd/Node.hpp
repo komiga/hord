@@ -16,6 +16,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/type_info.hpp>
+#include <Hord/Cmd/Unit.hpp>
 
 namespace Hord {
 namespace Cmd {
@@ -30,27 +31,95 @@ namespace Node {
 	@{
 */
 
-namespace Create {
+/*
 
-/**
-	Allocate @c Request stage for the NodeCreate command.
+NodeCreate
 
-	@throws std::bad_alloc
-	If allocation fails.
+* C -> Request = [Response | Error]
+	C: W <- . & ~
+	H: * -> . & ~
 
-	@returns Pointer to initiator stage.
-	@param parent Parent.
-	@param slug %Node slug.
-	@param layout_ref Layout reference.
+* C -> Statement (OOB)
+	C: * & ~fatal
+	H: * & ~fatal_remote
+
+* H -> Statement
+	C: * & ~
+	H: * & ~
+
 */
-Cmd::StageUPtr
-make_request(
-	Object::ID const parent,
-	String slug,
-	Hord::Node::ID const layout_ref
-);
 
-} // namespace Create
+/** @cond INTERNAL */
+#define HORD_CMD_TYPE_ NodeCreate
+/** @endcond */
+HORD_CMD_DEF_OPEN(Create)
+public:
+	/**
+		Result codes.
+	*/
+	enum class ResultCode {
+		ok,
+		parent_not_found,
+		layout_ref_not_found,
+		layout_ref_not_a_node,
+		slug_empty,
+		slug_too_long,
+		slug_already_exists,
+		id_already_exists,
+		unknown,
+	};
+
+	/**
+		Result data type.
+	*/
+	struct ResultData {
+		ResultCode code{ResultCode::unknown};
+		Hord::Node::ID id{Object::NULL_ID};
+
+		~ResultData() = default;
+		ResultData() = default;
+		ResultData(ResultData const&) = default;
+		ResultData& operator=(ResultData const&) = default;
+		ResultData(ResultData&&) = default;
+		ResultData& operator=(ResultData&&) = default;
+
+		ResultData(
+			ResultCode code,
+			Hord::Node::ID id
+		)
+			: code(code)
+			, id(id)
+		{}
+	};
+
+	/**
+		Command properties.
+	*/
+	struct Props {
+		Object::ID parent;
+		Hord::Node::ID layout_ref;
+		String slug;
+	};
+
+/** @name Properties */ /// @{
+	/** Result data. */
+	ResultData result_data{};
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		Make @c Request stage (initiator).
+
+		@throws std::bad_alloc
+		If allocation fails.
+	*/
+	static Cmd::StageUPtr
+	make_request(
+		Props&& props
+	);
+/// @}
+HORD_CMD_DEF_CLOSE()
+#undef HORD_CMD_TYPE_
 
 /** @} */ // end of doc-group cmd_node
 /** @} */ // end of doc-group cmd

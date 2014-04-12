@@ -12,18 +12,22 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/utility.hpp>
+#include <Hord/serialization.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
 #include <duct/StateStore.hpp>
+
+#include <type_traits>
 
 namespace Hord {
 namespace Cmd {
 
 // Forward declarations
-struct IDFields;
+class Unit; // external
+class Stage; // external
+struct ID;
 struct type_info;
 struct type_info_table;
-class Stage; // external
 enum class Type : std::uint32_t;
 enum class Flags : std::uint32_t;
 enum class StageType : std::uint8_t;
@@ -34,101 +38,231 @@ enum class Status : unsigned;
 	@{
 */
 
+/** @cond INTERNAL */
+// Forgive me
+#define HORD_CMD_JOIN_CT_(cmdn_) \
+	HORD_CMD_JOIN_CT_I_(cmdn_)
+#define HORD_CMD_JOIN_CT_I_(cmdn_) \
+	s_type_info_ ## cmdn_
+
+#define HORD_CMD_JOIN_ST_(cmdn_, stagen_) \
+	HORD_CMD_JOIN_ST_I_(cmdn_, stagen_)
+#define HORD_CMD_JOIN_ST_I_(cmdn_, stagen_) \
+	s_type_info_ ## cmdn_ ## _ ## stagen_
+/** @endcond */ // INTERNAL
+
 /**
-	%ID.
+	%ID value.
 
 	@note Value only takes up bits @c 0x3FFFFFFF.
-	See @c Cmd::IDFields.
+	See @c Cmd::ID.
 */
-using ID = std::uint32_t;
+using IDValue = std::uint32_t;
 
 /**
-	%ID constants.
+	%ID value constants.
 */
-enum : Cmd::ID {
+enum : Cmd::IDValue {
 	/**
-		Null %ID.
+		Null base %ID value.
 	*/
-	NULL_ID = Cmd::ID{0u},
+	NULL_ID = Cmd::IDValue{0u},
 	/**
-		Maximum %ID value.
+		Maximum base %ID value.
 	*/
-	MAX_ID = Cmd::ID{0x3FFFFFFFu}
+	MAX_ID = Cmd::IDValue{0x3FFFFFFFu}
 };
 
 /**
-	%ID fields.
-
-	@note @c flag_host is included in the canonical value for %ID
-	space separation.
+	Owning pointer to command unit.
 */
-struct IDFields final {
+using UnitUPtr = duct::cc_unique_ptr<Cmd::Unit>;
+/**
+	Owning pointer to command stage.
+*/
+using StageUPtr = duct::cc_unique_ptr<Cmd::Stage>;
+
+/**
+	%ID.
+*/
+struct ID final {
+private:
+	Cmd::IDValue m_value{Cmd::NULL_ID};
+
+	enum : unsigned {
+		shift_host		= 30u,
+		shift_initiator	= 31u,
+		mask_base		= 0x3FFFFFFFu,
+		mask_canonical	= 0x7FFFFFFFu,
+		mask_host		= unsigned{1u << shift_host},
+		mask_initiator	= unsigned{1u << shift_initiator},
+	};
+
+public:
 /** @name Properties */ /// @{
-	/**
-		Base %ID value.
-	*/
-	Cmd::ID base : 30;
 
 	/**
-		Whether the command is being executed by the host.
+		Get base value.
 	*/
-	bool flag_host : 1;
+	Cmd::IDValue
+	base() const noexcept {
+		return m_value & mask_base;
+	}
 
 	/**
-		Whether the stage is an initiator for the command.
+		Get canonical value.
+
+		@note @c fields.flag_host is included in the canonical
+		value.
+	*/
+	Cmd::IDValue
+	canonical() const noexcept {
+		return m_value & mask_canonical;
+	}
+
+	/**
+		Get value.
+
+		@remarks This is the serial form.
+	*/
+	Cmd::IDValue
+	value() const noexcept {
+		return m_value;
+	}
+
+	/**
+		Check if the base %ID value is non-null.
+	*/
+	bool
+	is_identified() const noexcept {
+		// NB: Avoid sticky flag_host by checking the base value
+		return Cmd::NULL_ID != base();
+	}
+
+	/**
+		Check if the command is host-initiated.
+	*/
+	bool
+	is_host() const noexcept {
+		return m_value & mask_host;
+	}
+
+	/**
+		Check if the command is client-initiated.
+	*/
+	bool
+	is_client() const noexcept {
+		return m_value ^ mask_host;
+	}
+
+	/**
+		Check if the stage is an initiator.
 
 		@note This is enabled for the first result stage of a
 		local command. It ensures there are no stray command
 		initiations, and assists when resolving %ID collisions.
 	*/
-	bool flag_initiator : 1;
+	bool
+	is_initiator() const noexcept {
+		return m_value & mask_initiator;
+	}
+/// @}
+
+public:
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~ID() noexcept = default;
+
+	/** Default constructor. */
+	ID() = default;
+	/** Copy constructor. */
+	ID(ID const&) = default;
+	/** Copy assignment operator. */
+	ID& operator=(ID const&) = default;
+	/** Move constructor. */
+	ID(ID&&) = default;
+	/** Move assignment operator. */
+	ID& operator=(ID&&) = default;
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		Assign value.
+	*/
+	void
+	assign(
+		Cmd::IDValue const value
+	) noexcept {
+		m_value = value;
+	}
 
 	/**
 		Assign fields.
-
-		@param base @c base.
-		@param flag_host @c flag_host.
-		@param flag_initiator @c flag_initiator.
 	*/
 	void
 	assign(
-		Cmd::ID const base,
-		bool const flag_host,
-		bool const flag_initiator
+		Cmd::IDValue const base,
+		bool const host,
+		bool const initiator
 	) noexcept {
-		this->base = base;
-		this->flag_host = flag_host;
-		this->flag_initiator = flag_initiator;
+		m_value
+			= (base & mask_base)
+			| (Cmd::IDValue{host} << shift_host)
+			| (Cmd::IDValue{initiator} << shift_initiator)
+		;
 	}
 
 	/**
-		Assign.
-
-		@param other Fields to copy.
+		Assign to copy and differing initiator.
 	*/
 	void
 	assign(
-		IDFields const& other
+		ID const& other,
+		bool const initiator
 	) noexcept {
-		this->base = other.base;
-		this->flag_host = other.flag_host;
-		this->flag_initiator = other.flag_initiator;
+		m_value
+			= (other.m_value & mask_canonical)
+			| (Cmd::IDValue{initiator} << shift_initiator)
+		;
 	}
 
 	/**
-		Assign with @c flag_initiator.
-
-		@param other Fields.
-		@param flag_initiator @c flag_initiator.
+		Assign initiator.
 	*/
 	void
-	assign(
-		IDFields const& other,
-		bool const flag_initiator
+	set_initiator(
+		bool const initiator
 	) noexcept {
-		this->base = other.base;
-		this->flag_host = other.flag_host;
-		this->flag_initiator = flag_initiator;
+		m_value
+			|= (Cmd::IDValue{initiator} << shift_initiator)
+		;
+	}
+/// @}
+
+/** @name Serialization */ /// @{
+	static_assert(
+		std::is_same<
+			Cmd::IDValue,
+			std::uint32_t
+		>::value, ""
+	);
+
+	/**
+		Serialize.
+
+		@warning State may not be retained if an exception is thrown.
+
+		@throws SerializerError{..}
+		If a serialization operation failed.
+	*/
+	template<class Ser>
+	ser_result_type
+	serialize(
+		ser_tag_serialize,
+		Ser& ser
+	) {
+		auto& self = const_safe<Ser>(*this);
+		ser(self.m_value);
 	}
 /// @}
 };
@@ -156,6 +290,17 @@ struct type_info final {
 
 /** @name Operations */ /// @{
 	/**
+		Construct command.
+
+		@throws std::bad_alloc
+		If allocation fails.
+
+		@returns Owning pointer to command.
+	*/
+	Cmd::UnitUPtr
+	(&make)();
+
+	/**
 		Construct stage by type.
 
 		@throws Error{ErrorCode::cmd_construct_stage_type_invalid}
@@ -164,11 +309,11 @@ struct type_info final {
 		@throws std::bad_alloc
 		If allocation fails.
 
-		@returns Pointer to stage.
+		@returns Owning pointer to stage.
 		@param type %Stage type.
 	*/
-	Cmd::Stage*
-	(&construct_stage)(
+	Cmd::StageUPtr
+	(&make_stage)(
 		Cmd::StageType const type
 	);
 /// @}
@@ -251,11 +396,6 @@ struct type_info_table final {
 	}
 /// @}
 };
-
-/**
-	Owning pointer to command stage.
-*/
-using StageUPtr = duct::cc_unique_ptr<Cmd::Stage>;
 
 /**
 	Command type.
