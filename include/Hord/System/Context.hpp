@@ -329,6 +329,32 @@ public:
 	) const noexcept {
 		return is_remote(stage) && stage.is_initiator();
 	}
+
+	/**
+		Localize command error status to context.
+	*/
+	Cmd::Status
+	localized_error(
+		Cmd::Stage const& stage
+	) {
+		return is_local(stage)
+			? Cmd::Status::error
+			: Cmd::Status::error_remote
+		;
+	}
+
+	/**
+		Localize command error status to context.
+	*/
+	Cmd::Status
+	localized_fatal(
+		Cmd::Stage const& stage
+	) {
+		return is_local(stage)
+			? Cmd::Status::fatal
+			: Cmd::Status::fatal_remote
+		;
+	}
 /// @}
 
 /** @name Operations */ /// @{
