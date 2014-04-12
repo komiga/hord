@@ -6,6 +6,7 @@
 
 #include <type_traits>
 #include <utility>
+#include <iostream>
 
 namespace Hord {
 
@@ -79,6 +80,18 @@ get_error_name(
 	} else {
 		return s_error_invalid;
 	}
+}
+
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Error const& error
+) {
+	return stream
+		<< "[Hord::" << get_error_name(error.get_code()) << "] "
+		<< error.get_message()
+		<< '\n'
+	;
 }
 
 } // namespace Hord

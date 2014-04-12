@@ -16,6 +16,8 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <duct/GR/Error.hpp>
 
+#include <iosfwd>
+
 namespace Hord {
 
 // Forward declarations
@@ -41,12 +43,23 @@ using Error
 
 	@returns C-string containing the name of @a error_code or
 	"INVALID" if somehow @a error_code is not actually an ErrorCode.
-	@param error_code ErrorCode.
 */
 char const*
 get_error_name(
 	ErrorCode const error_code
 ) noexcept;
+
+/**
+	Output error to stream.
+
+	@param stream Stream.
+	@param error %Error.
+*/
+std::ostream&
+operator<<(
+	std::ostream& stream,
+	Error const& error
+);
 
 /** @} */ // end of doc-group error
 
