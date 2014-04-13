@@ -42,6 +42,42 @@ print_store(
 	std::cout << '\n';
 }
 
+void
+assignments(
+	Store& s,
+	unsigned const initial
+) {
+	s.assign(Type::identity, State::modified);
+	s.assign(Type::metadata, State::modified);
+	s.assign(Type::scratch, State::modified);
+	s.assign(Type::primary, State::modified);
+	s.assign(Type::auxiliary, State::modified);
+	print_store(s);
+
+	assert(!s.all_original());
+	assert(s.any_modified());
+
+	s.assign(Type::identity, State::original);
+	s.assign(Type::metadata, State::original);
+	s.assign(Type::scratch, State::original);
+	s.assign(Type::primary, State::original);
+	s.assign(Type::auxiliary, State::original);
+	print_store(s);
+
+	assert(s.all_original());
+	assert(!s.any_modified());
+
+	// Back to initial value when resetting
+	s.reset_all();
+	assert(s.get_value() == initial);
+
+	s.assign_all(State::original);
+	print_store(s);
+
+	assert(s.all_original());
+	assert(!s.any_modified());
+}
+
 signed
 main() {
 	Store
@@ -53,38 +89,11 @@ main() {
 		value_init_neither = s_neither.get_value()
 	;
 
-	std::cout << "s_all:\n";
-	print_store(s_all);
-	print_store(s_all, Type::primary);
-	print_store(s_all, Type::auxiliary);
-
-	std::cout << "\ns_neither:\n";
-	print_store(s_neither);
-	print_store(s_neither, Type::primary);
-	print_store(s_neither, Type::auxiliary);
-
-	std::cout << '\n';
-
 	// Constructed state
 	assert(s_all.all_uninitialized());
 	assert(s_neither.all_uninitialized());
 
 	assert(0u == value_init_all);
-
-	assert(!s_all.all_original());
-	assert(!s_all.any_modified());
-
-	assert(!s_all.has(Type::primary, State::original));
-	assert(!s_all.has(Type::auxiliary, State::original));
-
-	assert(s_neither.has(Type::primary, State::original));
-	assert(s_neither.has(Type::auxiliary, State::original));
-
-	assert(s_all.is_supplied(Type::primary));
-	assert(s_all.is_supplied(Type::auxiliary));
-
-	assert(!s_neither.is_supplied(Type::primary));
-	assert(!s_neither.is_supplied(Type::auxiliary));
 
 	// Unchanged when resetting while all_uninitialized()
 	s_all.reset_all();
@@ -98,33 +107,38 @@ main() {
 	s_neither.assign(Type::auxiliary, State::modified);
 	assert(s_neither.get_value() == value_init_neither);
 
-	// Assignments
-	s_all.assign(Type::identity, State::original);
-	s_all.assign(Type::metadata, State::original);
-	s_all.assign(Type::scratch, State::original);
-	s_all.assign(Type::primary, State::original);
-	s_all.assign(Type::auxiliary, State::original);
-
+	// Traits
+	std::cout << "s_all:\n";
 	print_store(s_all);
+	print_store(s_all, Type::primary);
+	print_store(s_all, Type::auxiliary);
 
-	assert(s_all.all_original());
-	assert(!s_all.any_modified());
-
-	// Back to initial value when resetting
-	s_all.reset_all();
-	assert(s_all.get_value() == value_init_all);
-
-	// More assignments
-	s_all.assign(Type::identity, State::modified);
-	s_all.assign(Type::metadata, State::modified);
-	s_all.assign(Type::scratch, State::modified);
-	s_all.assign(Type::primary, State::modified);
-	s_all.assign(Type::auxiliary, State::modified);
-
-	print_store(s_all);
-
+	assert(s_all.is_supplied(Type::primary));
+	assert(s_all.is_supplied(Type::auxiliary));
 	assert(!s_all.all_original());
-	assert(s_all.any_modified());
+	assert(!s_all.any_modified());
+	assert(!s_all.has(Type::primary, State::modified));
+	assert(!s_all.has(Type::auxiliary, State::modified));
+	assert(!s_all.has(Type::primary, State::original));
+	assert(!s_all.has(Type::auxiliary, State::original));
+
+	assignments(s_all, value_init_all);
+
+	std::cout << "\ns_neither:\n";
+	print_store(s_neither);
+	print_store(s_neither, Type::primary);
+	print_store(s_neither, Type::auxiliary);
+
+	assert(!s_neither.is_supplied(Type::primary));
+	assert(!s_neither.is_supplied(Type::auxiliary));
+	assert(!s_neither.all_original());
+	assert(!s_neither.any_modified());
+	assert(!s_neither.has(Type::primary, State::modified));
+	assert(!s_neither.has(Type::auxiliary, State::modified));
+	assert(s_neither.has(Type::primary, State::original));
+	assert(s_neither.has(Type::auxiliary, State::original));
+
+	assignments(s_neither, value_init_neither);
 
 	return 0;
 }
