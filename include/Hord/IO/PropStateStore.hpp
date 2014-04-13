@@ -69,6 +69,8 @@ private:
 		state_mask = 0x0F,
 		// 5 states
 		full_mask = 0x000FFFFF,
+		// 3 always-supplied props (identity, metadata, and scratch)
+		base_mask = 0x00000FFF,
 
 		// (PropType << type_shift) gives the number of bits
 		// to move left for the prop's state
@@ -80,7 +82,9 @@ private:
 		,
 		prop_unsupplied_single = enum_cast(IO::PropState::unsupplied),
 
-		data_mask_unsupplied = 0x000FF000,
+		mask_unsupplied_implied
+			= state_fill(static_cast<IO::PropState>(prop_unsupplied_implied))
+		,
 
 		all_mask_unsupplied = state_fill(IO::PropState::unsupplied),
 		all_mask_original = state_fill(IO::PropState::original),
@@ -93,10 +97,7 @@ private:
 		IO::PropType const prop_type,
 		unsigned const mask = state_mask
 	) noexcept {
-		return
-			(value & mask)
-			<< (enum_cast(prop_type) << type_shift)
-		;
+		return (value & mask) << (enum_cast(prop_type) << type_shift);
 	}
 
 	static constexpr unsigned
@@ -105,10 +106,7 @@ private:
 		IO::PropType const prop_type,
 		unsigned const mask = state_mask
 	) noexcept {
-		return
-			(value >> (enum_cast(prop_type) << type_shift))
-			& mask
-		;
+		return (value >> (enum_cast(prop_type) << type_shift)) & mask;
 	}
 
 	static constexpr unsigned
@@ -116,10 +114,7 @@ private:
 		unsigned const value,
 		IO::PropType const prop_type
 	) noexcept {
-		return
-			~(state_mask << (enum_cast(prop_type) << type_shift))
-			& value
-		;
+		return ~(state_mask << (enum_cast(prop_type) << type_shift)) & value;
 	}
 
 	unsigned m_states_supplied;
@@ -155,18 +150,18 @@ public:
 		bool const supplies_auxiliary
 	) noexcept
 		: m_states_supplied(
-			full_mask
-			& ~shift_up(
-				supplies_primary ? 0u : state_mask,
+			base_mask
+			| shift_up(
+				supplies_primary ? state_mask : 0u,
 				IO::PropType::primary
 			)
-			& ~shift_up(
-				supplies_auxiliary ? 0u : state_mask,
+			| shift_up(
+				supplies_auxiliary ? state_mask : 0u,
 				IO::PropType::auxiliary
 			)
 		)
 		, m_states(
-			~m_states_supplied & data_mask_unsupplied
+			~m_states_supplied & mask_unsupplied_implied
 		)
 	{}
 /// @}
@@ -282,7 +277,7 @@ public:
 	*/
 	PropStateStore&
 	reset_all() noexcept {
-		m_states = ~m_states_supplied & data_mask_unsupplied;
+		m_states = ~m_states_supplied & mask_unsupplied_implied;
 		return *this;
 	}
 
