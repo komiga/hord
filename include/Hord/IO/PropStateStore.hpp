@@ -329,6 +329,30 @@ public:
 		}
 		return *this;
 	}
+
+	PropStateStore&
+	assign_all(
+		IO::PropState const state
+	) noexcept {
+		switch (state) {
+		case IO::PropState::unsupplied:
+			reset_all();
+			break;
+		case IO::PropState::original:
+			m_states
+				= (~m_states_supplied & mask_unsupplied_implied)
+				| (m_states_supplied & all_mask_original)
+			;
+			break;
+		case IO::PropState::modified:
+			m_states
+				= (~m_states_supplied & mask_unsupplied_implied)
+				| (m_states_supplied & all_mask_modified)
+			;
+			break;
+		}
+		return *this;
+	}
 /// @}
 };
 
