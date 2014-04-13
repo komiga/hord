@@ -64,6 +64,17 @@ Unit::set_slug(
 	}
 }
 
+void
+Unit::set_scratch_space(
+	String scratch_space
+) noexcept {
+	m_scratch_space.assign(std::move(scratch_space));
+	m_prop_states.assign(
+		IO::PropType::scratch,
+		IO::PropState::modified
+	);
+}
+
 // serialization
 
 #define HORD_UNIT_ERR_MSG_UNSUPPLIED_ \

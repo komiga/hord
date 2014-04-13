@@ -344,6 +344,24 @@ public:
 	}
 
 	/**
+		Set scratch space.
+
+		@note The prop is marked as modified even if the new scratch
+		space is equivalent to the current.
+
+		@post @code
+			true == get_prop_states().has(
+				IO::PropType::scratch,
+				IO::PropState::modified
+			)
+		@endcode
+	*/
+	void
+	set_scratch_space(
+		String scratch_space
+	) noexcept;
+
+	/**
 		Get scratch space.
 	*/
 	String const&
