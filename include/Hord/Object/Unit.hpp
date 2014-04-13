@@ -277,7 +277,13 @@ public:
 		@warning This should not be used directly. See the
 		referenced functions.
 
-		@param parent New parent.
+		@post If the new parent differs:
+		@code
+			true == get_prop_states().has(
+				IO::PropType::identity,
+				IO::PropState::modified
+			)
+		@endcode
 
 		@sa Object::unset_parent()
 			Object::set_parent()
@@ -285,9 +291,7 @@ public:
 	void
 	set_parent(
 		Object::ID const parent
-	) noexcept {
-		m_parent = parent;
-	}
+	) noexcept;
 
 	/**
 		Get parent.
@@ -302,7 +306,13 @@ public:
 
 		@warning This property is truncated to 255 code units.
 
-		@param slug New slug.
+		@post If the new slug differs:
+		@code
+			true == get_prop_states().has(
+				IO::PropType::identity,
+				IO::PropState::modified
+			)
+		@endcode
 	*/
 	void
 	set_slug(

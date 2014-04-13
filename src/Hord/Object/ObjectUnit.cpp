@@ -35,13 +35,32 @@ Unit::Unit(
 // properties
 
 void
+Unit::set_parent(
+	Object::ID const parent
+) noexcept {
+	if (parent != m_parent) {
+		m_parent = parent;
+		m_prop_states.assign(
+			IO::PropType::identity,
+			IO::PropState::modified
+		);
+	}
+}
+
+void
 Unit::set_slug(
 	String slug
 ) noexcept {
-	m_slug.assign(std::move(slug));
-	if (0xFF < m_slug.size()) {
-		m_slug.resize(0xFF);
-		// TODO: Truncate invalid unit sequence (if any) after resize
+	if (m_slug != slug) {
+		m_slug.assign(std::move(slug));
+		if (0xFF < m_slug.size()) {
+			m_slug.resize(0xFF);
+			// TODO: Truncate invalid unit sequence (if any) after resize
+		}
+		m_prop_states.assign(
+			IO::PropType::identity,
+			IO::PropState::modified
+		);
 	}
 }
 
