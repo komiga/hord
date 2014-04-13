@@ -6,6 +6,7 @@
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/Node/Unit.hpp>
+#include <Hord/IO/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/type_info.hpp>
 #include <Hord/Cmd/Unit.hpp>
@@ -244,6 +245,7 @@ action(
 	} else {
 		Object::set_parent(node, *it->second);
 	}
+	node.get_prop_states().assign_all(IO::PropState::modified);
 	data.code = ResultCode::ok;
 	return Cmd::Status::complete;
 } catch (Hord::Error const& err) {
