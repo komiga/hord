@@ -255,6 +255,8 @@ public:
 
 	/**
 		Get storage state.
+
+		@sa IO::StorageState
 	*/
 	IO::StorageState
 	get_storage_state() const noexcept {
@@ -285,7 +287,7 @@ public:
 			)
 		@endcode
 
-		@sa Object::unset_parent()
+		@sa Object::unset_parent(),
 			Object::set_parent()
 	*/
 	void

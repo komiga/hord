@@ -39,6 +39,8 @@ namespace Object {
 
 	@param object Object to unparent.
 	@param parent Object's parent.
+
+	@sa Object::Unit::set_parent()
 */
 void
 unset_parent(
@@ -71,6 +73,8 @@ unset_parent(
 	@returns @c true if @a object was parented to @a new_parent.
 	@param object Object to reparent.
 	@param new_parent New parent.
+
+	@sa Object::Unit::set_parent()
 */
 bool
 set_parent(
