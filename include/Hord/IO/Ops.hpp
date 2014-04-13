@@ -74,7 +74,7 @@ store_prop(
 	@param datastore %Datastore.
 	@param hive Hive.
 
-	@sa IO::StorageState::placeholder
+	@sa IO::StorageState::placeholder,
 		IO::StorageState::placeholder_identified
 */
 void

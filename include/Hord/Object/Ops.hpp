@@ -29,6 +29,10 @@ namespace Object {
 /**
 	Unset object parent.
 
+	@warning The object is not reparented to its hive. It should be
+	reparented to an object after calling this to ensure it is not
+	orphaned.
+
 	@pre @code
 		!object.is_null()
 	@endcode
