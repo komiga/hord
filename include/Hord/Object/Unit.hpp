@@ -279,7 +279,7 @@ public:
 		@warning This should not be used directly. See the
 		referenced functions.
 
-		@post If the new parent differs:
+		@post If the new parent differs or the identity is uninitialized:
 		@code
 			true == get_prop_states().has(
 				IO::PropType::identity,
@@ -308,7 +308,7 @@ public:
 
 		@warning This property is truncated to 255 code units.
 
-		@post If the new slug differs:
+		@post If the new slug differs or the identity is uninitialized:
 		@code
 			true == get_prop_states().has(
 				IO::PropType::identity,

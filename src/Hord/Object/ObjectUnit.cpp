@@ -38,8 +38,11 @@ void
 Unit::set_parent(
 	Object::ID const parent
 ) noexcept {
-	if (parent != m_parent) {
+	bool const differs = parent != m_parent;
+	if (differs) {
 		m_parent = parent;
+	}
+	if (differs || !m_prop_states.is_initialized(IO::PropType::identity)) {
 		m_prop_states.assign(
 			IO::PropType::identity,
 			IO::PropState::modified
@@ -51,12 +54,15 @@ void
 Unit::set_slug(
 	String slug
 ) noexcept {
-	if (m_slug != slug) {
+	bool const differs = m_slug != slug;
+	if (differs) {
 		m_slug.assign(std::move(slug));
 		if (0xFF < m_slug.size()) {
 			m_slug.resize(0xFF);
 			// TODO: Truncate invalid unit sequence (if any) after resize
 		}
+	}
+	if (differs || !m_prop_states.is_initialized(IO::PropType::identity)) {
 		m_prop_states.assign(
 			IO::PropType::identity,
 			IO::PropState::modified
