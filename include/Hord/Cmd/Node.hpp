@@ -62,7 +62,7 @@ public:
 	/**
 		Result codes.
 	*/
-	enum class ResultCode {
+	enum class ResultCode : unsigned {
 		ok,
 		parent_not_found,
 		layout_ref_not_found,
@@ -78,23 +78,8 @@ public:
 		Result data type.
 	*/
 	struct ResultData {
-		ResultCode code{ResultCode::unknown};
-		Hord::Node::ID id{Object::NULL_ID};
-
-		~ResultData() = default;
-		ResultData() = default;
-		ResultData(ResultData const&) = default;
-		ResultData& operator=(ResultData const&) = default;
-		ResultData(ResultData&&) = default;
-		ResultData& operator=(ResultData&&) = default;
-
-		ResultData(
-			ResultCode code,
-			Hord::Node::ID id
-		)
-			: code(code)
-			, id(id)
-		{}
+		ResultCode code;
+		Hord::Node::ID id;
 	};
 
 	/**
@@ -108,7 +93,10 @@ public:
 
 /** @name Properties */ /// @{
 	/** Result data. */
-	ResultData result_data{};
+	ResultData result_data{
+		ResultCode::unknown,
+		Object::NULL_ID
+	};
 /// @}
 
 /** @name Operations */ /// @{
