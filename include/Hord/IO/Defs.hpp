@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_IO_DEFS_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/utility.hpp>
 #include <Hord/serialization.hpp>
 
 // TODO: docs for Rule
@@ -20,9 +21,9 @@ namespace IO {
 
 // Forward declarations
 enum class PropType : unsigned;
+enum class PropTypeBit : unsigned;
 enum class PropState : unsigned;
 enum class StorageState : unsigned;
-enum class SerializationFlags : unsigned;
 
 /**
 	@addtogroup io
@@ -36,9 +37,10 @@ enum class SerializationFlags : unsigned;
 
 	@par
 	@note @c identity, @c metadata, and @c scratch are provided
-	by Object::Unit.
+	by Object::Unit (see PropTypeBit::base).
 
-	@sa IO::PropInfo,
+	@sa IO::PropTypeBit,
+		IO::PropInfo,
 		IO::Datastore
 */
 enum class PropType : unsigned {
@@ -65,7 +67,7 @@ enum class PropType : unsigned {
 		Primary object data.
 
 		This prop stores object data most likely to mutate.
-		The following objects provide this prop:
+		The following standard objects provide this prop:
 
 		- Hive::Unit
 		- Rule::Unit
@@ -77,7 +79,7 @@ enum class PropType : unsigned {
 		Auxiliary object data.
 
 		This prop stores object data least likely to mutate.
-		The following objects provide this prop:
+		The following standard objects provide this prop:
 
 		- Node::Unit
 	*/
@@ -89,16 +91,80 @@ enum class PropType : unsigned {
 };
 
 /**
-	Get the name of a prop type.
+	Prop type bitflags.
 
-	@returns C-string containing the name of @a prop_type or
-	"INVALID" if somehow @a prop_type is not actually a IO::PropType.
-	@param prop_type Prop type.
+	@note These correspond to IO::PropType.
 */
-char const*
-get_prop_type_name(
-	IO::PropType const prop_type
-) noexcept;
+enum class PropTypeBit : unsigned {
+	/**
+		Include identity prop in operation.
+	*/
+	identity = 1u << enum_cast(PropType::identity),
+
+	/**
+		Include metadata prop in operation.
+	*/
+	metadata = 1u << enum_cast(PropType::metadata),
+
+	/**
+		Include scratch space prop in operation.
+	*/
+	scratch = 1u << enum_cast(PropType::scratch),
+
+	/**
+		Include primary data prop in operation.
+	*/
+	primary = 1u << enum_cast(PropType::primary),
+
+	/**
+		Include auxiliary data prop in operation.
+	*/
+	auxiliary = 1u << enum_cast(PropType::auxiliary),
+
+	/**
+		Include base (implicit) props in operation.
+	*/
+	base
+		= identity
+		| metadata
+		| scratch
+	,
+
+	/**
+		Include identity and metadata props in operation.
+
+		@remarks This is only used by the driver when deserializing
+		placeheld objects.
+	*/
+	shallow
+		= identity
+		| metadata
+	,
+
+	/**
+		Include primary and auxiliary data props in operation.
+	*/
+	data
+		= primary
+		| auxiliary
+	,
+
+	/**
+		All props.
+	*/
+	all
+		= identity
+		| metadata
+		| scratch
+		| primary
+		| auxiliary
+	,
+
+	/**
+		No props.
+	*/
+	none = 0u
+};
 
 /**
 	Prop state.
@@ -174,9 +240,9 @@ enum class StorageState : unsigned {
 		Runtime-side modifications not yet serialized.
 
 		@note Hives will only have this state when:
-		-# one of its base props are modified (IO::PropType::identity
-		   or IO::PropType::metadata); or
-		-# when a child is added or removed (IO::PropType::primary).
+		-# one of its base props are modified (IO::PropType::identity,
+		   IO::PropType::metadata, and IO::PropType::scratch); or
+		-# a child is added or removed (IO::PropType::primary).
 		@note
 		If a child object is modified, it does not affect the
 		hive's state.
@@ -189,90 +255,55 @@ enum class StorageState : unsigned {
 };
 
 /**
-	Prop serialization flags.
+	Get the name of a prop type.
 
-	@note These correspond to IO::PropType.
+	@returns C-string containing the name of @a prop_type or
+	"INVALID" if somehow @a prop_type is not actually a IO::PropType.
+	@param prop_type Prop type.
 */
-enum class PropSerializationFlags : unsigned {
-	/**
-		Include identity prop in operation.
-	*/
-	identity = 1 << 0,
-
-	/**
-		Include metadata prop in operation.
-	*/
-	metadata = 1 << 1,
-
-	/**
-		Include scratch space prop in operation.
-	*/
-	scratch = 1 << 2,
-
-	/**
-		Include primary data prop in operation.
-	*/
-	primary = 1 << 3,
-
-	/**
-		Include auxiliary data prop in operation.
-	*/
-	auxiliary = 1 << 4,
-
-	/**
-		Include identity and metadata props in operation.
-
-		@remarks This is only used by the driver when deserializing
-		placeheld objects.
-	*/
-	shallow
-		= identity
-		| metadata
-	,
-
-	/**
-		Include primary and auxiliary data props in operation.
-	*/
-	data
-		= primary
-		| auxiliary
-	,
-
-	/**
-		All props.
-	*/
-	all
-		= identity
-		| metadata
-		| scratch
-		| primary
-		| auxiliary
-};
+char const*
+get_prop_type_name(
+	IO::PropType const prop_type
+) noexcept;
 
 /**
-	PropType serialization functions.
-	@{
+	Get prop type as prop serialization flag.
 */
-inline ser_result_type
-read(
-	ser_tag_read,
-	InputSerializer& ser,
-	PropType& value
-) {
-	std::uint8_t u8 = 0;
-	ser(u8);
-	value = static_cast<PropType>(u8);
+inline constexpr IO::PropTypeBit
+prop_flag(
+	IO::PropType const prop_type
+) noexcept {
+	return static_cast<IO::PropTypeBit>(
+		1u << enum_cast(prop_type)
+	);
 }
 
+/**
+	Serialize PropType.
+*/
+template<class Ser>
 inline ser_result_type
-write(
-	ser_tag_write,
-	OutputSerializer& ser,
-	PropType const& value
+serialize(
+	ser_tag_serialize,
+	Ser& ser,
+	IO::PropType& value
 ) {
-	ser(static_cast<std::uint8_t>(value));
+	ser(Cacophony::make_enum_cfg<std::uint8_t>(const_safe<Ser>(value)));
 }
-/** @} */
+
+/**
+	Serialize PropTypeBit.
+*/
+template<class Ser>
+inline ser_result_type
+serialize(
+	ser_tag_serialize,
+	Ser& ser,
+	IO::PropTypeBit& value
+) {
+	ser(Cacophony::make_enum_cfg<std::uint8_t>(const_safe<Ser>(value)));
+}
+
 /** @} */ // end of doc-group io
 
 } // namespace IO
