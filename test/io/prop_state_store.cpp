@@ -9,6 +9,7 @@
 
 using Hord::enum_cast;
 using Type = Hord::IO::PropType;
+using TypeBit = Hord::IO::PropTypeBit;
 using State = Hord::IO::PropState;
 using Store = Hord::IO::PropStateStore;
 
@@ -113,8 +114,9 @@ main() {
 	print_store(s_all, Type::primary);
 	print_store(s_all, Type::auxiliary);
 
-	assert(s_all.is_supplied(Type::primary));
-	assert(s_all.is_supplied(Type::auxiliary));
+	assert(s_all.supplies(Type::primary));
+	assert(s_all.supplies(Type::auxiliary));
+	assert(s_all.supplies_all(TypeBit::all));
 	assert(!s_all.all_original());
 	assert(!s_all.any_modified());
 	assert(!s_all.has(Type::primary, State::modified));
@@ -129,8 +131,9 @@ main() {
 	print_store(s_neither, Type::primary);
 	print_store(s_neither, Type::auxiliary);
 
-	assert(!s_neither.is_supplied(Type::primary));
-	assert(!s_neither.is_supplied(Type::auxiliary));
+	assert(!s_neither.supplies(Type::primary));
+	assert(!s_neither.supplies(Type::auxiliary));
+	assert(s_all.supplies_all(TypeBit::base));
 	assert(!s_neither.all_original());
 	assert(!s_neither.any_modified());
 	assert(!s_neither.has(Type::primary, State::modified));

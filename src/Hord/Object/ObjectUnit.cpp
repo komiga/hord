@@ -83,7 +83,7 @@ Unit::set_scratch_space(
 	"prop %08x -> %s is not supplied for type %s"
 
 #define HORD_UNIT_CHECK_UNSUPPLIED_(err_)						\
-	if (!m_prop_states.is_supplied(type)) {						\
+	if (!m_prop_states.supplies(type)) {						\
 		HORD_THROW_FMT(											\
 			ErrorCode::serialization_prop_unsupplied,			\
 			err_,												\

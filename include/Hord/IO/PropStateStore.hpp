@@ -39,11 +39,11 @@ state_fill(
 	IO::PropState const state
 ) noexcept {
 	return 0u
-		| (enum_cast(state) << (0 << 2)) // identity
-		| (enum_cast(state) << (1 << 2)) // metadata
-		| (enum_cast(state) << (2 << 2)) // scratch
-		| (enum_cast(state) << (3 << 2)) // primary
-		| (enum_cast(state) << (4 << 2)) // auxiliary
+		| (enum_cast(state) << (enum_cast(IO::PropType::identity ) << 2))
+		| (enum_cast(state) << (enum_cast(IO::PropType::metadata ) << 2))
+		| (enum_cast(state) << (enum_cast(IO::PropType::scratch  ) << 2))
+		| (enum_cast(state) << (enum_cast(IO::PropType::primary  ) << 2))
+		| (enum_cast(state) << (enum_cast(IO::PropType::auxiliary) << 2))
 	;
 }
 
@@ -63,18 +63,40 @@ private:
 		5u == enum_cast(PropType::LAST),
 		"masks and all_have() need to be updated"
 	);
+	static_assert(
+		4u <= sizeof(unsigned),
+		"implementation requires at least 4 bytes in unsigned int"
+	);
 
+	/*
+		Bits (1-6 are props, S is whether they are supplied):
+		XXSS SSSS 6666 5555 4444 3333 2222 1111
+
+		6666 is currently unoccupied (there are only 5 props).
+	*/
 	enum : unsigned {
 		// 4 bits per prop
 		state_mask = 0x0F,
 		// 5 states
-		full_mask = 0x000FFFFF,
+		full_mask  = 0x000FFFFF,
 		// 3 always-supplied props (identity, metadata, and scratch)
-		base_mask = 0x00000FFF,
+		base_value = 0x07000FFF,
 
 		// (PropType << type_shift) gives the number of bits
 		// to move left for the prop's state
 		type_shift = 2u,
+		// (PropTypeBit << flag_shift) gives the
+		// is_supplied bit for the prop
+		flag_shift = 24u,
+
+		bit_primary
+			= enum_cast(IO::PropTypeBit::primary)
+			<< flag_shift
+		,
+		bit_auxiliary
+			= enum_cast(IO::PropTypeBit::auxiliary)
+			<< flag_shift
+		,
 
 		prop_unsupplied_implied
 			= enum_cast(IO::PropState::unsupplied)
@@ -145,20 +167,21 @@ public:
 		@param supplies_auxiliary Whether IO::PropType::auxiliary is
 		supplied.
 	*/
+	constexpr
 	PropStateStore(
 		bool const supplies_primary,
 		bool const supplies_auxiliary
 	) noexcept
 		: m_states_supplied(
-			base_mask
-			| shift_up(
-				supplies_primary ? state_mask : 0u,
-				IO::PropType::primary
-			)
-			| shift_up(
-				supplies_auxiliary ? state_mask : 0u,
-				IO::PropType::auxiliary
-			)
+			base_value
+			| (!supplies_primary ? 0u : (
+				bit_primary |
+				shift_up(state_mask, IO::PropType::primary)
+			))
+			| (!supplies_auxiliary ? 0u : (
+				bit_auxiliary |
+				shift_up(state_mask, IO::PropType::auxiliary)
+			))
 		)
 		, m_states(
 			~m_states_supplied & mask_unsupplied_implied
@@ -238,10 +261,33 @@ public:
 		@param prop_type Prop type.
 	*/
 	bool
-	is_supplied(
+	supplies(
 		IO::PropType const prop_type
 	) const noexcept {
-		return shift_down(m_states_supplied, prop_type);
+		return supplies_all(IO::prop_flag(prop_type));
+	}
+
+	/**
+		Check if all given props are supplied.
+	*/
+	bool
+	supplies_all(
+		IO::PropTypeBit const props
+	) const noexcept {
+		return
+			enum_cast(props)
+			== (enum_cast(get_supplied()) & enum_cast(props))
+		;
+	}
+
+	/**
+		Check if any given props are supplied.
+	*/
+	bool
+	supplies_any(
+		IO::PropTypeBit const props
+	) const noexcept {
+		return enum_cast(get_supplied()) & enum_cast(props);
 	}
 
 	/**
@@ -263,6 +309,16 @@ public:
 	) const noexcept {
 		return static_cast<IO::PropState>(
 			shift_down(m_states, prop_type)
+		);
+	}
+
+	/**
+		Get supplied props.
+	*/
+	IO::PropTypeBit
+	get_supplied() const noexcept {
+		return static_cast<IO::PropTypeBit>(
+			m_states_supplied >> flag_shift
 		);
 	}
 /// @}
@@ -293,7 +349,7 @@ public:
 	reset(
 		PropType const prop_type
 	) noexcept {
-		if (is_supplied(prop_type)) {
+		if (supplies(prop_type)) {
 			m_states = mask_off(m_states, prop_type);
 		}
 		return *this;
@@ -318,7 +374,7 @@ public:
 		IO::PropType const prop_type,
 		IO::PropState const state
 	) noexcept {
-		if (is_supplied(prop_type)) {
+		if (supplies(prop_type)) {
 			m_states
 				= mask_off(m_states, prop_type)
 				| shift_up(
