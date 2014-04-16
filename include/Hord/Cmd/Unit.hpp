@@ -19,12 +19,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <utility>
 
 namespace Hord {
-
-// Forward declarations (external)
-namespace System {
-class Context;
-}
-
 namespace Cmd {
 
 // Forward declarations
