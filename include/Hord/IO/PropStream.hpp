@@ -41,6 +41,12 @@ class OutputPropStream;
 	@warning This class only provides the base interface for
 	InputPropStream and OutputPropStream and does not supply a
 	virtual destructor for base-class destruction.
+
+	@remarks Acquiring a weak stream does not call any acquire
+	function on datastore, and releasing a weakly-acquired stream
+	will not call any release function on the datastore.
+
+	@sa IO::PropInfo
 */
 class PropStream {
 protected:
@@ -49,6 +55,9 @@ protected:
 
 	/** Prop info. */
 	IO::PropInfo const m_info;
+
+	/** Whether the current stream is not owned by the datastore. */
+	bool m_weak;
 
 private:
 	PropStream() = delete;
@@ -103,6 +112,14 @@ public:
 	IO::PropType
 	get_type() const noexcept {
 		return m_info.prop_type;
+	}
+
+	/**
+		Check whether the stream is not owned by the datastore.
+	*/
+	bool
+	is_weak() const noexcept {
+		return m_weak;
 	}
 /// @}
 };
@@ -166,12 +183,28 @@ public:
 
 	/**
 		See IO::Datastore::acquire_input_stream().
+
+		@pre Not acquired.
+		@post Acquired.
 	*/
 	void
 	acquire();
 
 	/**
+		Acquire non-datastore stream.
+
+		@pre Not acquired.
+		@post Acquired.
+	*/
+	void
+	acquire_weak(
+		std::istream& stream
+	) noexcept;
+
+	/**
 		See IO::Datastore::release_input_stream().
+
+		@post Not acquired.
 	*/
 	void
 	release();
@@ -238,12 +271,28 @@ public:
 
 	/**
 		See IO::Datastore::acquire_output_stream().
+
+		@pre Not acquired.
+		@post Acquired.
 	*/
 	void
 	acquire();
 
 	/**
+		Acquire non-datastore stream.
+
+		@pre Not acquired.
+		@post Acquired.
+	*/
+	void
+	acquire_weak(
+		std::ostream& stream
+	) noexcept;
+
+	/**
 		See IO::Datastore::release_output_stream().
+
+		@post Not acquired.
 	*/
 	void
 	release();

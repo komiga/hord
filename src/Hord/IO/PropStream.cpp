@@ -34,6 +34,15 @@ InputPropStream::acquire() {
 }
 
 void
+InputPropStream::acquire_weak(
+	std::istream& stream
+) noexcept {
+	assert(nullptr == m_stream);
+	m_stream = &stream;
+	m_weak = true;
+}
+
+void
 InputPropStream::release() {
 	if (nullptr != m_stream) {
 		m_stream = nullptr;
@@ -65,6 +74,15 @@ void
 OutputPropStream::acquire() {
 	assert(nullptr == m_stream);
 	m_stream = &(m_datastore.acquire_output_stream(m_info));
+}
+
+void
+OutputPropStream::acquire_weak(
+	std::ostream& stream
+) noexcept {
+	assert(nullptr == m_stream);
+	m_stream = &stream;
+	m_weak = true;
 }
 
 void
