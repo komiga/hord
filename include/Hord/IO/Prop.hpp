@@ -31,6 +31,8 @@ struct PropInfo;
 
 /**
 	Prop info.
+
+	@sa IO::PropStream
 */
 struct PropInfo final {
 public:
