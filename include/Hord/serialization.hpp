@@ -27,6 +27,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Cacophony/support/std_vector.hpp>
 
 #include <duct/EndianUtils.hpp>
+#include <duct/IO/dynamic_streambuf.hpp>
 
 namespace Hord {
 
@@ -36,6 +37,18 @@ namespace Hord {
 	@addtogroup serialization
 	@{
 */
+
+/**
+	Dynamic @c std::stream buffer.
+*/
+using DynamicStreamBuf
+= duct::IO::basic_dynamic_streambuf<
+	char,
+	std::char_traits<char>,
+	HORD_AUX_ALLOCATOR<char>
+>;
+
+// Cacophony imports
 
 using Cacophony::const_safe;
 
