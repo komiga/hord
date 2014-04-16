@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_OBJECT_DEFS_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/IO/PropStateStore.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
 
@@ -89,14 +90,9 @@ struct type_info final {
 	Object::Type const type;
 
 	/**
-		Whether the object supplies IO::PropType::primary.
+		Prop availability.
 	*/
-	bool const supplies_prop_primary;
-
-	/**
-		Whether the object supplies IO::PropType::auxiliary.
-	*/
-	bool const supplies_prop_auxiliary;
+	IO::PropStateStore const props;
 };
 
 /**

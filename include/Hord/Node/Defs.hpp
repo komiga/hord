@@ -49,6 +49,15 @@ enum : Node::ID {
 	NULL_ID = static_cast<Node::ID>(Object::NULL_ID)
 };
 
+/**
+	Unit type info.
+*/
+static constexpr Object::type_info const
+s_type_info{
+	Object::Type::Node,
+	{true, true}
+};
+
 /** @} */ // end of doc-group node
 /** @} */ // end of doc-group object
 

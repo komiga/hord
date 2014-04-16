@@ -141,7 +141,7 @@ protected:
 	Unit& operator=(Unit&&);
 
 	/**
-		Constructor with supplied props, %ID, and parent.
+		Constructor with type info, %ID, and parent.
 
 		@post
 		@code
@@ -152,18 +152,13 @@ protected:
 			)
 		@endcode
 
-		@param supplies_primary Whether IO::PropType::primary is
-		supplied by the object.
-		@param supplies_auxiliary Whether IO::PropType::auxiliary is
-		supplied by the object.
 		@param id Object %ID.
 		@param parent Parent %ID.
 
 		@sa IO::PropStateStore
 	*/
 	Unit(
-		bool const supplies_primary,
-		bool const supplies_auxiliary,
+		type_info const& tinfo,
 		Object::ID const id,
 		Object::ID const parent
 	) noexcept;

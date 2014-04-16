@@ -8,15 +8,6 @@ namespace Rule {
 
 #define HORD_SCOPE_CLASS Rule::Unit
 
-namespace {
-static constexpr Object::type_info const
-s_type_info{
-	Object::Type::Rule,
-	true,
-	false
-};
-} // anonymous namespace
-
 Object::type_info const&
 Unit::get_type_info_impl() const noexcept {
 	return s_type_info;
@@ -32,8 +23,7 @@ Unit::Unit(
 	Object::ID const parent
 ) noexcept
 	: base(
-		s_type_info.supplies_prop_primary,
-		s_type_info.supplies_prop_auxiliary,
+		s_type_info,
 		static_cast<Object::ID>(id),
 		parent
 	)

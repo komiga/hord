@@ -19,16 +19,12 @@ Unit::Unit(Unit&&) = default;
 Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
-	bool const supplies_primary,
-	bool const supplies_auxiliary,
+	type_info const& tinfo,
 	Object::ID const id,
 	Object::ID const parent
 ) noexcept
 	: m_id(id)
-	, m_prop_states(
-		supplies_primary,
-		supplies_auxiliary
-	)
+	, m_prop_states(tinfo.props)
 	, m_parent(parent)
 {}
 

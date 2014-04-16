@@ -49,6 +49,15 @@ enum : Hive::ID {
 	NULL_ID = static_cast<Hive::ID>(Object::NULL_ID)
 };
 
+/**
+	Unit type info.
+*/
+static constexpr Object::type_info const
+s_type_info{
+	Object::Type::Hive,
+	{true, false}
+};
+
 /** @} */ // end of doc-group hive
 /** @} */ // end of doc-group object
 

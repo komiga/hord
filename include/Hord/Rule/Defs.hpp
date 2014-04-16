@@ -176,6 +176,15 @@ struct type_info final {
 	) noexcept;
 };
 
+/**
+	Unit type info.
+*/
+static constexpr Object::type_info const
+s_type_info{
+	Object::Type::Rule,
+	{true, false}
+};
+
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group object
 
