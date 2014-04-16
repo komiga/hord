@@ -625,11 +625,6 @@ private:
 		" Cacophony"
 	);
 
-	static_assert(
-		std::is_standard_layout<data_type>::value,
-		"Data type must be standard layout"
-	);
-
 	data_type m_data;
 
 	StageImpl& operator=(StageImpl const&) = delete;
