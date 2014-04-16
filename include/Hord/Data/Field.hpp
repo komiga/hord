@@ -65,8 +65,14 @@ public:
 	/** Move assignment operator. */
 	Field& operator=(Field&&) = default;
 
-	/** Copy constructor. */
-	Field(Field const& other)
+	/**
+		Copy constructor.
+
+		@note Field will have no rule state.
+	*/
+	Field(
+		Field const& other
+	) noexcept
 		: type(other.type)
 		, value(other.value)
 		, state(nullptr)
