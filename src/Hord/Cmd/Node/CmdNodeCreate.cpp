@@ -28,9 +28,9 @@ namespace Cmd {
 #define HORD_CMD_TYPE_ NodeCreate
 #define HORD_SCOPE_CLASS Cmd::Node::Create // pseudo
 
+using Props = Cmd::Node::Create::Props;
 using ResultCode = Cmd::Node::Create::ResultCode;
 using ResultData = Cmd::Node::Create::ResultData;
-using Props = Cmd::Node::Create::Props;
 
 // Declarations
 
@@ -257,7 +257,7 @@ action(
 	if (ErrorCode::datastore_object_already_exists == err.get_code()) {
 		data.code = ResultCode::id_already_exists;
 	} else {
-		data.code = ResultCode::unknown;
+		data.code = ResultCode::unknown_error;
 	}
 	return Cmd::Status::error;
 } catch (std::exception const& err) {
@@ -266,14 +266,14 @@ action(
 		": unknown error creating object: "
 		<< err.what()
 	;
-	data.code = ResultCode::unknown;
+	data.code = ResultCode::unknown_error;
 	return Cmd::Status::error;
 } catch (...) {
 	Log::acquire(Log::error)
 		<< HORD_SCOPE_FQN_STR_LIT
 		": unknown error creating object"
 	;
-	data.code = ResultCode::unknown;
+	data.code = ResultCode::unknown_error;
 	return Cmd::Status::error;
 }
 #undef HORD_SCOPE_FUNC
@@ -290,8 +290,10 @@ HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
 		return context.localized_fatal(*this);
 	}
 
-	command.result_data.code = can_create(context.get_hive(), m_data.props);
-	command.result_data.id = m_data.id;
+	command.result_data = {
+		can_create(context.get_hive(), m_data.props),
+		m_data.id
+	};
 	return
 		ResultCode::ok == command.result_data.code
 		? action(context, m_data.props, command.result_data)
@@ -310,7 +312,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Error) {
 		return context.localized_fatal(*this);
 	}
 
-	command.result_data = ResultData{
+	command.result_data = {
 		m_data.code,
 		Hord::Node::NULL_ID
 	};
@@ -383,8 +385,10 @@ HORD_CMD_STAGE_DEF_EXECUTE(Response) {
 	Props const& props = static_cast<Request const*>(
 		command.get_initiator()->get_data()
 	)->props;
-	command.result_data.code = can_create(context.get_hive(), props);
-	command.result_data.id = m_data.id;
+	command.result_data = {
+		can_create(context.get_hive(), props),
+		m_data.id
+	};
 	return
 		ResultCode::ok == command.result_data.code
 		? action(context, props, command.result_data)

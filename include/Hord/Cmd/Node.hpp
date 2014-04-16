@@ -64,6 +64,7 @@ public:
 	*/
 	enum class ResultCode : unsigned {
 		ok,
+		unknown_error,
 		parent_not_found,
 		layout_ref_not_found,
 		layout_ref_not_a_node,
@@ -71,19 +72,22 @@ public:
 		slug_too_long,
 		slug_already_exists,
 		id_already_exists,
-		unknown,
 	};
 
 	/**
-		Result data type.
+		Result data.
 	*/
 	struct ResultData {
+		/** Result code. */
 		ResultCode code;
+		/** %ID of new node. */
 		Hord::Node::ID id;
 	};
 
 	/**
 		Command properties.
+
+		@sa Node::Unit
 	*/
 	struct Props {
 		Object::ID parent;
@@ -94,12 +98,12 @@ public:
 /** @name Properties */ /// @{
 	/** Result data. */
 	ResultData result_data{
-		ResultCode::unknown,
+		ResultCode::unknown_error,
 		Object::NULL_ID
 	};
 /// @}
 
-/** @name Operations */ /// @{
+/** @name Stages */ /// @{
 	/**
 		Make @c Request stage (initiator).
 
