@@ -308,7 +308,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
 HORD_CMD_STAGE_DEF_EXECUTE(Error) {
 	(void)context; (void)command;
 
-	if (context.is_host()) {
+	if (context.is_host() || is_host()) {
 		return context.localized_fatal(*this);
 	}
 
@@ -378,7 +378,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 HORD_CMD_STAGE_DEF_EXECUTE(Response) {
 	(void)context; (void)command;
 
-	if (context.is_host() || is_client()) {
+	if (context.is_host() || is_host()) {
 		return context.localized_fatal(*this);
 	}
 
