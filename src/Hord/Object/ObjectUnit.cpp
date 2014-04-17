@@ -23,7 +23,8 @@ Unit::Unit(
 	Object::ID const id,
 	Object::ID const parent
 ) noexcept
-	: m_id(id)
+	: m_type(tinfo.type)
+	, m_id(id)
 	, m_prop_states(tinfo.props)
 	, m_parent(parent)
 {}

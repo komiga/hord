@@ -71,6 +71,7 @@ public:
 	>;
 
 private:
+	Object::Type m_type;
 	Object::ID m_id;
 	IO::PropStateStore m_prop_states;
 	id_set_type m_children{}; // runtime
@@ -152,6 +153,7 @@ protected:
 			)
 		@endcode
 
+		@param tinfo Object type info.
 		@param id Object %ID.
 		@param parent Parent %ID.
 
@@ -179,7 +181,7 @@ public:
 	*/
 	Object::Type
 	get_type() const noexcept {
-		return get_type_info().type;
+		return m_type;
 	}
 
 	/**
@@ -228,9 +230,29 @@ public:
 
 	/**
 		Get ID.
+
+		@remarks This returns the in-hive ID, which yields
+		Object::NULL_ID if the object is itself a hive.
+
+		@sa get_id_bare()
 	*/
 	Object::ID
 	get_id() const noexcept {
+		return
+			Object::Type::Hive == get_type()
+			? Object::NULL_ID
+			: get_id_bare()
+		;
+	}
+
+	/**
+		Get bare ID.
+
+		@remarks This returns the bare ID without morphing it to
+		Object::NULL_ID when the object is a hive.
+	*/
+	Object::ID
+	get_id_bare() const noexcept {
 		return m_id;
 	}
 
