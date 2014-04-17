@@ -149,9 +149,9 @@ HORD_SCOPE_CLASS::make_request(
 
 // Implementation
 
-#define HORD_SCOPE_FUNC can_create
+#define HORD_SCOPE_FUNC check
 static ResultCode
-can_create(
+check(
 	Hive::Unit const& hive,
 	Props const& props
 ) noexcept {
@@ -190,28 +190,6 @@ can_create(
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC prepare
-static ResultData
-prepare(
-	System::Context& context,
-	Props const& props,
-	Cmd::Stage& /*stage*/,
-	bool const generate
-) {
-	ResultData data{
-		can_create(context.get_hive(), props),
-		Hord::Node::NULL_ID
-	};
-	if (generate && ResultCode::ok == data.code) {
-		// NB: Leak ErrorCode::datastore_closed
-		data.id = context.get_datastore().generate_id(
-			context.get_driver().get_id_generator()
-		);
-	}
-	return data;
-}
-#undef HORD_SCOPE_FUNC
-
 #define HORD_SCOPE_FUNC action
 static Cmd::Status
 action(
@@ -237,14 +215,18 @@ action(
 	}
 	hive.get_idset().emplace(data.id);
 	auto& node = static_cast<Hord::Node::Unit&>(*emplace_pair.first->second);
-	node.set_layout_ref(props.layout_ref);
-	node.set_slug(props.slug);
-	auto const it = hive.get_objects().find(props.parent);
+	auto const it
+		= hive.get_id() == props.parent
+		? hive.get_objects().end()
+		: hive.get_objects().find(props.parent)
+	;
 	if (hive.get_objects().end() == it) {
 		Object::set_parent(node, hive);
 	} else {
 		Object::set_parent(node, *it->second);
 	}
+	node.set_slug(props.slug);
+	node.set_layout_ref(props.layout_ref);
 	node.get_prop_states().assign_all(IO::PropState::modified);
 	data.code = ResultCode::ok;
 	return Cmd::Status::complete;
@@ -291,7 +273,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
 	}
 
 	command.result_data = {
-		can_create(context.get_hive(), m_data.props),
+		check(context.get_hive(), m_data.props),
 		m_data.id
 	};
 	return
@@ -327,12 +309,16 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 	(void)context; (void)command;
 
 	assert(is_initiator());
-	auto data = prepare(
-		context,
-		m_data.props,
-		*this,
-		context.is_host()
-	);
+	ResultData data{
+		check(context.get_hive(), m_data.props),
+		Hord::Node::NULL_ID
+	};
+	if (context.is_host() && ResultCode::ok == data.code) {
+		// NB: Leak ErrorCode::datastore_closed
+		data.id = context.get_datastore().generate_id(
+			context.get_driver().get_id_generator()
+		);
+	}
 	if (ResultCode::ok != data.code) {
 		if (context.is_local(*this)) {
 			command.result_data = data;
@@ -386,7 +372,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Response) {
 		command.get_initiator()->get_data()
 	)->props;
 	command.result_data = {
-		can_create(context.get_hive(), props),
+		check(context.get_hive(), props),
 		m_data.id
 	};
 	return
