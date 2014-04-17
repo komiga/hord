@@ -33,6 +33,8 @@ namespace Object {
 	reparented to an object after calling this to ensure it is not
 	orphaned.
 
+	@note The identity property state is unchanged by this function.
+
 	@pre @code
 		!object.is_null()
 	@endcode
@@ -72,6 +74,14 @@ unset_parent(
 		== (new_parent.get_type() == Object::Type::Hive)
 			? Object::NULL_ID
 			: new_parent.get_id()
+	@endcode
+
+	@post If state was changed:
+	@code
+		true == object.get_prop_states().has(
+		    IO::PropType::identity,
+		    IO::PropState::modified
+		)
 	@endcode
 
 	@returns @c true if @a object was parented to @a new_parent.

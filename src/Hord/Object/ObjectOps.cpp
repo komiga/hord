@@ -1,4 +1,5 @@
 
+#include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Ops.hpp>
 
@@ -32,12 +33,15 @@ set_parent(
 	if (object.get_id() == new_parent.get_id()) {
 		return false;
 	} else {
+		// NB: children is a set, so no duplicates occur
 		new_parent.get_children().emplace(object.get_id());
-		object.set_parent(
-			Object::Type::Hive == new_parent.get_type()
-			? Object::NULL_ID
-			: new_parent.get_id()
-		);
+		if (object.get_parent() != new_parent.get_id()) {
+			object.set_parent(new_parent.get_id());
+			object.get_prop_states().assign(
+				IO::PropType::identity,
+				IO::PropState::modified
+			);
+		}
 		return true;
 	}
 }
