@@ -274,21 +274,15 @@ public:
 		@warning This should not be used directly. See the
 		referenced functions.
 
-		@post If the new parent differs or the identity is uninitialized:
-		@code
-			true == get_prop_states().has(
-				IO::PropType::identity,
-				IO::PropState::modified
-			)
-		@endcode
-
 		@sa Object::unset_parent(),
 			Object::set_parent()
 	*/
 	void
 	set_parent(
 		Object::ID const parent
-	) noexcept;
+	) noexcept {
+		m_parent = parent;
+	}
 
 	/**
 		Get parent.
@@ -302,14 +296,6 @@ public:
 		Set slug.
 
 		@warning This property is truncated to 255 code units.
-
-		@post If the new slug differs or the identity is uninitialized:
-		@code
-			true == get_prop_states().has(
-				IO::PropType::identity,
-				IO::PropState::modified
-			)
-		@endcode
 	*/
 	void
 	set_slug(
@@ -342,21 +328,13 @@ public:
 
 	/**
 		Set scratch space.
-
-		@note The prop is marked as modified even if the new scratch
-		space is equivalent to the current.
-
-		@post @code
-			true == get_prop_states().has(
-				IO::PropType::scratch,
-				IO::PropState::modified
-			)
-		@endcode
 	*/
 	void
 	set_scratch_space(
 		String scratch_space
-	) noexcept;
+	) noexcept {
+		m_scratch_space.assign(std::move(scratch_space));
+	}
 
 	/**
 		Get scratch space.
