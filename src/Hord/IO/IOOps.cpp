@@ -81,8 +81,7 @@ identify_all(
 	IO::Datastore& datastore,
 	Hive::Unit& hive
 ) {
-	IO::PropStateStore& states = hive.get_prop_states();
-
+	auto& states = hive.get_prop_states();
 	if (states.all_data_initialized()) {
 		return;
 	}
@@ -96,7 +95,7 @@ identify_all(
 		auto it = idset.find(Object::NULL_ID);
 		if (idset.end() == it) {
 			Log::acquire(Log::error)
-				<< "null ID encountered in hive idset\n"
+				<< "null ID encountered in hive idset; erasing\n"
 			;
 			idset.erase(it);
 		}
@@ -107,6 +106,7 @@ identify_all(
 	auto& objects = hive.get_objects();
 	for (auto const object_id : idset) {
 		// NB: Currently only nodes are hive children
+		// TODO: Handle other object types from Driver
 		auto& obj = *objects.emplace(
 			object_id,
 			Object::UPtr{new Node::Unit(object_id, Object::NULL_ID)}
