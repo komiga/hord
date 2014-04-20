@@ -171,6 +171,18 @@ Context::initiate(
 }
 #undef HORD_SCOPE_FUNC
 
+#define HORD_SCOPE_FUNC initiate_pass
+void
+Context::initiate_pass(
+	Cmd::StageUPtr initiator
+) noexcept {
+	assert(!initiator->is_identified());
+
+	initiator->get_id().assign(next_id(), is_host(), true);
+	m_output.emplace_back(Dest::remote, std::move(initiator));
+}
+#undef HORD_SCOPE_FUNC
+
 #define HORD_SCOPE_FUNC push_input
 void
 Context::push_input(
@@ -216,11 +228,18 @@ Context::push_remote(
 #define HORD_SCOPE_FUNC broadcast
 void
 Context::broadcast(
-	Cmd::StageUPtr stage
+	Cmd::StageUPtr stage,
+	bool const local
 ) {
 	assert(!stage->is_identified());
 
-	m_output.emplace_back(Dest::broadcast, std::move(stage));
+	m_output.emplace_back(
+		local
+			? Dest::broadcast_local
+			: Dest::broadcast_remote
+		,
+		std::move(stage)
+	);
 }
 #undef HORD_SCOPE_FUNC
 

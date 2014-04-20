@@ -81,8 +81,10 @@ public:
 	enum class Dest : unsigned {
 		/** Output to remote endpoint. */
 		remote = 1u,
-		/** Output to all other endpoints. */
-		broadcast
+		/** Output to all other endpoints (local initiation). */
+		broadcast_local,
+		/** Output to all other endpoints (remote initiation). */
+		broadcast_remote,
 	};
 
 	/**
@@ -379,6 +381,30 @@ public:
 	) noexcept;
 
 	/**
+		Initiate command without making it active locally.
+
+		@note This will push and initiate a command as output. This
+		is used for remote broadcasts and, in general, initiator
+		stages that don't need to execute anything locally and don't
+		require a response from the remote endpoint. It is
+		conceptually equivalent to having the stage's execution
+		immediately return Cmd::Status::complete (but it is never
+		executed; the stage only takes the next local ID and is
+		pushed to the remote endpoint).
+
+		@post No active nor done command for the stage on the local
+		endpoint.
+
+		@pre @code
+			!initiate->is_identified()
+		@endcode
+	*/
+	void
+	initiate_pass(
+		Cmd::StageUPtr initiator
+	) noexcept;
+
+	/**
 		Push command input.
 
 		@note This is used by userspace to emplace remote stages.
@@ -419,9 +445,9 @@ public:
 		Broadcast stage to all other contexts.
 
 		@note @a stage will carry no identity in the output queue.
-		Userspace should broadcast the stage by calling initiate()
-		with a clone of the stage on every <strong>other</strong>
-		context.
+		Userspace should broadcast a clone of the stage by either
+		calling initiate() (when local) or initiate_pass() (when
+		remote) on every <strong>other</strong> context.
 
 		@par
 		@note If @a stage is pushed, the context takes ownership
@@ -432,10 +458,13 @@ public:
 		@endcode
 
 		@param stage %Stage to broadcast.
+		@param local Whether the stage should be initiated locally
+		(or remotely).
 	*/
 	void
 	broadcast(
-		Cmd::StageUPtr stage
+		Cmd::StageUPtr stage,
+		bool const local
 	);
 
 	/**
