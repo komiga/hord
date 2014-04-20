@@ -69,8 +69,8 @@ private:
 	);
 
 	/*
-		Bits (1-6 are props, S is whether they are supplied):
-		XXSS SSSS 6666 5555 4444 3333 2222 1111
+		Bits (1-6 are props, s is whether they are supplied):
+		XXss ssss 6666 5555 4444 3333 2222 1111
 
 		6666 is currently unoccupied (there are only 5 props).
 	*/
@@ -200,7 +200,7 @@ public:
 		@param prop_type Prop type.
 		@param state Prop state.
 	*/
-	bool
+	constexpr bool
 	has(
 		IO::PropType const prop_type,
 		IO::PropState const state
@@ -211,7 +211,7 @@ public:
 	/**
 		Check if any prop is modified.
 	*/
-	bool
+	constexpr bool
 	any_modified() const noexcept {
 		return 0u != (m_states & all_mask_modified);
 	}
@@ -219,7 +219,7 @@ public:
 	/**
 		Check if all props match external storage.
 	*/
-	bool
+	constexpr bool
 	all_original() const noexcept {
 		return all_mask_original == (m_states & all_mask_original);
 	}
@@ -227,7 +227,7 @@ public:
 	/**
 		Check if all supplied props are uninitialized.
 	*/
-	bool
+	constexpr bool
 	all_uninitialized() const noexcept {
 		return 0u == (m_states & m_states_supplied);
 	}
@@ -235,7 +235,7 @@ public:
 	/**
 		Check if all supplied data props are initialized.
 	*/
-	bool
+	constexpr bool
 	all_data_initialized() const noexcept {
 		// NB: Non-supplied props "are" original within the store
 		// and all other states imply the prop is initialized
@@ -248,7 +248,7 @@ public:
 
 		@param prop_type Prop type.
 	*/
-	bool
+	constexpr bool
 	is_initialized(
 		IO::PropType const prop_type
 	) const noexcept {
@@ -260,7 +260,7 @@ public:
 
 		@param prop_type Prop type.
 	*/
-	bool
+	constexpr bool
 	supplies(
 		IO::PropType const prop_type
 	) const noexcept {
@@ -270,7 +270,7 @@ public:
 	/**
 		Check if all given props are supplied.
 	*/
-	bool
+	constexpr bool
 	supplies_all(
 		IO::PropTypeBit const props
 	) const noexcept {
@@ -283,7 +283,7 @@ public:
 	/**
 		Check if any given props are supplied.
 	*/
-	bool
+	constexpr bool
 	supplies_any(
 		IO::PropTypeBit const props
 	) const noexcept {
@@ -293,7 +293,7 @@ public:
 	/**
 		Get store value.
 	*/
-	unsigned
+	constexpr unsigned
 	get_value() const noexcept {
 		return m_states;
 	}
@@ -303,7 +303,7 @@ public:
 
 		@param prop_type Prop type.
 	*/
-	IO::PropState
+	constexpr IO::PropState
 	get_state(
 		IO::PropType const prop_type
 	) const noexcept {
@@ -315,7 +315,7 @@ public:
 	/**
 		Get supplied props.
 	*/
-	IO::PropTypeBit
+	constexpr IO::PropTypeBit
 	get_supplied() const noexcept {
 		return static_cast<IO::PropTypeBit>(
 			m_states_supplied >> flag_shift
