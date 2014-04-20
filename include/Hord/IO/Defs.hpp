@@ -267,10 +267,10 @@ get_prop_type_name(
 ) noexcept;
 
 /**
-	Get prop type as prop serialization flag.
+	Get prop type as prop serialization bit.
 */
 inline constexpr IO::PropTypeBit
-prop_flag(
+prop_type_bit(
 	IO::PropType const prop_type
 ) noexcept {
 	return static_cast<IO::PropTypeBit>(

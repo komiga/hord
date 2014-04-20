@@ -264,7 +264,7 @@ public:
 	supplies(
 		IO::PropType const prop_type
 	) const noexcept {
-		return supplies_all(IO::prop_flag(prop_type));
+		return supplies_all(IO::prop_type_bit(prop_type));
 	}
 
 	/**
