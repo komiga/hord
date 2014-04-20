@@ -8,6 +8,7 @@ general/headers
 object/print
 
 io/prop_state_store
+io/prop_type_iterator
 
 etc/lockfile
 etc/log
