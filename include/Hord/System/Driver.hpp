@@ -15,6 +15,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/String.hpp>
 #include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Datastore.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
@@ -107,6 +108,18 @@ public:
 /// @}
 
 /** @name Type information */ /// @{
+	/**
+		Get object type information.
+
+		@returns The object type info, or @c nullptr if the type was
+		not registered.
+		@param type %Object type.
+	*/
+	Object::type_info const*
+	get_object_type_info(
+		Object::Type const type
+	) const noexcept;
+
 	/**
 		Register rule type information.
 

@@ -1,5 +1,8 @@
 
+#include <Hord/Object/Defs.hpp>
+#include <Hord/Hive/Defs.hpp>
 #include <Hord/Rule/Defs.hpp>
+#include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/type_info.hpp>
 #include <Hord/System/Driver.hpp>
@@ -66,6 +69,22 @@ Driver::Driver() /*noexcept*/
 	);
 	// TODO: Register standard rule types.
 }
+
+#define HORD_SCOPE_FUNC get_object_type_info
+Object::type_info const*
+Driver::get_object_type_info(
+	Object::Type const type
+) const noexcept {
+	// TODO: Handle user-defined types
+	switch (type) {
+	case Object::Type::Hive: return &Hive::s_type_info;
+	case Object::Type::Rule: return &Rule::s_type_info;
+	case Object::Type::Node: return &Node::s_type_info;
+	case Object::Type::LAST: break;
+	}
+	return nullptr;
+}
+#undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC register_rule_type
 void
