@@ -33,10 +33,13 @@ namespace Generic {
 
 /*
 
-GenericTerminate
+NB: Injected into an existing command sequence of a completely
+different command type.
 
-* H -> Statement
-	C: * & ~complete
+GenericTerminate (Statement)
+
+* H *-> Statement
+	C: ~complete
 
 */
 
