@@ -625,7 +625,7 @@ private:
 		" Cacophony"
 	);
 
-	data_type m_data;
+	data_type m_data{};
 
 	StageImpl& operator=(StageImpl const&) = delete;
 
