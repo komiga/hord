@@ -41,9 +41,7 @@ load_prop(
 		stream.release(); // will not double-throw
 		throw;
 	}
-
 	states.assign(prop_type, IO::PropState::original);
-
 	return true;
 }
 
@@ -70,9 +68,7 @@ store_prop(
 		stream.release();
 		throw;
 	}
-
 	states.assign(prop_type, IO::PropState::original);
-
 	return true;
 }
 
@@ -93,7 +89,7 @@ identify_all(
 	{
 		auto& idset = hive.get_idset();
 		auto it = idset.find(Object::NULL_ID);
-		if (idset.end() == it) {
+		if (idset.end() != it) {
 			Log::acquire(Log::error)
 				<< "null ID encountered in hive idset; erasing\n"
 			;
@@ -115,6 +111,9 @@ identify_all(
 		IO::load_prop(datastore, obj, IO::PropType::identity);
 
 		if (obj.get_id() == obj.get_parent()) {
+			Log::acquire(Log::error)
+				<< "Object " << obj << " has itself as parent\n"
+			;
 			obj.set_parent(Object::NULL_ID);
 		} else if (
 			Object::NULL_ID != obj.get_parent() &&
