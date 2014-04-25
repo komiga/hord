@@ -11,6 +11,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_OBJECT_DEFS_HPP_
 
 #include <Hord/config.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/IO/PropStateStore.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
@@ -99,6 +100,19 @@ struct type_info final {
 	Owning pointer to object unit.
 */
 using UPtr = duct::cc_unique_ptr<Object::Unit>;
+
+/**
+	Serialize object type.
+*/
+template<class Ser>
+inline ser_result_type
+serialize(
+	ser_tag_serialize,
+	Ser& ser,
+	Object::Type& value
+) {
+	ser(Cacophony::make_enum_cfg<std::uint8_t>(const_safe<Ser>(value)));
+}
 
 /** @} */ // end of doc-group object
 
