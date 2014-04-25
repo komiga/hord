@@ -103,6 +103,12 @@ class Unit;
 #define HORD_CMD_DEF_OPEN(classn_)									\
 	class classn_ : public ::Hord::Cmd::Unit {						\
 	private:														\
+		template<													\
+			::Hord::Cmd::Type const,								\
+			::Hord::Cmd::StageType const,							\
+			class, class											\
+		>															\
+		friend class ::Hord::Cmd::StageImpl;						\
 		::Hord::Cmd::type_info const&								\
 		get_type_info_impl() const noexcept override {				\
 			return HORD_CMD_JOIN_CT_(HORD_CMD_TYPE_);				\
