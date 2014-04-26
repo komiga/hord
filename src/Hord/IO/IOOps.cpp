@@ -18,58 +18,75 @@
 namespace Hord {
 namespace IO {
 
+namespace {
+
+static void
+load_prop_impl(
+	Object::Unit& object,
+	IO::InputPropStream& prop_stream
+) {
+	try {
+		prop_stream.acquire();
+		object.deserialize(prop_stream);
+		prop_stream.release();
+	} catch (...) {
+		prop_stream.release(); // will not double-throw
+		throw;
+	}
+}
+
+static void
+store_prop_impl(
+	Object::Unit& object,
+	IO::OutputPropStream& prop_stream
+) {
+	try {
+		prop_stream.acquire();
+		object.serialize(prop_stream);
+		prop_stream.release();
+	} catch (...) {
+		prop_stream.release();
+		throw;
+	}
+}
+
+} // anonymous namespace
+
 bool
 load_prop(
 	IO::Datastore& datastore,
 	Object::Unit& object,
-	IO::PropType const prop_type
+	IO::PropType const prop_type,
+	bool const force
 ) {
-	auto& states = object.get_prop_states(); 
-	if (!states.is_initialized(prop_type)) {
-		return false;
+	if (force || !object.get_prop_states().is_initialized(prop_type)) {
+		IO::InputPropStream prop_stream{
+			datastore, {object, prop_type}
+		};
+		load_prop_impl(object, prop_stream);
+		return true;
 	}
-
-	IO::InputPropStream stream{
-		datastore,
-		{object, prop_type}
-	};
-	try {
-		stream.acquire();
-		object.deserialize(stream);
-		stream.release();
-	} catch (...) {
-		stream.release(); // will not double-throw
-		throw;
-	}
-	states.assign(prop_type, IO::PropState::original);
-	return true;
+	return false;
 }
 
 bool
 store_prop(
 	IO::Datastore& datastore,
 	Object::Unit& object,
-	IO::PropType const prop_type
+	IO::PropType const prop_type,
+	bool const force
 ) {
-	auto& states = object.get_prop_states(); 
-	if (!states.is_initialized(prop_type)) {
-		return false;
+	if (
+		force ||
+		object.get_prop_states().has(prop_type, IO::PropState::modified)
+	) {
+		IO::OutputPropStream prop_stream{
+			datastore, {object, prop_type}
+		};
+		store_prop_impl(object, prop_stream);
+		return true;
 	}
-
-	IO::OutputPropStream stream{
-		datastore,
-		{object, prop_type}
-	};
-	try {
-		stream.acquire();
-		object.serialize(stream);
-		stream.release();
-	} catch (...) {
-		stream.release();
-		throw;
-	}
-	states.assign(prop_type, IO::PropState::original);
-	return true;
+	return false;
 }
 
 void
