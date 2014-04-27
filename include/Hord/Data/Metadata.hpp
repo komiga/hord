@@ -298,7 +298,7 @@ public:
 	*/
 	Int32MetaField(
 		String name,
-		std::int32_t value
+		std::int32_t const value
 	) noexcept
 		: MetaField(std::move(name))
 		, value(value)
@@ -356,7 +356,7 @@ public:
 	*/
 	Int64MetaField(
 		String name,
-		std::int64_t value
+		std::int64_t const value
 	) noexcept
 		: MetaField(std::move(name))
 		, value(value)
@@ -416,7 +416,7 @@ public:
 	*/
 	BoolMetaField(
 		String name,
-		bool value
+		bool const value
 	) noexcept
 		: MetaField(std::move(name))
 		, value(value)
