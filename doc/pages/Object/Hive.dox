@@ -14,7 +14,7 @@ Objects owned by a hive share an <em>ID space</em> with each-other,
 and as such must be unique within this space.
 
 %Hive IDs are runtime values generated when a hive is placeheld
-(see @c IO::Driver) -- they are non-persistent to avoid hive-to-hive
+(see @c System::Driver) -- they are non-persistent to avoid hive-to-hive
 ID clashes. %Hive IDs are <strong>not</strong> within their child ID
 space specifically to avoid the itchy situation where hives have
 to be shallow-loaded before the runtime can generate their IDs.
