@@ -53,6 +53,31 @@ load_prop(
 );
 
 /**
+	Load props.
+
+	@note Unless @a force is @c true, this will only load the props
+	if they are uninitialized.
+
+	@throws Error{...}
+	From Object::Unit::deserialize().
+
+	@returns Whether any of the props were loaded.
+	@param datastore %Datastore.
+	@param object Object to operate on.
+	@param prop_types Props to load.
+	@param force Whether to force load, disregarding prop state.
+
+	@sa Object::Unit::deserialize()
+*/
+bool
+load_props(
+	IO::Datastore& datastore,
+	Object::Unit& object,
+	IO::PropTypeBit const prop_types,
+	bool const force = false
+);
+
+/**
 	Store a prop.
 
 	@note Unless @a force is @c true, this will only store the prop
@@ -74,6 +99,31 @@ store_prop(
 	IO::Datastore& datastore,
 	Object::Unit& object,
 	IO::PropType const prop_type,
+	bool const force = false
+);
+
+/**
+	Store props.
+
+	@note Unless @a force is @c true, this will only store the props
+	if they are modified.
+
+	@throws Error{...}
+	From Object::Unit::serialize().
+
+	@returns Whether any of the props were stored.
+	@param datastore %Datastore.
+	@param object Object.
+	@param prop_types Props to store.
+	@param force Whether to force store, disregarding prop state.
+
+	@sa Object::Unit::serialize()
+*/
+bool
+store_props(
+	IO::Datastore& datastore,
+	Object::Unit& object,
+	IO::PropTypeBit const prop_types,
 	bool const force = false
 );
 

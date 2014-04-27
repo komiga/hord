@@ -9,6 +9,7 @@
 #include <Hord/Node/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
+#include <Hord/IO/PropTypeIterator.hpp>
 #include <Hord/IO/PropStream.hpp>
 #include <Hord/IO/Ops.hpp>
 
@@ -70,6 +71,22 @@ load_prop(
 }
 
 bool
+load_props(
+	IO::Datastore& datastore,
+	Object::Unit& object,
+	IO::PropTypeBit const prop_types,
+	bool const force
+) {
+	bool loaded_any = false;
+	for (auto const prop_type : prop_types) {
+		if (load_prop(datastore, object, prop_type, force)) {
+			loaded_any = true;
+		}
+	}
+	return loaded_any;
+}
+
+bool
 store_prop(
 	IO::Datastore& datastore,
 	Object::Unit& object,
@@ -87,6 +104,22 @@ store_prop(
 		return true;
 	}
 	return false;
+}
+
+bool
+store_props(
+	IO::Datastore& datastore,
+	Object::Unit& object,
+	IO::PropTypeBit const prop_types,
+	bool const force
+) {
+	bool loaded_any = false;
+	for (auto const prop_type : prop_types) {
+		if (store_prop(datastore, object, prop_type, force)) {
+			loaded_any = true;
+		}
+	}
+	return loaded_any;
 }
 
 void
