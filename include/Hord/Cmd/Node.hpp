@@ -36,8 +36,11 @@ namespace Node {
 NodeCreate (Request)
 
 * C I-> Request
-	C: (-> S & W) | ~error
-	H: (-> Response & B-> Statement & ~) | (-> Error | & ~error)
+	C:	(-> S & W) |
+		~error
+
+	H:	(-> Response & B-> Statement & ~) |
+		(-> Error | & ~error)
 
 * H *-> Response
 	C: ~

@@ -38,8 +38,8 @@ different command type.
 
 GenericTerminate (Statement)
 
-* H *-> Statement
-	C: ~complete
+* E *-> Statement
+	E: ~complete
 
 */
 
