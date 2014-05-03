@@ -77,25 +77,30 @@ private:
 	enum : unsigned {
 		// 4 bits per prop
 		state_mask = 0x0F,
-		// 5 states
+		// 5 props
 		full_mask  = 0x000FFFFF,
 		// 3 always-supplied props (identity, metadata, and scratch)
 		base_value = 0x07000FFF,
+		// With 32 bits, can store up to 6 props
+		bit_mask   = 0x3F000000,
 
 		// (PropType << type_shift) gives the number of bits
 		// to move left for the prop's state
 		type_shift = 2u,
-		// (PropTypeBit << flag_shift) gives the
+		// (PropTypeBit << bit_shift) gives the
 		// is_supplied bit for the prop
-		flag_shift = 24u,
+		bit_shift = 24u,
 
-		bit_primary
-			= enum_cast(IO::PropTypeBit::primary)
-			<< flag_shift
+		bit_primary   = enum_cast(IO::PropTypeBit::primary) << bit_shift,
+		bit_auxiliary = enum_cast(IO::PropTypeBit::auxiliary) << bit_shift,
+
+		bit_primary_add
+			= bit_primary
+			| (state_mask << (enum_cast(IO::PropType::primary) << type_shift))
 		,
-		bit_auxiliary
-			= enum_cast(IO::PropTypeBit::auxiliary)
-			<< flag_shift
+		bit_auxiliary_add
+			= bit_auxiliary
+			| (state_mask << (enum_cast(IO::PropType::auxiliary) << type_shift))
 		,
 
 		prop_unsupplied_implied
@@ -109,8 +114,8 @@ private:
 		,
 
 		all_mask_unsupplied = state_fill(IO::PropState::unsupplied),
-		all_mask_original = state_fill(IO::PropState::original),
-		all_mask_modified = state_fill(IO::PropState::modified),
+		all_mask_original   = state_fill(IO::PropState::original),
+		all_mask_modified   = state_fill(IO::PropState::modified),
 	};
 
 	static constexpr unsigned
@@ -139,7 +144,7 @@ private:
 		return ~(state_mask << (enum_cast(prop_type) << type_shift)) & value;
 	}
 
-	unsigned m_states_supplied;
+	unsigned m_supplied;
 	unsigned m_states;
 
 	PropStateStore() = delete;
@@ -172,19 +177,13 @@ public:
 		bool const supplies_primary,
 		bool const supplies_auxiliary
 	) noexcept
-		: m_states_supplied(
+		: m_supplied(
 			base_value
-			| (!supplies_primary ? 0u : (
-				bit_primary |
-				shift_up(state_mask, IO::PropType::primary)
-			))
-			| (!supplies_auxiliary ? 0u : (
-				bit_auxiliary |
-				shift_up(state_mask, IO::PropType::auxiliary)
-			))
+			| (supplies_primary ? bit_primary_add : 0u)
+			| (supplies_auxiliary ? bit_auxiliary_add : 0u)
 		)
 		, m_states(
-			~m_states_supplied & mask_unsupplied_implied
+			~m_supplied & mask_unsupplied_implied
 		)
 	{}
 /// @}
@@ -229,7 +228,7 @@ public:
 	*/
 	constexpr bool
 	all_uninitialized() const noexcept {
-		return 0u == (m_states & m_states_supplied);
+		return 0u == (m_states & m_supplied);
 	}
 
 	/**
@@ -264,7 +263,7 @@ public:
 	supplies(
 		IO::PropType const prop_type
 	) const noexcept {
-		return supplies_all(IO::prop_type_bit(prop_type));
+		return supplies_any(IO::prop_type_bit(prop_type));
 	}
 
 	/**
@@ -318,7 +317,7 @@ public:
 	constexpr IO::PropTypeBit
 	get_supplied() const noexcept {
 		return static_cast<IO::PropTypeBit>(
-			m_states_supplied >> flag_shift
+			m_supplied >> bit_shift
 		);
 	}
 /// @}
@@ -333,7 +332,7 @@ public:
 	*/
 	PropStateStore&
 	reset_all() noexcept {
-		m_states = ~m_states_supplied & mask_unsupplied_implied;
+		m_states = ~m_supplied & mask_unsupplied_implied;
 		return *this;
 	}
 
@@ -396,14 +395,14 @@ public:
 			break;
 		case IO::PropState::original:
 			m_states
-				= (~m_states_supplied & mask_unsupplied_implied)
-				| (m_states_supplied & all_mask_original)
+				= (~m_supplied & mask_unsupplied_implied)
+				| (m_supplied & all_mask_original)
 			;
 			break;
 		case IO::PropState::modified:
 			m_states
-				= (~m_states_supplied & mask_unsupplied_implied)
-				| (m_states_supplied & all_mask_modified)
+				= (~m_supplied & mask_unsupplied_implied)
+				| (m_supplied & all_mask_modified)
 			;
 			break;
 		}
