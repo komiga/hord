@@ -24,6 +24,7 @@ enum class PropType : unsigned;
 enum class PropTypeBit : unsigned;
 enum class PropState : unsigned;
 enum class StorageState : unsigned;
+enum class Linkage : unsigned;
 
 /**
 	@addtogroup io
@@ -255,6 +256,25 @@ enum class StorageState : unsigned {
 };
 
 /**
+	Object linkage.
+*/
+enum class Linkage : unsigned {
+	/**
+		Object is resident in hive.
+	*/
+	resident = 0u,
+
+	/**
+		Object is not resident in hive.
+	*/
+	orphan,
+
+/** @cond INTERNAL */
+	LAST
+/** @endcond */
+};
+
+/**
 	Get the name of a prop type.
 
 	@returns C-string containing the name of @a prop_type or
@@ -300,6 +320,19 @@ serialize(
 	ser_tag_serialize,
 	Ser& ser,
 	IO::PropTypeBit& value
+) {
+	ser(Cacophony::make_enum_cfg<std::uint8_t>(const_safe<Ser>(value)));
+}
+
+/**
+	Serialize Linkage.
+*/
+template<class Ser>
+inline ser_result_type
+serialize(
+	ser_tag_serialize,
+	Ser& ser,
+	IO::Linkage& value
 ) {
 	ser(Cacophony::make_enum_cfg<std::uint8_t>(const_safe<Ser>(value)));
 }
