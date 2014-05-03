@@ -12,6 +12,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/utility.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/IO/Defs.hpp>
 
 namespace Hord {
@@ -407,6 +408,51 @@ public:
 			break;
 		}
 		return *this;
+	}
+/// @}
+
+/** @name Serialization */ /// @{
+	/**
+		Read from input serializer.
+
+		@warning State may not be retained if an exception is thrown.
+
+		@throws SerializerError{..}
+		If a serialization operation failed.
+	*/
+	template<class Ser>
+	ser_result_type
+	read(
+		ser_tag_read,
+		Ser& ser
+	) {
+		ser(m_states);
+		m_supplied
+			= base_value
+			| (supplies(IO::PropType::primary) ? bit_primary_add : 0u)
+			| (supplies(IO::PropType::auxiliary) ? bit_auxiliary_add : 0u)
+		;
+		// Sanitize (unsupplied props have specific implied states)
+		m_states |= ~m_supplied & mask_unsupplied_implied;
+	}
+
+	/**
+		Write to output serializer.
+
+		@throws SerializerError{..}
+		If a serialization operation failed.
+	*/
+	template<class Ser>
+	inline ser_result_type
+	write(
+		ser_tag_write,
+		Ser& ser
+	) const {
+		std::uint32_t value
+			= (m_supplied & bit_mask)
+			| (m_states & full_mask)
+		;
+		ser(static_cast<std::uint32_t>(value));
 	}
 /// @}
 };
