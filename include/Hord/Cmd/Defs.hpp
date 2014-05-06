@@ -99,8 +99,23 @@ private:
 	};
 
 public:
-/** @name Properties */ /// @{
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~ID() noexcept = default;
 
+	/** Default constructor. */
+	ID() = default;
+	/** Copy constructor. */
+	ID(ID const&) = default;
+	/** Copy assignment operator. */
+	ID& operator=(ID const&) = default;
+	/** Move constructor. */
+	ID(ID&&) = default;
+	/** Move assignment operator. */
+	ID& operator=(ID&&) = default;
+/// @}
+
+/** @name Properties */ /// @{
 	/**
 		Get base value.
 	*/
@@ -166,23 +181,6 @@ public:
 	is_initiator() const noexcept {
 		return m_value & mask_initiator;
 	}
-/// @}
-
-public:
-/** @name Special member functions */ /// @{
-	/** Destructor. */
-	~ID() noexcept = default;
-
-	/** Default constructor. */
-	ID() = default;
-	/** Copy constructor. */
-	ID(ID const&) = default;
-	/** Copy assignment operator. */
-	ID& operator=(ID const&) = default;
-	/** Move constructor. */
-	ID(ID&&) = default;
-	/** Move assignment operator. */
-	ID& operator=(ID&&) = default;
 /// @}
 
 /** @name Operations */ /// @{
