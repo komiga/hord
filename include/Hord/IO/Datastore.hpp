@@ -16,6 +16,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
+#include <Hord/IO/StorageInfo.hpp>
 #include <Hord/Object/Defs.hpp>
 
 #include <duct/StateStore.hpp>
@@ -66,7 +67,7 @@ public:
 			- @c nullptr if construction failed.
 			@param root_path Root path.
 		*/
-		Datastore*
+		IO::Datastore*
 		(&construct)(
 			String root_path
 		) noexcept;
@@ -97,6 +98,15 @@ public:
 			tw::is_moveable
 		>
 	{};
+
+	/**
+		Storage information map.
+	*/
+	using storage_info_map_type
+	= aux::unordered_map<
+		Object::ID,
+		IO::StorageInfo
+	>;
 
 protected:
 /** @name Implementation */ /// @{
@@ -299,6 +309,7 @@ protected:
 private:
 	duct::StateStore<State> m_states;
 	String m_root_path;
+	storage_info_map_type m_storage_info;
 
 	Datastore() = delete;
 	Datastore(Datastore const&) = delete;
@@ -360,6 +371,24 @@ public:
 	bool
 	is_locked() const noexcept {
 		return test_state(State::locked);
+	}
+
+protected:
+	/**
+		Get storage info (mutable).
+	*/
+	storage_info_map_type&
+	get_storage_info() noexcept {
+		return m_storage_info;
+	}
+
+public:
+	/**
+		Get storage info.
+	*/
+	storage_info_map_type const&
+	get_storage_info() const noexcept {
+		return m_storage_info;
 	}
 /// @}
 

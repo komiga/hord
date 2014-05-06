@@ -15,7 +15,9 @@ namespace IO {
 Datastore::Datastore(
 	String root_path
 ) noexcept
-	: m_root_path(std::move(root_path))
+	: m_states()
+	, m_root_path(std::move(root_path))
+	, m_storage_info()
 {}
 
 Datastore::~Datastore() = default;
@@ -102,7 +104,7 @@ Datastore::acquire_output_stream(
 
 // release
 
-#define HORD_RELEASE_CHECK_							\
+#define HORD_RELEASE_CHECK_								\
 	if (!is_locked()) {									\
 		HORD_THROW_FQN(									\
 			ErrorCode::datastore_prop_not_locked,		\
