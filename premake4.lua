@@ -32,7 +32,7 @@ configuration {}
 		"include/"
 	}
 	files {
-		"src/Hord/**"
+		"src/Hord/**.cpp"
 	}
 
 action_clean()
