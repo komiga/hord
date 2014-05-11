@@ -45,7 +45,7 @@ public:
 
 /** @name Properties */ /// @{
 	/** Rule type. */
-	Rule::Type type{static_cast<Rule::Type>(Rule::StandardTypes::None)};
+	Rule::Type type{Rule::UnitType::null};
 
 	/** Title. */
 	String title{};

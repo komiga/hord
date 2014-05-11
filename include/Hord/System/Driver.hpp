@@ -47,7 +47,7 @@ public:
 		duct::cc_unique_ptr<IO::Datastore> datastore;
 
 		/** Hive. */
-		Hive::Unit hive;
+		Object::UPtr hive;
 	};
 
 	/** Datastore-hive collection. */
@@ -58,10 +58,10 @@ public:
 	>;
 
 private:
-	using rule_type_map_type
+	using object_type_map_type
 	= aux::unordered_map<
-		Rule::Type,
-		Rule::type_info const&
+		Object::Type,
+		Object::type_info const&
 	>;
 
 	using command_table_vector_type
@@ -70,10 +70,11 @@ private:
 	>;
 
 	System::IDGenerator m_id_generator;
-	rule_type_map_type m_rule_types;
+	object_type_map_type m_object_types;
 	command_table_vector_type m_command_tables;
 	hive_map_type m_hives;
 
+	Driver() = delete;
 	Driver(Driver const&) = delete;
 	Driver& operator=(Driver const&) = delete;
 	Driver& operator=(Driver&&) = delete;
@@ -83,10 +84,15 @@ public:
 	/** Destructor. */
 	~Driver() noexcept;
 
-	/** Default constructor. */
-	Driver() /*noexcept*/;
 	/** Move constructor. */
 	Driver(Driver&&);
+
+	/**
+		Constructor with type registration.
+	*/
+	Driver(
+		bool const register_standard_object_types
+	);
 /// @}
 
 /** @name Properties */ /// @{
@@ -109,6 +115,34 @@ public:
 
 /** @name Type information */ /// @{
 	/**
+		Register object type information.
+
+		@remarks %Client-defined objects must be registered for them
+		to be recognized during (de)serialization.
+
+		@throws Error{ErrorCode::driver_object_type_shared}
+		If the type has already been registered.
+	*/
+	void
+	register_object_type(
+		Object::type_info const& type_info
+	);
+
+	/**
+		Register rule type information.
+
+		@throws Error{ErrorCode::driver_rule_type_zero_permitted_types}
+		If @c type_info.permitted_types is @c 0.
+
+		@throws Error{ErrorCode::driver_object_type_shared}
+		If the type has already been registered.
+	*/
+	void
+	register_rule_type(
+		Rule::type_info const& type_info
+	);
+
+	/**
 		Get object type information.
 
 		@returns The object type info, or @c nullptr if the type was
@@ -118,41 +152,6 @@ public:
 	Object::type_info const*
 	get_object_type_info(
 		Object::Type const type
-	) const noexcept;
-
-	/**
-		Register rule type information.
-
-		@remarks %Client-defined rules must be registered for them to
-		be recognized during (de)serialization.
-
-		@throws Error{ErrorCode::driver_rule_type_reserved}
-		If @c type_info.type is reserved by Rule::StandardTypes
-		(including Rule::StandardTypes::None).
-
-		@throws Error{ErrorCode::driver_rule_type_zero_permitted_types}
-		If @c type_info.permitted_types is @c 0.
-
-		@throws Error{ErrorCode::driver_rule_type_shared}
-		If a rule type @c type_info.type has already been registered.
-
-		@param type_info %Rule type info to register.
-	*/
-	void
-	register_rule_type(
-		Rule::type_info const& type_info
-	);
-
-	/**
-		Get rule type information.
-
-		@returns The rule type info, or @c nullptr if the type was not
-		registered.
-		@param type %Rule type.
-	*/
-	Rule::type_info const*
-	get_rule_type_info(
-		Rule::Type const type
 	) const noexcept;
 
 	/**
@@ -216,11 +215,13 @@ public:
 		IO::Datastore::type_info::construct()).
 
 		@returns The placeheld hive.
+		@param hive_type Hive type to placehold.
 		@param type_info Datastore type for the hive.
 		@param root_path Root path.
 	*/
 	System::Driver::datastore_hive_pair&
 	placehold_hive(
+		Hive::Type const hive_type,
 		IO::Datastore::type_info const& type_info,
 		String root_path
 	);

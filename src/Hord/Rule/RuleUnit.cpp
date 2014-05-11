@@ -8,22 +8,18 @@ namespace Rule {
 
 #define HORD_SCOPE_CLASS Rule::Unit
 
-Object::type_info const&
-Unit::get_type_info_impl() const noexcept {
-	return s_type_info;
-}
-
 Unit::~Unit() noexcept = default;
 
 Unit::Unit(Unit&&) = default;
 Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
+	Rule::type_info const& tinfo,
 	Rule::ID const id,
 	Object::ID const parent
 ) noexcept
 	: base(
-		s_type_info,
+		static_cast<Object::type_info const&>(tinfo),
 		static_cast<Object::ID>(id),
 		parent
 	)

@@ -18,6 +18,7 @@ namespace Rule {
 
 // Forward declarations
 class Unit; // external
+enum class UnitType : Object::TypeValue;
 struct type_info;
 
 /**
@@ -52,104 +53,81 @@ enum : Rule::ID {
 };
 
 /**
-	Rule type.
+	Rule unit type.
+
+	@sa Rule::Unit
 */
-using Type = std::uint32_t;
-
-/**
-	Standard rule types.
-
-	@note Values in <code>[0, 8]</code> are reserved for standard
-	types (@c 0 is invalid). Userspace may specify further types in
-	the range <code>[9, (2 ^ 32) - 1]</code>.
-
-	@sa
-		Rule::Unit
-*/
-enum class StandardTypes : Rule::Type {
+enum class UnitType : Object::TypeValue {
 	/**
-		Special non-type.
+		Typeless.
 
-		@note This type defines the <em>lack</em> of rule/structure.
-		%Rules cannot be registered with this type.
+		@note This defines the <em>lack</em> of rule/structure.
 	*/
-	None = 0,
+	null = 0,
 
 	/**
 		Composition of types.
-
-		@sa CompositionRule
 	*/
 	Composition,
 
 	/**
 		Delimited set of rules.
-
-		@sa DelimitedSetRule
 	*/
 	DelimitedSet,
 
 	/**
 		Value matcher.
-
-		@sa MatchRule
 	*/
 	Match,
 
 	/**
 		Number limiter.
-
-		@sa LimitRule
 	*/
 	Limit,
 
 	/**
 		List.
-
-		@sa ListRule
 	*/
 	List,
 
 	/**
 		Date-time.
-
-		@sa DateTimeRule
 	*/
 	DateTime,
 
 	/**
 		Timespan.
-
-		@sa TimespanRule
 	*/
-	Timespan,
-
-/// @{
-	/**
-		Reserved types (@c 8).
-	*/
-	Reserved1,
-	ReservedFirst = Reserved1,
-	ReservedLast = Reserved1
-/// @}
+	Timespan
 };
 
-static_assert(
-	8 == static_cast<Rule::Type>(StandardTypes::ReservedLast),
-	"StandardTypes must reserve up to 8"
-);
+} // namespace Rule
+
+/** @cond INTERNAL */
+namespace Object {
+template<>
+struct unit_type_traits<Rule::UnitType>
+	: public Object::unit_type_traits_impl<
+		Rule::UnitType,
+		Object::BaseType::Rule
+	>
+{};
+}
+/** @endcond */ // INTERNAL
+
+namespace Rule {
+
+/**
+	Rule object type.
+*/
+using Type = Object::GenType<Rule::UnitType>;
 
 /**
 	Rule type info.
 */
-struct type_info final {
-	/**
-		%Rule type.
-
-		@sa Rule::StandardTypes
-	*/
-	Type const type;
-
+struct type_info final
+	: public Object::type_info
+{
 	/**
 		Permitted field types.
 
@@ -160,29 +138,14 @@ struct type_info final {
 	*/
 	std::uint8_t const permitted_types;
 
-	/**
-		Construct a rule of this type.
-
-		@returns
-		- The constructed rule; or
-		- @c nullptr if construction failed.
-		@param id Object %ID.
-		@param parent Parent %ID.
-	*/
-	Unit*
-	(&construct)(
-		Rule::ID const id,
-		Object::ID const parent
-	) noexcept;
-};
-
-/**
-	Unit type info.
-*/
-static constexpr Object::type_info const
-s_type_info{
-	Object::Type::Rule,
-	{true, false}
+	constexpr
+	type_info(
+		Object::type_info&& tinfo,
+		std::uint8_t const permitted_types
+	)
+		: Object::type_info(tinfo)
+		, permitted_types(permitted_types)
+	{}
 };
 
 /** @} */ // end of doc-group rule

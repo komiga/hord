@@ -1,8 +1,10 @@
 
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
+#include <Hord/Hive/UnitBasic.hpp>
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
+#include <Hord/Node/UnitBasic.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/type_info.hpp>
 #include <Hord/System/Driver.hpp>
@@ -52,9 +54,11 @@ Driver::~Driver() noexcept = default;
 
 Driver::Driver(Driver&&) = default;
 
-Driver::Driver() /*noexcept*/
+Driver::Driver(
+	bool const register_standard_object_types
+) /*noexcept*/
 	: m_id_generator()
-	, m_rule_types()
+	, m_object_types()
 	, m_command_tables({&s_std_cmd_table})
 	, m_hives()
 {
@@ -67,22 +71,28 @@ Driver::Driver() /*noexcept*/
 	m_id_generator.seed(
 		std::chrono::steady_clock::now().time_since_epoch().count()
 	);
-	// TODO: Register standard rule types.
+	// TODO: Register standard rule types
+	if (register_standard_object_types) {
+		register_object_type(Hive::UnitBasic::info);
+		register_object_type(Node::UnitBasic::info);
+	}
 }
 
-#define HORD_SCOPE_FUNC get_object_type_info
-Object::type_info const*
-Driver::get_object_type_info(
-	Object::Type const type
-) const noexcept {
-	// TODO: Handle user-defined types
-	switch (type) {
-	case Object::Type::Hive: return &Hive::s_type_info;
-	case Object::Type::Rule: return &Rule::s_type_info;
-	case Object::Type::Node: return &Node::s_type_info;
-	case Object::Type::LAST: break;
+#define HORD_SCOPE_FUNC register_object_type
+void
+Driver::register_object_type(
+	Object::type_info const& type_info
+) {
+	if (m_object_types.cend() != m_object_types.find(type_info.type)) {
+		HORD_THROW_FQN(
+			ErrorCode::driver_object_type_shared,
+			"type has already been registered"
+		);
 	}
-	return nullptr;
+	m_object_types.emplace(
+		type_info.type,
+		type_info
+	);
 }
 #undef HORD_SCOPE_FUNC
 
@@ -91,40 +101,26 @@ void
 Driver::register_rule_type(
 	Rule::type_info const& type_info
 ) {
-	if (
-		static_cast<Rule::Type>(Rule::StandardTypes::ReservedLast)
-		>= type_info.type
-	) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_rule_type_reserved,
-			"type is within range reserved for standard rules"
-		);
-	} else if (0u == type_info.permitted_types) {
+	if (0u == type_info.permitted_types) {
 		HORD_THROW_FQN(
 			ErrorCode::driver_rule_type_zero_permitted_types,
 			"permitted_types property must be a nonzero combination"
 			" of FieldTypes"
 		);
-	} else if (m_rule_types.cend() != m_rule_types.find(type_info.type)) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_rule_type_shared,
-			"type has already been registered"
-		);
 	}
-	m_rule_types.emplace(
-		type_info.type,
-		type_info
+	register_object_type(
+		static_cast<Object::type_info const&>(type_info)
 	);
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC get_rule_type_info
-Rule::type_info const*
-Driver::get_rule_type_info(
-	Rule::Type const type
+#define HORD_SCOPE_FUNC get_object_type_info
+Object::type_info const*
+Driver::get_object_type_info(
+	Object::Type const type
 ) const noexcept {
-	auto const it = m_rule_types.find(type);
-	if (m_rule_types.cend() != it) {
+	auto const it = m_object_types.find(type);
+	if (m_object_types.cend() != it) {
 		return &it->second;
 	}
 	return nullptr;
@@ -199,6 +195,7 @@ HORD_DEF_FMT_FQN(
 
 System::Driver::datastore_hive_pair&
 Driver::placehold_hive(
+	Hive::Type const hive_type,
 	IO::Datastore::type_info const& type_info,
 	String root_path
 ) {
@@ -227,20 +224,34 @@ Driver::placehold_hive(
 
 	// Phew. Now let's try to construct and insert this guy
 	IO::Datastore* const
-		datastore_ptr = type_info.construct(std::move(root_path));
+	datastore_ptr = type_info.construct(std::move(root_path));
 	if (nullptr == datastore_ptr) {
 		HORD_THROW_FQN(
 			ErrorCode::driver_datastore_construct_failed,
 			"failed to construct datastore"
 		);
 	}
-
+	auto const* const hive_tinfo = get_object_type_info(hive_type);
+	if (nullptr == hive_tinfo) {
+		HORD_THROW_FQN(
+			ErrorCode::driver_hive_type_not_found,
+			"failed to construct hive"
+		);
+	}
 	Object::ID const id = m_id_generator.generate_unique(m_hives);
+	auto hive_ptr = hive_tinfo->construct(id, Object::NULL_ID);
+	if (nullptr == datastore_ptr) {
+		HORD_THROW_FQN(
+			ErrorCode::driver_hive_construct_failed,
+			"failed to construct hive"
+		);
+	}
+
 	auto const& result_pair = m_hives.emplace(
 		id,
 		datastore_hive_pair{
 			duct::cc_unique_ptr<IO::Datastore>{datastore_ptr},
-			Hive::Unit{id}
+			std::move(hive_ptr)
 		}
 	);
 	return result_pair.first->second;

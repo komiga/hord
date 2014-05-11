@@ -21,13 +21,15 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("lockfile_acquire_failed"),
 
 // driver
-	HORD_STR_LIT("driver_rule_type_reserved"),
+	// HORD_STR_LIT("driver_object_type_reserved"),
+	HORD_STR_LIT("driver_object_type_shared"),
 	HORD_STR_LIT("driver_rule_type_zero_permitted_types"),
-	HORD_STR_LIT("driver_rule_type_shared"),
 	HORD_STR_LIT("driver_command_table_range_invalid"),
 	HORD_STR_LIT("driver_command_table_range_shared"),
 	HORD_STR_LIT("driver_hive_root_empty"),
 	HORD_STR_LIT("driver_hive_root_shared"),
+	HORD_STR_LIT("driver_hive_type_not_found"),
+	HORD_STR_LIT("driver_hive_construct_failed"),
 	HORD_STR_LIT("driver_datastore_construct_failed"),
 	HORD_STR_LIT("driver_datastore_locked"),
 

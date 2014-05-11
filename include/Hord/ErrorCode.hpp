@@ -50,21 +50,21 @@ enum class ErrorCode : unsigned {
 /// @}
 
 /** @name Driver */ /// @{
-	/**
-		Attempted to register a rule type that is reserved for
-		standard rules.
+	/*
+		Attempted to register an object unit type that is reserved
+		for standard object unit types.
 	*/
-	driver_rule_type_reserved,
+	// driver_object_type_reserved,
+	/**
+		Attempted to register an object unit type that has already
+		been registered.
+	*/
+	driver_object_type_shared,
 	/**
 		Attempted to register a rule with permitted_types property
 		equal to @c 0.
 	*/
 	driver_rule_type_zero_permitted_types,
-	/**
-		Attempted to register a rule type that has already been
-		registered.
-	*/
-	driver_rule_type_shared,
 
 	/**
 		Attempted to register a command type info table which
@@ -88,6 +88,15 @@ enum class ErrorCode : unsigned {
 		shared with another placeheld hive.
 	*/
 	driver_hive_root_shared,
+
+	/**
+		Hive type not found in driver (not registered).
+	*/
+	driver_hive_type_not_found,
+	/**
+		Failed to construct hive.
+	*/
+	driver_hive_construct_failed,
 
 	/**
 		Failed to construct datastore.

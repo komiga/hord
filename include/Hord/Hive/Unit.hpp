@@ -1,6 +1,6 @@
 /**
 @file Hive/Unit.hpp
-@brief Hive class.
+@brief Base hive unit class.
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -33,16 +33,29 @@ class Unit;
 */
 
 /**
-	Top-level object container.
+	Base hive unit class.
 
-	@note This object supplies only the primary data prop.
+	@note This object supplies no data props. Specialized units
+	shall not change serialization.
 */
-class Unit final
+class Unit
 	: public Object::Unit
 {
+private:
+	using base = Object::Unit;
+
 public:
-	/** Object ID set. */
-	using id_set_type = aux::unordered_set<Object::ID>;
+	/**
+		Ensure traits for deriving classes.
+
+		@tparam D Deriving class.
+	*/
+	template<
+		class D
+	>
+	struct ensure_traits
+		: base::ensure_traits<D>
+	{};
 
 	/** Object map. */
 	using object_map_type
@@ -52,18 +65,16 @@ public:
 	>;
 
 private:
-	using base = Object::Unit;
-
-	id_set_type m_idset{};
 	object_map_type m_objects{};
 
+	Unit() = delete;
 	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
 
 	// Object::Unit implementation
 
-	Object::type_info const&
-	get_type_info_impl() const noexcept override;
+	virtual Object::type_info const&
+	get_type_info_impl() const noexcept override = 0;
 
 	void
 	deserialize_impl(
@@ -78,53 +89,29 @@ private:
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	~Unit() noexcept override;
-
-	/**
-		Default constructor.
-
-		@post
-		@code
-			get_storage_state() == IO::StorageState::null
-		@endcode
-	*/
-	Unit();
+	virtual
+	~Unit() noexcept override = 0;
 
 	/** Move constructor. */
 	Unit(Unit&&);
 	/** Move assignment operator. */
 	Unit& operator=(Unit&&);
 
+protected:
 	/**
-		Constructor with ID.
+		Constructor with type information and ID.
 
 		@post See Object::Unit.
-
-		@param id ID.
 	*/
 	explicit
 	Unit(
+		Object::type_info const& tinfo,
 		Hive::ID const id
 	) noexcept;
 /// @}
 
+public:
 /** @name Properties */ /// @{
-	/**
-		Get ID set.
-	*/
-	id_set_type const&
-	get_idset() const noexcept {
-		return m_idset;
-	}
-
-	/**
-		Get mutable ID set.
-	*/
-	id_set_type&
-	get_idset() noexcept {
-		return m_idset;
-	}
-
 	/**
 		Get object map.
 	*/
@@ -151,7 +138,9 @@ public:
 	bool
 	has_child(
 		Object::ID const id
-	) const noexcept(noexcept(m_idset.find(id)));
+	) const noexcept(noexcept(m_objects.find(id))) {
+		return m_objects.cend() != m_objects.find(id);
+	}
 /// @}
 };
 
@@ -159,9 +148,6 @@ public:
 /** @} */ // end of doc-group object
 
 } // namespace Hive
-
-template struct Object::Unit::ensure_traits<Hive::Unit>;
-
 } // namespace Hord
 
 #endif // HORD_HIVE_UNIT_HPP_

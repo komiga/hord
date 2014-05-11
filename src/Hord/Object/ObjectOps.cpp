@@ -73,7 +73,7 @@ operator<<(
 	ceformat::write<s_fmt_object_identity>(
 		stream,
 		object.get_id(),
-		Object::get_type_name(object.get_type()),
+		Object::get_base_type_name(object.get_base_type()),
 		object.get_slug()
 	);
 	return stream;

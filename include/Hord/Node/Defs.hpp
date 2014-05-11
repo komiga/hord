@@ -13,10 +13,13 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
 
+#include <Hord/IO/PropStateStore.hpp>
+
 namespace Hord {
 namespace Node {
 
 // Forward declarations
+enum class UnitType : Object::TypeValue;
 
 /**
 	@addtogroup object
@@ -50,13 +53,39 @@ enum : Node::ID {
 };
 
 /**
-	Unit type info.
+	Standard node unit types.
 */
-static constexpr Object::type_info const
-s_type_info{
-	Object::Type::Node,
-	{true, true}
+enum class UnitType : Object::TypeValue {
+	/** Basic node unit. */
+	basic = 1u
 };
+
+} // namespace Node
+
+/** @cond INTERNAL */
+namespace Object {
+template<>
+struct unit_type_traits<Node::UnitType>
+	: public Object::unit_type_traits_impl<
+		Node::UnitType,
+		Object::BaseType::Node
+	>
+{};
+}
+/** @endcond */ // INTERNAL
+
+namespace Node {
+
+/**
+	Node object type.
+*/
+using Type = Object::GenType<Node::UnitType>;
+
+/**
+	Supplied props for node objects.
+*/
+static constexpr IO::PropStateStore const
+SUPPLIED_PROPS{true, true};
 
 /** @} */ // end of doc-group node
 /** @} */ // end of doc-group object

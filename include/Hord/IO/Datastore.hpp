@@ -59,6 +59,7 @@ public:
 	*/
 	struct type_info final {
 	/** @name Operations */ /// @{
+		// TODO: Add UPtr alias, return UPtr instead
 		/**
 			Construct a datastore of this type.
 
@@ -205,7 +206,7 @@ protected:
 	virtual void
 	create_object_impl(
 		Object::ID const object_id,
-		Object::Type const object_type
+		Object::type_info const& type_info
 	) = 0;
 
 	/**
@@ -525,12 +526,12 @@ public:
 		<em>Implementation-defined exceptions.</em>
 
 		@param object_id ID of object.
-		@param object_type Type of object.
+		@param type_info Object type info.
 	*/
 	void
 	create_object(
 		Object::ID const object_id,
-		Object::Type const object_type
+		Object::type_info const& type_info
 	);
 
 	/**

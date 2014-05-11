@@ -5,8 +5,6 @@
 #include <Hord/Rule/Defs.hpp>
 #include <Hord/Node/Column.hpp>
 
-#include <iostream>
-
 namespace Hord {
 namespace Node {
 
@@ -19,7 +17,7 @@ Column::read(
 	ser_tag_read,
 	InputSerializer& ser
 ) {
-	Rule::Type des_type{enum_cast(Rule::StandardTypes::None)};
+	Rule::Type des_type{};
 	String des_title{};
 	rule_id_vector_type des_rules{};
 	ser(

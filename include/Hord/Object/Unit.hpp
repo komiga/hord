@@ -40,16 +40,13 @@ class Unit;
 */
 class Unit {
 public:
-	/** Type info. */
-	using type_info = Object::type_info;
-
 	/**
 		Ensure traits for deriving classes.
 
 		@tparam D Deriving class.
 	*/
 	template<
-		typename D
+		class D
 	>
 	struct ensure_traits :
 		traits::require_t<
@@ -90,7 +87,7 @@ protected:
 	/**
 		get_type_info() implementation.
 	*/
-	virtual type_info const&
+	virtual Object::type_info const&
 	get_type_info_impl() const noexcept = 0;
 
 	/**
@@ -152,15 +149,9 @@ protected:
 				: IO::StorageState::placeholder
 			)
 		@endcode
-
-		@param tinfo Object type info.
-		@param id Object %ID.
-		@param parent Parent %ID.
-
-		@sa IO::PropStateStore
 	*/
 	Unit(
-		type_info const& tinfo,
+		Object::type_info const& tinfo,
 		Object::ID const id,
 		Object::ID const parent
 	) noexcept;
@@ -171,7 +162,7 @@ public:
 	/**
 		Get type info.
 	*/
-	type_info const&
+	Object::type_info const&
 	get_type_info() const noexcept {
 		return get_type_info_impl();
 	}
@@ -182,6 +173,22 @@ public:
 	Object::Type
 	get_type() const noexcept {
 		return m_type;
+	}
+
+	/**
+		Get base type.
+	*/
+	Object::BaseType
+	get_base_type() const noexcept {
+		return m_type.base();
+	}
+
+	/**
+		Get unit type.
+	*/
+	Object::UnitType
+	get_unit_type() const noexcept {
+		return m_type.unit();
 	}
 
 	/**
@@ -239,7 +246,7 @@ public:
 	Object::ID
 	get_id() const noexcept {
 		return
-			Object::Type::Hive == get_type()
+			Object::BaseType::Hive == get_type().base()
 			? Object::NULL_ID
 			: get_id_bare()
 		;

@@ -51,32 +51,35 @@ private:
 	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
 
-	Object::type_info const&
-	get_type_info_impl() const noexcept override;
-
 protected:
 /** @name Implementation */ /// @{
+	/**
+		Object::Unit::get_type_info() implementation.
+	*/
+	virtual Object::type_info const&
+	get_type_info_impl() const noexcept override = 0;
+
+	/**
+		Object::Unit::deserialize_impl() implementation.
+	*/
+	virtual void
+	deserialize_impl(
+		IO::InputPropStream& prop_stream
+	) override = 0;
+
+	/**
+		Object::Unit::serialize_impl() implementation.
+	*/
+	virtual void
+	serialize_impl(
+		IO::OutputPropStream& prop_stream
+	) const override = 0;
+
 	/**
 		get_rule_type_info() implementation.
 	*/
 	virtual type_info const&
 	get_rule_type_info_impl() const noexcept = 0;
-
-	/**
-		See Object::Unit::deserialize_impl().
-	*/
-	virtual void
-	deserialize_impl(
-		IO::InputPropStream& prop_stream
-	) = 0;
-
-	/**
-		See Object::Unit::serialize_impl().
-	*/
-	virtual void
-	serialize_impl(
-		IO::OutputPropStream& prop_stream
-	) const = 0;
 /// @}
 
 /** @name Special member functions */ /// @{
@@ -85,21 +88,19 @@ public:
 	virtual
 	~Unit() noexcept override = 0;
 
-protected:
 	/** Move constructor. */
 	Unit(Unit&&);
 	/** Move assignment operator. */
 	Unit& operator=(Unit&&);
 
+protected:
 	/**
-		Constructor with ID and parent.
+		Constructor with type info, %ID, and parent.
 
 		@post See Object::Unit.
-
-		@param id ID.
-		@param parent Parent ID.
 	*/
 	Unit(
+		Rule::type_info const& tinfo,
 		Rule::ID const id,
 		Object::ID const parent
 	) noexcept;
@@ -108,7 +109,7 @@ protected:
 public:
 /** @name Properties */ /// @{
 	/**
-		Get type info.
+		Get rule type info.
 	*/
 	type_info const&
 	get_rule_type_info() const noexcept {

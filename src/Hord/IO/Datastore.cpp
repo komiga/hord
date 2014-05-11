@@ -152,9 +152,9 @@ Datastore::generate_id(
 void
 Datastore::create_object(
 	Object::ID const object_id,
-	Object::Type const object_type
+	Object::type_info const& type_info
 ) {
-	if (Object::Type::Node != object_type) {
+	if (Object::BaseType::Node != type_info.type.base()) {
 		HORD_THROW_FQN(
 			ErrorCode::datastore_object_type_prohibited,
 			"cannot create object other than Node"
@@ -168,7 +168,7 @@ Datastore::create_object(
 
 	HORD_CLOSED_CHECK_;
 	HORD_LOCKED_CHECK_;
-	create_object_impl(object_id, object_type);
+	create_object_impl(object_id, type_info);
 }
 #undef HORD_SCOPE_FUNC
 

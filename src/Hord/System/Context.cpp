@@ -46,7 +46,7 @@ Context::Context(
 	: m_type(type)
 	, m_driver(driver)
 	, m_datastore(*hive_pair.datastore)
-	, m_hive(hive_pair.hive)
+	, m_hive(static_cast<Hive::Unit&>(*hive_pair.hive))
 	, m_genid(Cmd::NULL_ID)
 	, m_active()
 	, m_done()

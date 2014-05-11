@@ -13,10 +13,13 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
 
+#include <Hord/IO/PropStateStore.hpp>
+
 namespace Hord {
 namespace Hive {
 
 // Forward declarations
+enum class UnitType : Object::TypeValue;
 
 /**
 	@addtogroup object
@@ -50,13 +53,41 @@ enum : Hive::ID {
 };
 
 /**
-	Unit type info.
+	Standard hive unit types.
 */
-static constexpr Object::type_info const
-s_type_info{
-	Object::Type::Hive,
-	{true, false}
+enum class UnitType : Object::TypeValue {
+	/** Typeless. */
+	null = 0u,
+	/** Basic hive unit. */
+	basic = 1u
 };
+
+} // namespace Hive
+
+/** @cond INTERNAL */
+namespace Object {
+template<>
+struct unit_type_traits<Hive::UnitType>
+	: public Object::unit_type_traits_impl<
+		Hive::UnitType,
+		Object::BaseType::Hive
+	>
+{};
+}
+/** @endcond */ // INTERNAL
+
+namespace Hive {
+
+/**
+	Hive object type.
+*/
+using Type = Object::GenType<Hive::UnitType>;
+
+/**
+	Supplied props for hive objects.
+*/
+static constexpr IO::PropStateStore const
+SUPPLIED_PROPS{false, false};
 
 /** @} */ // end of doc-group hive
 /** @} */ // end of doc-group object

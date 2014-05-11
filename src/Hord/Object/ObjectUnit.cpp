@@ -54,7 +54,7 @@ Unit::set_slug(
 			err_,												\
 			get_id(),											\
 			IO::get_prop_type_name(type),						\
-			Object::get_type_name(get_type())					\
+			Object::get_base_type_name(get_base_type())			\
 		);														\
 	}
 //

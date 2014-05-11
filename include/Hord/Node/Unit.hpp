@@ -36,14 +36,32 @@ class Unit;
 */
 
 /**
-	Record container.
+	Base node unit class.
 
-	This is the primary data object in Hord.
+	@note This object supplies the primary and auxiliary props.
+	Specialized units shall not change serialization.
+
+	@remarks This is the primary data object in Hord.
 */
-class Unit final
+class Unit
 	: public Object::Unit
 {
+private:
+	using base = Object::Unit;
+
 public:
+	/**
+		Ensure traits for deriving classes.
+
+		@tparam D Deriving class.
+	*/
+	template<
+		class D
+	>
+	struct ensure_traits
+		: base::ensure_traits<D>
+	{};
+
 	/** Column vector. */
 	using column_vector_type = aux::vector<Node::Column>;
 
@@ -51,8 +69,6 @@ public:
 	using record_vector_type = aux::vector<Data::Record>;
 
 private:
-	using base = Object::Unit;
-
 	Node::ID m_layout_ref{static_cast<Node::ID>(Object::NULL_ID)};
 	column_vector_type m_layout{};
 	record_vector_type m_records{};
@@ -85,8 +101,8 @@ private:
 
 	// Object::Unit implementation
 
-	Object::type_info const&
-	get_type_info_impl() const noexcept override;
+	virtual Object::type_info const&
+	get_type_info_impl() const noexcept override = 0;
 
 	void
 	deserialize_impl(
@@ -101,27 +117,28 @@ private:
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	~Unit() noexcept override;
+	virtual
+	~Unit() noexcept override = 0;
 
 	/** Move constructor. */
 	Unit(Unit&&);
 	/** Move assignment operator. */
 	Unit& operator=(Unit&&);
 
+protected:
 	/**
-		Constructor with ID and parent.
+		Constructor with type information, ID, and parent.
 
 		@post See Object::Unit.
-
-		@param id ID.
-		@param parent Parent ID.
 	*/
 	Unit(
+		Object::type_info const& tinfo,
 		Node::ID const id,
 		Object::ID const parent
 	) noexcept;
 /// @}
 
+public:
 /** @name Properties */ /// @{
 	/**
 		Set layout reference.
@@ -183,9 +200,6 @@ public:
 /** @} */ // end of doc-group object
 
 } // namespace Node
-
-template struct Object::Unit::ensure_traits<Node::Unit>;
-
 } // namespace Hord
 
 #endif // HORD_NODE_UNIT_HPP_
