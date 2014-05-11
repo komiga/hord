@@ -152,10 +152,15 @@ HORD_SCOPE_CLASS::make_request(
 #define HORD_SCOPE_FUNC check
 static ResultCode
 check(
-	Hive::Unit const& hive,
+	System::Context const& context,
 	Props const& props
 ) noexcept {
-	if (
+	auto const& hive = context.get_hive();
+	if (nullptr == context.get_driver().get_object_type_info(
+		Hord::Node::Type{props.unit_type}
+	)) {
+		return ResultCode::unknown_unit_type;
+	} else if (
 		Object::NULL_ID != props.parent &&
 		!hive.has_child(props.parent)
 	) {
@@ -167,9 +172,9 @@ check(
 		return ResultCode::layout_ref_not_found;
 	} else if (
 		Hord::Node::NULL_ID != props.layout_ref &&
-		Object::Type::Node != hive.get_objects().find(
+		Object::BaseType::Node != hive.get_objects().find(
 			props.layout_ref
-		)->second->get_type()
+		)->second->get_base_type()
 	) {
 		return ResultCode::layout_ref_not_a_node;
 	} else if (props.slug.empty()) {
@@ -179,6 +184,7 @@ check(
 	} else {
 		for (auto const& object : hive.get_objects()) {
 			if (
+				nullptr      != object.second &&
 				props.parent == object.second->get_parent() &&
 				props.slug   == object.second->get_slug()
 			) {
@@ -197,30 +203,34 @@ action(
 	Props const& props,
 	ResultData& data
 ) try {
-	context.get_datastore().create_object(
-		data.id,
-		Object::Type::Node
+	auto const* const
+	ti = context.get_driver().get_object_type_info(
+		Hord::Node::Type{props.unit_type}
 	);
+	if (nullptr == ti) {
+		data.code = ResultCode::unknown_unit_type;
+		return Cmd::Status::error;
+	}
+	context.get_datastore().create_object(data.id, *ti);
 	auto& hive = context.get_hive();
-	auto emplace_pair = hive.get_objects().emplace(
-		data.id,
-		Object::UPtr{new Hord::Node::Unit({
-			data.id,
-			Object::NULL_ID
-		})}
-	);
-	if (!emplace_pair.second) {
+	auto& objects = hive.get_objects();
+	auto obj = ti->construct(data.id, Object::NULL_ID);
+	if (nullptr == obj) {
+		data.code = ResultCode::allocation_failed;
+		return Cmd::Status::error;
+	}
+	auto emplace_pair = objects.emplace(data.id, std::move(obj));
+	if (nullptr == emplace_pair.second) {
 		data.code = ResultCode::id_already_exists;
 		return Cmd::Status::error;
 	}
-	hive.get_idset().emplace(data.id);
 	auto& node = static_cast<Hord::Node::Unit&>(*emplace_pair.first->second);
 	auto const it
 		= hive.get_id() == props.parent
-		? hive.get_objects().end()
-		: hive.get_objects().find(props.parent)
+		? objects.end()
+		: objects.find(props.parent)
 	;
-	if (hive.get_objects().end() == it) {
+	if (objects.end() == it) {
 		Object::set_parent(node, hive);
 	} else {
 		Object::set_parent(node, *it->second);
@@ -273,7 +283,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
 	}
 
 	command.result_data = {
-		check(context.get_hive(), m_data.props),
+		check(context, m_data.props),
 		m_data.id
 	};
 	return
@@ -310,7 +320,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 
 	assert(is_initiator());
 	ResultData data{
-		check(context.get_hive(), m_data.props),
+		check(context, m_data.props),
 		Hord::Node::NULL_ID
 	};
 	if (context.is_host() && ResultCode::ok == data.code) {
@@ -373,7 +383,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Response) {
 		command.get_initiator()->get_data()
 	)->props;
 	command.result_data = {
-		check(context.get_hive(), props),
+		check(context, props),
 		m_data.id
 	};
 	return

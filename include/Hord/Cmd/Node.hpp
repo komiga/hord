@@ -76,6 +76,8 @@ public:
 		slug_empty,
 		slug_too_long,
 		slug_already_exists,
+		unknown_unit_type,
+		allocation_failed,
 		id_already_exists,
 	};
 
@@ -98,6 +100,7 @@ public:
 		Object::ID parent;
 		Hord::Node::ID layout_ref;
 		String slug;
+		Hord::Node::UnitType unit_type;
 	};
 
 /** @name Properties */ /// @{
