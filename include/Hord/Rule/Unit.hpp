@@ -42,9 +42,17 @@ public:
 	/** Base class. */
 	using base = Object::Unit;
 
-	/** Type info. */
-	using type_info = Rule::type_info;
-	using base::ensure_traits;
+	/**
+		Ensure traits for deriving classes.
+
+		@tparam D Deriving class.
+	*/
+	template<
+		class D
+	>
+	struct ensure_traits
+		: base::ensure_traits<D>
+	{};
 
 private:
 	Unit() = delete;
@@ -53,12 +61,6 @@ private:
 
 protected:
 /** @name Implementation */ /// @{
-	/**
-		Object::Unit::get_type_info() implementation.
-	*/
-	virtual Object::type_info const&
-	get_type_info_impl() const noexcept override = 0;
-
 	/**
 		Object::Unit::deserialize_impl() implementation.
 	*/
@@ -74,12 +76,6 @@ protected:
 	serialize_impl(
 		IO::OutputPropStream& prop_stream
 	) const override = 0;
-
-	/**
-		get_rule_type_info() implementation.
-	*/
-	virtual type_info const&
-	get_rule_type_info_impl() const noexcept = 0;
 /// @}
 
 /** @name Special member functions */ /// @{
@@ -108,13 +104,6 @@ protected:
 
 public:
 /** @name Properties */ /// @{
-	/**
-		Get rule type info.
-	*/
-	type_info const&
-	get_rule_type_info() const noexcept {
-		return get_rule_type_info_impl();
-	}
 /// @}
 };
 

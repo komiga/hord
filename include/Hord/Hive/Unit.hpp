@@ -73,9 +73,6 @@ private:
 
 	// Object::Unit implementation
 
-	virtual Object::type_info const&
-	get_type_info_impl() const noexcept override = 0;
-
 	void
 	deserialize_impl(
 		IO::InputPropStream& prop_stream

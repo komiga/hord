@@ -3,6 +3,7 @@
 //#include <Hord/aux.hpp>
 #include <Hord/traits.hpp>
 //#include <Hord/String.hpp>
+#include <Hord/utility.hpp>
 //#include <Hord/ErrorCode.hpp>
 #include <Hord/Error.hpp>
 #include <Hord/Msg/Buffer.hpp>
@@ -13,8 +14,8 @@
 #include <Hord/Object/Ops.hpp>
 #include <Hord/Rule/Unit.hpp>
 //#include <Hord/Node/Column.hpp>
-#include <Hord/Node/Unit.hpp>
-#include <Hord/Hive/Unit.hpp>
+#include <Hord/Node/UnitBasic.hpp>
+#include <Hord/Hive/UnitBasic.hpp>
 //#include <Hord/IO/Datastore.hpp>
 //#include <Hord/System/IDGenerator.hpp>
 #include <Hord/System/Driver.hpp>
@@ -26,11 +27,16 @@
 #include "../common/common.hpp"
 #include "../common/dummies.hpp"
 
+using Hord::enum_cast;
+
 signed
 main() {
 	// group driver
-	Hord::Hive::Unit hive{};
-	Hord::System::Driver driver{};
+	auto hive = Hord::Hive::UnitBasic::info.construct(
+		Hord::Hive::NULL_ID,
+		Hord::Object::NULL_ID
+	);
+	Hord::System::Driver driver{true};
 
 	// group error
 	Hord::Error err{Hord::ErrorCode::unknown, "oh no!"};
@@ -59,30 +65,39 @@ main() {
 	//Hord::Rule::State rule_state{};
 	//Hord::Rule::Unit rule{};
 	Hord::Node::Column column{};
-	Hord::Node::Unit node{hive.get_id(), Hord::Node::ID{42}};
+	auto node = Hord::Node::UnitBasic::info.construct(
+		Hord::Node::ID{42},
+		hive->get_id()
+	);
 
 	// Registering rule types
 	Hord::Rule::type_info const
 		rti_standard{
-			static_cast<Hord::Rule::Type>(
-				Hord::Rule::StandardTypes::ReservedLast
-			),
-			0u | static_cast<std::uint8_t>(Hord::Data::FieldType::Text),
-			dummy_rule_type_construct
+			Hord::Object::type_info{
+				"Hord:test:rti_standard",
+				Hord::Rule::Type{Hord::Rule::UnitType::null},
+				{false, false},
+				dummy_rule_type_construct
+			},
+			enum_cast(Hord::Data::FieldType::Text)
 		},
 		rti_zero_permitted{
-			1 + static_cast<Hord::Rule::Type>(
-				Hord::Rule::StandardTypes::ReservedLast
-			),
-			0u,
-			dummy_rule_type_construct
+			Hord::Object::type_info{
+				"Hord:test:rti_zero_permitted",
+				Hord::Rule::Type{Hord::Rule::UnitType::Composition},
+				{false, false},
+				dummy_rule_type_construct
+			},
+			0u
 		},
 		rti_valid{
-			1 + static_cast<Hord::Rule::Type>(
-				Hord::Rule::StandardTypes::ReservedLast
-			),
-			0u | static_cast<std::uint8_t>(Hord::Data::FieldType::Text),
-			dummy_rule_type_construct
+			Hord::Object::type_info{
+				"Hord:test:rti_valid",
+				Hord::Rule::Type{Hord::Rule::UnitType::Composition},
+				{false, false},
+				dummy_rule_type_construct
+			},
+			enum_cast(Hord::Data::FieldType::Text)
 		}
 	;
 
@@ -105,25 +120,32 @@ main() {
 	}
 
 	// Placeholding hives
+	auto hive_basic_type = Hord::Object::type_cast<Hord::Hive::UnitType>(
+		Hord::Hive::UnitBasic::info.type
+	);
 	try {
 		driver.placehold_hive(
+			hive_basic_type,
 			DummyDatastore::s_type_info,
 			Hord::String{}
 		);
 	} catch (Hord::Error& e) {
 		report_error(e);
 	}
+
+	std::cout
+		<< "first hive id: "
+		<< Hord::Object::IDPrinter{
+			driver.placehold_hive(
+				hive_basic_type,
+				DummyDatastore::s_type_info,
+				"./bork"
+			).hive->get_id_bare()
+		}
+	<< std::endl;
 	try {
-		std::cout
-			<< "first hive id: "
-			<< Hord::Object::IDPrinter{
-				driver.placehold_hive(
-					DummyDatastore::s_type_info,
-					"./bork"
-				).hive
-			}
-		<< std::endl;
 		driver.placehold_hive(
+			hive_basic_type,
 			DummyDatastore::s_type_info,
 			"./bork"
 		);

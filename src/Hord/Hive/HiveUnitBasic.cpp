@@ -22,11 +22,6 @@ UnitBasic::construct(
 	};
 }
 
-Object::type_info const&
-UnitBasic::get_type_info_impl() const noexcept {
-	return Hive::UnitBasic::info;
-}
-
 UnitBasic::~UnitBasic() noexcept = default;
 
 UnitBasic::UnitBasic(UnitBasic&&) = default;

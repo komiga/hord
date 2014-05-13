@@ -49,7 +49,7 @@ set_parent(
 namespace {
 static constexpr ceformat::Format const
 	s_fmt_object_id{"%08x"},
-	s_fmt_object_identity{"%08x$%s@%s"}
+	s_fmt_object_identity{"%08x$%s:%s@%s"}
 ;
 } // anonymous namespace
 
@@ -70,10 +70,12 @@ operator<<(
 	std::ostream& stream,
 	Object::Unit const& object
 ) {
+	auto const& type_info = object.get_type_info();
 	ceformat::write<s_fmt_object_identity>(
 		stream,
 		object.get_id(),
-		Object::get_base_type_name(object.get_base_type()),
+		Object::get_base_type_name(type_info.type.base()),
+		type_info.unit_name,
 		object.get_slug()
 	);
 	return stream;

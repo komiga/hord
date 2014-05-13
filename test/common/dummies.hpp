@@ -89,7 +89,7 @@ private:
 	void
 	create_object_impl(
 		Hord::Object::ID const,
-		Hord::Object::Type const
+		Hord::Object::type_info const&
 	) override {}
 	void
 	destroy_object_impl(
@@ -104,12 +104,12 @@ DummyDatastore::s_type_info{
 	DummyDatastore::construct
 };
 
-Hord::Rule::Unit*
+Hord::Object::UPtr
 dummy_rule_type_construct(
 	Hord::Hive::ID const,
 	Hord::Rule::ID const
 ) noexcept {
-	return nullptr;
+	return Hord::Object::UPtr{};
 }
 
 #endif // HORD_TEST_COMMON_DUMMIES_HPP_

@@ -496,7 +496,23 @@ TYPE_NULL{};
 	Object type info.
 */
 struct type_info {
+/** @name Types */ /// @{
+	/**
+		Construct function type.
+	*/
+	using construct_type
+	= Object::UPtr(
+		Object::ID const id,
+		Object::ID const parent
+	);
+/// @}
+
 /** @name Properties */ /// @{
+	/**
+		Unit name.
+	*/
+	char const* const unit_name;
+
 	/**
 		Object type.
 
@@ -508,9 +524,7 @@ struct type_info {
 		Prop availability.
 	*/
 	IO::PropStateStore const props;
-/// @}
 
-/** @name Operations */ /// @{
 	/**
 		Construct a unit of this type.
 
@@ -518,11 +532,26 @@ struct type_info {
 		- The constructed object unit; or
 		- @c nullptr if construction failed.
 	*/
-	Object::UPtr
-	(&construct)(
-		Object::ID const id,
-		Object::ID const parent
-	) noexcept;
+	construct_type& construct;
+/// @}
+
+/** @name Special member functions */ /// @{
+	/**
+		Constructor with properties.
+	*/
+	template<std::size_t const N>
+	constexpr
+	type_info(
+		char const (&unit_name)[N],
+		Object::Type const type,
+		IO::PropStateStore const& props,
+		construct_type& construct
+	) noexcept
+		: unit_name(unit_name)
+		, type(type)
+		, props(props)
+		, construct(construct)
+	{}
 /// @}
 };
 
@@ -531,6 +560,7 @@ struct type_info {
 } // namespace Object
 } // namespace Hord
 
+/** @cond INTERNAL */
 namespace std {
 template<class T>
 struct hash<Hord::Object::GenType<T>> {
@@ -542,5 +572,6 @@ struct hash<Hord::Object::GenType<T>> {
 	}
 };
 } // namespace std
+/** @endcond */ // INTERNAL
 
 #endif // HORD_OBJECT_DEFS_HPP_

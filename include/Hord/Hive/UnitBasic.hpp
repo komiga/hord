@@ -51,6 +51,7 @@ public:
 	*/
 	static constexpr Object::type_info const
 	info{
+		"Hord.UnitBasic",
 		Hive::Type{Hive::UnitType::basic},
 		{Hive::SUPPLIED_PROPS},
 		UnitBasic::construct
@@ -60,11 +61,6 @@ private:
 	UnitBasic() = delete;
 	UnitBasic(UnitBasic const&) = delete;
 	UnitBasic& operator=(UnitBasic const&) = delete;
-
-	// Hive::Unit : Object::Unit implementation
-
-	Object::type_info const&
-	get_type_info_impl() const noexcept override;
 
 public:
 /** @name Special member functions */ /// @{

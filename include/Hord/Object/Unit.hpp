@@ -68,7 +68,7 @@ public:
 	>;
 
 private:
-	Object::Type m_type;
+	Object::type_info const* m_type_info;
 	Object::ID m_id;
 	IO::PropStateStore m_prop_states;
 	id_set_type m_children{}; // runtime
@@ -84,12 +84,6 @@ private:
 
 protected:
 /** @name Implementation */ /// @{
-	/**
-		get_type_info() implementation.
-	*/
-	virtual Object::type_info const&
-	get_type_info_impl() const noexcept = 0;
-
 	/**
 		deserialize() implementation.
 
@@ -164,7 +158,7 @@ public:
 	*/
 	Object::type_info const&
 	get_type_info() const noexcept {
-		return get_type_info_impl();
+		return *m_type_info;
 	}
 
 	/**
@@ -172,7 +166,7 @@ public:
 	*/
 	Object::Type
 	get_type() const noexcept {
-		return m_type;
+		return m_type_info->type;
 	}
 
 	/**
@@ -180,7 +174,7 @@ public:
 	*/
 	Object::BaseType
 	get_base_type() const noexcept {
-		return m_type.base();
+		return get_type().base();
 	}
 
 	/**
@@ -188,7 +182,15 @@ public:
 	*/
 	Object::UnitType
 	get_unit_type() const noexcept {
-		return m_type.unit();
+		return get_type().unit();
+	}
+
+	/**
+		Get unit name.
+	*/
+	char const*
+	get_unit_name() const noexcept {
+		return m_type_info->unit_name;
 	}
 
 	/**
