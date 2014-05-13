@@ -73,7 +73,7 @@ operator<<(
 	auto const& type_info = object.get_type_info();
 	ceformat::write<s_fmt_object_identity>(
 		stream,
-		object.get_id(),
+		object.get_id_bare(),
 		Object::get_base_type_name(type_info.type.base()),
 		type_info.unit_name,
 		object.get_slug()

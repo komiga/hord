@@ -136,7 +136,7 @@ public:
 		Constructor with object.
 
 		@post @code
-			this->id == object.get_id()
+			this->id == object.get_id_bare()
 		@endcode
 
 		@param object Object.
@@ -144,7 +144,7 @@ public:
 	IDPrinter(
 		Object::Unit const& object
 	) noexcept
-		: id(object.get_id())
+		: id(object.get_id_bare())
 	{}
 /// @}
 };

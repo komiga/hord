@@ -136,11 +136,11 @@ main() {
 	std::cout
 		<< "first hive id: "
 		<< Hord::Object::IDPrinter{
-			driver.placehold_hive(
+			*driver.placehold_hive(
 				hive_basic_type,
 				DummyDatastore::s_type_info,
 				"./bork"
-			).hive->get_id_bare()
+			).hive
 		}
 	<< std::endl;
 	try {
