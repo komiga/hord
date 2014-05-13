@@ -12,6 +12,9 @@ namespace Hive {
 
 #define HORD_SCOPE_CLASS Hive::UnitBasic
 
+constexpr Object::type_info const
+Hive::UnitBasic::info;
+
 Object::UPtr
 UnitBasic::construct(
 	Object::ID const id,

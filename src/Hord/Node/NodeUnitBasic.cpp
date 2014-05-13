@@ -12,6 +12,9 @@ namespace Node {
 
 #define HORD_SCOPE_CLASS Node::UnitBasic
 
+constexpr Object::type_info const
+Node::UnitBasic::info;
+
 Object::UPtr
 UnitBasic::construct(
 	Object::ID const id,
