@@ -114,8 +114,6 @@ Unit::deserialize(
 		assert(false);
 		break;
 	}
-
-	m_prop_states.assign(type, IO::PropState::original);
 } catch (SerializerError& serr) {
 	HORD_THROW_SER_PROP(
 		s_err_read_failed,
@@ -183,8 +181,6 @@ Unit::serialize(
 		assert(false);
 		break;
 	}
-
-	m_prop_states.assign(type, IO::PropState::original);
 } catch (SerializerError& serr) {
 	HORD_THROW_SER_PROP(
 		s_err_write_failed,

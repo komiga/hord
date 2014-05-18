@@ -38,6 +38,7 @@ load_prop(
 			prop_stream.release(); // will not double-throw
 			throw;
 		}
+		object.get_prop_states().assign(prop_type, IO::PropState::original);
 		return true;
 	}
 	return false;
@@ -123,6 +124,7 @@ store_prop(
 			prop_stream.release();
 			throw;
 		}
+		object.get_prop_states().assign(prop_type, IO::PropState::original);
 		return true;
 	}
 	return false;

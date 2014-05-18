@@ -390,14 +390,6 @@ public:
 
 		@note State will be retained if an exception is thrown.
 
-		@post With no exceptions:
-		@code
-			get_prop_states().has(
-				prop_stream.get_type(),
-				IO::PropState::original
-			)
-		@endcode
-
 		@throws Error{ErrorCode::serialization_prop_unsupplied}
 		If the object does not supply the prop that @a prop_stream
 		represents.
@@ -422,14 +414,6 @@ public:
 
 		@warning If ErrorCode::serialization_io_failed is thrown,
 		the prop stream likely contains malformed data.
-
-		@post With no exceptions:
-		@code
-			get_prop_states().has(
-				prop_stream.get_type(),
-				IO::PropState::original
-			)
-		@endcode
 
 		@throws Error{ErrorCode::serialization_prop_unsupplied}
 		If the object does not supply the prop that @a prop_stream

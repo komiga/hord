@@ -31,6 +31,14 @@ namespace IO {
 	@note Unless @a force is @c true, this will only load the prop
 	if it is uninitialized.
 
+	@post With no exceptions:
+	@code
+		object.get_prop_states().has(
+			prop_type,
+			IO::PropState::original
+		)
+	@endcode
+
 	@throws Error{...}
 	From Object::Unit::deserialize().
 
@@ -112,6 +120,14 @@ load_props_weak(
 	@note Unless @a force is @c true, this will only store the prop
 	if it is modified.
 
+	@post With no exceptions:
+	@code
+		object.get_prop_states().has(
+			prop_type,
+			IO::PropState::original
+		)
+	@endcode
+
 	@throws Error{...}
 	From Object::Unit::serialize().
 
@@ -174,9 +190,6 @@ store_props(
 	Store props (weak).
 
 	Same as IO::store_props(), but with weak acquisition.
-
-	@warning Prop data in @a stream must be ordered by prop type
-	order.
 */
 bool
 store_props_weak(
