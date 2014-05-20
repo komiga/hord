@@ -128,12 +128,10 @@ public:
 
 /** @name Objects */ /// @{
 	/**
-		Check if a child object exists with the given @a id.
-
-		@param id %Object ID to look for.
+		Check if an object exists.
 	*/
 	bool
-	has_child(
+	has_object(
 		Object::ID const id
 	) const noexcept(noexcept(m_objects.find(id))) {
 		return m_objects.cend() != m_objects.find(id);

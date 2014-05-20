@@ -162,12 +162,12 @@ check(
 		return ResultCode::unknown_unit_type;
 	} else if (
 		Object::NULL_ID != props.parent &&
-		!hive.has_child(props.parent)
+		!hive.has_object(props.parent)
 	) {
 		return ResultCode::parent_not_found;
 	} else if (
 		Hord::Node::NULL_ID != props.layout_ref &&
-		!hive.has_child(props.layout_ref)
+		!hive.has_object(props.layout_ref)
 	) {
 		return ResultCode::layout_ref_not_found;
 	} else if (
@@ -204,23 +204,23 @@ action(
 	ResultData& data
 ) try {
 	auto const* const
-	ti = context.get_driver().get_object_type_info(
+	tinfo = context.get_driver().get_object_type_info(
 		Hord::Node::Type{props.unit_type}
 	);
-	if (nullptr == ti) {
+	if (nullptr == tinfo) {
 		data.code = ResultCode::unknown_unit_type;
 		return Cmd::Status::error;
 	}
-	context.get_datastore().create_object(data.id, *ti);
+	context.get_datastore().create_object(data.id, *tinfo);
 	auto& hive = context.get_hive();
 	auto& objects = hive.get_objects();
-	auto obj = ti->construct(data.id, Object::NULL_ID);
+	auto obj = tinfo->construct(data.id, Object::NULL_ID);
 	if (nullptr == obj) {
 		data.code = ResultCode::allocation_failed;
 		return Cmd::Status::error;
 	}
 	auto emplace_pair = objects.emplace(data.id, std::move(obj));
-	if (nullptr == emplace_pair.second) {
+	if (!emplace_pair.second) {
 		data.code = ResultCode::id_already_exists;
 		return Cmd::Status::error;
 	}
