@@ -142,8 +142,8 @@ Metadata::deserialize(
 	for (auto& field : des_fields) {
 		ser(field_type);
 		if (
-			MetaFieldType::String > static_cast<MetaFieldType>(field_type)
-		||	MetaFieldType::Bool   < static_cast<MetaFieldType>(field_type)
+			enum_cast(MetaFieldType::String) > field_type ||
+			enum_cast(MetaFieldType::Bool)   < field_type
 		) {
 			HORD_THROW_FQN(
 				ErrorCode::serialization_data_malformed,
