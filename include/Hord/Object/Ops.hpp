@@ -44,7 +44,7 @@ namespace Object {
 	@endcode
 
 	@param object Object to unparent.
-	@param parent Object's parent.
+	@param parent Object's current parent.
 
 	@sa Object::Unit::set_parent()
 */
@@ -85,8 +85,6 @@ unset_parent(
 	@endcode
 
 	@returns @c true if @a object was parented to @a new_parent.
-	@param object Object to reparent.
-	@param new_parent New parent.
 
 	@sa Object::Unit::set_parent()
 */
@@ -122,8 +120,6 @@ public:
 
 	/**
 		Constructor with object id.
-
-		@param id %ID.
 	*/
 	constexpr
 	IDPrinter(
@@ -138,8 +134,6 @@ public:
 		@post @code
 			this->id == object.get_id_bare()
 		@endcode
-
-		@param object Object.
 	*/
 	IDPrinter(
 		Object::Unit const& object
@@ -151,9 +145,6 @@ public:
 
 /**
 	Output object %ID to stream.
-
-	@param stream Stream.
-	@param printer %ID printer.
 
 	@sa IDPrinter
 */
@@ -167,9 +158,6 @@ operator<<(
 	Output object identity to stream.
 
 	In the form <code>id$type\@slug</code>.
-
-	@param stream Stream.
-	@param object Object.
 */
 std::ostream&
 operator<<(

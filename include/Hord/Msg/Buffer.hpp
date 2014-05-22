@@ -136,8 +136,6 @@ public:
 
 	/**
 		Push a data-less message.
-
-		@param id Message id.
 	*/
 	void
 	push_back(
@@ -150,10 +148,6 @@ public:
 		Push a message.
 
 		@note Message data will be copied.
-
-		@param id Message id.
-		@param size Message size.
-		@param data Message data.
 	*/
 	void
 	push_back(
@@ -168,8 +162,6 @@ public:
 		@pre @a MsgT must satisfy PODType.
 
 		@tparam MsgT Message class.
-		@param id Message id.
-		@param msg Message.
 	*/
 	template<
 		typename MsgT

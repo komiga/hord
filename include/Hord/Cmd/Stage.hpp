@@ -260,7 +260,6 @@ class StageImpl;
 	within its context (ergo: it must be an active initiator).
 
 	@returns Owning pointer to a shadow of @a stage.
-	@param stage %Stage to shadow.
 */
 Cmd::StageUPtr
 make_stage_shadow(
@@ -645,8 +644,6 @@ public:
 
 	/**
 		Data constructor.
-
-		@param data %Stage data.
 	*/
 	explicit
 	StageImpl(

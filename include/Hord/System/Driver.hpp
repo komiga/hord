@@ -147,7 +147,6 @@ public:
 
 		@returns The object type info, or @c nullptr if the type was
 		not registered.
-		@param type %Object type.
 	*/
 	Object::type_info const*
 	get_object_type_info(
@@ -169,8 +168,6 @@ public:
 		@throws Error{ErrorCode::driver_command_table_range_shared}
 		If the table's type range intersects with the type range of a
 		previously-registered table.
-
-		@param table Command type info table.
 	*/
 	void
 	register_command_type_table(
@@ -182,7 +179,6 @@ public:
 
 		@returns The command type info, or @c nullptr if the type was
 		not supplied in a registered type info table.
-		@param type Command type.
 	*/
 	Cmd::type_info const*
 	get_command_type_info(
@@ -215,9 +211,6 @@ public:
 		IO::Datastore::type_info::construct()).
 
 		@returns The placeheld hive.
-		@param hive_type Hive type to placehold.
-		@param type_info Datastore type for the hive.
-		@param root_path Root path.
 	*/
 	System::Driver::datastore_hive_pair&
 	placehold_hive(
@@ -233,7 +226,6 @@ public:
 
 		@returns Iterator to datastore-hive pair, or hive
 		collection's end iterator if @a id was not found.
-		@param id Hive ID.
 	*/
 	System::Driver::hive_map_type::iterator
 	find_hive(

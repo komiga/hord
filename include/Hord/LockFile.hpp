@@ -64,8 +64,6 @@ public:
 
 		@note This does not call @c acquire(); that must be done
 		manually.
-
-		@param path Path.
 	*/
 	explicit
 	LockFile(
@@ -87,8 +85,6 @@ public:
 
 		@throws Error{ErrorCode::lockfile_immutable}
 		If the lock is active.
-
-		@param path New path.
 	*/
 	void
 	set_path(

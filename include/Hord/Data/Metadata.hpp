@@ -474,8 +474,6 @@ public:
 
 		@throws Error{ErrorCode::serialization_data_malformed}
 		If an invalid field type is encountered in the prop stream.
-
-		@param prop_stream %Prop stream.
 	*/
 	void
 	deserialize(
@@ -493,8 +491,6 @@ public:
 
 		@throws Error{ErrorCode::serialization_io_failed}
 		If an output operation failed.
-
-		@param prop_stream %Prop stream.
 	*/
 	void
 	serialize(

@@ -75,9 +75,6 @@ protected:
 
 	/**
 		Constructor with datastore and prop info.
-
-		@param datastore %Datastore.
-		@param info Prop info.
 	*/
 	PropStream(
 		IO::Datastore& datastore,
@@ -150,9 +147,6 @@ public:
 
 	/**
 		Constructor with datastore and prop info.
-
-		@param datastore %Datastore.
-		@param info Prop info.
 	*/
 	InputPropStream(
 		IO::Datastore& datastore,
@@ -237,9 +231,6 @@ public:
 
 	/**
 		Constructor with datastore and prop info.
-
-		@param datastore %Datastore.
-		@param info Prop info.
 	*/
 	OutputPropStream(
 		IO::Datastore& datastore,

@@ -171,8 +171,6 @@ public:
 /** @name Configuration */ /// @{
 	/**
 		Enable or disable standard output.
-
-		@param enable Whether to enable or disable output.
 	*/
 	void
 	stdout(
@@ -194,7 +192,6 @@ public:
 		- @c true if the operation succeeded (i.e., opening or closing
 		  the log file stream);
 		- @c false if the operation failed.
-		@param enable Whether to enable or disable output.
 	*/
 	bool
 	file(
@@ -222,8 +219,6 @@ public:
 
 	/**
 		Enable or disable datastore-local file output.
-
-		@param enable Whether to enable or disable output.
 	*/
 	void
 	datastore(
@@ -249,7 +244,6 @@ public:
 		@returns
 		- @c true if the file stream was successfully opened;
 		- @c false if the file path could not be opened for writing.
-		@param path Log file path.
 	*/
 	bool
 	set_file_path(
@@ -296,8 +290,6 @@ public:
 	// move ctor is deleted and swap() is not defined
 	/**
 		Move constructor.
-
-		@param other Stream to take ownership of.
 	*/
 	OutputStream(
 		OutputStream&& other

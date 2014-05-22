@@ -79,8 +79,6 @@ public:
 
 		@throws SerializerError{..}
 		If a serialization operation failed.
-
-		@param ser Input serializer.
 	*/
 	ser_result_type
 	read(
@@ -95,8 +93,6 @@ public:
 
 		@throws SerializerError{..}
 		If a serialization operation failed.
-
-		@param ser Output serializer.
 	*/
 	ser_result_type
 	write(

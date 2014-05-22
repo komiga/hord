@@ -142,8 +142,6 @@ public:
 
 		@note If @a node_id is non-@c Object::NULL_ID, the layout
 		property will be cleared.
-
-		@param node_id New layout reference.
 	*/
 	void
 	set_layout_ref(

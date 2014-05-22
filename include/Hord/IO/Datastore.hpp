@@ -66,7 +66,6 @@ public:
 			@returns
 			- The constructed datastore; or
 			- @c nullptr if construction failed.
-			@param root_path Root path.
 		*/
 		IO::Datastore*
 		(&construct)(
@@ -250,8 +249,6 @@ protected:
 
 	/**
 		Enable state.
-
-		@param state %State to enable.
 	*/
 	/*constexpr*/ void
 	enable_state(
@@ -263,8 +260,6 @@ protected:
 
 	/**
 		Disable state.
-
-		@param state %State to disable.
 	*/
 	/*constexpr*/ void
 	disable_state(
@@ -276,9 +271,6 @@ protected:
 
 	/**
 		Enable or disable state.
-
-		@param state %State to enable or disable.
-		@param enable Whether to enable or disable the state.
 	*/
 	/*constexpr*/ void
 	set_state(
@@ -291,11 +283,6 @@ protected:
 
 	/**
 		Test value of state.
-
-		@returns
-		- @c true if the state is enabled;
-		- @c false if the state is disabled.
-		@param state State to test.
 	*/
 	/*constexpr*/ bool
 	test_state(
@@ -327,8 +314,6 @@ public:
 protected:
 	/**
 		Constructor with root path.
-
-		@param root_path Root path.
 	*/
 	Datastore(
 		String root_path
@@ -342,8 +327,6 @@ public:
 
 		@throws Error{ErrorCode::datastore_property_immutable}
 		If the datastore is open.
-
-		@param root_path New root path.
 	*/
 	void
 	set_root_path(
@@ -440,7 +423,6 @@ public:
 		<em>Implementation-defined exceptions.</em>
 
 		@returns Raw prop stream.
-		@param prop_info Prop info.
 
 		@sa IO::PropInfo,
 			IO::InputPropStream,
@@ -473,8 +455,6 @@ public:
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
 
-		@param prop_info Prop info.
-
 		@sa IO::PropInfo,
 			IO::InputPropStream,
 			IO::OutputPropStream
@@ -497,9 +477,6 @@ public:
 
 		@throws Error{ErrorCode::datastore_closed}
 		If the datastore is closed.
-
-		@returns The generated object ID.
-		@param generator ID generator.
 	*/
 	Object::ID
 	generate_id(
@@ -524,9 +501,6 @@ public:
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
-
-		@param object_id ID of object.
-		@param type_info Object type info.
 	*/
 	void
 	create_object(
@@ -548,8 +522,6 @@ public:
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
-
-		@param object_id ID of object.
 	*/
 	void
 	destroy_object(

@@ -59,8 +59,6 @@ public:
 /** @name Operations */ /// @{
 	/**
 		Seed the generator.
-
-		@param seed_value Seed value.
 	*/
 	void
 	seed(
@@ -84,7 +82,6 @@ public:
 		@tparam Set Set type. Must be an associative container
 		with @c Object::ID as its key type.
 		@returns The generated ID.
-		@param set Set to generate within.
 	*/
 	template<
 		typename Set

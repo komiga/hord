@@ -55,8 +55,6 @@ public:
 
 	/**
 		Constructor with %ID.
-
-		@param id %ID.
 	*/
 	constexpr
 	IDPrinter(
@@ -71,8 +69,6 @@ public:
 		@post @code
 			this->id == cmd.get_id()
 		@endcode
-
-		@param cmd Command.
 	*/
 	IDPrinter(
 		Cmd::Unit const& cmd
@@ -86,8 +82,6 @@ public:
 		@post @code
 			this->id == stage.get_id()
 		@endcode
-
-		@param stage %Stage.
 	*/
 	IDPrinter(
 		Cmd::Stage const& stage
@@ -99,9 +93,6 @@ public:
 
 /**
 	Output command %ID to stream.
-
-	@param stream Stream.
-	@param printer %ID printer.
 
 	@sa IDPrinter
 */
@@ -115,9 +106,6 @@ operator<<(
 	Output command stage identity to stream.
 
 	In the form <code>id[HI]:command_type\@stage_type</code>.
-
-	@param stream Stream.
-	@param stage %Stage.
 */
 std::ostream&
 operator<<(

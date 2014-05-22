@@ -172,10 +172,6 @@ public:
 
 		@throws Error{ErrorCode::context_invalid_hive}
 		If @a hive_id does not exist within @a driver.
-
-		@param type %Type.
-		@param driver %Driver.
-		@param hive_id %Hive ID.
 	*/
 	Context(
 		Type const type,
@@ -410,8 +406,6 @@ public:
 		@note This is used by userspace to emplace remote stages.
 
 		@pre @code stage->is_identified() @endcode
-
-		@param stage %Stage to push.
 	*/
 	void
 	push_input(
@@ -430,9 +424,9 @@ public:
 		If @a origin is not part of an active command.
 
 		@param origin Origin stage.
-		@param stage %Stage to push.
 		@param initiator Whether the remote endpoint should emplace
 		the stage as an initiator (see @c Cmd::ID).
+		@param stage %Stage to push.
 	*/
 	void
 	push_remote(
@@ -501,7 +495,7 @@ public:
 		Exception from the stage.
 
 		@returns The number of remaining input stages.
-		@param result Execution result.
+		@param[out] result Execution result.
 	*/
 	std::size_t
 	execute_input(

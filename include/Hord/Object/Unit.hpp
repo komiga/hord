@@ -227,8 +227,6 @@ public:
 
 	/**
 		Set ID.
-
-		@param id New ID.
 	*/
 	void
 	set_id(
@@ -399,8 +397,6 @@ public:
 
 		@throws Error{ErrorCode::serialization_data_malformed}
 		If malformed data was encountered.
-
-		@param prop_stream Prop stream.
 	*/
 	void
 	deserialize(
@@ -425,8 +421,6 @@ public:
 
 		@throws Error{ErrorCode::serialization_io_failed}
 		If an output operation failed.
-
-		@param prop_stream Prop stream.
 	*/
 	void
 	serialize(

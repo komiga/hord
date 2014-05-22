@@ -279,7 +279,6 @@ enum class Linkage : unsigned {
 
 	@returns C-string containing the name of @a prop_type or
 	"INVALID" if somehow @a prop_type is not actually a IO::PropType.
-	@param prop_type Prop type.
 */
 char const*
 get_prop_type_name(

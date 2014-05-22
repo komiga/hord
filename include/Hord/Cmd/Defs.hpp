@@ -308,7 +308,6 @@ struct type_info final {
 		If allocation fails.
 
 		@returns Owning pointer to stage.
-		@param type %Stage type.
 	*/
 	Cmd::StageUPtr
 	(&make_stage)(
@@ -357,8 +356,6 @@ struct type_info_table final {
 /** @name Queries */ /// @{
 	/**
 		Check if the table contains a type.
-
-		@param type Command type.
 	*/
 	constexpr bool
 	contains(
@@ -372,8 +369,6 @@ struct type_info_table final {
 
 	/**
 		Check if the type range intersects with another table.
-
-		@param other Table to test against.
 	*/
 	constexpr bool
 	intersects(

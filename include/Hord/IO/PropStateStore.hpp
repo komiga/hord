@@ -196,9 +196,6 @@ public:
 		@note If @a state is a state combination, the return
 		value will be @c true if <em>any</em> of the combined
 		states are set.
-
-		@param prop_type Prop type.
-		@param state Prop state.
 	*/
 	constexpr bool
 	has(
@@ -245,8 +242,6 @@ public:
 
 	/**
 		Check if prop is initialized.
-
-		@param prop_type Prop type.
 	*/
 	constexpr bool
 	is_initialized(
@@ -257,8 +252,6 @@ public:
 
 	/**
 		Check if prop is supplied.
-
-		@param prop_type Prop type.
 	*/
 	constexpr bool
 	supplies(
@@ -300,8 +293,6 @@ public:
 
 	/**
 		Get full state for prop.
-
-		@param prop_type Prop type.
 	*/
 	constexpr IO::PropState
 	get_state(
@@ -343,7 +334,6 @@ public:
 		@note If the prop is not supplied, this has no effect.
 
 		@returns @c *this.
-		@param prop_type Prop type.
 	*/
 	PropStateStore&
 	reset(
@@ -366,8 +356,6 @@ public:
 		assign this state.
 
 		@returns @c *this.
-		@param prop_type Prop type.
-		@param state Prop state.
 	*/
 	PropStateStore&
 	assign(

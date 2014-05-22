@@ -51,9 +51,6 @@ get_error_name(
 
 /**
 	Output error to stream.
-
-	@param stream Stream.
-	@param error %Error.
 */
 std::ostream&
 operator<<(

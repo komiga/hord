@@ -61,11 +61,7 @@ public:
 	PropInfo& operator=(PropInfo&&) noexcept = default;
 
 	/**
-		Constructor with object id, object type, and prop type.
-
-		@param object_id Object ID.
-		@param object_type Object Type.
-		@param prop_type Prop type.
+		Constructor with properties.
 	*/
 	constexpr
 	PropInfo(
@@ -85,9 +81,6 @@ public:
 			this->object_id == object.get_id() &&
 			this->object_type == object.get_type()
 		@endcode
-
-		@param object Object.
-		@param prop_type Prop type.
 	*/
 	PropInfo(
 		Object::Unit const& object,
