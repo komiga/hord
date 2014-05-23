@@ -312,6 +312,18 @@ public:
 			m_supplied >> bit_shift
 		);
 	}
+
+	/**
+		Get conjunction of types with supplied types.
+	*/
+	constexpr IO::PropTypeBit
+	supplied_conj(
+		IO::PropTypeBit const prop_types
+	) const noexcept {
+		return static_cast<IO::PropTypeBit>(
+			enum_cast(prop_types) & enum_cast(get_supplied())
+		);
+	}
 /// @}
 
 /** @name Operations */ /// @{
