@@ -105,7 +105,7 @@ public:
 
 /** @name Properties */ /// @{
 	/** Result data. */
-	ResultData result_data{
+	ResultData result{
 		ResultCode::unknown_error,
 		Object::NULL_ID
 	};

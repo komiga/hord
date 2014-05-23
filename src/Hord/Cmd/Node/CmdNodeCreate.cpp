@@ -211,7 +211,6 @@ action(
 		data.code = ResultCode::unknown_unit_type;
 		return Cmd::Status::error;
 	}
-	context.get_datastore().create_object(data.id, *tinfo);
 	auto& hive = context.get_hive();
 	auto& objects = hive.get_objects();
 	auto obj = tinfo->construct(data.id, Object::NULL_ID);
@@ -224,6 +223,9 @@ action(
 		data.code = ResultCode::id_already_exists;
 		return Cmd::Status::error;
 	}
+	context.get_datastore().create_object(
+		data.id, *tinfo, IO::Linkage::resident
+	);
 	auto& node = static_cast<Hord::Node::Unit&>(*emplace_pair.first->second);
 	auto const it
 		= hive.get_id() == props.parent
@@ -282,13 +284,13 @@ HORD_CMD_STAGE_DEF_EXECUTE(Statement) {
 		return context.localized_fatal(*this);
 	}
 
-	command.result_data = {
+	command.result = {
 		check(context, m_data.props),
 		m_data.id
 	};
 	return
-		ResultCode::ok == command.result_data.code
-		? action(context, m_data.props, command.result_data)
+		ResultCode::ok == command.result.code
+		? action(context, m_data.props, command.result)
 		: Cmd::Status::error
 	;
 }
@@ -304,7 +306,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Error) {
 		return context.localized_fatal(*this);
 	}
 
-	command.result_data = {
+	command.result = {
 		m_data.code,
 		Hord::Node::NULL_ID
 	};
@@ -331,7 +333,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 	}
 	if (ResultCode::ok != data.code) {
 		if (context.is_local(*this)) {
-			command.result_data = data;
+			command.result = data;
 		} else {
 			context.push_remote(
 				*this, false, Cmd::StageUPtr{new Error::impl({data.code})}
@@ -382,13 +384,13 @@ HORD_CMD_STAGE_DEF_EXECUTE(Response) {
 	Props const& props = static_cast<Request const*>(
 		command.get_initiator()->get_data()
 	)->props;
-	command.result_data = {
+	command.result = {
 		check(context, props),
 		m_data.id
 	};
 	return
-		ResultCode::ok == command.result_data.code
-		? action(context, props, command.result_data)
+		ResultCode::ok == command.result.code
+		? action(context, props, command.result)
 		: Cmd::Status::error
 	;
 }
