@@ -28,6 +28,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <duct/EndianUtils.hpp>
 #include <duct/IO/dynamic_streambuf.hpp>
+#include <duct/IO/cacophony_support.hpp>
 
 namespace Hord {
 
