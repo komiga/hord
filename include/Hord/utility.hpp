@@ -29,6 +29,7 @@ namespace Hord {
 
 using duct::make_const;
 using duct::enum_cast;
+using duct::enum_combine;
 
 /** @} */ // end of doc-group utility
 /** @} */ // end of doc-group etc
