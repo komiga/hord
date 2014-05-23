@@ -205,7 +205,8 @@ protected:
 	virtual void
 	create_object_impl(
 		Object::ID const object_id,
-		Object::type_info const& type_info
+		Object::type_info const& type_info,
+		IO::Linkage const linkage
 	) = 0;
 
 	/**
@@ -486,10 +487,6 @@ public:
 	/**
 		Create an object in the datastore.
 
-		@throws Error{ErrorCode::datastore_object_type_prohibited}
-		If <code>object_type != Object::Type::Node</code>, which is
-		currently the only object type that can be created.
-
 		@throws Error{ErrorCode::datastore_closed}
 		If the datastore is closed.
 
@@ -505,7 +502,8 @@ public:
 	void
 	create_object(
 		Object::ID const object_id,
-		Object::type_info const& type_info
+		Object::type_info const& type_info,
+		IO::Linkage const linkage
 	);
 
 	/**

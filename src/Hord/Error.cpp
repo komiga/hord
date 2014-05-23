@@ -40,7 +40,6 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("datastore_locked"),
 	HORD_STR_LIT("datastore_property_immutable"),
 
-	HORD_STR_LIT("datastore_object_type_prohibited"),
 	HORD_STR_LIT("datastore_object_not_found"),
 	HORD_STR_LIT("datastore_object_already_exists"),
 

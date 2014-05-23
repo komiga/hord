@@ -141,10 +141,6 @@ enum class ErrorCode : unsigned {
 	datastore_property_immutable,
 
 	/**
-		Attempted to create object of prohibited type.
-	*/
-	datastore_object_type_prohibited,
-	/**
 		Attempted to perform operation with an object not in the
 		datastore.
 	*/

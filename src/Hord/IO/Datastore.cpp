@@ -152,23 +152,19 @@ Datastore::generate_id(
 void
 Datastore::create_object(
 	Object::ID const object_id,
-	Object::type_info const& type_info
+	Object::type_info const& type_info,
+	IO::Linkage const linkage
 ) {
-	if (Object::BaseType::Node != type_info.type.base()) {
-		HORD_THROW_FQN(
-			ErrorCode::datastore_object_type_prohibited,
-			"cannot create object other than Node"
-		);
-	} else if (Object::NULL_ID == object_id) {
+	if (m_storage_info.cend() != m_storage_info.find(object_id)) {
 		HORD_THROW_FQN(
 			ErrorCode::datastore_object_already_exists,
-			"null object already exists (alias to Hive)"
+			"object already exists"
 		);
 	}
 
 	HORD_CLOSED_CHECK_;
 	HORD_LOCKED_CHECK_;
-	create_object_impl(object_id, type_info);
+	create_object_impl(object_id, type_info, linkage);
 }
 #undef HORD_SCOPE_FUNC
 
