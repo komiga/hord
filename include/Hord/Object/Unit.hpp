@@ -138,7 +138,7 @@ protected:
 		@post
 		@code
 			get_storage_state()
-			== (get_id() == Object::NULL_ID
+			== (get_id() == Object::ID_NULL
 				? IO::StorageState::null
 				: IO::StorageState::placeholder
 			)
@@ -239,7 +239,7 @@ public:
 		Get ID.
 
 		@remarks This returns the in-hive ID, which yields
-		Object::NULL_ID if the object is itself a hive.
+		Object::ID_HIVE if the object is itself a hive.
 
 		@sa get_id_bare()
 	*/
@@ -247,7 +247,7 @@ public:
 	get_id() const noexcept {
 		return
 			Object::BaseType::Hive == get_type().base()
-			? Object::NULL_ID
+			? Object::ID_HIVE
 			: get_id_bare()
 		;
 	}
@@ -256,7 +256,7 @@ public:
 		Get bare ID.
 
 		@remarks This returns the bare ID without morphing it to
-		Object::NULL_ID when the object is a hive.
+		Object::ID_HIVE when the object is a hive.
 	*/
 	Object::ID
 	get_id_bare() const noexcept {
@@ -266,15 +266,11 @@ public:
 	/**
 		Check if object is null.
 
-		@note An object is null iff its ID is Object::NULL_ID.
-
-		@remarks Despite the hive being considered @c NULL_ID, at
-		runtime it has a valid non-null ID outside of the ID space
-		of its children.
+		@note An object is null iff its ID is Object::ID_NULL.
 	*/
 	bool
 	is_null() const noexcept {
-		return Object::NULL_ID == m_id;
+		return Object::ID_NULL == m_id;
 	}
 
 	/**
@@ -379,6 +375,22 @@ public:
 	String&
 	get_scratch_space() noexcept {
 		return m_scratch_space;
+	}
+/// @}
+
+/** @name Children */ /// @{
+	/**
+		Check if the object has a child.
+	*/
+	bool
+	has_child(
+		Object::ID const id
+	) const noexcept(noexcept(m_children.find(id))) {
+		return
+			id.is_reserved()
+			? false
+			: m_children.cend() != m_children.find(id)
+		;
 	}
 /// @}
 

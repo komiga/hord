@@ -70,11 +70,19 @@ public:
 
 		@post
 		@code
-			generate() != Object::NULL_ID
+			generate() != Object::ID_NULL
 		@endcode
 	*/
-	Object::ID
-	generate() noexcept;
+	template<
+		Object::BaseType const B = Object::BaseType::null
+	>
+	Object::GenID<B>
+	generate() noexcept {
+		Object::GenID<B> id{};
+		do { id.assign(m_rng()); }
+		while (id.is_reserved());
+		return id;
+	}
 
 	/**
 		Generate unique ID within set.
@@ -83,16 +91,21 @@ public:
 		with @c Object::ID as its key type.
 		@returns The generated ID.
 	*/
-	template<
-		typename Set
-	>
-	Object::ID
+	template<typename Set>
+	auto
 	generate_unique(
 		Set const& set
-	) noexcept {
-		Object::ID id;
-		do { id = m_rng(); }
-		while (Object::NULL_ID == id || set.cend() != set.find(id));
+	) noexcept -> typename std::remove_const<typename Set::key_type>::type {
+		using id_type = typename std::remove_const<
+			typename Set::key_type
+		>::type;
+		static_assert(
+			Object::is_genid<id_type>::value,
+			"Set type must have an Object::GenID as its key type"
+		);
+		id_type id{};
+		do { id.assign(m_rng()); }
+		while (id.is_reserved() || set.cend() != set.find(id));
 		return id;
 	}
 /// @}

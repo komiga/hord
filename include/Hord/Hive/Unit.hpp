@@ -134,7 +134,54 @@ public:
 	has_object(
 		Object::ID const id
 	) const noexcept(noexcept(m_objects.find(id))) {
-		return m_objects.cend() != m_objects.find(id);
+		return
+			id.is_reserved()
+			? false
+			: m_objects.cend() != m_objects.find(id)
+		;
+	}
+
+	/**
+		Find object pointer by ID.
+
+		@note Will return @c this when <code>id == Object::ID_HIVE</code>
+		and @c nullptr when <code>id == Object::ID_NULL</code>.
+	*/
+	Object::Unit*
+	find_ptr(
+		Object::ID const id
+	) noexcept {
+		if (Object::ID_NULL == id) {
+			return nullptr;
+		} else if (Object::ID_HIVE == id) {
+			return this;
+		} else {
+			auto const it = m_objects.find(id);
+			return
+				m_objects.end() != it
+				? it->second.get()
+				: nullptr
+			;
+		}
+	}
+
+	/** @copydoc find_ptr(Object::ID const id) noexcept */
+	Object::Unit const*
+	find_ptr(
+		Object::ID const id
+	) const noexcept {
+		if (Object::ID_NULL == id) {
+			return nullptr;
+		} else if (Object::ID_HIVE == id) {
+			return this;
+		} else {
+			auto const it = m_objects.find(id);
+			return
+				m_objects.cend() != it
+				? it->second.get()
+				: nullptr
+			;
+		}
 	}
 /// @}
 };

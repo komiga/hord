@@ -33,24 +33,17 @@ enum class UnitType : Object::TypeValue;
 /**
 	Hive ID.
 
-	@note This type is only to telegraph intent in functions;
-	it is entirely equivalent to @c Object::ID.
-
 	@sa Object::ID,
 		Rule::ID,
 		Node::ID
 */
-using ID = Object::ID;
+using ID = Object::GenID<Object::BaseType::Hive>;
 
+static constexpr Hive::ID const
 /**
-	Hive::ID constants.
+	Null ID.
 */
-enum : Hive::ID {
-	/**
-		Null object.
-	*/
-	NULL_ID = static_cast<Hive::ID>(Object::NULL_ID)
-};
+ID_NULL{Object::ID_NULL};
 
 /**
 	Standard hive unit types.

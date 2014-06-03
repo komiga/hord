@@ -161,20 +161,22 @@ check(
 	)) {
 		return ResultCode::unknown_unit_type;
 	} else if (
-		Object::NULL_ID != props.parent &&
-		!hive.has_object(props.parent)
+		Object::ID_NULL == props.parent || (
+			Object::ID_HIVE != props.parent &&
+			!hive.has_object(props.parent)
+		)
 	) {
 		return ResultCode::parent_not_found;
 	} else if (
-		Hord::Node::NULL_ID != props.layout_ref &&
+		Hord::Node::ID_NULL != props.layout_ref &&
 		!hive.has_object(props.layout_ref)
 	) {
 		return ResultCode::layout_ref_not_found;
 	} else if (
-		Hord::Node::NULL_ID != props.layout_ref &&
-		Object::BaseType::Node != hive.get_objects().find(
+		Hord::Node::ID_NULL != props.layout_ref &&
+		Object::BaseType::Node != hive.find_ptr(
 			props.layout_ref
-		)->second->get_base_type()
+		)->get_base_type()
 	) {
 		return ResultCode::layout_ref_not_a_node;
 	} else if (props.slug.empty()) {
@@ -182,11 +184,12 @@ check(
 	} else if (0xFF < props.slug.size()) {
 		return ResultCode::slug_too_long;
 	} else {
-		for (auto const& object : hive.get_objects()) {
+		for (auto const& pair : hive.get_objects()) {
+			auto const* const object = pair.second.get();
 			if (
-				nullptr      != object.second &&
-				props.parent == object.second->get_parent() &&
-				props.slug   == object.second->get_slug()
+				nullptr      != object &&
+				props.parent == object->get_parent() &&
+				props.slug   == object->get_slug()
 			) {
 				return ResultCode::slug_already_exists;
 			}
@@ -213,7 +216,7 @@ action(
 	}
 	auto& hive = context.get_hive();
 	auto& objects = hive.get_objects();
-	auto obj = tinfo->construct(data.id, Object::NULL_ID);
+	auto obj = tinfo->construct(data.id, Object::ID_NULL);
 	if (nullptr == obj) {
 		data.code = ResultCode::allocation_failed;
 		return Cmd::Status::error;
@@ -227,16 +230,7 @@ action(
 		data.id, *tinfo, IO::Linkage::resident
 	);
 	auto& node = static_cast<Hord::Node::Unit&>(*emplace_pair.first->second);
-	auto const it
-		= hive.get_id() == props.parent
-		? objects.end()
-		: objects.find(props.parent)
-	;
-	if (objects.end() == it) {
-		Object::set_parent(node, hive);
-	} else {
-		Object::set_parent(node, *it->second);
-	}
+	Object::set_parent(node, hive, props.parent);
 	node.set_slug(props.slug);
 	node.set_layout_ref(props.layout_ref);
 	node.get_prop_states().assign_all(IO::PropState::modified);
@@ -308,7 +302,7 @@ HORD_CMD_STAGE_DEF_EXECUTE(Error) {
 
 	command.result = {
 		m_data.code,
-		Hord::Node::NULL_ID
+		Hord::Node::ID_NULL
 	};
 	return Cmd::Status::error_remote;
 }
@@ -323,13 +317,13 @@ HORD_CMD_STAGE_DEF_EXECUTE(Request) {
 	assert(is_initiator());
 	ResultData data{
 		check(context, m_data.props),
-		Hord::Node::NULL_ID
+		Hord::Node::ID_NULL
 	};
 	if (context.is_host() && ResultCode::ok == data.code) {
 		// NB: Leak ErrorCode::datastore_closed
-		data.id = context.get_datastore().generate_id(
+		data.id = Hord::Node::ID{context.get_datastore().generate_id(
 			context.get_driver().get_id_generator()
-		);
+		)};
 	}
 	if (ResultCode::ok != data.code) {
 		if (context.is_local(*this)) {

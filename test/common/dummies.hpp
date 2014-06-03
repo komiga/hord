@@ -84,12 +84,14 @@ private:
 	generate_id_impl(
 		Hord::System::IDGenerator&
 	) const noexcept override {
-		return Hord::Object::NULL_ID;
+		return Hord::Object::ID_NULL;
 	}
+
 	void
 	create_object_impl(
 		Hord::Object::ID const,
-		Hord::Object::type_info const&
+		Hord::Object::type_info const&,
+		Hord::IO::Linkage const
 	) override {}
 	void
 	destroy_object_impl(
@@ -106,8 +108,8 @@ DummyDatastore::s_type_info{
 
 Hord::Object::UPtr
 dummy_rule_type_construct(
-	Hord::Hive::ID const,
-	Hord::Rule::ID const
+	Hord::Object::ID const,
+	Hord::Object::ID const
 ) noexcept {
 	return Hord::Object::UPtr{};
 }

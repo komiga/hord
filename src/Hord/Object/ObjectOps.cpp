@@ -12,37 +12,65 @@
 namespace Hord {
 namespace Object {
 
-void
-unset_parent(
+static bool
+emplace_child(
 	Object::Unit& object,
 	Object::Unit& parent
 ) noexcept {
-	assert(!object.is_null());
+	assert(!parent.is_null());
 
-	parent.get_children().erase(object.get_id());
-	object.set_parent(Object::NULL_ID);
+	if (object.has_child(parent.get_id())) {
+		return false;
+	}
+
+	// NB: children is a set, so no duplicates occur
+	parent.get_children().emplace(object.get_id());
+	if (object.get_parent() != parent.get_id()) {
+		object.set_parent(parent.get_id());
+		object.get_prop_states().assign(
+			IO::PropType::identity,
+			IO::PropState::modified
+		);
+	}
+	return true;
 }
 
 bool
 set_parent(
 	Object::Unit& object,
-	Object::Unit& new_parent
+	Hive::Unit& hive,
+	Object::ID const new_parent
 ) noexcept {
 	assert(!object.is_null());
+	assert(Object::BaseType::Hive != object.get_base_type());
 
-	if (object.get_id() == new_parent.get_id()) {
+	if (new_parent == object.get_id()) {
 		return false;
+	}
+
+	auto* const old_ptr = hive.find_ptr(object.get_parent());
+	if (old_ptr) {
+		if (object.get_parent() == new_parent) {
+			// To ensure object is in parent's children collection
+			return emplace_child(object, *old_ptr);
+		} else {
+			old_ptr->get_children().erase(object.get_id());
+			object.set_parent(Object::ID_NULL);
+		}
+	}
+	auto* const new_ptr = hive.find_ptr(new_parent);
+	if (new_ptr) {
+		return emplace_child(object, *new_ptr);
 	} else {
-		// NB: children is a set, so no duplicates occur
-		new_parent.get_children().emplace(object.get_id());
-		if (object.get_parent() != new_parent.get_id()) {
-			object.set_parent(new_parent.get_id());
+		// If old_ptr and/or new_ptr are null or do not exist
+		if (!object.get_parent().is_null()) {
+			object.set_parent(Object::ID_NULL);
 			object.get_prop_states().assign(
 				IO::PropType::identity,
 				IO::PropState::modified
 			);
 		}
-		return true;
+		return false;
 	}
 }
 
@@ -60,7 +88,7 @@ operator<<(
 ) {
 	ceformat::write<s_fmt_object_id>(
 		stream,
-		printer.id
+		printer.id.value()
 	);
 	return stream;
 }
@@ -73,7 +101,7 @@ operator<<(
 	auto const& type_info = object.get_type_info();
 	ceformat::write<s_fmt_object_identity>(
 		stream,
-		object.get_id_bare(),
+		object.get_id_bare().value(),
 		Object::get_base_type_name(type_info.type.base()),
 		type_info.unit_name,
 		object.get_slug()

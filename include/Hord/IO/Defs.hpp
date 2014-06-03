@@ -201,7 +201,7 @@ enum class StorageState : unsigned {
 		Object has no identifying information, a state in which
 		neither serialization nor deserialization can be performed.
 
-		@sa Object::NULL_ID
+		@sa Object::ID_NULL
 	*/
 	null = 0u,
 

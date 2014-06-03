@@ -12,7 +12,7 @@ signed
 main() {
 	auto node = Node::UnitBasic::info.construct(
 		Node::ID{0x2a2a2a2a},
-		Object::NULL_ID
+		Object::ID_NULL
 	);
 	node->set_slug("sluggy");
 

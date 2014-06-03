@@ -25,8 +25,8 @@ Unit::Unit(
 ) noexcept
 	: base(
 		tinfo,
-		static_cast<Object::ID>(id),
-		Object::NULL_ID
+		id,
+		Object::ID_NULL
 	)
 {}
 

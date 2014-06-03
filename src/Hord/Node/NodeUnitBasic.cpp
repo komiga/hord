@@ -21,7 +21,7 @@ UnitBasic::construct(
 	Object::ID const parent
 ) noexcept {
 	return Object::UPtr{
-		new(std::nothrow) Node::UnitBasic(id, parent)
+		new(std::nothrow) Node::UnitBasic(Node::ID{id}, parent)
 	};
 }
 
@@ -36,7 +36,7 @@ UnitBasic::UnitBasic(
 ) noexcept
 	: base(
 		Node::UnitBasic::info,
-		static_cast<Object::ID>(id),
+		id,
 		parent
 	)
 {}

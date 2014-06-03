@@ -33,8 +33,8 @@ signed
 main() {
 	// group driver
 	auto hive = Hord::Hive::UnitBasic::info.construct(
-		Hord::Hive::NULL_ID,
-		Hord::Object::NULL_ID
+		Hord::Hive::ID{42u},
+		Hord::Object::ID_NULL
 	);
 	Hord::System::Driver driver{true};
 

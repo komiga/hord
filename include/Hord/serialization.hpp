@@ -146,7 +146,7 @@ make_output_serializer(
 	HORD_THROW_FMT(											\
 		Hord::ErrorCode::serialization_io_failed,			\
 		efmt_,												\
-		objid_,												\
+		objid_.value(),										\
 		pkind_,												\
 		Hord::get_ser_error_name(serr_.get_code()),			\
 		serr_.get_message()									\

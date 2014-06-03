@@ -21,7 +21,7 @@ UnitBasic::construct(
 	Object::ID const /*parent*/
 ) noexcept {
 	return Object::UPtr{
-		new(std::nothrow) Hive::UnitBasic(id)
+		new(std::nothrow) Hive::UnitBasic(Hive::ID{id})
 	};
 }
 
@@ -35,7 +35,7 @@ UnitBasic::UnitBasic(
 ) noexcept
 	: base(
 		Hive::UnitBasic::info,
-		static_cast<Object::ID>(id)
+		id
 	)
 {}
 

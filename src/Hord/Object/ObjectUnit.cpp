@@ -52,7 +52,7 @@ Unit::set_slug(
 		HORD_THROW_FMT(											\
 			ErrorCode::serialization_prop_unsupplied,			\
 			err_,												\
-			get_id(),											\
+			get_id().value(),									\
 			IO::get_prop_type_name(type),						\
 			Object::get_base_type_name(get_base_type())			\
 		);														\
@@ -81,7 +81,7 @@ Unit::deserialize(
 	auto ser = prop_stream.make_serializer();
 	switch (type) {
 	case IO::PropType::identity: {
-		Object::ID parent{Object::NULL_ID};
+		Object::ID parent{Object::ID_NULL};
 		String slug{};
 		ser(
 			parent,
@@ -150,7 +150,7 @@ Unit::serialize(
 		HORD_THROW_FMT(
 			ErrorCode::serialization_prop_improper_state,
 			s_err_serialize_improper_state,
-			m_id,
+			m_id.value(),
 			IO::get_prop_type_name(type)
 		);
 	}

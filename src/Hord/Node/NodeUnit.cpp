@@ -43,7 +43,7 @@ Unit::set_layout_ref(
 	Node::ID const node_id
 ) noexcept {
 	m_layout_ref = node_id;
-	if (Node::NULL_ID != m_layout_ref) {
+	if (Node::ID_NULL != m_layout_ref) {
 		m_layout.clear();
 	}
 }
@@ -126,7 +126,7 @@ Unit::deserialize_prop_primary(
 					HORD_THROW_FMT(
 						ErrorCode::serialization_data_malformed,
 						s_err_primary_malformed_field_type,
-						get_id()
+						get_id().value()
 					);
 					break;
 				}
@@ -190,9 +190,9 @@ Unit::deserialize_prop_auxiliary(
 	IO::InputPropStream& /*prop_stream*/,
 	InputSerializer& ser
 ) {
-	Node::ID des_layout_ref = 0;
+	Node::ID des_layout_ref{Node::ID_NULL};
 	ser(des_layout_ref);
-	if (Node::NULL_ID != des_layout_ref) {
+	if (Node::ID_NULL != des_layout_ref) {
 		// commit
 		set_layout_ref(des_layout_ref);
 	} else {
@@ -200,7 +200,7 @@ Unit::deserialize_prop_auxiliary(
 		ser(Cacophony::make_vector_cfg<std::uint32_t>(des_layout));
 
 		// commit
-		set_layout_ref(Node::NULL_ID);
+		set_layout_ref(Node::ID_NULL);
 		m_layout.operator=(std::move(des_layout));
 	}
 }
@@ -212,7 +212,7 @@ Unit::serialize_prop_auxiliary(
 	IO::OutputPropStream& /*prop_stream*/,
 	OutputSerializer& ser
 ) const {
-	if (Node::NULL_ID != m_layout_ref) {
+	if (Node::ID_NULL != m_layout_ref) {
 		ser(m_layout_ref);
 	} else {
 		ser(

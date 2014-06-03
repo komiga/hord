@@ -238,8 +238,8 @@ Driver::placehold_hive(
 			"failed to construct hive"
 		);
 	}
-	Object::ID const id = m_id_generator.generate_unique(m_hives);
-	auto hive_ptr = hive_tinfo->construct(id, Object::NULL_ID);
+	Hive::ID const id = m_id_generator.generate_unique(m_hives);
+	auto hive_ptr = hive_tinfo->construct(id, Object::ID_NULL);
 	if (nullptr == datastore_ptr) {
 		HORD_THROW_FQN(
 			ErrorCode::driver_hive_construct_failed,

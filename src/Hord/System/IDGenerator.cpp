@@ -31,13 +31,5 @@ IDGenerator::seed(
 	));
 }
 
-Object::ID
-IDGenerator::generate() noexcept {
-	Object::ID id;
-	do { id = m_rng(); }
-	while (Object::NULL_ID == id);
-	return id;
-}
-
 } // namespace System
 } // namespace Hord

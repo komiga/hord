@@ -36,31 +36,14 @@ template<
 struct unit_type_traits_impl;
 template<class>
 struct GenType;
+template<Object::BaseType const>
+struct GenID;
 struct type_info;
 
 /**
 	@addtogroup object
 	@{
 */
-
-/**
-	Generic object ID.
-
-	@sa Hive::ID,
-		Rule::ID,
-		Node::ID
-*/
-using ID = std::uint32_t;
-
-/**
-	Object::ID constants.
-*/
-enum : Object::ID {
-	/**
-		Null object.
-	*/
-	NULL_ID = static_cast<Object::ID>(0u)
-};
 
 /*
 
@@ -502,6 +485,248 @@ static constexpr Object::Type const
 TYPE_NULL{};
 
 /**
+	Object ID value.
+*/
+using IDValue = std::uint32_t;
+
+/**
+	Bare object ID.
+*/
+using ID = Object::GenID<Object::BaseType::null>;
+
+namespace {
+enum : Object::IDValue {
+	id_value_null = Object::IDValue{0},
+	id_value_hive = Object::IDValue{1}
+};
+}
+
+/**
+	Amorphic object ID.
+
+	@note This can morph to the base ID type implicitly and can
+	downcast from Object::ID (the bare ID type) to a BaseType-specific
+	ID with Object::id_cast().
+
+	@tparam B Base type.
+
+	@sa Hive::ID,
+		Rule::ID,
+		Node::ID
+*/
+template<Object::BaseType const B>
+struct GenID final {
+public:
+	/** Base type. */
+	static constexpr Object::BaseType const
+	base_type = B;
+
+private:
+	template<Object::BaseType const>
+	friend struct GenID;
+
+	using this_type = GenID<B>;
+
+	template<Object::BaseType const B2>
+	using this_rebind = GenID<B2>;
+
+	Object::IDValue m_value{id_value_null};
+
+public:
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~GenID() noexcept = default;
+
+	/**
+		Default constructor.
+
+		@post @code
+			base() == traits_type::base &&
+			is_null() == true
+		@endcode
+	*/
+	constexpr GenID() = default;
+	/** Copy constructor. */
+	constexpr GenID(GenID const&) = default;
+	/** Copy assignment operator. */
+	GenID& operator=(GenID const&) = default;
+	/** Move constructor. */
+	constexpr GenID(GenID&&) = default;
+	/** Move assignment operator. */
+	GenID& operator=(GenID&&) = default;
+
+	/**
+		Generic copy constructor.
+
+		@note This is effectively a downcast from Object::ID.
+	*/
+	template<
+		Object::BaseType const B2,
+		class = typename std::enable_if<
+			Object::BaseType::null != B2 ||
+			Object::BaseType::null != base_type
+		>::type
+	>
+	explicit constexpr
+	GenID(
+		this_rebind<B2> const& id
+	) noexcept
+		: m_value(id.value())
+	{}
+
+	/**
+		Constructor with ID value.
+	*/
+	explicit constexpr
+	GenID(
+		Object::IDValue const value
+	) noexcept
+		: m_value(value)
+	{}
+/// @}
+
+/** @name Operators */ /// @{
+	/**
+		Equal-to operator.
+	*/
+	template<Object::BaseType const B2>
+	constexpr bool
+	operator==(
+		this_rebind<B2> const& rhs
+	) const noexcept {
+		return value() == rhs.value();
+	}
+
+	/**
+		Not-equal-to operator.
+	*/
+	template<Object::BaseType const B2>
+	constexpr bool
+	operator!=(
+		this_rebind<B2> const& rhs
+	) const noexcept {
+		return value() != rhs.value();
+	}
+
+	/**
+		Negation operator.
+
+		@returns is_null().
+	*/
+	constexpr bool
+	operator!() const noexcept {
+		return is_null();
+	}
+
+	/**
+		Bare type conversion operator.
+	*/
+	constexpr
+	operator Object::ID() const noexcept {
+		return Object::ID{m_value};
+	}
+/// @}
+
+/** @name Properties */ /// @{
+	/**
+		Get value.
+
+		@remarks This is the serial form.
+	*/
+	constexpr Object::IDValue
+	value() const noexcept {
+		return m_value;
+	}
+
+	/**
+		Check if ID is null.
+	*/
+	constexpr bool
+	is_null() const noexcept {
+		return id_value_null == m_value;
+	}
+
+	/**
+		Check if ID is reserved.
+
+		@note ID_NULL and ID_HIVE are reserved IDs.
+	*/
+	constexpr bool
+	is_reserved() const noexcept {
+		return
+			id_value_null == m_value ||
+			id_value_hive == m_value
+		;
+	}
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		Assign value.
+	*/
+	void
+	assign(
+		IDValue const value
+	) noexcept {
+		m_value = value;
+	}
+/// @}
+
+/** @name Serialization */ /// @{
+	static_assert(
+		std::is_same<
+			Object::IDValue,
+			std::uint32_t
+		>::value,
+		"schema changed"
+	);
+
+	/**
+		Serialize.
+
+		@warning State may not be retained if an exception is thrown.
+
+		@throws SerializerError{..}
+		If a serialization operation failed.
+	*/
+	template<class Ser>
+	ser_result_type
+	serialize(
+		ser_tag_serialize,
+		Ser& ser
+	) {
+		auto& self = const_safe<Ser>(*this);
+		ser(self.m_value);
+	}
+/// @}
+};
+
+static constexpr Object::ID const
+/**
+	Null ID.
+*/
+ID_NULL{Object::IDValue{id_value_null}},
+/**
+	Hive ID.
+*/
+ID_HIVE{Object::IDValue{id_value_hive}};
+
+/**
+	Trait to test if a type is a GenID.
+*/
+template<class>
+struct is_genid
+	: public std::false_type
+{};
+
+/** @cond INTERNAL */
+template<Object::BaseType const B>
+struct is_genid<Object::GenID<B>>
+	: public std::true_type
+{};
+/** @endcond */ // INTERNAL
+
+/**
 	Object type info.
 */
 struct type_info {
@@ -578,6 +803,16 @@ struct hash<Hord::Object::GenType<T>> {
 		Hord::Object::GenType<T> const type
 	) const noexcept {
 		return type.value();
+	}
+};
+
+template<Hord::Object::BaseType const B>
+struct hash<Hord::Object::GenID<B>> {
+	std::size_t
+	operator()(
+		Hord::Object::GenID<B> const id
+	) const noexcept {
+		return id.value();
 	}
 };
 } // namespace std

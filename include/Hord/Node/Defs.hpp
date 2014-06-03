@@ -40,17 +40,13 @@ enum class UnitType : Object::TypeValue;
 		Rule::ID,
 		Hive::ID
 */
-using ID = Object::ID;
+using ID = Object::GenID<Object::BaseType::Node>;
 
+static constexpr Node::ID const
 /**
-	Node::ID constants.
+	Null ID.
 */
-enum : Node::ID {
-	/**
-		Null object.
-	*/
-	NULL_ID = static_cast<Node::ID>(Object::NULL_ID)
-};
+ID_NULL{Object::ID_NULL};
 
 /**
 	Standard node unit types.

@@ -107,7 +107,7 @@ public:
 	/** Result data. */
 	ResultData result{
 		ResultCode::unknown_error,
-		Object::NULL_ID
+		Hord::Node::ID_NULL
 	};
 /// @}
 

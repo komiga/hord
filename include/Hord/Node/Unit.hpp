@@ -69,7 +69,7 @@ public:
 	using record_vector_type = aux::vector<Data::Record>;
 
 private:
-	Node::ID m_layout_ref{static_cast<Node::ID>(Object::NULL_ID)};
+	Node::ID m_layout_ref{Node::ID_NULL};
 	column_vector_type m_layout{};
 	record_vector_type m_records{};
 
@@ -140,7 +140,7 @@ public:
 	/**
 		Set layout reference.
 
-		@note If @a node_id is non-@c Object::NULL_ID, the layout
+		@note If @a node_id is non-@c Node::ID_NULL, the layout
 		property will be cleared.
 	*/
 	void
@@ -151,12 +151,12 @@ public:
 	/**
 		Get layout reference.
 	*/
-	Object::ID
+	Node::ID
 	get_layout_ref() const noexcept {
 		return m_layout_ref;
 	}
 
-	// TODO: Notes for when layout_ref is non-Object::NULL_ID
+	// TODO: Notes for when layout_ref is non-Node::ID_NULL
 	/**
 		Get layout.
 	*/

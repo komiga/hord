@@ -13,6 +13,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
+#include <Hord/Hive/Unit.hpp>
 
 #include <iosfwd>
 
@@ -27,53 +28,24 @@ namespace Object {
 */
 
 /**
-	Unset object parent.
-
-	@warning The object is not reparented to its hive. It should be
-	reparented to an object after calling this to ensure it is not
-	orphaned.
-
-	@note The identity property state is unchanged by this function.
-
-	@pre @code
-		!object.is_null()
-	@endcode
-
-	@post @code
-		object.get_parent() == Object::NULL_ID
-	@endcode
-
-	@param object Object to unparent.
-	@param parent Object's current parent.
-
-	@sa Object::Unit::set_parent()
-*/
-void
-unset_parent(
-	Object::Unit& object,
-	Object::Unit& parent
-) noexcept;
-
-/**
 	Set object parent.
 
-	@note If @c object.get_id()==new_parent.get_id(), the object is
+	@note If <code>object.get_id() == new_parent</code>, the object is
 	unmodified and @c false is returned.
 
-	@par
-	@note This should be paired with Object::unset_parent() to ensure
-	the object is properly unlinked from its old parent and linked
-	to its new parent (especially when its parent is its hive).
-
 	@pre @code
+		object.get_base_type() != Object::BaseType::Hive &&
 		!object.is_null()
 	@endcode
 
-	@post @code
-		object.get_parent()
-		== (new_parent.get_type() == Object::Type::Hive)
-			? Object::NULL_ID
-			: new_parent.get_id()
+	@post If succeeded:
+	@code
+		object.get_parent() == new_parent
+	@endcode
+
+	@post If new_parent does not exist:
+	@code
+		object.get_parent() == Object::ID_NULL
 	@endcode
 
 	@post If state was changed:
@@ -85,13 +57,16 @@ unset_parent(
 	@endcode
 
 	@returns @c true if @a object was parented to @a new_parent.
+	@c false if attempting to parent an object to itself or to a
+	non-existent object.
 
 	@sa Object::Unit::set_parent()
 */
 bool
 set_parent(
 	Object::Unit& object,
-	Object::Unit& new_parent
+	Hive::Unit& hive,
+	Object::ID const new_parent
 ) noexcept;
 
 /**

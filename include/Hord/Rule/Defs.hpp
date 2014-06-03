@@ -40,17 +40,13 @@ struct type_info;
 		Hive::ID,
 		Node::ID
 */
-using ID = Object::ID;
+using ID = Object::GenID<Object::BaseType::Rule>;
 
+static constexpr Rule::ID const
 /**
-	Rule::ID constants.
+	Null ID.
 */
-enum : Rule::ID {
-	/**
-		Null object.
-	*/
-	NULL_ID = static_cast<Rule::ID>(Object::NULL_ID)
-};
+ID_NULL{Object::ID_NULL};
 
 /**
 	Rule unit type.
@@ -138,9 +134,12 @@ struct type_info final
 	*/
 	std::uint8_t const permitted_types;
 
+	/**
+		Constructor with properties.
+	*/
 	constexpr
 	type_info(
-		Object::type_info&& tinfo,
+		Object::type_info const& tinfo,
 		std::uint8_t const permitted_types
 	)
 		: Object::type_info(tinfo)

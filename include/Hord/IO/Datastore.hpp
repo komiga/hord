@@ -47,10 +47,6 @@ class Datastore;
 
 	@note %Datastores must be locked when a single prop stream is
 	active.
-
-	@par
-	@note Object::NULL_ID represents the hive within the datastore.
-	Thus, a prop requested for %NULL_ID is valid.
 */
 class Datastore {
 public:
