@@ -189,6 +189,9 @@ using Type = Object::GenType<Object::UnitType>;
 	@pre Object::unit_type_traits specialized for @a T.
 
 	@tparam T Unit type.
+	@sa Hive::Type,
+		Rule::Type,
+		Node::Type
 */
 template<class T>
 struct GenType final {
@@ -275,7 +278,7 @@ public:
 	/**
 		Constructor with base type.
 	*/
-	constexpr
+	explicit constexpr
 	GenType(
 		Object::BaseType const base
 	) noexcept
@@ -291,7 +294,7 @@ public:
 	/**
 		Constructor with base type and unit type.
 	*/
-	constexpr
+	explicit constexpr
 	GenType(
 		Object::BaseType const base,
 		unit_type const unit
@@ -308,7 +311,7 @@ public:
 	/**
 		Constructor with unit type.
 	*/
-	constexpr
+	explicit constexpr
 	GenType(
 		unit_type const unit
 	) noexcept
@@ -354,7 +357,7 @@ public:
 	*/
 	constexpr
 	operator Object::Type() const noexcept {
-		return {m_value};
+		return Object::Type{m_value};
 	}
 /// @}
 
@@ -408,6 +411,12 @@ public:
 		m_value = make_value(base(), unit);
 	}
 
+	/**
+		Assign to other base type and unit type.
+
+		@note This function is enabled only on Object::Type (i.e.,
+		with Object::UnitType).
+	*/
 	template<
 		class T2,
 		class = typename std::enable_if<
@@ -481,7 +490,7 @@ type_cast(
 		type.base() == Object::GenType<T>::traits_type::base,
 		"invalid object type cast: cannot downcast to different base type"
 	);
-	return {
+	return Object::GenType<T>{
 		static_cast<typename GenType<T>::unit_type>(type.unit())
 	};
 }
