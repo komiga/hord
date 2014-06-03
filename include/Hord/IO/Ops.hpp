@@ -200,30 +200,6 @@ store_props_weak(
 	bool const force = false
 );
 
-/**
-	Identify all objects in a data-uninitialized hive.
-
-	@note Because this function is a part of the initialization
-	sequence proper, it returns immediately if the hive's data
-	prop has already been loaded. Identification should be properly
-	maintained by the runtime, so this sort of operation should not
-	be needed after initialization.
-
-	@par
-	@note This will handle degeneracies in object relationships.
-
-	@param datastore %Datastore.
-	@param hive Hive.
-
-	@sa IO::StorageState::placeholder,
-		IO::StorageState::placeholder_identified
-*/
-void
-identify_all(
-	IO::Datastore& datastore,
-	Hive::Unit& hive
-);
-
 /** @} */ // end of doc-group io
 
 } // namespace IO
