@@ -406,15 +406,16 @@ public:
 
 		@throws Error{ErrorCode::datastore_object_not_found}
 		If @c prop_info.object_id does not exist in the datastore.
+		[implementation]
 
 		@throws Error{ErrorCode::datastore_prop_void}
 		If the object for @c prop_info.object_id has not yet created
 		the prop (but it is otherwise valid). This can only occur
-		when acquiring an input stream.
+		when acquiring an input stream. [implementation]
 
 		@throws Error{ErrorCode::datastore_prop_unsupplied}
 		If the object for @c prop_info.object_id does not supply the
-		requested prop.
+		requested prop. [implementation]
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
@@ -448,6 +449,7 @@ public:
 
 		@throws Error{ErrorCode::datastore_object_not_found}
 		If @c prop_info.object_id does not exist in the datastore.
+		[implementation]
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
@@ -513,6 +515,7 @@ public:
 
 		@throws Error{ErrorCode::datastore_object_not_found}
 		If @a object_id does not exist in the datastore.
+		[implementation]
 
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>

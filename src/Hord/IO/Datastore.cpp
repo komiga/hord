@@ -155,6 +155,8 @@ Datastore::create_object(
 	Object::type_info const& type_info,
 	IO::Linkage const linkage
 ) {
+	HORD_CLOSED_CHECK_;
+	HORD_LOCKED_CHECK_;
 	if (m_storage_info.cend() != m_storage_info.find(object_id)) {
 		HORD_THROW_FQN(
 			ErrorCode::datastore_object_already_exists,
@@ -162,8 +164,6 @@ Datastore::create_object(
 		);
 	}
 
-	HORD_CLOSED_CHECK_;
-	HORD_LOCKED_CHECK_;
 	create_object_impl(object_id, type_info, linkage);
 }
 #undef HORD_SCOPE_FUNC
