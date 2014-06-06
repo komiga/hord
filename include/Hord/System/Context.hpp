@@ -118,7 +118,7 @@ public:
 	*/
 	struct Result {
 		/** Canonical stage %ID. */
-		Cmd::IDValue id;
+		Cmd::ID id;
 		/** Command status. */
 		Cmd::Status status;
 	};
@@ -482,7 +482,7 @@ public:
 
 		@par
 		@note If there are no stages to execute, @a result holds
-		@c Cmd::NULL_ID and @c static_cast<Cmd::Status>(0u) (an
+		@c Cmd::ID_NULL and @c static_cast<Cmd::Status>(0u) (an
 		invalid status).
 
 		@throws Error{ErrorCode::context_execute_not_active}

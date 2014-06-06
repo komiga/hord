@@ -60,20 +60,6 @@ enum class Status : unsigned;
 using IDValue = std::uint32_t;
 
 /**
-	%ID value constants.
-*/
-enum : Cmd::IDValue {
-	/**
-		Null base %ID value.
-	*/
-	NULL_ID = Cmd::IDValue{0u},
-	/**
-		Maximum base %ID value.
-	*/
-	MAX_ID = Cmd::IDValue{0x3FFFFFFFu}
-};
-
-/**
 	Owning pointer to command unit.
 */
 using UnitUPtr = duct::cc_unique_ptr<Cmd::Unit>;
@@ -82,13 +68,18 @@ using UnitUPtr = duct::cc_unique_ptr<Cmd::Unit>;
 */
 using StageUPtr = duct::cc_unique_ptr<Cmd::Stage>;
 
+namespace {
+enum : Cmd::IDValue {
+	id_value_null = Cmd::IDValue{0u},
+	id_value_max = Cmd::IDValue{0x3FFFFFFFu},
+};
+}
+
 /**
 	%ID.
 */
 struct ID final {
 private:
-	Cmd::IDValue m_value{Cmd::NULL_ID};
-
 	enum : unsigned {
 		shift_host		= 30u,
 		shift_initiator	= 31u,
@@ -97,6 +88,8 @@ private:
 		mask_host		= unsigned{1u << shift_host},
 		mask_initiator	= unsigned{1u << shift_initiator},
 	};
+
+	Cmd::IDValue m_value{id_value_null};
 
 public:
 /** @name Special member functions */ /// @{
@@ -113,6 +106,32 @@ public:
 	ID(ID&&) = default;
 	/** Move assignment operator. */
 	ID& operator=(ID&&) = default;
+
+	/**
+		Constructor with value.
+	*/
+	explicit constexpr
+	ID(
+		Cmd::IDValue const value
+	) noexcept
+		: m_value(value)
+	{}
+
+	/**
+		Constructor with properties.
+	*/
+	explicit constexpr
+	ID(
+		Cmd::IDValue const base,
+		bool const host,
+		bool const initiator
+	) noexcept
+		: m_value(
+			  (base & mask_base)
+			| (Cmd::IDValue{host} << shift_host)
+			| (Cmd::IDValue{initiator} << shift_initiator)
+		)
+	{}
 /// @}
 
 /** @name Properties */ /// @{
@@ -264,6 +283,16 @@ public:
 	}
 /// @}
 };
+
+static constexpr Cmd::ID const
+/**
+	Null base %ID value.
+*/
+ID_NULL{Cmd::IDValue{id_value_null}},
+/**
+	Maximum base %ID value.
+*/
+ID_MAX{Cmd::IDValue{id_value_max}};
 
 /**
 	Command type info.

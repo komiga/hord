@@ -47,7 +47,7 @@ Context::Context(
 	, m_driver(driver)
 	, m_datastore(*hive_pair.datastore)
 	, m_hive(static_cast<Hive::Unit&>(*hive_pair.hive))
-	, m_genid(Cmd::NULL_ID)
+	, m_genid(Cmd::ID_NULL.value())
 	, m_active()
 	, m_done()
 	, m_input()
@@ -74,7 +74,7 @@ Context::Context(
 
 Cmd::IDValue
 Context::next_id() noexcept {
-	if (Cmd::MAX_ID == m_genid) {
+	if (Cmd::ID_MAX.value() == m_genid) {
 		return m_genid = BASE_GENID;
 	} else {
 		return ++m_genid;
@@ -249,7 +249,7 @@ Context::execute_input(
 	Result& result
 ) {
 	// TODO: logging & more-verbose errors
-	result.id = Cmd::NULL_ID;
+	result.id = Cmd::ID_NULL;
 	result.status = static_cast<Cmd::Status>(0u);
 	if (m_input.empty()) {
 		return 0u;
@@ -266,7 +266,7 @@ Context::execute_input(
 
 	command_map_type::iterator it = m_active.find(stage.get_id_canonical());
 	if (Cmd::Type::GenericTerminate == stage.get_command_type()) {
-		result.id = stage.get_id_canonical();
+		result.id = stage.get_id();
 		result.status = Cmd::Status::fatal_remote;
 		if (m_active.end() != it) {
 			it->second->set_status(result.status);
@@ -312,7 +312,7 @@ Context::execute_input(
 	}
 
 	// execute
-	result.id = stage.get_id_canonical();
+	result.id = stage.get_id();
 	try {
 		result.status = stage.execute(*this, *it->second.get());
 	} catch (...) {
