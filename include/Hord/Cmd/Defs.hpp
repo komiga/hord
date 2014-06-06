@@ -119,7 +119,7 @@ public:
 	/**
 		Get base value.
 	*/
-	Cmd::IDValue
+	constexpr Cmd::IDValue
 	base() const noexcept {
 		return m_value & mask_base;
 	}
@@ -130,7 +130,7 @@ public:
 		@note @c fields.flag_host is included in the canonical
 		value.
 	*/
-	Cmd::IDValue
+	constexpr Cmd::IDValue
 	canonical() const noexcept {
 		return m_value & mask_canonical;
 	}
@@ -140,7 +140,7 @@ public:
 
 		@remarks This is the serial form.
 	*/
-	Cmd::IDValue
+	constexpr Cmd::IDValue
 	value() const noexcept {
 		return m_value;
 	}
@@ -148,16 +148,16 @@ public:
 	/**
 		Check if the base %ID value is non-null.
 	*/
-	bool
+	constexpr bool
 	is_identified() const noexcept {
 		// NB: Avoid sticky flag_host by checking the base value
-		return Cmd::NULL_ID != base();
+		return id_value_null != base();
 	}
 
 	/**
 		Check if the command is host-initiated.
 	*/
-	bool
+	constexpr bool
 	is_host() const noexcept {
 		return m_value & mask_host;
 	}
@@ -165,7 +165,7 @@ public:
 	/**
 		Check if the command is client-initiated.
 	*/
-	bool
+	constexpr bool
 	is_client() const noexcept {
 		return m_value ^ mask_host;
 	}
@@ -177,7 +177,7 @@ public:
 		local command. It ensures there are no stray command
 		initiations, and assists when resolving %ID collisions.
 	*/
-	bool
+	constexpr bool
 	is_initiator() const noexcept {
 		return m_value & mask_initiator;
 	}
@@ -211,7 +211,7 @@ public:
 	}
 
 	/**
-		Assign to copy and differing initiator.
+		Assign to copy with differing initiator.
 	*/
 	void
 	assign(
