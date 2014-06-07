@@ -563,6 +563,11 @@ enum class StageType : std::uint8_t {
 		Response stage.
 	*/
 	Response,
+
+	/**
+		Signal stage.
+	*/
+	Signal,
 /// @}
 
 /** @cond INTERNAL */
