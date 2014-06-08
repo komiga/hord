@@ -31,6 +31,9 @@ s_std_cmd_table_array[]{
 	// Group: Generic
 	&Cmd::s_type_info_GenericTerminate,
 
+	// Group: Hive
+	&Cmd::s_type_info_HiveInit,
+
 	// Group: Node
 	&Cmd::s_type_info_NodeCreate,
 };

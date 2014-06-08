@@ -454,6 +454,13 @@ enum class Type : std::uint32_t {
 /** @} */
 
 /**
+	@ref cmd_hive.
+	@{
+*/
+	HiveInit,
+/** @} */
+
+/**
 	@ref cmd_node.
 	@{
 */

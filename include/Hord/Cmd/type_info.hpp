@@ -29,6 +29,10 @@ namespace Cmd {
 extern Cmd::type_info const
 s_type_info_GenericTerminate;
 
+/** Cmd::Type::HiveInit. */
+extern Cmd::type_info const
+s_type_info_HiveInit;
+
 /** Cmd::Type::NodeCreate. */
 extern Cmd::type_info const
 s_type_info_NodeCreate;
