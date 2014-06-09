@@ -1,0 +1,10 @@
+
+/**
+
+@addtogroup cmd
+@defgroup cmd_hive Group: Hive
+@details
+
+Commands for operating on hives.
+
+*/
