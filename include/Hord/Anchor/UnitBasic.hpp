@@ -1,22 +1,22 @@
 /**
-@file Hive/UnitBasic.hpp
-@brief Basic hive unit class.
+@file Anchor/UnitBasic.hpp
+@brief Basic anchor unit class.
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_HIVE_UNITBASIC_HPP_
-#define HORD_HIVE_UNITBASIC_HPP_
+#ifndef HORD_ANCHOR_UNITBASIC_HPP_
+#define HORD_ANCHOR_UNITBASIC_HPP_
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
+#include <Hord/Anchor/Defs.hpp>
+#include <Hord/Anchor/Unit.hpp>
 
 namespace Hord {
-namespace Hive {
+namespace Anchor {
 
 // Forward declarations
 class UnitBasic;
@@ -26,23 +26,23 @@ class UnitBasic;
 	@{
 */
 /**
-	@addtogroup hive
+	@addtogroup anchor
 	@{
 */
 
 /**
-	Basic hive unit class.
+	Basic anchor unit class.
 */
 class UnitBasic final
-	: public Hive::Unit
+	: public Anchor::Unit
 {
 private:
-	using base = Hive::Unit;
+	using base = Anchor::Unit;
 
 	static Object::UPtr
 	construct(
 		Object::ID const id,
-		Object::ID const /*parent*/
+		Object::ID const parent
 	) noexcept;
 
 public:
@@ -52,8 +52,8 @@ public:
 	static constexpr Object::type_info const
 	info{
 		"Hord.UnitBasic",
-		Hive::Type{Hive::UnitType::basic},
-		{Hive::SUPPLIED_PROPS},
+		Anchor::Type{Anchor::UnitType::basic},
+		{Anchor::SUPPLIED_PROPS},
 		UnitBasic::construct
 	};
 
@@ -73,20 +73,20 @@ public:
 	UnitBasic& operator=(UnitBasic&&);
 
 private:
-	explicit
 	UnitBasic(
-		Hive::ID const id
+		Anchor::ID const id,
+		Object::ID const parent
 	) noexcept;
 /// @}
 };
 
-/** @} */ // end of doc-group hive
+/** @} */ // end of doc-group anchor
 /** @} */ // end of doc-group object
 
-} // namespace Hive
+} // namespace Anchor
 
-template struct Hive::Unit::ensure_traits<Hive::UnitBasic>;
+template struct Anchor::Unit::ensure_traits<Anchor::UnitBasic>;
 
 } // namespace Hord
 
-#endif // HORD_HIVE_UNITBASIC_HPP_
+#endif // HORD_ANCHOR_UNITBASIC_HPP_

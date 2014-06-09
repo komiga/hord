@@ -1,6 +1,6 @@
 /**
 @file Node/UnitBasic.hpp
-@brief Node basic unit class.
+@brief Basic node unit class.
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;

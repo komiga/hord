@@ -70,6 +70,8 @@ enum class BaseType : Object::TypeValue {
 	Hive,
 	/** @ref rule. */
 	Rule,
+	/** @ref anchor. */
+	Anchor,
 	/** @ref node. */
 	Node
 };
@@ -107,10 +109,11 @@ get_base_type_name(
 	Object::BaseType const base_type
 ) noexcept {
 	switch (base_type) {
-	case Object::BaseType::null: return "null";
-	case Object::BaseType::Hive: return "Hive";
-	case Object::BaseType::Node: return "Node";
-	case Object::BaseType::Rule: return "Rule";
+	case Object::BaseType::null:   return "null";
+	case Object::BaseType::Hive:   return "Hive";
+	case Object::BaseType::Rule:   return "Rule";
+	case Object::BaseType::Anchor: return "Anchor";
+	case Object::BaseType::Node:   return "Node";
 	}
 	return "INVALID";
 }
