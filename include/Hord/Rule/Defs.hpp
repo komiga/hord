@@ -118,35 +118,6 @@ namespace Rule {
 */
 using Type = Object::GenType<Rule::UnitType>;
 
-/**
-	Rule type info.
-*/
-struct type_info final
-	: public Object::type_info
-{
-	/**
-		Permitted field types.
-
-		@note This should be a nonzero combination of
-		Data::FieldTypes.
-
-		@sa Data::FieldType
-	*/
-	std::uint8_t const permitted_types;
-
-	/**
-		Constructor with properties.
-	*/
-	constexpr
-	type_info(
-		Object::type_info const& tinfo,
-		std::uint8_t const permitted_types
-	)
-		: Object::type_info(tinfo)
-		, permitted_types(permitted_types)
-	{}
-};
-
 /** @} */ // end of doc-group rule
 /** @} */ // end of doc-group object
 

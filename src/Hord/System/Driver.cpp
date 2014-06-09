@@ -2,7 +2,6 @@
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/UnitBasic.hpp>
-#include <Hord/Rule/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Node/UnitBasic.hpp>
 #include <Hord/Cmd/Defs.hpp>
@@ -95,24 +94,6 @@ Driver::register_object_type(
 	m_object_types.emplace(
 		type_info.type,
 		type_info
-	);
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC register_rule_type
-void
-Driver::register_rule_type(
-	Rule::type_info const& type_info
-) {
-	if (0u == type_info.permitted_types) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_rule_type_zero_permitted_types,
-			"permitted_types property must be a nonzero combination"
-			" of FieldTypes"
-		);
-	}
-	register_object_type(
-		static_cast<Object::type_info const&>(type_info)
 	);
 }
 #undef HORD_SCOPE_FUNC

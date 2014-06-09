@@ -14,13 +14,13 @@ Unit::Unit(Unit&&) = default;
 Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
-	Rule::type_info const& tinfo,
+	Object::type_info const& tinfo,
 	Rule::ID const id,
 	Object::ID const parent
 ) noexcept
 	: base(
-		static_cast<Object::type_info const&>(tinfo),
-		static_cast<Object::ID>(id),
+		tinfo,
+		id,
 		parent
 	)
 {}

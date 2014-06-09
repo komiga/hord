@@ -14,6 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
 #include <Hord/serialization.hpp>
+#include <Hord/Data/Defs.hpp>
 #include <Hord/Rule/Defs.hpp>
 
 namespace Hord {
@@ -44,8 +45,8 @@ public:
 	using rule_id_vector_type = aux::vector<Rule::ID>;
 
 /** @name Properties */ /// @{
-	/** Rule type. */
-	Rule::Type type{Rule::UnitType::null};
+	/** Permitted field types. */
+	Data::FieldMask mask{Data::FieldMask::any};
 
 	/** Title. */
 	String title{};

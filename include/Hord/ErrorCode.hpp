@@ -60,11 +60,6 @@ enum class ErrorCode : unsigned {
 		been registered.
 	*/
 	driver_object_type_shared,
-	/**
-		Attempted to register a rule with permitted_types property
-		equal to @c 0.
-	*/
-	driver_rule_type_zero_permitted_types,
 
 	/**
 		Attempted to register a command type info table which

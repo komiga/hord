@@ -2,7 +2,7 @@
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/serialization.hpp>
-#include <Hord/Rule/Defs.hpp>
+#include <Hord/Data/Defs.hpp>
 #include <Hord/Node/Column.hpp>
 
 namespace Hord {
@@ -17,17 +17,17 @@ Column::read(
 	ser_tag_read,
 	InputSerializer& ser
 ) {
-	Rule::Type des_type{};
+	Data::FieldMask des_mask{};
 	String des_title{};
 	rule_id_vector_type des_rules{};
 	ser(
-		des_type,
+		des_mask,
 		des_title,
 		des_rules
 	);
 
 	// commit
-	this->type = des_type;
+	this->mask = des_mask;
 	this->title.operator=(std::move(des_title));
 	this->rules.operator=(std::move(des_rules));
 }
@@ -38,7 +38,7 @@ Column::write(
 	OutputSerializer& ser
 ) const {
 	ser(
-		this->type,
+		this->mask,
 		this->title,
 		this->rules
 	);

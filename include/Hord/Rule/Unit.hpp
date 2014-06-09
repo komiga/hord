@@ -96,7 +96,7 @@ protected:
 		@post See Object::Unit.
 	*/
 	Unit(
-		Rule::type_info const& tinfo,
+		Object::type_info const& tinfo,
 		Rule::ID const id,
 		Object::ID const parent
 	) noexcept;

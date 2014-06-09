@@ -16,7 +16,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Rule/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/Cmd/Defs.hpp>
@@ -126,20 +125,6 @@ public:
 	void
 	register_object_type(
 		Object::type_info const& type_info
-	);
-
-	/**
-		Register rule type information.
-
-		@throws Error{ErrorCode::driver_rule_type_zero_permitted_types}
-		If @c type_info.permitted_types is @c 0.
-
-		@throws Error{ErrorCode::driver_object_type_shared}
-		If the type has already been registered.
-	*/
-	void
-	register_rule_type(
-		Rule::type_info const& type_info
 	);
 
 	/**
