@@ -51,7 +51,7 @@ public:
 	*/
 	static constexpr Object::type_info const
 	info{
-		"Hord.UnitBasic",
+		"Hord.Anchor.Basic",
 		Anchor::Type{Anchor::UnitType::basic},
 		{Anchor::SUPPLIED_PROPS},
 		UnitBasic::construct

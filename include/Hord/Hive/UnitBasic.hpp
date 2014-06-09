@@ -51,7 +51,7 @@ public:
 	*/
 	static constexpr Object::type_info const
 	info{
-		"Hord.UnitBasic",
+		"Hord.Hive.Basic",
 		Hive::Type{Hive::UnitType::basic},
 		{Hive::SUPPLIED_PROPS},
 		UnitBasic::construct

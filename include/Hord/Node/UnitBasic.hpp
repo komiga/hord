@@ -51,7 +51,7 @@ public:
 	*/
 	static constexpr Object::type_info const
 	info{
-		"Hord.UnitBasic",
+		"Hord.Node.Basic",
 		Node::Type{Node::UnitType::basic},
 		{Node::SUPPLIED_PROPS},
 		UnitBasic::construct
