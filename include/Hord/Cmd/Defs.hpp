@@ -118,6 +118,17 @@ public:
 	{}
 
 	/**
+		Constructor with base and host.
+	*/
+	explicit constexpr
+	ID(
+		Cmd::IDValue const base,
+		bool const host
+	) noexcept
+		: ID(base, host, false)
+	{}
+
+	/**
 		Constructor with properties.
 	*/
 	explicit constexpr
