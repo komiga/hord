@@ -155,7 +155,7 @@ Context::terminate(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC initiate
-Cmd::IDValue
+Cmd::ID
 Context::initiate(
 	Cmd::UnitUPtr command,
 	Cmd::StageUPtr initiator
@@ -171,21 +171,21 @@ Context::initiate(
 
 	m_active.emplace(id.canonical(), std::move(command));
 	m_input.emplace_back(std::move(initiator));
-	return id.canonical();
+	return id;
 }
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC initiate_pass
-Cmd::IDValue
+Cmd::ID
 Context::initiate_pass(
 	Cmd::StageUPtr initiator
 ) noexcept {
 	assert(!initiator->is_identified());
 
-	initiator->get_id().assign(next_id(), is_host(), true);
-	auto const canonical_id = initiator->get_id_canonical();
+	Cmd::ID const id{next_id(), is_host()};
+	initiator->get_id().assign(id, true);
 	m_output.emplace_back(Dest::remote, std::move(initiator));
-	return canonical_id;
+	return id;
 }
 #undef HORD_SCOPE_FUNC
 
