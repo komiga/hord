@@ -38,11 +38,12 @@ operator<<(
 	std::ostream& stream,
 	Cmd::Stage const& stage
 ) {
+	auto const id = stage.get_id();
 	ceformat::write<s_fmt_cmd_stage_identity>(
 		stream,
-		stage.get_id().base(),
-		stage.get_id().is_host() ? 'H' : 'C',
-		stage.get_id().is_initiator() ? 'I' : ' ',
+		id.base(),
+		id.is_host() ? 'H' : 'C',
+		id.is_initiator() ? 'I' : ' ',
 		enum_cast(stage.get_command_type()),
 		enum_cast(stage.get_stage_type())
 	);
