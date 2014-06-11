@@ -65,11 +65,6 @@ public:
 		Cmd::UnitUPtr
 	>;
 
-	/** Command deque. */
-	using command_deque_type = aux::deque<
-		Cmd::UnitUPtr
-	>;
-
 	/** Command input deque. */
 	using input_deque_type = aux::deque<
 		Cmd::StageUPtr
@@ -121,6 +116,8 @@ public:
 		Cmd::ID id;
 		/** Command status. */
 		Cmd::Status status;
+		/** Command unit. */
+		Cmd::UnitUPtr command;
 	};
 
 private:
@@ -134,7 +131,6 @@ private:
 	command_map_type m_active;
 
 	// Remote results and local results
-	command_deque_type m_done;
 	input_deque_type m_input;
 	output_deque_type m_output;
 
@@ -143,6 +139,7 @@ private:
 
 	void
 	terminate(
+		Result& result,
 		Cmd::Stage& input_stage,
 		command_map_type::iterator it,
 		bool const push_terminator
@@ -243,14 +240,6 @@ public:
 	command_map_type&
 	get_active() noexcept {
 		return m_active;
-	}
-
-	/**
-		Get done commands.
-	*/
-	command_deque_type&
-	get_done() noexcept {
-		return m_done;
 	}
 
 	/**
@@ -469,9 +458,12 @@ public:
 		Execute command on the context.
 
 		@par
-		@note Commands are removed (and destroyed) from the active group
-		when execution status is anything other than
-		Cmd::Status::waiting.
+		@note Commands are removed (and destroyed) from the active
+		group when result status is anything other than
+		Cmd::Status::waiting. The result command unit is replaced
+		with the command unit that completed execution (with any
+		non-waiting status). The command unit shall have the same
+		ID and status as @a result.
 
 		@note
 		If the stage returns a fatal error or throws an exception,

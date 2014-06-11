@@ -49,7 +49,6 @@ Context::Context(
 	, m_hive(static_cast<Hive::Unit&>(*hive_pair.hive))
 	, m_genid(Cmd::ID_NULL.value())
 	, m_active()
-	, m_done()
 	, m_input()
 	, m_output()
 {}
@@ -84,6 +83,7 @@ Context::next_id() noexcept {
 #define HORD_SCOPE_FUNC terminate
 void
 Context::terminate(
+	Result& result,
 	Cmd::Stage& input_stage,
 	command_map_type::iterator it,
 	bool const push_terminator
@@ -107,10 +107,11 @@ Context::terminate(
 		input_deque_type::size_type idx = 0;
 		m_input.size() > idx;
 	) {
-		if (m_input[idx]->get_id_canonical() == id) {
+		auto const& input = m_input[idx];
+		if (input->get_id_canonical() == id) {
 			Log::acquire()
 				<< "discarding input stage (command termination): "
-				<< *m_input[idx]
+				<< *input
 			;
 			m_input.erase(m_input.cbegin() + idx);
 		} else {
@@ -123,7 +124,7 @@ Context::terminate(
 		output_deque_type::size_type idx = 0;
 		m_output.size() > idx;
 	) {
-		auto& output = m_output[idx];
+		auto const& output = m_output[idx];
 		if (
 			output.stage->get_id_canonical() == id
 		) {
@@ -148,7 +149,7 @@ Context::terminate(
 	}
 
 	// Finally, terminate the damned thing locally
-	m_done.emplace_back(std::move(it->second));
+	result.command = std::move(it->second);
 	m_active.erase(it);
 }
 #undef HORD_SCOPE_FUNC
@@ -276,7 +277,7 @@ Context::execute_input(
 		if (m_active.end() != it) {
 			it->second->set_status(result.status);
 		}
-		terminate(stage, it, false);
+		terminate(result, stage, it, false);
 		goto l_normal_exit;
 	}
 	if (m_active.end() != it) {
@@ -323,7 +324,7 @@ Context::execute_input(
 	} catch (...) {
 		result.status = Cmd::Status::fatal; // implicit
 		it->second->set_status(result.status);
-		terminate(stage, it, true);
+		terminate(result, stage, it, true);
 		throw;
 	}
 
@@ -335,13 +336,13 @@ Context::execute_input(
 
 	case Cmd::Status::fatal: // fall-through
 	case Cmd::Status::fatal_remote:
-		terminate(stage, it, true);
+		terminate(result, stage, it, true);
 		break;
 
 	case Cmd::Status::complete: // fall-through
 	case Cmd::Status::error: // fall-through
 	case Cmd::Status::error_remote:
-		m_done.emplace_back(std::move(it->second));
+		result.command = std::move(it->second);
 		m_active.erase(it);
 		break;
 	}
