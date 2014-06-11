@@ -74,11 +74,11 @@ public:
 		%Stage output destinations.
 	*/
 	enum class Dest : unsigned {
-		/** Output to remote endpoint. */
+		/** %Output to remote endpoint. */
 		remote = 1u,
-		/** Output to all other endpoints (local initiation). */
+		/** %Output to all other endpoints (local initiation). */
 		broadcast_local,
-		/** Output to all other endpoints (remote initiation). */
+		/** %Output to all other endpoints (remote initiation). */
 		broadcast_remote,
 	};
 
@@ -379,8 +379,7 @@ public:
 		executed; the stage only takes the next local ID and is
 		pushed to the remote endpoint).
 
-		@post No active nor done command for the stage on the local
-		endpoint.
+		@post No active command for the stage on the local endpoint.
 
 		@pre @code
 			!initiate->is_identified()
@@ -394,7 +393,7 @@ public:
 	) noexcept;
 
 	/**
-		Push command input.
+		Push stage as input from remote endpoint.
 
 		@note This is used by userspace to emplace remote stages.
 
@@ -406,7 +405,7 @@ public:
 	) noexcept;
 
 	/**
-		Push stage to remote endpoint.
+		Push stage as output to remote endpoint.
 
 		@pre @code
 			 origin->is_identified() &&
@@ -429,7 +428,7 @@ public:
 	);
 
 	/**
-		Broadcast stage to all other contexts.
+		Push stage as broadcast output.
 
 		@note @a stage will carry no identity in the output queue.
 		Userspace should broadcast a clone of the stage by either
@@ -458,12 +457,11 @@ public:
 		Execute command on the context.
 
 		@par
-		@note Commands are removed (and destroyed) from the active
-		group when result status is anything other than
-		Cmd::Status::waiting. The result command unit is replaced
-		with the command unit that completed execution (with any
-		non-waiting status). The command unit shall have the same
-		ID and status as @a result.
+		@note Commands are removed from the active group when result
+		status is anything other than Cmd::Status::waiting. The
+		result command unit is replaced with the command unit that
+		completed execution (with any non-waiting status). The
+		command unit shall have the same ID and status as @a result.
 
 		@note
 		If the stage returns a fatal error or throws an exception,
