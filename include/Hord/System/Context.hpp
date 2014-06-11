@@ -369,8 +369,10 @@ public:
 			!initiate->is_identified() &&
 			initiator->get_command_type() == command->get_type()
 		@endcode
+
+		@returns Canonical ID of the command.
 	*/
-	void
+	Cmd::IDValue
 	initiate(
 		Cmd::UnitUPtr command,
 		Cmd::StageUPtr initiator
@@ -394,8 +396,10 @@ public:
 		@pre @code
 			!initiate->is_identified()
 		@endcode
+
+		@returns Canonical ID of the command.
 	*/
-	void
+	Cmd::IDValue
 	initiate_pass(
 		Cmd::StageUPtr initiator
 	) noexcept;
