@@ -2,6 +2,8 @@
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/UnitBasic.hpp>
+#include <Hord/Anchor/Defs.hpp>
+#include <Hord/Anchor/UnitBasic.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Node/UnitBasic.hpp>
 #include <Hord/Cmd/Defs.hpp>
@@ -76,6 +78,7 @@ Driver::Driver(
 	// TODO: Register standard rule types
 	if (register_standard_object_types) {
 		register_object_type(Hive::UnitBasic::info);
+		register_object_type(Anchor::UnitBasic::info);
 		register_object_type(Node::UnitBasic::info);
 	}
 }
