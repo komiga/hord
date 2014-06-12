@@ -67,7 +67,7 @@ private:
 	}
 
 	StageUPtr
-	clone_impl() override {
+	clone_impl() const override {
 		return StageUPtr{new StageShadow(*this)};
 	}
 

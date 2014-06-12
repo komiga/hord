@@ -358,7 +358,7 @@ protected:
 		@throws std::bad_alloc
 	*/
 	virtual Cmd::StageUPtr
-	clone_impl() = 0;
+	clone_impl() const = 0;
 
 	/**
 		execute() implementation.
@@ -559,7 +559,7 @@ public:
 		If an allocation fails.
 	*/
 	Cmd::StageUPtr
-	clone() {
+	clone() const {
 		return clone_impl();
 	}
 
@@ -681,7 +681,7 @@ private:
 	}
 
 	Cmd::StageUPtr
-	clone_impl() override {
+	clone_impl() const override {
 		return Cmd::StageUPtr{new StageImpl(*this)};
 	}
 
