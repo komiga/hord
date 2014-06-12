@@ -86,11 +86,14 @@ public:
 		Command output.
 	*/
 	struct Output {
+	/** @name Properties */ /// @{
 		/** Destination of stage. */
 		Context::Dest dest;
 		/** %Stage. */
 		Cmd::StageUPtr stage;
+	/// @}
 
+	/** @name Special member functions */ /// @{
 		/**
 			Constructor with destination and stage.
 		*/
@@ -101,6 +104,20 @@ public:
 			: dest(dest)
 			, stage(std::move(stage))
 		{}
+	/// @}
+
+	/** @name Properties */ /// @{
+		/**
+			Check if output is a broadcast.
+		*/
+		bool
+		is_broadcast() const noexcept {
+			return
+				Dest::broadcast_local == dest ||
+				Dest::broadcast_remote == dest
+			;
+		}
+	/// @}
 	};
 
 	/** Command output deque. */
