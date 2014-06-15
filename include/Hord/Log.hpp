@@ -12,10 +12,13 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
+#include <Hord/Error.hpp>
+#include <Hord/serialization.hpp>
 
 #include <duct/StateStore.hpp>
 #include <duct/IO/multistream.hpp>
 
+#include <exception>
 #include <fstream>
 #include <ostream>
 
@@ -344,6 +347,56 @@ operator<<(
 	Pre prefix
 );
 /** @endcond */ // INTERNAL
+
+/**
+	Report stdlib error.
+*/
+inline void
+report_error(
+	std::exception const& err
+) {
+	Log::acquire(Log::error)
+		<< "[std] "
+		<< err.what()
+		<< '\n'
+	;
+}
+
+/**
+	Report serializer error.
+*/
+inline void
+report_error(
+	SerializerError const& err
+) {
+	Log::acquire(Log::error)
+		<< "[Serializer:" << get_ser_error_name(err.get_code()) << "] "
+		<< err.get_message()
+		<< '\n'
+	;
+}
+
+/**
+	Report Hord error.
+*/
+inline void
+report_error(
+	Hord::Error const& err
+) {
+	Log::acquire(Log::error)
+		<< "[Hord:" << get_error_name(err.get_code()) << "] "
+		<< err.get_message()
+		<< '\n'
+	;
+}
+
+/**
+	Report error by exception pointer.
+*/
+void
+report_error(
+	std::exception_ptr err
+);
 
 /** @} */ // end of doc-group log
 /** @} */ // end of doc-group etc
