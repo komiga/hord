@@ -45,6 +45,12 @@ struct type_info;
 	@{
 */
 
+/**
+	Maximum size of a slug.
+*/
+static constexpr std::size_t const
+SLUG_MAX_SIZE = 0xFFu;
+
 /*
 
 M               32 bits               L

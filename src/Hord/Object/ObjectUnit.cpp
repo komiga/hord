@@ -36,8 +36,8 @@ Unit::set_slug(
 	String slug
 ) noexcept {
 	m_slug.assign(std::move(slug));
-	if (0xFF < m_slug.size()) {
-		m_slug.resize(0xFF);
+	if (Object::SLUG_MAX_SIZE < m_slug.size()) {
+		m_slug.resize(Object::SLUG_MAX_SIZE);
 		// TODO: Truncate invalid unit sequence (if any) after resize
 	}
 }
