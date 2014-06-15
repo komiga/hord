@@ -63,8 +63,6 @@ public:
 		@note IO::PropType::identity is implicit, and any types not
 		supplied for a particular object are ignored when loading
 		props.
-
-		@param prop_types Properties to load for all objects.
 	*/
 	result_type
 	operator()(
