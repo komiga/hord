@@ -11,16 +11,17 @@ see @ref index or the accompanying LICENSE file for full text.
 #define HORD_CMD_NODE_HPP_
 
 #include <Hord/config.hpp>
-#include <Hord/String.hpp>
-#include <Hord/Object/Defs.hpp>
+#include <Hord/IO/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
-#include <Hord/Cmd/type_info.hpp>
 #include <Hord/Cmd/Unit.hpp>
 
 namespace Hord {
 namespace Cmd {
 namespace Node {
+
+// Forward declarations
+class Create;
 
 /**
 	@addtogroup cmd
@@ -31,105 +32,57 @@ namespace Node {
 	@{
 */
 
-/*
-
-NodeCreate (Request)
-
-* C I-> Request
-	C:	(-> S & W) |
-		~error
-
-	H:	(-> Response & B-> Statement & ~) |
-		(-> Error | & ~error)
-
-* H *-> Response
-	C: ~
-
-* H *-> Error
-	C: ~error_remote
-
-* H B-> Statement
-	C: ~
-
-NodeCreate (Statement)
-
-* H I-> Statement
-	C: ~
-	H: ~
-
+/**
+	Node create command.
 */
+class Create final
+	: public Cmd::Unit<Create>
+{
+	HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(Create)
 
-/** @cond INTERNAL */
-#define HORD_CMD_TYPE_ NodeCreate
-/** @endcond */
-HORD_CMD_DEF_OPEN(Create)
+private:
+	Hord::Node::ID m_id{Hord::Node::ID_NULL};
+
 public:
-	/**
-		Result codes.
-	*/
-	enum class ResultCode : unsigned {
-		ok,
-		unknown_error,
-		parent_not_found,
-		layout_ref_not_found,
-		layout_ref_not_a_node,
-		slug_empty,
-		slug_too_long,
-		slug_already_exists,
-		unknown_unit_type,
-		allocation_failed,
-		id_already_exists,
-	};
-
-	/**
-		Result data.
-	*/
-	struct ResultData {
-		/** Result code. */
-		ResultCode code;
-		/** %ID of new node. */
-		Hord::Node::ID id;
-	};
-
-	/**
-		Command properties.
-
-		@sa Node::Unit
-	*/
-	struct Props {
-		Object::ID parent;
-		Hord::Node::ID layout_ref;
-		String slug;
-		Hord::Node::UnitType unit_type;
-	};
-
 /** @name Properties */ /// @{
-	/** Result data. */
-	ResultData result{
-		ResultCode::unknown_error,
-		Hord::Node::ID_NULL
-	};
-/// @}
-
-/** @name Stages */ /// @{
 	/**
-		Make @c Request stage (initiator).
+		Get ID of created node.
 
-		@throws std::bad_alloc
-		If allocation fails.
+		@returns Node::ID_NULL if the command failed.
 	*/
-	static Cmd::StageUPtr
-	make_request(
-		Props&& props
-	);
+	Hord::Node::ID
+	get_id() const noexcept {
+		return m_id;
+	}
 /// @}
-HORD_CMD_DEF_CLOSE()
-#undef HORD_CMD_TYPE_
+
+/** @name Operations */ /// @{
+	/**
+		Execute command.
+
+		@note IO::PropType::identity is implicit, and any types not
+		supplied for a particular object are ignored when loading
+		props.
+
+		@param prop_types Properties to load for all objects.
+	*/
+	result_type
+	operator()(
+		Object::ID const parent,
+		Hord::Node::ID const layout_ref,
+		String const& slug,
+		Hord::Node::UnitType const unit_type
+	) noexcept;
+/// @}
+};
 
 /** @} */ // end of doc-group cmd_node
 /** @} */ // end of doc-group cmd
 
 } // namespace Node
+
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Node::Create);
+
 } // namespace Cmd
 } // namespace Hord
 

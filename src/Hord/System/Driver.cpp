@@ -6,8 +6,6 @@
 #include <Hord/Anchor/UnitBasic.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Node/UnitBasic.hpp>
-#include <Hord/Cmd/Defs.hpp>
-#include <Hord/Cmd/type_info.hpp>
 #include <Hord/System/Driver.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
@@ -26,32 +24,6 @@ namespace System {
 
 #define HORD_SCOPE_CLASS System::Driver
 
-namespace {
-static Cmd::type_info const*
-s_std_cmd_table_array[]{
-	// Group: Generic
-	&Cmd::s_type_info_GenericTerminate,
-
-	// Group: Hive
-	&Cmd::s_type_info_HiveInit,
-
-	// Group: Node
-	&Cmd::s_type_info_NodeCreate,
-};
-static Cmd::type_info_table const
-s_std_cmd_table{
-	s_std_cmd_table_array,
-	Cmd::Type::STANDARD_BASE,
-	Cmd::Type::STANDARD_END
-};
-}// anonymous namespace
-
-static_assert(
-	static_cast<unsigned>(Cmd::Type::STANDARD_COUNT_DEFINED)
-	== std::extent<decltype(s_std_cmd_table_array)>::value,
-	"standard command table is incomplete"
-);
-
 // NB: See note about stdlib defect in System/IDGenerator.cpp
 
 Driver::~Driver() noexcept = default;
@@ -63,7 +35,6 @@ Driver::Driver(
 ) /*noexcept*/
 	: m_id_generator()
 	, m_object_types()
-	, m_command_tables({&s_std_cmd_table})
 	, m_hives()
 {
 	static_assert(
@@ -109,64 +80,6 @@ Driver::get_object_type_info(
 	auto const it = m_object_types.find(type);
 	if (m_object_types.cend() != it) {
 		return &it->second;
-	}
-	return nullptr;
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC register_command_type_table
-void
-Driver::register_command_type_table(
-	Cmd::type_info_table const& table
-) {
-	if (table.range_begin > table.range_end) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_command_table_range_invalid,
-			"type range is invalid: range_begin > range_end"
-		);
-	} else if (table.range_begin == table.range_end) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_command_table_range_invalid,
-			"type range is invalid: size() == 0"
-		);
-	} else if (table.range_begin < Cmd::Type::STANDARD_BASE) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_command_table_range_invalid,
-			"type range is invalid: intersects the range reserved for"
-			" stage types"
-		);
-	} else if (table.range_begin < Cmd::Type::USERSPACE_BASE) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_command_table_range_invalid,
-			"type range is invalid: intersects the range reserved for"
-			" standard command types"
-		);
-	}
-	for (auto const& registered_table : m_command_tables) {
-		if (table.intersects(*registered_table)) {
-			HORD_THROW_FQN(
-				ErrorCode::driver_command_table_range_shared,
-				"type range intersects with type range of previously-"
-				"registered table"
-			);
-		}
-	}
-	m_command_tables.emplace_back(&table);
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC get_command_type_info
-Cmd::type_info const*
-Driver::get_command_type_info(
-	Cmd::Type const type
-) const noexcept {
-	for (auto const& table : m_command_tables) {
-		if (table->contains(type)) {
-			return table->array[
-				static_cast<std::size_t>(type) -
-				static_cast<std::size_t>(table->range_begin)
-			];
-		}
 	}
 	return nullptr;
 }

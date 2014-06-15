@@ -18,7 +18,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Hive/Defs.hpp>
 #include <Hord/Hive/Unit.hpp>
-#include <Hord/Cmd/Defs.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
 
@@ -63,14 +62,8 @@ private:
 		Object::type_info const&
 	>;
 
-	using command_table_vector_type
-	= aux::vector<
-		Cmd::type_info_table const*
-	>;
-
 	System::IDGenerator m_id_generator;
 	object_type_map_type m_object_types;
-	command_table_vector_type m_command_tables;
 	hive_map_type m_hives;
 
 	Driver() = delete;
@@ -136,38 +129,6 @@ public:
 	Object::type_info const*
 	get_object_type_info(
 		Object::Type const type
-	) const noexcept;
-
-	/**
-		Register command type information table.
-
-		@throws Error{ErrorCode::driver_command_table_range_invalid}
-		If the type range:
-
-		- is degenerate
-		  (<code>table.range_begin > table.range_end</code>);
-		- contains no types (<code>table.size() == 0</code>);
-		- intersects the range reserved for stages; or
-		- intersects the range reserved for standard commands.
-
-		@throws Error{ErrorCode::driver_command_table_range_shared}
-		If the table's type range intersects with the type range of a
-		previously-registered table.
-	*/
-	void
-	register_command_type_table(
-		Cmd::type_info_table const& table
-	);
-
-	/**
-		Get command type information.
-
-		@returns The command type info, or @c nullptr if the type was
-		not supplied in a registered type info table.
-	*/
-	Cmd::type_info const*
-	get_command_type_info(
-		Cmd::Type const type
 	) const noexcept;
 /// @}
 

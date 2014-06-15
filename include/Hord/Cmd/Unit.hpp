@@ -12,8 +12,10 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
-#include <Hord/serialization.hpp>
+#include <Hord/utility.hpp>
+#include <Hord/String.hpp>
 #include <Hord/Cmd/Defs.hpp>
+#include <Hord/System/Context.hpp>
 
 #include <type_traits>
 #include <utility>
@@ -22,7 +24,14 @@ namespace Hord {
 namespace Cmd {
 
 // Forward declarations
+template<class>
 class Unit;
+template<class>
+struct has_unit_commit_impl;
+template<class, bool const>
+struct unit_commit_impl;
+template<class>
+struct unit_ensure_traits;
 
 /**
 	@addtogroup cmd
@@ -30,349 +39,327 @@ class Unit;
 */
 
 /**
-	@name Command definition macros
+	Command implementation boilerplate.
 
-	TODO
+	@note This should be placed within a class definition.
 
-	@{
+	@remarks Defines base to the Cmd::Unit specialization, imports
+	base::result_type, and defines all special member functions.
+
+	@param impl_ Implementation class.
 */
-
-/**
-	Open @c make_stage() function definition.
-
-	%Stage type switch body should follow macro (without braces).
-	See Cmd::type_info for visible parameters.
-*/
-#define HORD_CMD_MAKE_STAGE_OPEN()				\
-	static ::Hord::Cmd::StageUPtr				\
-	make_stage(									\
-		::Hord::Cmd::StageType const type		\
-	) {											\
-		switch (type) {
-
-/**
-	Make stage type switch in @c make_stage() definition.
-
-	@param stagen_ Identifier of the stage name.
-*/
-#define HORD_CMD_MAKE_STAGE_CASE(stagen_)		\
-		case ::Hord::Cmd::StageType::stagen_:	\
-			return ::Hord::Cmd::StageUPtr{new stagen_::impl()};
-
-/**
-	Close @c make_stage() function definition.
-
-	This requires @c HORD_CMD_TYPE_ to be defined to the command
-	type for the stages.
-*/
-#define HORD_CMD_MAKE_STAGE_CLOSE()										\
-		default:														\
-			DUCT_GR_THROW_IMPL_(										\
-				::Hord::ErrorCode::cmd_construct_stage_type_invalid,	\
-				DUCT_GR_MSG(											\
-					DUCT_GR_SCOPE_CLASS_STR "::make_stage",				\
-					"stage type not implemented for command"			\
-					" " HORD_STRINGIFY(HORD_CMD_TYPE_)					\
-				)														\
-			);															\
-		}																\
-	}
-
-/**
-	Define command type info.
-
-	@param cmdn_ Command class identifier.
-	@param ... Type flags.
-*/
-#define HORD_CMD_DEF_TYPE_INFO(cmdn_, ...)				\
-	::Hord::Cmd::type_info const						\
-	HORD_CMD_JOIN_CT_(HORD_CMD_TYPE_){					\
-		::Hord::Cmd::Type::HORD_CMD_TYPE_,				\
-		{__VA_ARGS__},									\
-		{cmdn_::make},									\
-		{make_stage}									\
-	};
-
-/**
-	Open command definition.
-
-	Command class body should follow macro (without braces).
-
-	@param classn_ Class name.
-*/
-#define HORD_CMD_DEF_OPEN(classn_)									\
-	class classn_ : public ::Hord::Cmd::Unit {						\
+#define HORD_CMD_IMPL_BOILERPLATE(impl_)							\
 	private:														\
-		template<													\
-			::Hord::Cmd::Type const,								\
-			::Hord::Cmd::StageType const,							\
-			class, class											\
-		>															\
-		friend class ::Hord::Cmd::StageImpl;						\
-		::Hord::Cmd::type_info const&								\
-		get_type_info_impl() const noexcept override {				\
-			return HORD_CMD_JOIN_CT_(HORD_CMD_TYPE_);				\
-		}															\
-		::Hord::Cmd::UnitUPtr										\
-		clone_impl() override {										\
-			return ::Hord::Cmd::UnitUPtr{new classn_(*this)};		\
-		}															\
-	private:														\
-		classn_& operator=(classn_ const&) = delete;				\
+		using base = ::Hord::Cmd::Unit<impl_>;						\
+		using this_type = impl_;									\
+		friend base;												\
 	public:															\
-		~classn_() override = default;								\
-		classn_() = default;										\
-		classn_(classn_&&) = default;								\
-		classn_& operator=(classn_&&) = default;					\
-		classn_(classn_ const&) = default;							\
-		static ::Hord::Cmd::UnitUPtr								\
-		make() {													\
-			return ::Hord::Cmd::UnitUPtr{new classn_()};			\
-		}
+		using base::result_type;									\
+	private:														\
+		impl_() = delete;											\
+		impl_(impl_ const&) = delete;								\
+		impl_& operator=(impl_ const&) = delete;					\
+		impl_& operator=(impl_&&) = delete;							\
+	public:															\
+		~impl_() = default;											\
+		impl_(impl_&&) = default;									\
+		explicit													\
+		impl_(														\
+			System::Context& context								\
+		) noexcept													\
+			: base(context)											\
+		{}
+//
 
 /**
-	Close command definition.
-*/
-#define HORD_CMD_DEF_CLOSE() \
-	};
+	Ensure traits for implementation class.
 
-/** @} */ // end of name-group Command definition macros
+	@pre Must be used within the namespace @c ::Hord::Cmd.
+
+	@param impl_ Implementation class.
+*/
+#define HORD_CMD_IMPL_ENSURE_TRAITS(impl_)							\
+	template struct ::Hord::Cmd::unit_ensure_traits<impl_>;
+//
+
+/**
+	Command implementation boilerplate with commit_impl() declaration.
+
+	@sa
+		HORD_CMD_IMPL_BOILERPLATE()
+*/
+#define HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(impl_)				\
+	private:														\
+		void														\
+		commit_impl() noexcept;
+//
+
+/**
+	Define command implementation commit_impl().
+
+	@note Function body should follow.
+
+	@param impl_ Implementation class.
+*/
+#define HORD_CMD_IMPL_COMMIT_DEF(impl_)								\
+	void															\
+	impl_::commit_impl() noexcept
 
 /**
 	Command base class.
+
+	@note Command implementations should derive from this class.
+
+	@tparam Impl Command implementation class.
 */
+template<class Impl>
 class Unit {
 public:
 	/**
-		Ensure traits for deriving classes.
-
-		@tparam D Deriving class.
+		Command implementation class.
 	*/
-	template<
-		class D
-	>
-	struct ensure_traits :
-		traits::require_t<
-			D,
-			tw::capture_post<std::is_base_of, Cmd::Unit>::type,
-			tw::is_fully_moveable,
-			std::is_copy_constructible,
-			std::is_nothrow_destructible
-		>,
-		traits::disallow_t<
-			D,
-			std::is_copy_assignable
-		>
-	{};
+	using impl_type = Impl;
+	/**
+		Command execution result type.
+	*/
+	using result_type = bool;
 
 private:
-	Cmd::ID m_id{};
-	Cmd::Status m_status{Cmd::Status::waiting};
-	Cmd::StageUPtr m_initiator{nullptr};
+	using this_type = Unit<impl_type>;
 
+	using unit_commit_impl
+	= Cmd::unit_commit_impl<
+		impl_type,
+		Cmd::has_unit_commit_impl<impl_type>::value
+	>;
+
+	System::Context& m_context;
+	result_type m_result{false};
+	String m_message{};
+
+	Unit() = delete;
+	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
+	Unit& operator=(Unit&&) = delete;
 
-protected:
-/** @name Implementation */ /// @{
-	/**
-		get_type_info() implementation.
-	*/
-	virtual Cmd::type_info const&
-	get_type_info_impl() const noexcept = 0;
+	void
+	set_result(
+		result_type const result
+	) noexcept {
+		m_result = result;
+	}
 
-	/**
-		clone() implementation.
+	void
+	set_message(
+		String&& message
+	) noexcept {
+		m_message = std::move(message);
+	}
 
-		@throws std::bad_alloc
-	*/
-	virtual Cmd::UnitUPtr
-	clone_impl() = 0;
-/// @}
-
-/** @name Special member functions */ /// @{
 public:
+/** @name Special member functions */ /// @{
 	/** Destructor. */
-	virtual
-	~Unit() noexcept = 0;
+	~Unit() = default;
 
-protected:
-	/** Default constructor. */
-	Unit() = default;
 	/** Move constructor. */
 	Unit(Unit&&) = default;
-	/** Move assignment operator. */
-	Unit& operator=(Unit&&) = default;
 
 	/**
-		Copy constructor.
-
-		@note Copy will have no identification and no initiator.
+		Constructor with context.
 	*/
-	Unit(Unit const&)
-		: Unit()
-	{}
-
-	/**
-		Constructor with initiator.
-	*/
+	explicit
 	Unit(
-		StageUPtr initiator
-	)
-		: m_initiator(std::move(initiator))
+		System::Context& context
+	) noexcept
+		: m_context(context)
 	{}
 /// @}
 
-public:
+/** @name Operators */ /// @{
+	/**
+		Negation operator.
+
+		@remarks Equivalent to bad().
+	*/
+	bool
+	operator!() const noexcept {
+		return bad();
+	}
+/// @}
+
 /** @name Properties */ /// @{
 	/**
-		Get command type info.
+		Get context.
 	*/
-	Cmd::type_info const&
-	get_type_info() const noexcept {
-		return get_type_info_impl();
+	System::Context&
+	get_context() noexcept {
+		return m_context;
 	}
 
 	/**
-		Get command type.
+		Get context.
 	*/
-	Cmd::Type
-	get_type() const noexcept {
-		return get_type_info_impl().type;
+	System::Context const&
+	get_context() const noexcept {
+		return m_context;
 	}
 
 	/**
-		Get %ID.
-
-		@remarks @c System::Context uses the %ID for tracking stages
-		and results. The returned reference should not be mutated
-		elsewhere.
-		@{
+		Get driver.
 	*/
-	Cmd::ID&
-	get_id() noexcept {
-		return m_id;
-	}
-	Cmd::ID const&
-	get_id() const noexcept {
-		return m_id;
-	}
-	/** @} */
-
-	/**
-		Get canonical %ID value.
-
-		@note This returns the canonical %ID value (which
-		includes @c flag_host), not the serial form.
-	*/
-	Cmd::IDValue
-	get_id_canonical() const noexcept {
-		return m_id.canonical();
+	System::Driver&
+	get_driver() noexcept {
+		return get_context().get_driver();
 	}
 
 	/**
-		Set status.
+		Get driver.
 	*/
-	void
-	set_status(
-		Cmd::Status const status
-	) noexcept {
-		m_status = status;
+	System::Driver const&
+	get_driver() const noexcept {
+		return get_context().get_driver();
 	}
 
 	/**
-		Get status.
+		Get datastore.
 	*/
-	Cmd::Status
-	get_status() const noexcept {
-		return m_status;
+	IO::Datastore&
+	get_datastore() noexcept {
+		return get_context().get_datastore();
 	}
 
 	/**
-		Check if the base %ID value is non-null.
+		Get datastore.
+	*/
+	IO::Datastore const&
+	get_datastore() const noexcept {
+		return get_context().get_datastore();
+	}
 
-		@sa Cmd::ID
+	/**
+		Get hive.
+	*/
+	Hive::Unit&
+	get_hive() noexcept {
+		return get_context().get_hive();
+	}
+
+	/**
+		Get hive.
+	*/
+	Hive::Unit const&
+	get_hive() const noexcept {
+		return get_context().get_hive();
+	}
+
+	/**
+		Get error message.
+	*/
+	String const&
+	get_message() const noexcept {
+		return m_message;
+	}
+
+	/**
+		Check if command execution succeeded.
 	*/
 	bool
-	is_identified() const noexcept {
-		return m_id.is_identified();
+	ok() const noexcept {
+		return m_result;
 	}
 
 	/**
-		Check if the command is host-initiated.
+		Check if command execution failed.
 
-		@sa Cmd::ID
+		@remarks A just-constructed command unit will yield @c true.
 	*/
 	bool
-	is_host() const noexcept {
-		return m_id.is_host();
-	}
-
-	/**
-		Check if the command is client-initiated.
-
-		@sa Cmd::ID
-	*/
-	bool
-	is_client() const noexcept {
-		return m_id.is_client();
-	}
-
-	/**
-		Check if the command is active.
-
-		@remarks This uses the initiator value of the command's ID.
-		This will yield @c false until a context makes the command
-		active.
-
-		@sa Cmd::ID
-	*/
-	bool
-	is_active() const noexcept {
-		return m_id.is_initiator();
-	}
-
-	/**
-		Check if the command has an initiator stage.
-	*/
-	bool
-	has_initiator() const noexcept {
-		return static_cast<bool>(m_initiator);
-	}
-
-	/**
-		Get initiator stage.
-	*/
-	Cmd::StageUPtr&
-	get_initiator() noexcept {
-		return m_initiator;
-	}
-
-	/**
-		Get initiator stage.
-	*/
-	Cmd::StageUPtr const&
-	get_initiator() const noexcept {
-		return m_initiator;
+	bad() const noexcept {
+		return !m_result;
 	}
 /// @}
 
-public:
+protected:
 /** @name Operations */ /// @{
 	/**
-		Duplicate the command.
-
-		@note The duplicate command will have no identification.
-
-		@throws std::bad_alloc
-		If an allocation fails.
+		Commit command with success.
 	*/
-	Cmd::UnitUPtr
-	clone() {
-		return clone_impl();
+	result_type
+	commit() noexcept {
+		set_result(true);
+		unit_commit_impl::func(
+			static_cast<impl_type*>(this)
+		);
+		return m_result;
+	}
+
+	/**
+		Commit command with error message.
+	*/
+	result_type
+	commit(
+		String&& message
+	) noexcept {
+		set_result(false);
+		set_message(std::move(message));
+		unit_commit_impl::func(
+			static_cast<impl_type*>(this)
+		);
+		return m_result;
 	}
 /// @}
 };
-inline Unit::~Unit() noexcept = default;
+
+/** @cond INTERNAL */
+template<class Impl>
+struct has_unit_commit_impl {
+	template<class U>
+	static auto match(void(U::*)()) -> U;
+
+	template<class U>
+	static auto test(int) -> std::is_same<U, decltype(match(&U::commit_impl))>;
+	template<class>
+	static auto test(...) -> std::false_type;
+
+	static constexpr bool const
+	value = decltype(test<Impl>(0))::value;
+};
+
+template<class Impl, bool const = false>
+struct unit_commit_impl final {
+	static void
+	func(
+		Impl* const
+	) noexcept {
+		return;
+	}
+};
+
+template<class Impl>
+struct unit_commit_impl<Impl, true> final {
+	static void
+	func(
+		Impl* const impl
+	) noexcept {
+		return impl->commit_impl();
+	}
+};
+
+template<class Impl>
+struct unit_ensure_traits
+	: traits::require_t<
+		Impl,
+		tw::capture_post<std::is_base_of, Cmd::Unit<Impl>>::template type,
+		std::is_move_constructible,
+		std::is_nothrow_destructible
+	>
+	, traits::disallow_t<
+		Impl,
+		tw::is_copyable,
+		std::is_move_assignable
+	>
+{};
+/** @endcond */ // INTERNAL
 
 /** @} */ // end of doc-group cmd
 
