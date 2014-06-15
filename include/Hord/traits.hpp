@@ -34,8 +34,8 @@ namespace traits {
 	See @c trait_wrangler::require_t.
 */
 template<
-	typename T,
-	template<typename> class... TraitTpl
+	class T,
+	template<class> class... TraitTpl
 >
 struct require_t
 	: public tw::require_t<T, TraitTpl...>
@@ -45,8 +45,8 @@ struct require_t
 	See @c trait_wrangler::disallow_t.
 */
 template<
-	typename T,
-	template<typename> class... TraitTpl
+	class T,
+	template<class> class... TraitTpl
 >
 struct disallow_t
 	: public tw::disallow_t<T, TraitTpl...>

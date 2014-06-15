@@ -73,9 +73,7 @@ public:
 			generate() != Object::ID_NULL
 		@endcode
 	*/
-	template<
-		Object::BaseType const B = Object::BaseType::null
-	>
+	template<Object::BaseType const B = Object::BaseType::null>
 	Object::GenID<B>
 	generate() noexcept {
 		Object::GenID<B> id{};
@@ -91,7 +89,7 @@ public:
 		with @c Object::ID as its key type.
 		@returns The generated ID.
 	*/
-	template<typename Set>
+	template<class Set>
 	auto
 	generate_unique(
 		Set const& set

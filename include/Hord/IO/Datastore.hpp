@@ -77,16 +77,14 @@ public:
 
 		@tparam D Deriving class.
 	*/
-	template<
-		typename D
-	>
-	struct ensure_traits :
-		traits::require_t<
+	template<class D>
+	struct ensure_traits
+		: traits::require_t<
 			D,
 			tw::capture_post<std::is_base_of, Datastore>::type,
 			std::is_nothrow_destructible
-		>,
-		traits::disallow_t<
+		>
+		, traits::disallow_t<
 			D,
 			std::is_default_constructible,
 			tw::capture<std::is_constructible, String>::type,

@@ -50,9 +50,7 @@ public:
 
 		@tparam D Deriving class.
 	*/
-	template<
-		class D
-	>
+	template<class D>
 	struct ensure_traits
 		: base::ensure_traits<D>
 	{};

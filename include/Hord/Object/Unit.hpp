@@ -48,14 +48,14 @@ public:
 	template<
 		class D
 	>
-	struct ensure_traits :
-		traits::require_t<
+	struct ensure_traits
+		: traits::require_t<
 			D,
 			tw::capture_post<std::is_base_of, Object::Unit>::type,
 			std::is_nothrow_destructible,
 			tw::is_fully_moveable
-		>,
-		traits::disallow_t<
+		>
+		, traits::disallow_t<
 			D,
 			tw::is_copyable
 		>

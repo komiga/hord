@@ -34,7 +34,7 @@ namespace aux {
 	@c std::basic_string<CharT, Traits>.
 */
 template<
-	typename CharT,
+	class CharT,
 	class Traits = std::char_traits<CharT>
 >
 using basic_string
@@ -46,9 +46,7 @@ using basic_string
 /**
 	@c std::vector<T>.
 */
-template<
-	typename T
->
+template<class T>
 using vector
 = std::vector<
 	T,
@@ -58,9 +56,7 @@ using vector
 /**
 	@c std::deque<T>.
 */
-template<
-	typename T
->
+template<class T>
 using deque
 = std::deque<
 	T,
@@ -71,8 +67,8 @@ using deque
 	@c std::unordered_map<Key, T, Hash, KeyEqual>.
 */
 template<
-	typename Key,
-	typename T,
+	class Key,
+	class T,
 	class Hash = std::hash<Key>,
 	class KeyEqual = std::equal_to<Key>
 >
@@ -86,7 +82,7 @@ using unordered_map
 	@c std::unordered_set<Key, Hash, KeyEqual>.
 */
 template<
-	typename Key,
+	class Key,
 	class Hash = std::hash<Key>,
 	class KeyEqual = std::equal_to<Key>
 >
