@@ -268,7 +268,7 @@ OutputStream::OutputStream(
 }
 
 void
-report_error(
+report_error_ptr(
 	std::exception_ptr err
 ) {
 	try {

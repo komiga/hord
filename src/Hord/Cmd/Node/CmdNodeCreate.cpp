@@ -127,7 +127,7 @@ HORD_SCOPE_CLASS::operator()(
 	Log::acquire(Log::error)
 		<< DUCT_GR_MSG_FQN("error creating node:\n")
 	;
-	Log::report_error(std::current_exception());
+	Log::report_error_ptr(std::current_exception());
 	return commit("unknown error");
 }
 #undef HORD_SCOPE_FUNC

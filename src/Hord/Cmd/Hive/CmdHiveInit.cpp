@@ -121,7 +121,7 @@ HORD_SCOPE_CLASS::operator()(
 	Log::acquire(Log::error)
 		<< DUCT_GR_MSG_FQN("error storing prop:\n")
 	;
-	Log::report_error(std::current_exception());
+	Log::report_error(err);
 	switch (err.get_code()) {
 	case ErrorCode::serialization_prop_improper_state: // fall-through
 	case ErrorCode::serialization_io_failed:

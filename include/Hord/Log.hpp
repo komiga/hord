@@ -394,7 +394,7 @@ report_error(
 	Report error by exception pointer.
 */
 void
-report_error(
+report_error_ptr(
 	std::exception_ptr err
 );
 
