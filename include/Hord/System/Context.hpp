@@ -39,7 +39,7 @@ class Context;
 	@remarks This class provides an interface to objects of a
 	specific hive.
 */
-class Context final {
+class Context {
 private:
 	System::Driver& m_driver;
 	IO::Datastore& m_datastore;
