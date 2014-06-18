@@ -59,14 +59,16 @@ Datastore::set_root_path(
 
 #define HORD_SCOPE_FUNC open
 void
-Datastore::open() {
+Datastore::open(
+	bool const create_if_nonexistent
+) {
 	if (is_open()) {
 		HORD_THROW_FQN(
 			ErrorCode::datastore_open_already,
 			"datastore is already open"
 		);
 	}
-	open_impl();
+	open_impl(create_if_nonexistent);
 }
 #undef HORD_SCOPE_FUNC
 

@@ -110,7 +110,9 @@ protected:
 		@throws Error{ErrorCode::datastore_open_failed}
 	*/
 	virtual void
-	open_impl() = 0;
+	open_impl(
+		bool const create_if_nonexistent
+	) = 0;
 
 	/**
 		close() implementation.
@@ -389,10 +391,15 @@ public:
 		If the datastore is already open.
 
 		@throws Error{ErrorCode::datastore_open_failed}
-		If the datastore failed to open.
+		If the datastore failed to open. [implementation]
+
+		@param create_if_nonexistent Whether to create the datastore
+		if it does not exist (implementation-defined).
 	*/
 	void
-	open();
+	open(
+		bool const create_if_nonexistent
+	);
 
 	/**
 		Close the datastore.
