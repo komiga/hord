@@ -13,9 +13,11 @@ namespace IO {
 #define HORD_SCOPE_CLASS IO::Datastore
 
 Datastore::Datastore(
+	IO::Datastore::type_info const& tinfo,
 	String root_path
 ) noexcept
-	: m_states()
+	: m_type_info(&tinfo)
+	, m_states()
 	, m_root_path(std::move(root_path))
 	, m_storage_info()
 {}

@@ -290,6 +290,7 @@ protected:
 /// @}
 
 private:
+	IO::Datastore::type_info const* m_type_info;
 	duct::StateStore<State> m_states;
 	String m_root_path;
 	storage_info_map_type m_storage_info;
@@ -311,12 +312,21 @@ protected:
 		Constructor with root path.
 	*/
 	Datastore(
+		IO::Datastore::type_info const& tinfo,
 		String root_path
 	) noexcept;
 /// @}
 
 public:
 /** @name Properties */ /// @{
+	/**
+		Get type info.
+	*/
+	IO::Datastore::type_info const&
+	get_type_info() const noexcept {
+		return *m_type_info;
+	}
+
 	/**
 		Set root path.
 
