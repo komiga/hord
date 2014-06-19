@@ -33,12 +33,12 @@ class LockFile final {
 private:
 	using handle_type = signed;
 
-	handle_type m_handle;
-	String m_path;
-
 	enum : handle_type {
 		NULL_HANDLE = -1
 	};
+
+	handle_type m_handle{NULL_HANDLE};
+	String m_path{};
 
 	LockFile(LockFile const&) = delete;
 	LockFile& operator=(LockFile const&) = delete;

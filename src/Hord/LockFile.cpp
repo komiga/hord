@@ -23,8 +23,7 @@ LockFile::~LockFile() {
 LockFile::LockFile(
 	String path
 ) noexcept
-	: m_handle(NULL_HANDLE)
-	, m_path(std::move(path))
+	: m_path(std::move(path))
 {}
 
 #define HORD_SCOPE_FUNC set_path
