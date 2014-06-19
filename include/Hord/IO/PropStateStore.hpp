@@ -314,14 +314,26 @@ public:
 	}
 
 	/**
-		Get conjunction of types with supplied types.
+		Get supplied props of a set of props.
 	*/
 	constexpr IO::PropTypeBit
-	supplied_conj(
+	supplied_of(
 		IO::PropTypeBit const prop_types
 	) const noexcept {
 		return static_cast<IO::PropTypeBit>(
 			enum_cast(prop_types) & enum_cast(get_supplied())
+		);
+	}
+
+	/**
+		Get unsupplied props of a set of props.
+	*/
+	constexpr IO::PropTypeBit
+	unsupplied_of(
+		IO::PropTypeBit const prop_types
+	) const noexcept {
+		return static_cast<IO::PropTypeBit>(
+			enum_cast(prop_types) & ~enum_cast(get_supplied())
 		);
 	}
 /// @}

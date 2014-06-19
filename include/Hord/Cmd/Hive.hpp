@@ -44,9 +44,16 @@ public:
 	/**
 		Execute command.
 
-		@note IO::PropType::identity is implicit, and any types not
+		@note IO::PropType::identity is implicit, and any props not
 		supplied for a particular object are ignored when loading
 		props.
+
+		@par
+		@note Storage-unsupplied requested props of set
+		IO::PropTypeBit::base are initialized with dummy values and
+		set to IO::PropState::modified. Primary and auxiliary prop
+		states are not changed if the datastore does not have storage
+		for them.
 
 		@param prop_types Properties to load for all objects.
 	*/
