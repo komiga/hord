@@ -19,7 +19,6 @@ namespace Rule {
 // Forward declarations
 class Unit; // external
 enum class UnitType : Object::TypeValue;
-struct type_info;
 
 /**
 	@addtogroup object
