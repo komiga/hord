@@ -12,8 +12,10 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/serialization.hpp>
-#include <Hord/Object/Defs.hpp>
 #include <Hord/IO/Defs.hpp>
+#include <Hord/IO/PropStateStore.hpp>
+#include <Hord/Object/Defs.hpp>
+#include <Hord/Object/Unit.hpp>
 
 namespace Hord {
 namespace IO {
@@ -49,6 +51,57 @@ public:
 
 	/** %Object linkage. */
 	IO::Linkage linkage;
+/// @}
+
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~StorageInfo() noexcept = default;
+
+	/** Copy constructor. */
+	StorageInfo(StorageInfo const&) noexcept = default;
+	/** Move constructor. */
+	StorageInfo(StorageInfo&&) noexcept = default;
+	/** Copy assignment operator. */
+	StorageInfo& operator=(StorageInfo const&) = default;
+	/** Move assignment operator. */
+	StorageInfo& operator=(StorageInfo&&) noexcept = default;
+
+	/**
+		Constructor with properties.
+	*/
+	constexpr
+	StorageInfo(
+		Object::ID const object_id,
+		Object::Type const object_type,
+		IO::PropStateStore const& prop_storage,
+		IO::Linkage const linkage
+	) noexcept
+		: object_id(object_id)
+		, object_type(object_type)
+		, prop_storage(prop_storage)
+		, linkage(linkage)
+	{}
+
+	/**
+		Constructor with object and linkage.
+
+		@post @code
+			this->object_id == object.get_id() &&
+			this->object_type == object.get_type() &&
+			this->prop_storage == object.get_type_info().props &&
+		@endcode
+	*/
+	StorageInfo(
+		Object::Unit const& object,
+		IO::Linkage const linkage
+	) noexcept
+		: StorageInfo(
+			object.get_id(),
+			object.get_type(),
+			object.get_type_info().props,
+			linkage
+		)
+	{}
 /// @}
 };
 

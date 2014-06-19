@@ -1,4 +1,5 @@
 
+#include <Hord/IO/Datastore.hpp>
 #include <Hord/IO/PropStream.hpp>
 
 #include <cassert>

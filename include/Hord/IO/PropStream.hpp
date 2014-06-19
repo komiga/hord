@@ -14,7 +14,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/serialization.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
-#include <Hord/IO/Datastore.hpp>
 
 #include <iosfwd>
 
@@ -22,6 +21,7 @@ namespace Hord {
 namespace IO {
 
 // Forward declarations
+class Datastore; // external
 class PropStream;
 class InputPropStream;
 class OutputPropStream;

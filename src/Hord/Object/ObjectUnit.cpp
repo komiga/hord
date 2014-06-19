@@ -4,6 +4,8 @@
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
 
+#include <cassert>
+
 #include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
