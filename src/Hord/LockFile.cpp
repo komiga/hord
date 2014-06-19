@@ -42,7 +42,7 @@ LockFile::set_path(
 		HORD_THROW_FMT(
 			ErrorCode::lockfile_immutable,
 			s_err_immutable,
-			m_path
+			path
 		);
 	} else {
 		m_path.assign(std::move(path));
