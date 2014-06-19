@@ -71,16 +71,16 @@ init_object(
 	IO::load_props(
 		datastore,
 		obj,
-		sinfo.prop_storage.supplied_of(prop_types)
+		sinfo.prop_storage.initialized_of(prop_types)
 	);
 
 	// Initialize any base props requested that were not stored.
 	// Can't do anything about primary and auxiliary props.
-	auto const unsupplied
-	= sinfo.prop_storage.unsupplied_of(static_cast<IO::PropTypeBit>(
+	auto const unstored_types
+	= sinfo.prop_storage.uninitialized_of(static_cast<IO::PropTypeBit>(
 		enum_bitand(IO::PropTypeBit::base, prop_types)
 	));
-	if (enum_bitand(IO::PropTypeBit::identity, unsupplied)) {
+	if (enum_bitand(IO::PropTypeBit::identity, unstored_types)) {
 		enum : std::size_t {
 			BUF_SIZE = 8u
 		};
@@ -94,7 +94,7 @@ init_object(
 			IO::PropState::modified
 		);
 	}
-	if (enum_bitand(IO::PropTypeBit::metadata, unsupplied)) {
+	if (enum_bitand(IO::PropTypeBit::metadata, unstored_types)) {
 		// Metadata collection should already be empty; no base
 		// values to add
 		obj.get_prop_states().assign(
@@ -102,7 +102,7 @@ init_object(
 			IO::PropState::modified
 		);
 	}
-	if (enum_bitand(IO::PropTypeBit::scratch, unsupplied)) {
+	if (enum_bitand(IO::PropTypeBit::scratch, unstored_types)) {
 		// Scratch space should also be empty
 		obj.get_prop_states().assign(
 			IO::PropType::scratch,
@@ -184,7 +184,7 @@ HORD_SCOPE_CLASS::operator()(
 	return commit();
 } catch (Error const& err) {
 	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error storing prop:\n")
+		<< DUCT_GR_MSG_FQN("error initializing:\n")
 	;
 	Log::report_error(err);
 	switch (err.get_code()) {
