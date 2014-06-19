@@ -38,7 +38,10 @@ class Create;
 class Create final
 	: public Cmd::Unit<Create>
 {
-	HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(Create)
+	HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(
+		Create,
+		"Cmd::Node::Create"
+	)
 
 private:
 	Hord::Node::ID m_id{Hord::Node::ID_NULL};

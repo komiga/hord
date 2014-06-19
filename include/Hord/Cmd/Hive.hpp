@@ -37,7 +37,10 @@ class Init;
 class Init final
 	: public Cmd::Unit<Init>
 {
-	HORD_CMD_IMPL_BOILERPLATE(Init)
+	HORD_CMD_IMPL_BOILERPLATE(
+		Init,
+		"Cmd::Hive::Init"
+	)
 
 public:
 /** @name Operations */ /// @{

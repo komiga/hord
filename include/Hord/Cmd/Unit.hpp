@@ -47,8 +47,9 @@ struct unit_ensure_traits;
 	base::result_type, and defines all special member functions.
 
 	@param impl_ Implementation class.
+	@param name_ Name of command (string literal).
 */
-#define HORD_CMD_IMPL_BOILERPLATE(impl_)							\
+#define HORD_CMD_IMPL_BOILERPLATE(impl_, name_)						\
 	private:														\
 		using base = ::Hord::Cmd::Unit<impl_>;						\
 		using this_type = impl_;									\
@@ -68,7 +69,9 @@ struct unit_ensure_traits;
 			System::Context& context								\
 		) noexcept													\
 			: base(context)											\
-		{}
+		{}															\
+		static constexpr char const* const							\
+		command_name = HORD_STR_LIT(name_);
 //
 
 /**
@@ -88,7 +91,8 @@ struct unit_ensure_traits;
 	@sa
 		HORD_CMD_IMPL_BOILERPLATE()
 */
-#define HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(impl_)				\
+#define HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(impl_, name_)			\
+	HORD_CMD_IMPL_BOILERPLATE(impl_, name_)							\
 	private:														\
 		void														\
 		commit_impl() noexcept;
