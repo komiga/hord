@@ -198,7 +198,7 @@ protected:
 		@throws Error{ErrorCode::datastore_object_already_exists}
 		@throws Error{..}
 	*/
-	virtual void
+	virtual storage_info_map_type::const_iterator
 	create_object_impl(
 		Object::ID const object_id,
 		Object::type_info const& type_info,
@@ -512,7 +512,7 @@ public:
 		@throws Error{..}
 		<em>Implementation-defined exceptions.</em>
 	*/
-	void
+	storage_info_map_type::const_iterator
 	create_object(
 		Object::ID const object_id,
 		Object::type_info const& type_info,

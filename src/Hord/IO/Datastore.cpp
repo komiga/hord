@@ -153,7 +153,7 @@ Datastore::generate_id(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC create_object
-void
+Datastore::storage_info_map_type::const_iterator
 Datastore::create_object(
 	Object::ID const object_id,
 	Object::type_info const& type_info,
@@ -168,7 +168,7 @@ Datastore::create_object(
 		);
 	}
 
-	create_object_impl(object_id, type_info, linkage);
+	return create_object_impl(object_id, type_info, linkage);
 }
 #undef HORD_SCOPE_FUNC
 
