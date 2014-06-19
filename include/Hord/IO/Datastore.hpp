@@ -239,7 +239,7 @@ protected:
 /** @cond INTERNAL */
 #define HORD_STATE_ASSERT_VALID_(x_)	\
 	assert(								\
-		State::RESERVED_FIRST > x_ &&	\
+		State::RESERVED_FIRST > x_ ||	\
 		State::RESERVED_LAST  < x_		\
 	);
 /** @endcond */
