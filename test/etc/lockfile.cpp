@@ -1,13 +1,12 @@
 
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
+#include <Hord/Log.hpp>
 #include <Hord/LockFile.hpp>
 
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
-
-#include "../common/common.hpp"
 
 signed
 main(
@@ -55,8 +54,8 @@ main(
 		case '4':
 			try {
 				lock.acquire();
-			} catch (Hord::Error& e) {
-				report_error(e);
+			} catch (Hord::Error const& err) {
+				Hord::Log::report_error(err);
 			}
 			break;
 

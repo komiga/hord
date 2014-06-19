@@ -41,6 +41,7 @@ private:
 		Hord::String root_path
 	)
 		: Hord::IO::Datastore(
+			s_type_info,
 			std::move(root_path)
 		)
 	{}
@@ -50,7 +51,9 @@ public:
 
 private:
 	void
-	open_impl() override {
+	open_impl(
+		bool const /*create_if_nonexistent*/
+	) override {
 		base::enable_state(State::opened);
 	}
 	void
@@ -87,12 +90,14 @@ private:
 		return Hord::Object::ID_NULL;
 	}
 
-	void
+	Hord::IO::Datastore::storage_info_map_type::const_iterator
 	create_object_impl(
 		Hord::Object::ID const,
 		Hord::Object::type_info const&,
 		Hord::IO::Linkage const
-	) override {}
+	) override {
+		return get_storage_info().cend();
+	}
 	void
 	destroy_object_impl(
 		Hord::Object::ID const

@@ -4,8 +4,6 @@
 
 #include <iostream>
 
-#include "../common/common.hpp"
-
 namespace Log = Hord::Log;
 
 signed

@@ -6,7 +6,7 @@
 #include <Hord/utility.hpp>
 //#include <Hord/ErrorCode.hpp>
 #include <Hord/Error.hpp>
-#include <Hord/Msg/Buffer.hpp>
+#include <Hord/Log.hpp>
 //#include <Hord/Data/Metadata.hpp>
 //#include <Hord/Data/Field.hpp>
 //#include <Hord/Data/Record.hpp>
@@ -24,7 +24,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../common/common.hpp"
 #include "../common/dummies.hpp"
 
 using Hord::enum_cast;
@@ -39,7 +38,7 @@ main() {
 	Hord::System::Driver driver{true};
 
 	// group error
-	Hord::Error err{Hord::ErrorCode::unknown, "oh no!"};
+	Hord::Error const err_test{Hord::ErrorCode::unknown, "oh no!"};
 
 	// group metadata
 	//Hord::MetaField meta_field{};
@@ -71,52 +70,42 @@ main() {
 	);
 
 	// Registering rule types
-	Hord::Rule::type_info const
-		rti_standard{
-			Hord::Object::type_info{
-				"Hord:test:rti_standard",
-				Hord::Rule::Type{Hord::Rule::UnitType::null},
-				{false, false},
-				dummy_rule_type_construct
-			},
-			enum_cast(Hord::Data::FieldType::Text)
-		},
-		rti_zero_permitted{
-			Hord::Object::type_info{
-				"Hord:test:rti_zero_permitted",
-				Hord::Rule::Type{Hord::Rule::UnitType::Composition},
-				{false, false},
-				dummy_rule_type_construct
-			},
-			0u
-		},
-		rti_valid{
-			Hord::Object::type_info{
-				"Hord:test:rti_valid",
-				Hord::Rule::Type{Hord::Rule::UnitType::Composition},
-				{false, false},
-				dummy_rule_type_construct
-			},
-			enum_cast(Hord::Data::FieldType::Text)
-		}
-	;
+	Hord::Object::type_info const
+	ti_standard{
+		"Hord:test:ti_standard",
+		Hord::Rule::Type{Hord::Rule::UnitType::null},
+		{false, false},
+		dummy_rule_type_construct
+	},
+	ti_zero_permitted{
+		"Hord:test:ti_zero_permitted",
+		Hord::Rule::Type{Hord::Rule::UnitType::Composition},
+		{false, false},
+		dummy_rule_type_construct
+	},
+	ti_valid{
+		"Hord:test:ti_valid",
+		Hord::Rule::Type{Hord::Rule::UnitType::Composition},
+		{false, false},
+		dummy_rule_type_construct
+	};
 
 	try {
-		driver.register_rule_type(rti_standard);
-	} catch (Hord::Error& e) {
-		report_error(e);
+		driver.register_object_type(ti_standard);
+	} catch (Hord::Error const& err) {
+		Hord::Log::report_error(err);
 	}
 	try {
-		driver.register_rule_type(rti_zero_permitted);
-	} catch (Hord::Error& e) {
-		report_error(e);
+		driver.register_object_type(ti_zero_permitted);
+	} catch (Hord::Error const& err) {
+		Hord::Log::report_error(err);
 	}
 	try {
-		driver.register_rule_type(rti_valid);
+		driver.register_object_type(ti_valid);
 		std::cout << "second register:" << std::endl;
-		driver.register_rule_type(rti_valid);
-	} catch (Hord::Error& e) {
-		report_error(e);
+		driver.register_object_type(ti_valid);
+	} catch (Hord::Error const& err) {
+		Hord::Log::report_error(err);
 	}
 
 	// Placeholding hives
@@ -129,8 +118,8 @@ main() {
 			DummyDatastore::s_type_info,
 			Hord::String{}
 		);
-	} catch (Hord::Error& e) {
-		report_error(e);
+	} catch (Hord::Error const& err) {
+		Hord::Log::report_error(err);
 	}
 
 	std::cout
@@ -149,8 +138,8 @@ main() {
 			DummyDatastore::s_type_info,
 			"./bork"
 		);
-	} catch (Hord::Error& e) {
-		report_error(e);
+	} catch (Hord::Error const& err) {
+		Hord::Log::report_error(err);
 	}
 	return 0;
 }
