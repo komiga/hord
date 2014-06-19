@@ -14,6 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/utility.hpp>
 #include <Hord/serialization.hpp>
 #include <Hord/IO/Defs.hpp>
+#include <Hord/IO/PropTypeIterator.hpp>
 
 namespace Hord {
 namespace IO {
@@ -336,6 +337,93 @@ public:
 			enum_cast(prop_types) & ~enum_cast(get_supplied())
 		);
 	}
+
+	/**
+		Get initialized props of a set of props.
+	*/
+	IO::PropTypeBit
+	initialized_of(
+		IO::PropTypeBit prop_types
+	) const noexcept {
+		return state_of(
+			prop_types,
+			enum_combine(
+				IO::PropState::original,
+				IO::PropState::modified
+			)
+		);
+	}
+
+	/**
+		Get uninitialized props of a set of props.
+	*/
+	IO::PropTypeBit
+	uninitialized_of(
+		IO::PropTypeBit prop_types
+	) const noexcept {
+		return not_state_of(
+			prop_types,
+			enum_combine(
+				IO::PropState::original,
+				IO::PropState::modified
+			)
+		);
+	}
+
+	/**
+		Get props with specific state of a set of props.
+
+		@note This uses has(), so types that have any of the states
+		in @a state will be selected.
+	*/
+	IO::PropTypeBit
+	state_of(
+		IO::PropTypeBit prop_types,
+		IO::PropState const state
+	) const noexcept {
+		for (auto const type : prop_types) {
+			if (!has(type, state)) {
+				prop_types = static_cast<IO::PropTypeBit>(
+					enum_cast(prop_types) & ~enum_cast(prop_type_bit(type))
+				);
+			}
+		}
+		return prop_types;
+		/*return static_cast<IO::PropTypeBit>(
+			enum_cast(prop_types) & enum_bitor(
+			(has(IO::PropType::identity  , state)
+			? IO::PropTypeBit::identity  : IO::PropTypeBit::none),
+			(has(IO::PropType::metadata  , state)
+			? IO::PropTypeBit::metadata  : IO::PropTypeBit::none),
+			(has(IO::PropType::scratch   , state)
+			? IO::PropTypeBit::scratch   : IO::PropTypeBit::none),
+			(has(IO::PropType::primary   , state)
+			? IO::PropTypeBit::primary   : IO::PropTypeBit::none),
+			(has(IO::PropType::auxiliary , state)
+			? IO::PropTypeBit::auxiliary : IO::PropTypeBit::none))
+		);*/
+	}
+
+	/**
+		Get props without specific state of a set of props.
+
+		@note This uses has(), so types that have any of the states
+		in @a state will be selected.
+	*/
+	IO::PropTypeBit
+	not_state_of(
+		IO::PropTypeBit prop_types,
+		IO::PropState const state
+	) const noexcept {
+		for (auto const type : prop_types) {
+			if (has(type, state)) {
+				prop_types = static_cast<IO::PropTypeBit>(
+					enum_cast(prop_types) & ~enum_cast(type)
+				);
+			}
+		}
+		return prop_types;
+	}
 /// @}
 
 /** @name Operations */ /// @{
@@ -468,6 +556,26 @@ public:
 	}
 /// @}
 };
+
+/**
+	Get beginning iterator for types.
+*/
+constexpr PropTypeIterator
+begin(
+	IO::PropStateStore const store
+) noexcept {
+	return {store.get_supplied()};
+}
+
+/**
+	Get ending iterator for types.
+*/
+constexpr PropTypeIterator
+end(
+	IO::PropStateStore const /*store*/
+) noexcept {
+	return {PropTypeBit::none};
+}
 
 /** @} */ // end of doc-group prop
 /** @} */ // end of doc-group io

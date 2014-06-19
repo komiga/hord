@@ -70,7 +70,6 @@ enum class PropType : unsigned {
 		This prop stores object data most likely to mutate.
 		The following standard objects provide this prop:
 
-		- Hive::Unit
 		- Rule::Unit
 		- Node::Unit
 	*/

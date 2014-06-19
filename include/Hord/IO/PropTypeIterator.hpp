@@ -13,7 +13,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/utility.hpp>
 #include <Hord/IO/Defs.hpp>
-#include <Hord/IO/PropStateStore.hpp>
 
 #include <duct/utility.hpp>
 
@@ -227,26 +226,6 @@ begin(
 constexpr PropTypeIterator
 end(
 	IO::PropTypeBit const /*types*/
-) noexcept {
-	return {PropTypeBit::none};
-}
-
-/**
-	Get beginning iterator for types.
-*/
-constexpr PropTypeIterator
-begin(
-	IO::PropStateStore const store
-) noexcept {
-	return {store.get_supplied()};
-}
-
-/**
-	Get ending iterator for types.
-*/
-constexpr PropTypeIterator
-end(
-	IO::PropStateStore const /*store*/
 ) noexcept {
 	return {PropTypeBit::none};
 }
