@@ -70,8 +70,8 @@ struct unit_ensure_traits;
 		) noexcept													\
 			: base(context)											\
 		{}															\
-		static constexpr char const* const							\
-		command_name = HORD_STR_LIT(name_);
+		static constexpr char const*								\
+		command_name() noexcept { return HORD_STR_LIT(name_); }
 //
 
 /**
