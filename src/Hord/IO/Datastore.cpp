@@ -68,7 +68,12 @@ Datastore::open(
 			"datastore is already open"
 		);
 	}
-	open_impl(create_if_nonexistent);
+	try {
+		open_impl(create_if_nonexistent);
+	} catch (...) {
+		disable_state(State::opened);
+		throw;
+	}
 }
 #undef HORD_SCOPE_FUNC
 
