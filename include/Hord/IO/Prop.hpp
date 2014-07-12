@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_IO_PROP_HPP_
-#define HORD_IO_PROP_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -94,5 +93,3 @@ public:
 
 } // namespace IO
 } // namespace Hord
-
-#endif // HORD_IO_PROP_HPP_

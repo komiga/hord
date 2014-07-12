@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_MSG_BUFFER_HPP_
-#define HORD_MSG_BUFFER_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
@@ -188,5 +187,3 @@ public:
 
 } // namespace Msg
 } // namespace Hord
-
-#endif // HORD_MSG_BUFFER_HPP_

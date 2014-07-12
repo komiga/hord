@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_IO_DATASTORE_HPP_
-#define HORD_IO_DATASTORE_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
@@ -553,5 +552,3 @@ template struct traits::require_t<
 >;
 
 } // namespace Hord
-
-#endif // HORD_IO_DATASTORE_HPP_

@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_TRAITS_HPP_
-#define HORD_TRAITS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -57,5 +56,3 @@ struct disallow_t
 
 } // namespace traits
 } // namespace Hord
-
-#endif // HORD_TRAITS_HPP_

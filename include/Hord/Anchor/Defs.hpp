@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_ANCHOR_DEFS_HPP_
-#define HORD_ANCHOR_DEFS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -88,5 +87,3 @@ SUPPLIED_PROPS{false, false};
 
 } // namespace Anchor
 } // namespace Hord
-
-#endif // HORD_ANCHOR_DEFS_HPP_

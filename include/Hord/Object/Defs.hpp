@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_OBJECT_DEFS_HPP_
-#define HORD_OBJECT_DEFS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/serialization.hpp>
@@ -826,5 +825,3 @@ struct hash<Hord::Object::GenID<B>> {
 };
 } // namespace std
 /** @endcond */ // INTERNAL
-
-#endif // HORD_OBJECT_DEFS_HPP_

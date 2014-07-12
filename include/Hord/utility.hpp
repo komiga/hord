@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_UTILITY_HPP_
-#define HORD_UTILITY_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -37,5 +36,3 @@ using duct::enum_combine;
 /** @} */ // end of doc-group etc
 
 } // namespace Hord
-
-#endif // HORD_UTILITY_HPP_

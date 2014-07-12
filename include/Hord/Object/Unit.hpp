@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_OBJECT_UNIT_HPP_
-#define HORD_OBJECT_UNIT_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
@@ -451,5 +450,3 @@ template struct traits::require_t<
 >;
 
 } // namespace Hord
-
-#endif // HORD_OBJECT_UNIT_HPP_

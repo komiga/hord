@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_RULE_STATE_HPP_
-#define HORD_RULE_STATE_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -56,5 +55,3 @@ protected:
 
 } // namespace Rule
 } // namespace Hord
-
-#endif // HORD_RULE_STATE_HPP_

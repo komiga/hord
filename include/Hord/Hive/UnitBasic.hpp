@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_HIVE_UNITBASIC_HPP_
-#define HORD_HIVE_UNITBASIC_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -88,5 +87,3 @@ private:
 template struct Hive::Unit::ensure_traits<Hive::UnitBasic>;
 
 } // namespace Hord
-
-#endif // HORD_HIVE_UNITBASIC_HPP_

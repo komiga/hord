@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_CMD_NODE_HPP_
-#define HORD_CMD_NODE_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -86,5 +85,3 @@ HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Node::Create);
 
 } // namespace Cmd
 } // namespace Hord
-
-#endif // HORD_CMD_NODE_HPP_

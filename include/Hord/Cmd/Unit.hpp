@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_CMD_UNIT_HPP_
-#define HORD_CMD_UNIT_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
@@ -369,5 +368,3 @@ struct unit_ensure_traits
 
 } // namespace Cmd
 } // namespace Hord
-
-#endif // HORD_CMD_UNIT_HPP_

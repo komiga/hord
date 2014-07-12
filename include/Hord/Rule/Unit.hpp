@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_RULE_UNIT_HPP_
-#define HORD_RULE_UNIT_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/IO/PropStream.hpp>
@@ -110,5 +109,3 @@ public:
 
 } // namespace Rule
 } // namespace Hord
-
-#endif // HORD_RULE_UNIT_HPP_

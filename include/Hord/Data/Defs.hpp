@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_DATA_DEFS_HPP_
-#define HORD_DATA_DEFS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -134,5 +133,3 @@ serialize(
 
 } // namespace Data
 } // namespace Hord
-
-#endif // HORD_DATA_DEFS_HPP_

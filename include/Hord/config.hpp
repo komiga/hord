@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_CONFIG_HPP_
-#define HORD_CONFIG_HPP_
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -45,5 +44,3 @@ see @ref index or the accompanying LICENSE file for full text.
 	DUCT_STRINGIFY(x)
 
 /** @} */ // end of doc-group config
-
-#endif // HORD_CONFIG_HPP_

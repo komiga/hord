@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_ERROR_HPP_
-#define HORD_ERROR_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/ErrorCode.hpp>
@@ -61,5 +60,3 @@ operator<<(
 /** @} */ // end of doc-group error
 
 } // namespace Hord
-
-#endif // HORD_ERROR_HPP_

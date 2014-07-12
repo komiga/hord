@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_IO_SERIALIZATION_HPP_
-#define HORD_IO_SERIALIZATION_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Unit.hpp>
@@ -204,5 +203,3 @@ store_props_weak(
 
 } // namespace IO
 } // namespace Hord
-
-#endif // HORD_IO_SERIALIZATION_HPP_

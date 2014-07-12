@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_AUX_HPP_
-#define HORD_AUX_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -97,5 +96,3 @@ using unordered_set
 
 } // namespace aux
 } // namespace Hord
-
-#endif // HORD_AUX_HPP_

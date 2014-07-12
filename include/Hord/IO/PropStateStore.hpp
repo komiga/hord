@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_IO_PROPSTATESTORE_HPP_
-#define HORD_IO_PROPSTATESTORE_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/utility.hpp>
@@ -582,5 +581,3 @@ end(
 
 } // namespace IO
 } // namespace Hord
-
-#endif // HORD_IO_PROPSTATESTORE_HPP_

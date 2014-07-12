@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_SERIALIZATION_HPP_
-#define HORD_SERIALIZATION_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -157,5 +156,3 @@ make_output_serializer(
 /** @} */ // end of doc-group serialization
 
 } // namespace Hord
-
-#endif // HORD_SERIALIZATION_HPP_

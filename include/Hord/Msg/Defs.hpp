@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_MSG_DEFS_HPP_
-#define HORD_MSG_DEFS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -34,5 +33,3 @@ using MessageID = std::uint32_t;
 
 } // namespace Msg
 } // namespace Hord
-
-#endif // HORD_MSG_DEFS_HPP_

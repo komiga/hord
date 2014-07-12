@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_STRING_HPP_
-#define HORD_STRING_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
@@ -42,5 +41,3 @@ using String = aux::basic_string<char>;
 /** @} */ // end of doc-group etc
 
 } // namespace Hord
-
-#endif // HORD_STRING_HPP_

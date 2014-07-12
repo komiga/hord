@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_RULE_DEFS_HPP_
-#define HORD_RULE_DEFS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -122,5 +121,3 @@ using Type = Object::GenType<Rule::UnitType>;
 
 } // namespace Rule
 } // namespace Hord
-
-#endif // HORD_RULE_DEFS_HPP_

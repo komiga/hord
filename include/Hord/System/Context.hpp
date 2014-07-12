@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_SYSTEM_CONTEXT_HPP_
-#define HORD_SYSTEM_CONTEXT_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
@@ -130,5 +129,3 @@ public:
 
 } // namespace System
 } // namespace Hord
-
-#endif // HORD_SYSTEM_CONTEXT_HPP_

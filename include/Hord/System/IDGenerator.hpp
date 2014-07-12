@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_SYSTEM_IDGENERATOR_HPP_
-#define HORD_SYSTEM_IDGENERATOR_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -114,5 +113,3 @@ public:
 
 } // namespace System
 } // namespace Hord
-
-#endif // HORD_SYSTEM_IDGENERATOR_HPP_

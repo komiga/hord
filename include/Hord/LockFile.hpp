@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_LOCKFILE_HPP_
-#define HORD_LOCKFILE_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
@@ -121,5 +120,3 @@ public:
 /** @} */ // end of doc-group etc
 
 } // namespace Hord
-
-#endif // HORD_LOCKFILE_HPP_

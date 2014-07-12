@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_LOG_HPP_
-#define HORD_LOG_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
@@ -403,5 +402,3 @@ report_error_ptr(
 
 } // namespace Log
 } // namespace Hord
-
-#endif // HORD_LOG_HPP_

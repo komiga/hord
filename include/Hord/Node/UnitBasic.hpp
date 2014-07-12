@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_NODE_UNITBASIC_HPP_
-#define HORD_NODE_UNITBASIC_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -88,5 +87,3 @@ private:
 template struct Node::Unit::ensure_traits<Node::UnitBasic>;
 
 } // namespace Hord
-
-#endif // HORD_NODE_UNITBASIC_HPP_

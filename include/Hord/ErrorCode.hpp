@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_ERRORCODE_HPP_
-#define HORD_ERRORCODE_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 
@@ -221,5 +220,3 @@ enum class ErrorCode : unsigned {
 /** @} */ // end of doc-group error
 
 } // namespace Hord
-
-#endif // HORD_ERRORCODE_HPP_

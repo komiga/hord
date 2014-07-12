@@ -7,8 +7,7 @@
 see @ref index or the accompanying LICENSE file for full text.
 */
 
-#ifndef HORD_OBJECT_OPS_HPP_
-#define HORD_OBJECT_OPS_HPP_
+#pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -144,5 +143,3 @@ operator<<(
 
 } // namespace Object
 } // namespace Hord
-
-#endif // HORD_OBJECT_OPS_HPP_
