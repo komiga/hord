@@ -14,6 +14,26 @@ using State = Hord::IO::PropState;
 using Store = Hord::IO::PropStateStore;
 
 void
+print_types(
+	char const* const msg,
+	TypeBit const types
+) {
+	std::cout << msg << ":\n";
+	if (TypeBit::none == types) {
+		std::cout << "   none";
+	} else {
+		for (auto const type : types) {
+			std::cout
+				<< "   "
+				<< Hord::IO::get_prop_type_name(type)
+				<< '\n'
+			;
+		}
+	}
+	std::cout << '\n';
+}
+
+void
 print_store(
 	Store const& s,
 	Type const t = static_cast<Type>(0u)
@@ -54,7 +74,11 @@ assignments(
 	s.assign(Type::primary, State::modified);
 	s.assign(Type::auxiliary, State::modified);
 	print_store(s);
+	print_types("after assign; initialized", s.initialized_of(TypeBit::all));
+	print_types("after assign; uninitialized", s.uninitialized_of(TypeBit::all));
 
+	assert(TypeBit::all == s.initialized_of(TypeBit::all));
+	assert(TypeBit::none  == s.uninitialized_of(TypeBit::all));
 	assert(!s.all_original());
 	assert(s.any_modified());
 
@@ -93,6 +117,8 @@ main() {
 	// Constructed state
 	assert(s_all.all_uninitialized());
 	assert(s_neither.all_uninitialized());
+	assert(TypeBit::none == s_all.initialized_of(TypeBit::all));
+	assert(TypeBit::all  == s_all.uninitialized_of(TypeBit::all));
 
 	assert(0u == value_init_all);
 
@@ -111,8 +137,8 @@ main() {
 	// Traits
 	std::cout << "s_all:\n";
 	print_store(s_all);
-	print_store(s_all, Type::primary);
-	print_store(s_all, Type::auxiliary);
+	print_types("after init; initialized", s_all.initialized_of(TypeBit::all));
+	print_types("after init; uninitialized", s_all.uninitialized_of(TypeBit::all));
 
 	assert(s_all.supplies(Type::primary));
 	assert(s_all.supplies(Type::auxiliary));
@@ -120,16 +146,16 @@ main() {
 	assert(!s_all.all_original());
 	assert(!s_all.any_modified());
 	assert(!s_all.has(Type::primary, State::modified));
-	assert(!s_all.has(Type::auxiliary, State::modified));
 	assert(!s_all.has(Type::primary, State::original));
+	assert(!s_all.has(Type::auxiliary, State::modified));
 	assert(!s_all.has(Type::auxiliary, State::original));
 
 	assignments(s_all, value_init_all);
 
 	std::cout << "\ns_neither:\n";
 	print_store(s_neither);
-	print_store(s_neither, Type::primary);
-	print_store(s_neither, Type::auxiliary);
+	print_types("after init; initialized", s_neither.initialized_of(TypeBit::all));
+	print_types("after init; uninitialized", s_neither.uninitialized_of(TypeBit::all));
 
 	assert(!s_neither.supplies(Type::primary));
 	assert(!s_neither.supplies(Type::auxiliary));
