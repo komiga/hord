@@ -20,6 +20,7 @@ namespace Hive {
 
 // Forward declarations
 class Init;
+class StoreAll;
 
 /**
 	@addtogroup cmd
@@ -66,12 +67,59 @@ public:
 /// @}
 };
 
+/**
+	Hive store-all command.
+*/
+class StoreAll final
+	: public Cmd::Unit<StoreAll>
+{
+	HORD_CMD_IMPL_BOILERPLATE(
+		StoreAll,
+		"Cmd::Hive::StoreAll"
+	)
+
+private:
+	unsigned m_num_objects_stored{0u};
+	unsigned m_num_props_stored{0u};
+
+public:
+/** @name Properties */ /// @{
+	/**
+		Get the number of objects stored.
+	*/
+	unsigned
+	num_objects_stored() const noexcept {
+		return m_num_objects_stored;
+	}
+
+	/**
+		Get the number of props stored.
+	*/
+	unsigned
+	num_props_stored() const noexcept {
+		return m_num_props_stored;
+	}
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		Execute command.
+
+		@note Only props that are IO::PropState::modified will be
+		stored.
+	*/
+	result_type
+	operator()() noexcept;
+/// @}
+};
+
 /** @} */ // end of doc-group cmd_hive
 /** @} */ // end of doc-group cmd
 
 } // namespace Hive
 
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Hive::Init);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Hive::StoreAll);
 
 } // namespace Cmd
 } // namespace Hord
