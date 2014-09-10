@@ -417,7 +417,7 @@ public:
 		for (auto const type : prop_types) {
 			if (has(type, state)) {
 				prop_types = static_cast<IO::PropTypeBit>(
-					enum_cast(prop_types) & ~enum_cast(type)
+					enum_cast(prop_types) & ~enum_cast(prop_type_bit(type))
 				);
 			}
 		}
