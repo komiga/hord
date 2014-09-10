@@ -80,7 +80,7 @@ load_prop_weak(
 	@throws Error{...}
 	From Object::Unit::deserialize().
 
-	@returns Whether any of the props were loaded.
+	@returns The number of loaded props.
 	@param datastore %Datastore.
 	@param object Object to operate on.
 	@param prop_types Props to load.
@@ -88,7 +88,7 @@ load_prop_weak(
 
 	@sa Object::Unit::deserialize()
 */
-bool
+unsigned
 load_props(
 	IO::Datastore& datastore,
 	Object::Unit& object,
@@ -104,7 +104,7 @@ load_props(
 	@warning Prop data in @a stream must be ordered by prop type
 	order.
 */
-bool
+unsigned
 load_props_weak(
 	IO::Datastore& datastore,
 	Object::Unit& object,
@@ -169,7 +169,7 @@ store_prop_weak(
 	@throws Error{...}
 	From Object::Unit::serialize().
 
-	@returns Whether any of the props were stored.
+	@returns The number of props stored.
 	@param datastore %Datastore.
 	@param object Object.
 	@param prop_types Props to store.
@@ -177,7 +177,7 @@ store_prop_weak(
 
 	@sa Object::Unit::serialize()
 */
-bool
+unsigned
 store_props(
 	IO::Datastore& datastore,
 	Object::Unit& object,
@@ -190,7 +190,7 @@ store_props(
 
 	Same as IO::store_props(), but with weak acquisition.
 */
-bool
+unsigned
 store_props_weak(
 	IO::Datastore& datastore,
 	Object::Unit& object,

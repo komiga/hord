@@ -69,23 +69,23 @@ load_prop_weak(
 	return false;
 }
 
-bool
+unsigned
 load_props(
 	IO::Datastore& datastore,
 	Object::Unit& object,
 	IO::PropTypeBit const prop_types,
 	bool const force
 ) {
-	bool loaded_any = false;
+	unsigned num_stored = 0;
 	for (auto const prop_type : prop_types) {
 		if (load_prop(datastore, object, prop_type, force)) {
-			loaded_any = true;
+			++num_stored;
 		}
 	}
-	return loaded_any;
+	return num_stored;
 }
 
-bool
+unsigned
 load_props_weak(
 	IO::Datastore& datastore,
 	Object::Unit& object,
@@ -93,13 +93,13 @@ load_props_weak(
 	std::istream& stream,
 	bool const force
 ) {
-	bool loaded_any = false;
+	unsigned num_stored = 0;
 	for (auto const prop_type : prop_types) {
 		if (load_prop_weak(datastore, object, prop_type, stream, force)) {
-			loaded_any = true;
+			++num_stored;
 		}
 	}
-	return loaded_any;
+	return num_stored;
 }
 
 bool
@@ -158,23 +158,23 @@ store_prop_weak(
 	return false;
 }
 
-bool
+unsigned
 store_props(
 	IO::Datastore& datastore,
 	Object::Unit& object,
 	IO::PropTypeBit const prop_types,
 	bool const force
 ) {
-	bool loaded_any = false;
+	unsigned num_stored = 0u;
 	for (auto const prop_type : prop_types) {
 		if (store_prop(datastore, object, prop_type, force)) {
-			loaded_any = true;
+			++num_stored;
 		}
 	}
-	return loaded_any;
+	return num_stored;
 }
 
-bool
+unsigned
 store_props_weak(
 	IO::Datastore& datastore,
 	Object::Unit& object,
@@ -182,13 +182,13 @@ store_props_weak(
 	std::ostream& stream,
 	bool const force
 ) {
-	bool loaded_any = false;
+	unsigned num_stored = 0u;
 	for (auto const prop_type : prop_types) {
 		if (store_prop_weak(datastore, object, prop_type, stream, force)) {
-			loaded_any = true;
+			++num_stored;
 		}
 	}
-	return loaded_any;
+	return num_stored;
 }
 
 } // namespace IO
