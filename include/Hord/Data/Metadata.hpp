@@ -78,14 +78,61 @@ public:
 	MetaField(MetaField const&) = default;
 
 	/**
-		Constructor with name.
+		Constructor with name and type (default value).
 	*/
 	explicit
 	MetaField(
-		String name
+		String name,
+		Data::FieldType const type
 	) noexcept
 		: name(std::move(name))
+		, type(type)
 	{}
+
+	/**
+		Constructor with name and text value.
+	*/
+	explicit
+	MetaField(
+		String name,
+		String value
+	) noexcept
+		: name(std::move(name))
+		, type(Data::FieldType::Text)
+	{
+		// FIXME: Yuck 1.
+		this->value.str = std::move(value);
+	}
+
+	/**
+		Constructor with name and number value.
+	*/
+	explicit
+	MetaField(
+		String name,
+		std::int64_t const value
+	) noexcept
+		: name(std::move(name))
+		, type(Data::FieldType::Number)
+	{
+		// FIXME: Yuck 2.
+		this->value.num = value;
+	}
+
+	/**
+		Constructor with name and boolean value.
+	*/
+	explicit
+	MetaField(
+		String name,
+		bool const value
+	) noexcept
+		: name(std::move(name))
+		, type(Data::FieldType::Boolean)
+	{
+		// FIXME: Yuck 3.
+		this->value.bin = value;
+	}
 /// @}
 
 public:
