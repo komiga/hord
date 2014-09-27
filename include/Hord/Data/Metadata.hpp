@@ -85,9 +85,10 @@ public:
 		String name,
 		Data::FieldType const type
 	) noexcept
-		: name(std::move(name))
-		, type(type)
-	{}
+		: type(type)
+	{
+		set_name(std::move(name));
+	}
 
 	/**
 		Constructor with name and text value.
@@ -97,10 +98,10 @@ public:
 		String name,
 		String value
 	) noexcept
-		: name(std::move(name))
-		, type(Data::FieldType::Text)
+		: type(Data::FieldType::Text)
 	{
 		// FIXME: Yuck 1.
+		set_name(std::move(name));
 		this->value.str = std::move(value);
 	}
 
@@ -112,10 +113,10 @@ public:
 		String name,
 		std::int64_t const value
 	) noexcept
-		: name(std::move(name))
-		, type(Data::FieldType::Number)
+		: type(Data::FieldType::Number)
 	{
 		// FIXME: Yuck 2.
+		set_name(std::move(name));
 		this->value.num = value;
 	}
 
@@ -127,10 +128,10 @@ public:
 		String name,
 		bool const value
 	) noexcept
-		: name(std::move(name))
-		, type(Data::FieldType::Boolean)
+		: type(Data::FieldType::Boolean)
 	{
 		// FIXME: Yuck 3.
+		set_name(std::move(name));
 		this->value.bin = value;
 	}
 /// @}
