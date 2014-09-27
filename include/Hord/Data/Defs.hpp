@@ -16,7 +16,7 @@ namespace Data {
 
 // Forward declarations
 enum class FieldType : std::uint8_t;
-enum class MetaFieldType : std::uint8_t;
+enum class FieldMask : std::uint8_t;
 
 /**
 	@addtogroup data
@@ -77,30 +77,6 @@ enum class FieldMask : std::uint8_t {
 	@addtogroup metadata
 	@{
 */
-
-/**
-	MetaField type.
-
-	@sa Data::MetaField,
-		Data::Metadata
-*/
-enum class MetaFieldType : std::uint8_t {
-	/** Data::StringMetaField. */
-	String = 0x01,
-
-	/** Data::Int32MetaField. */
-	Int32,
-
-	/** Data::Int64MetaField. */
-	Int64,
-
-	/** Data::BoolMetaField. */
-	Bool,
-
-/** @cond INTERNAL */
-	LAST
-/** @endcond */
-};
 
 /**
 	Serialize FieldType.

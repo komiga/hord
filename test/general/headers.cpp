@@ -41,20 +41,8 @@ main() {
 	Hord::Error const err_test{Hord::ErrorCode::unknown, "oh no!"};
 
 	// group metadata
-	//Hord::MetaField meta_field{};
-	Hord::Data::StringMetaField meta_field_1{};
-	Hord::Data::Int32MetaField meta_field_2{};
-	Hord::Data::Int64MetaField meta_field_3{};
-	Hord::Data::BoolMetaField meta_field_4{};
+	Hord::Data::MetaField meta_field{};
 	Hord::Data::Metadata metadata{};
-
-	Hord::Data::MetaField& mf = meta_field_1;
-	std::cout
-		<< static_cast<int>(mf.get_type_info().type) << ','
-		<< static_cast<int>(meta_field_2.get_type_info().type) << ','
-		<< static_cast<int>(meta_field_3.get_type_info().type) << ','
-		<< static_cast<int>(meta_field_4.get_type_info().type)
-	<< std::endl;
 
 	// group data
 	Hord::Data::Field field{};

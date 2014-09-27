@@ -22,11 +22,7 @@ namespace Hord {
 namespace Data {
 
 // Forward declarations
-class MetaField;
-class StringMetaField;
-class Int32MetaField;
-class Int64MetaField;
-class BoolMetaField;
+struct MetaField;
 struct Metadata;
 
 /**
@@ -39,78 +35,38 @@ struct Metadata;
 */
 
 /**
-	Base Metadata field.
-
-	@note read() and write() will serialize base properties;
-	implementations shall serialize only their own properties.
+	Metadata field.
 */
-class MetaField {
+struct MetaField {
 public:
-	/**
-		Type info.
-	*/
-	struct type_info final {
-		/** Type. */
-		MetaFieldType const type;
-
-		/**
-			Default-construct field of this type.
-
-			@returns Pointer to field, or @c nullptr if allocation
-			failed.
-		*/
-		MetaField*
-		(&construct)() noexcept;
-	};
-
 /** @name Properties */ /// @{
 	/**
 		Name.
 
-		@warning This field will be truncated to 255 code units
-		when serializing.
+		@warning This field will be truncated to 255 code units.
 	*/
 	String name{};
+
+	/** Type. */
+	Data::FieldType type{Data::FieldType::Text};
+
+	/** Value. */
+	struct {
+		String str{}; /**< String value. */
+		union {
+			std::int64_t num{0}; /**< Integer value. */
+			bool bin; /**< Boolean value. */
+		};
+	} value{};
 /// @}
 
 private:
-	MetaField(MetaField const&) = delete;
 	MetaField& operator=(MetaField const&) = delete;
-
-protected:
-/** @name Implementation */ /// @{
-	/**
-		get_type_info() implementation.
-	*/
-	virtual type_info const&
-	get_type_info_impl() const noexcept = 0;
-
-	/**
-		read() implementation.
-
-		@throws SerializerError{..}
-	*/
-	virtual ser_result_type
-	read_impl(
-		InputSerializer& ser
-	) = 0;
-
-	/**
-		write() implementation.
-
-		@throws SerializerError{..}
-	*/
-	virtual ser_result_type
-	write_impl(
-		OutputSerializer& ser
-	) const = 0;
-/// @}
 
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	virtual
-	~MetaField() noexcept = 0;
+	~MetaField() noexcept = default;
 
 	/** Default constructor. */
 	MetaField() = default;
@@ -118,6 +74,8 @@ public:
 	MetaField(MetaField&&) = default;
 	/** Move assignment operator. */
 	MetaField& operator=(MetaField&&) = default;
+	/** Copy constructor. */
+	MetaField(MetaField const&) = default;
 
 	/**
 		Constructor with name.
@@ -132,14 +90,6 @@ public:
 
 public:
 /** @name Properties */ /// @{
-	/**
-		Get type info.
-	*/
-	type_info const&
-	get_type_info() const noexcept {
-		return get_type_info_impl();
-	}
-
 	/**
 		Set name.
 	*/
@@ -157,269 +107,28 @@ public:
 
 /** @name Serialization */ /// @{
 	/**
-		Read from input serializer.
+		Serialize.
 
 		@throws SerializerError{..}
 		If a serialization operation failed.
 	*/
+	template<class Ser>
 	ser_result_type
-	read(
-		ser_tag_read,
-		InputSerializer& ser
+	serialize(
+		ser_tag_serialize,
+		Ser& ser
 	) {
-		ser(Cacophony::make_string_cfg<std::uint8_t>(this->name));
-		read_impl(ser);
+		auto& self = const_safe<Ser>(*this);
+		ser(
+			self.type,
+			Cacophony::make_string_cfg<std::uint8_t>(self.name)
+		);
+		switch (self.type) {
+		case Data::FieldType::Text   : ser(self.value.str); break;
+		case Data::FieldType::Number : ser(self.value.num); break;
+		case Data::FieldType::Boolean: ser(self.value.bin); break;
+		}
 	}
-
-	/**
-		Write to output serializer.
-
-		@throws SerializerError{..}
-		If a serialization operation failed.
-	*/
-	ser_result_type
-	write(
-		ser_tag_write,
-		OutputSerializer& ser
-	) const {
-		ser(Cacophony::make_string_cfg<std::uint8_t>(this->name));
-		write_impl(ser);
-	}
-/// @}
-};
-inline MetaField::~MetaField() noexcept = default;
-
-/**
-	String MetaField.
-*/
-class StringMetaField final
-	: public MetaField
-{
-public:
-/** @name Properties */ /// @{
-	/** Value. */
-	String value{};
-/// @}
-
-private:
-	StringMetaField(StringMetaField const&) = delete;
-	StringMetaField& operator=(StringMetaField const&) = delete;
-
-	MetaField::type_info const&
-	get_type_info_impl() const noexcept override;
-
-	ser_result_type
-	read_impl(
-		InputSerializer& ser
-	) override {
-		ser(this->value);
-	}
-
-	ser_result_type
-	write_impl(
-		OutputSerializer& ser
-	) const override {
-		ser(this->value);
-	}
-
-public:
-/** @name Special member functions */ /// @{
-	/** Destructor. */
-	~StringMetaField() noexcept override = default;
-
-	/** Default constructor. */
-	StringMetaField() = default;
-	/** Move constructor. */
-	StringMetaField(StringMetaField&&) = default;
-	/** Move assignment operator. */
-	StringMetaField& operator=(StringMetaField&&) = default;
-
-	/**
-		Constructor with name and value.
-	*/
-	StringMetaField(
-		String name,
-		String value
-	) noexcept
-		: MetaField(std::move(name))
-		, value(std::move(value))
-	{}
-/// @}
-};
-
-/**
-	Int32 MetaField.
-*/
-class Int32MetaField final
-	: public MetaField
-{
-public:
-/** @name Properties */ /// @{
-	/** Value. */
-	std::int32_t value{0};
-/// @}
-
-private:
-	Int32MetaField(Int32MetaField const&) = delete;
-	Int32MetaField& operator=(Int32MetaField const&) = delete;
-
-	MetaField::type_info const&
-	get_type_info_impl() const noexcept override;
-
-	ser_result_type
-	read_impl(
-		InputSerializer& ser
-	) override {
-		ser(this->value);
-	}
-
-	ser_result_type
-	write_impl(
-		OutputSerializer& ser
-	) const override {
-		ser(this->value);
-	}
-
-public:
-/** @name Special member functions */ /// @{
-	/** Destructor. */
-	~Int32MetaField() noexcept override = default;
-
-	/** Default constructor. */
-	Int32MetaField() = default;
-	/** Move constructor. */
-	Int32MetaField(Int32MetaField&&) = default;
-	/** Move assignment operator. */
-	Int32MetaField& operator=(Int32MetaField&&) = default;
-
-	/**
-		Constructor with name and value.
-	*/
-	Int32MetaField(
-		String name,
-		std::int32_t const value
-	) noexcept
-		: MetaField(std::move(name))
-		, value(value)
-	{}
-/// @}
-};
-
-/**
-	Int64 MetaField.
-*/
-class Int64MetaField final
-	: public MetaField
-{
-public:
-/** @name Properties */ /// @{
-	/** Value. */
-	std::int64_t value{0};
-/// @}
-
-private:
-	Int64MetaField(Int64MetaField const&) = delete;
-	Int64MetaField& operator=(Int64MetaField const&) = delete;
-
-	MetaField::type_info const&
-	get_type_info_impl() const noexcept override;
-
-	ser_result_type
-	read_impl(
-		InputSerializer& ser
-	) override {
-		ser(this->value);
-	}
-
-	ser_result_type
-	write_impl(
-		OutputSerializer& ser
-	) const override {
-		ser(this->value);
-	}
-
-public:
-/** @name Special member functions */ /// @{
-	/** Destructor. */
-	~Int64MetaField() noexcept override = default;
-
-	/** Default constructor. */
-	Int64MetaField() = default;
-	/** Move constructor. */
-	Int64MetaField(Int64MetaField&&) = default;
-	/** Move assignment operator. */
-	Int64MetaField& operator=(Int64MetaField&&) = default;
-
-	/**
-		Constructor with name and value.
-	*/
-	Int64MetaField(
-		String name,
-		std::int64_t const value
-	) noexcept
-		: MetaField(std::move(name))
-		, value(value)
-	{}
-/// @}
-};
-
-/**
-	Bool MetaField.
-*/
-class BoolMetaField final
-	: public MetaField
-{
-public:
-/** @name Properties */ /// @{
-	/** Value. */
-	bool value{false};
-/// @}
-
-private:
-	BoolMetaField(BoolMetaField const&) = delete;
-	BoolMetaField& operator=(BoolMetaField const&) = delete;
-
-	MetaField::type_info const&
-	get_type_info_impl() const noexcept override;
-
-	ser_result_type
-	read_impl(
-		InputSerializer& ser
-	) override {
-		std::uint8_t boolu8 = 0;
-		ser(boolu8);
-		this->value = static_cast<bool>(boolu8);
-	}
-
-	ser_result_type
-	write_impl(
-		OutputSerializer& ser
-	) const override {
-		ser(static_cast<std::uint8_t>(this->value));
-	}
-
-public:
-/** @name Special member functions */ /// @{
-	/** Destructor. */
-	~BoolMetaField() noexcept override = default;
-
-	/** Default constructor. */
-	BoolMetaField() = default;
-	/** Move constructor. */
-	BoolMetaField(BoolMetaField&&) = default;
-	/** Move assignment operator. */
-	BoolMetaField& operator=(BoolMetaField&&) = default;
-
-	/**
-		Constructor with name and value.
-	*/
-	BoolMetaField(
-		String name,
-		bool const value
-	) noexcept
-		: MetaField(std::move(name))
-		, value(value)
-	{}
 /// @}
 };
 
@@ -432,9 +141,7 @@ struct Metadata final {
 public:
 	/** MetaField vector. */
 	using field_vector_type
-	= aux::vector<
-		duct::cc_unique_ptr<MetaField>
-	>;
+	= aux::vector<Data::MetaField>;
 
 /** @name Properties */ /// @{
 	/** Fields. */
