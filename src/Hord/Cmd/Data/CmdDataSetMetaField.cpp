@@ -70,7 +70,7 @@ HORD_SCOPE_CLASS::operator()(
 ) noexcept try {
 	m_created = false;
 	auto& fields = object.get_metadata().fields;
-	if (fields.size() >= index) {
+	if (fields.size() <= index) {
 		return commit("out-of-bounds field index");
 	}
 	set_value(object, fields[index].value, new_value);
