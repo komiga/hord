@@ -10,6 +10,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #pragma once
 
 #include <Hord/config.hpp>
+#include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
@@ -56,9 +57,10 @@ public:
 
 /** @name Operations */ /// @{
 	/**
-		Set field by index.
+		Set field value by index.
 
-		@param index Index of field to change.
+		@param object Object to modify.
+		@param index Index of field.
 		@param new_value New value for field.
 	*/
 	result_type
@@ -69,9 +71,10 @@ public:
 	) noexcept;
 
 	/**
-		Set field by name.
+		Set field value by name.
 
-		@param name Name of field to change.
+		@param object Object to modify.
+		@param name Name of field.
 		@param new_value New value for field.
 		@param create Whether to create the field if it does not exist.
 	*/
