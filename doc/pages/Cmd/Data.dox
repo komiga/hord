@@ -1,0 +1,10 @@
+
+/**
+
+@addtogroup cmd
+@defgroup cmd_data Group: Data
+@details
+
+Commands for operating on data.
+
+*/
