@@ -18,36 +18,31 @@ namespace Data {
 
 #define HORD_SCOPE_CLASS Cmd::Data::RenameMetaField
 
-#define HORD_SCOPE_FUNC set_name
-void
-set_name(
+#define HORD_SCOPE_FUNC set_name // pseudo
+HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::set_name(
 	Object::Unit& object,
-	String& name,
+	Hord::Data::MetaField& field,
 	String const& new_name
 ) {
-	name = new_name;
+	if (new_name == field.name) {
+		return true;
+	} else if (new_name.empty()) {
+		set_message("new name must not be empty");
+		return false;
+	}
+	auto const& fields = object.get_metadata().fields;
+	for (auto const& it_field : fields) {
+		if (&it_field != &field && new_name == it_field.name) {
+			set_message("another field already has this name");
+			return false;
+		}
+	}
+	field.name = new_name;
 	object.get_prop_states().assign(
 		IO::PropType::metadata,
 		IO::PropState::modified
 	);
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC check_name // pseudo
-bool
-HORD_SCOPE_CLASS::check_name(
-	Object::Unit const& object,
-	String const& name
-) {
-	if (name.empty()) {
-		return commit("new name must not be empty");
-	}
-	auto const& fields = object.get_metadata().fields;
-	for (auto const& field : fields) {
-		if (name == field.name) {
-			return commit("another field already has this name");
-		}
-	}
 	return true;
 }
 #undef HORD_SCOPE_FUNC
@@ -62,11 +57,10 @@ HORD_SCOPE_CLASS::operator()(
 	auto& fields = object.get_metadata().fields;
 	if (fields.size() <= index) {
 		return commit("field index is out-of-bounds");
-	} else if (!check_name(object, new_name)) {
-		return ok();
 	}
-	set_name(object, fields[index].name, new_name);
-	return commit();
+	return commit_with(
+		set_name(object, fields[index], new_name)
+	);
 } catch (...) {
 	Log::acquire(Log::error)
 		<< DUCT_GR_MSG_FQN("error initializing:\n")
@@ -83,16 +77,12 @@ HORD_SCOPE_CLASS::operator()(
 	String const& old_name,
 	String const& new_name
 ) noexcept try {
-	if (!check_name(object, new_name)) {
-		return ok();
-	} else if (new_name == old_name) {
-		return commit();
-	}
 	auto& fields = object.get_metadata().fields;
-	for (auto it = fields.begin(); fields.end() != it; ++it) {
-		if (old_name == it->name) {
-			set_name(object, it->name, new_name);
-			return commit();
+	for (auto& field : fields) {
+		if (old_name == field.name) {
+			return commit_with(
+				set_name(object, field, new_name)
+			);
 		}
 	}
 	return commit("field does not exist");

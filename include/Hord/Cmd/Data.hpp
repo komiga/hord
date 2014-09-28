@@ -101,10 +101,11 @@ class RenameMetaField final
 	)
 
 private:
-	bool
-	check_name(
-		Object::Unit const& object,
-		String const& name
+	result_type
+	set_name(
+		Object::Unit& object,
+		Hord::Data::MetaField& field,
+		String const& new_name
 	);
 
 public:
@@ -145,6 +146,7 @@ public:
 } // namespace Data
 
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::SetMetaField);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::RenameMetaField);
 
 } // namespace Cmd
 } // namespace Hord
