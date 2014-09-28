@@ -21,6 +21,7 @@ namespace Data {
 
 // Forward declarations
 class SetMetaField;
+class RenameMetaField;
 
 /**
 	@addtogroup cmd
@@ -84,6 +85,56 @@ public:
 		String const& name,
 		Hord::Data::FieldValue const& new_value,
 		bool const create = false
+	) noexcept;
+/// @}
+};
+
+/**
+	Rename MetaField command.
+*/
+class RenameMetaField final
+	: public Cmd::Unit<RenameMetaField>
+{
+	HORD_CMD_IMPL_BOILERPLATE(
+		RenameMetaField,
+		"Cmd::Data::RenameMetaField"
+	)
+
+private:
+	bool
+	check_name(
+		Object::Unit const& object,
+		String const& name
+	);
+
+public:
+/** @name Operations */ /// @{
+	/**
+		Rename field by index.
+
+		@param object Object to modify.
+		@param index Index of field.
+		@param new_name New name.
+	*/
+	result_type
+	operator()(
+		Object::Unit& object,
+		unsigned const index,
+		String const& new_name
+	) noexcept;
+
+	/**
+		Rename field by name.
+
+		@param object Object to modify.
+		@param old_name Name of field.
+		@param new_name New name.
+	*/
+	result_type
+	operator()(
+		Object::Unit& object,
+		String const& old_name,
+		String const& new_name
 	) noexcept;
 /// @}
 };
