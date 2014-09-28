@@ -93,45 +93,6 @@ public:
 	{
 		set_name(std::move(name));
 	}
-
-	/**
-		Constructor with name and text value.
-	*/
-	explicit
-	MetaField(
-		String name,
-		String value
-	) noexcept
-		: value(std::move(value))
-	{
-		set_name(std::move(name));
-	}
-
-	/**
-		Constructor with name and number value.
-	*/
-	explicit
-	MetaField(
-		String name,
-		std::int64_t const value
-	) noexcept
-		: value(value)
-	{
-		set_name(std::move(name));
-	}
-
-	/**
-		Constructor with name and boolean value.
-	*/
-	explicit
-	MetaField(
-		String name,
-		bool const value
-	) noexcept
-		: value(value)
-	{
-		set_name(std::move(name));
-	}
 /// @}
 
 public:
