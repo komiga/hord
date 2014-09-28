@@ -130,7 +130,7 @@ Unit::deserialize_prop_primary(
 					);
 					break;
 				}
-				field.type = static_cast<Data::FieldType>(field_type);
+				field.value.type = static_cast<Data::FieldType>(field_type);
 			}
 		}
 
@@ -160,8 +160,8 @@ Unit::serialize_prop_primary(
 	}
 	for (auto const& record : m_records) {
 		for (auto const& field : record.fields) {
-			ser(static_cast<std::uint8_t>(field.type));
-			switch (field.type) {
+			ser(static_cast<std::uint8_t>(field.value.type));
+			switch (field.value.type) {
 			case Data::FieldType::Text:
 				ser(Cacophony::make_string_cfg<std::uint16_t>(
 					field.value.str

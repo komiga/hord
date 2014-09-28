@@ -11,12 +11,15 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 
+#include <utility>
+
 namespace Hord {
 namespace Data {
 
 // Forward declarations
 enum class FieldType : std::uint8_t;
 enum class FieldMask : std::uint8_t;
+struct FieldValue;
 
 /**
 	@addtogroup data
@@ -74,9 +77,76 @@ enum class FieldMask : std::uint8_t {
 };
 
 /**
-	@addtogroup metadata
-	@{
+	Field value.
 */
+struct FieldValue {
+/** @name Properties */ /// @{
+	/** Type. */
+	Data::FieldType type{Data::FieldType::Text};
+
+	/** Value. */
+	String str{}; /**< String value. */
+	union {
+		std::int64_t num{0}; /**< Integer value. */
+		bool bin; /**< Boolean value. */
+	};
+/// @}
+
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~FieldValue() noexcept = default;
+
+	/** Default constructor. */
+	FieldValue() = default;
+	/** Copy constructor. */
+	FieldValue(FieldValue const&) = default;
+	/** Move constructor. */
+	FieldValue(FieldValue&&) noexcept = default;
+	/** Copy assignment operator. */
+	FieldValue& operator=(FieldValue const&) = default;
+	/** Move assignment operator. */
+	FieldValue& operator=(FieldValue&&) noexcept = default;
+
+	/**
+		Construct with type (default value).
+	*/
+	FieldValue(
+		Data::FieldType const type
+	) noexcept
+		: type(type)
+	{}
+
+	/**
+		Construct with text value.
+	*/
+	FieldValue(
+		String value
+	) noexcept
+		: type(Data::FieldType::Text)
+		, str(std::move(value))
+	{}
+
+	/**
+		Construct with number value.
+	*/
+	FieldValue(
+		std::int64_t const value
+	) noexcept
+		: type(Data::FieldType::Number)
+		, num(value)
+	{}
+
+	/**
+		Construct with boolean value.
+	*/
+	FieldValue(
+		bool const value
+	) noexcept
+		: type(Data::FieldType::Boolean)
+		, num(value)
+	{}
+/// @}
+};
 
 /**
 	Serialize FieldType.
@@ -104,7 +174,6 @@ serialize(
 	ser(Cacophony::make_enum_cfg<std::uint8_t>(const_safe<Ser>(value)));
 }
 
-/** @} */ // end of doc-group metadata
 /** @} */ // end of doc-group data
 
 } // namespace Data

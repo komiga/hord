@@ -47,17 +47,8 @@ public:
 	*/
 	String name{};
 
-	/** Type. */
-	Data::FieldType type{Data::FieldType::Text};
-
 	/** Value. */
-	struct {
-		String str{}; /**< String value. */
-		union {
-			std::int64_t num{0}; /**< Integer value. */
-			bool bin; /**< Boolean value. */
-		};
-	} value{};
+	Data::FieldValue value;
 /// @}
 
 private:
@@ -85,7 +76,7 @@ public:
 		String name,
 		Data::FieldType const type
 	) noexcept
-		: type(type)
+		: value(type)
 	{
 		set_name(std::move(name));
 	}
@@ -98,11 +89,9 @@ public:
 		String name,
 		String value
 	) noexcept
-		: type(Data::FieldType::Text)
+		: value(std::move(value))
 	{
-		// FIXME: Yuck 1.
 		set_name(std::move(name));
-		this->value.str = std::move(value);
 	}
 
 	/**
@@ -113,11 +102,9 @@ public:
 		String name,
 		std::int64_t const value
 	) noexcept
-		: type(Data::FieldType::Number)
+		: value(value)
 	{
-		// FIXME: Yuck 2.
 		set_name(std::move(name));
-		this->value.num = value;
 	}
 
 	/**
@@ -128,11 +115,9 @@ public:
 		String name,
 		bool const value
 	) noexcept
-		: type(Data::FieldType::Boolean)
+		: value(value)
 	{
-		// FIXME: Yuck 3.
 		set_name(std::move(name));
-		this->value.bin = value;
 	}
 /// @}
 
@@ -168,10 +153,10 @@ public:
 	) {
 		auto& self = const_safe<Ser>(*this);
 		ser(
-			self.type,
+			self.value.type,
 			Cacophony::make_string_cfg<std::uint8_t>(self.name)
 		);
-		switch (self.type) {
+		switch (self.value.type) {
 		case Data::FieldType::Text   : ser(self.value.str); break;
 		case Data::FieldType::Number : ser(self.value.num); break;
 		case Data::FieldType::Boolean: ser(self.value.bin); break;

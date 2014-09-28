@@ -41,8 +41,8 @@ Metadata::deserialize(
 	for (auto& field : des_fields) {
 		ser(field);
 		if (
-			enum_cast(Data::FieldType::Text)    > enum_cast(field.type) ||
-			enum_cast(Data::FieldType::Boolean) < enum_cast(field.type)
+			enum_cast(Data::FieldType::Text)    > enum_cast(field.value.type) ||
+			enum_cast(Data::FieldType::Boolean) < enum_cast(field.value.type)
 		) {
 			HORD_THROW_FQN(
 				ErrorCode::serialization_data_malformed,

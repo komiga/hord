@@ -33,17 +33,8 @@ struct Field;
 struct Field final {
 public:
 /** @name Properties */ /// @{
-	/** Type. */
-	Data::FieldType type{Data::FieldType::Text};
-
 	/** Value. */
-	struct {
-		String str{}; /**< String value. */
-		union {
-			std::int64_t num{0}; /**< Integer value. */
-			bool bin; /**< Boolean value. */
-		};
-	} value{};
+	Data::FieldValue value;
 
 	/** Rule state. */
 	duct::cc_unique_ptr<Rule::State> state{nullptr}; // Runtime
@@ -72,8 +63,7 @@ public:
 	Field(
 		Field const& other
 	) noexcept
-		: type(other.type)
-		, value(other.value)
+		: value(other.value)
 		, state(nullptr)
 	{}
 /// @}
