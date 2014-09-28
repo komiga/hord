@@ -120,6 +120,16 @@ struct FieldValue {
 		Construct with text value.
 	*/
 	FieldValue(
+		char const* const value
+	) noexcept
+		: type(Data::FieldType::Text)
+		, str(value)
+	{}
+
+	/**
+		Construct with text value.
+	*/
+	FieldValue(
 		String value
 	) noexcept
 		: type(Data::FieldType::Text)
