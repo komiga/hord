@@ -5,11 +5,8 @@
 #include <Hord/Data/Defs.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
-#include <Hord/IO/Prop.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Cmd/Data.hpp>
-#include <Hord/System/Driver.hpp>
-#include <Hord/System/Context.hpp>
 
 #include <exception>
 
@@ -71,7 +68,7 @@ HORD_SCOPE_CLASS::operator()(
 	m_created = false;
 	auto& fields = object.get_metadata().fields;
 	if (fields.size() <= index) {
-		return commit("out-of-bounds field index");
+		return commit("field index is out-of-bounds");
 	}
 	set_value(object, fields[index].value, new_value);
 	return commit();
@@ -112,7 +109,7 @@ HORD_SCOPE_CLASS::operator()(
 		m_created = true;
 		return commit();
 	}
-	return commit("name not found");
+	return commit("field does not exist");
 } catch (...) {
 	Log::acquire(Log::error)
 		<< DUCT_GR_MSG_FQN("error initializing:\n")
