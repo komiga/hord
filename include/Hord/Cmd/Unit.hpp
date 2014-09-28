@@ -152,12 +152,18 @@ private:
 		m_result = result;
 	}
 
+protected:
+/** @name Internal properties */ /// @{
+	/**
+		Set message.
+	*/
 	void
 	set_message(
 		String&& message
 	) noexcept {
 		m_message = std::move(message);
 	}
+/// @}
 
 public:
 /** @name Special member functions */ /// @{
@@ -305,6 +311,23 @@ protected:
 	) noexcept {
 		set_result(false);
 		set_message(std::move(message));
+		unit_commit_impl::func(
+			static_cast<impl_type*>(this)
+		);
+		return m_result;
+	}
+
+	/**
+		Commit command with result.
+
+		@note This assumes the error message was already assigned
+		if the result is an error.
+	*/
+	result_type
+	commit_with(
+		result_type const result
+	) noexcept {
+		set_result(result);
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
