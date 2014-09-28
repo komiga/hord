@@ -82,6 +82,19 @@ public:
 	}
 
 	/**
+		Constructor with name and value.
+	*/
+	explicit
+	MetaField(
+		String name,
+		Data::FieldValue value
+	) noexcept
+		: value(std::move(value))
+	{
+		set_name(std::move(name));
+	}
+
+	/**
 		Constructor with name and text value.
 	*/
 	explicit
