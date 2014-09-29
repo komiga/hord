@@ -348,6 +348,26 @@ public:
 protected:
 /** @name Operations */ /// @{
 	/**
+		Notify exception to context.
+	*/
+	void
+	notify_exception(
+		std::exception_ptr eptr
+	) noexcept {
+		get_context().notify_exception(
+			*this, impl_type::command_info(), std::move(eptr)
+		);
+	}
+
+	/**
+		Notify current exception to context.
+	*/
+	void
+	notify_exception_current() noexcept {
+		notify_exception(std::current_exception());
+	}
+
+	/**
 		Commit command with success.
 
 		@returns @c ok().

@@ -17,6 +17,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/System/Driver.hpp>
 
 #include <utility>
+#include <exception>
 
 namespace Hord {
 
@@ -64,6 +65,16 @@ private:
 
 protected:
 /** @name Implementation */ /// @{
+	/**
+		notify_exception() implementation.
+	*/
+	virtual void
+	notify_exception_impl(
+		Cmd::UnitBase const& command,
+		Cmd::type_info const& type_info,
+		std::exception_ptr eptr
+	) noexcept = 0;
+
 	/**
 		notify_complete() implementation.
 	*/
@@ -145,6 +156,25 @@ public:
 /// @}
 
 /** @name Operations */ /// @{
+	/**
+		Notify the context that a command caught an exception.
+
+		@note This should not be called directly. Cmd::Unit exposes
+		its own function to call this.
+
+		@param command Command unit.
+		@param type_info Command type info.
+		@param eptr Exception pointer.
+	*/
+	void
+	notify_exception(
+		Cmd::UnitBase const& command,
+		Cmd::type_info const& type_info,
+		std::exception_ptr&& eptr
+	) noexcept {
+		notify_exception_impl(command, type_info, std::move(eptr));
+	}
+
 	/**
 		Notify the context that a command completed.
 
