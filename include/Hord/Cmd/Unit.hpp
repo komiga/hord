@@ -48,8 +48,13 @@ struct unit_ensure_traits;
 
 	@note This should be placed within a class definition.
 
-	@remarks Defines base to the Cmd::Unit specialization, imports
-	base::exec_result_type, and defines all special member functions.
+	@remarks Imports base::exec_result_type; defines all special
+	member functions, base alias to the Cmd::Unit specialization,
+	and the following:
+	@remarks
+	- <code>static constexpr Cmd::ID command_id();</code>
+	- <code>static constexpr char const* command_name();</code>
+	- <code>static constexpr Cmd::type_info command_info();</code>
 
 	@param impl_ Implementation class.
 	@param name_ Name of command (string literal).
@@ -75,19 +80,21 @@ struct unit_ensure_traits;
 		) noexcept													\
 			: base(context)											\
 		{}															\
-		static constexpr ::Hord::Cmd::type_info						\
-		command_info() noexcept {									\
-			return {												\
-				::am::hash::murmur3_c<::Hord::Cmd::ID_HASH_LENGTH>(	\
-					HORD_STR_LIT(name_),							\
-					sizeof(HORD_STR_LIT(name_)),					\
-					::Hord::Cmd::ID_HASH_SEED						\
-				),													\
-				HORD_STR_LIT(name_)									\
-			};														\
+		static constexpr ::Hord::Cmd::ID							\
+		command_id() noexcept {										\
+			return													\
+			::am::hash::murmur3_c<::Hord::Cmd::ID_HASH_LENGTH>(		\
+				HORD_STR_LIT(name_),								\
+				sizeof(HORD_STR_LIT(name_)),						\
+				::Hord::Cmd::ID_HASH_SEED							\
+			);														\
 		}															\
 		static constexpr char const*								\
-		command_name() noexcept { return HORD_STR_LIT(name_); }
+		command_name() noexcept { return HORD_STR_LIT(name_); }		\
+		static constexpr ::Hord::Cmd::type_info						\
+		command_info() noexcept {									\
+			return {command_id(), command_name()};					\
+		}
 //
 
 /**
