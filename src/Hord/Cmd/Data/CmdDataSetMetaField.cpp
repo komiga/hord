@@ -19,7 +19,7 @@ namespace Data {
 #define HORD_SCOPE_CLASS Cmd::Data::SetMetaField
 
 #define HORD_SCOPE_FUNC set_value
-void
+static void
 set_value(
 	Object::Unit& object,
 	Hord::Data::FieldValue& value,

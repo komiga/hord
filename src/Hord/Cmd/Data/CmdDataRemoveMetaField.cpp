@@ -19,7 +19,7 @@ namespace Data {
 #define HORD_SCOPE_CLASS Cmd::Data::RemoveMetaField
 
 #define HORD_SCOPE_FUNC remove_field
-void
+static void
 remove_field(
 	Object::Unit& object,
 	Hord::Data::Metadata::field_vector_type::const_iterator const it
