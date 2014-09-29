@@ -22,6 +22,7 @@ namespace Data {
 // Forward declarations
 class SetMetaField;
 class RenameMetaField;
+class RemoveMetaField;
 
 /**
 	@addtogroup cmd
@@ -140,6 +141,45 @@ public:
 /// @}
 };
 
+/**
+	Rename MetaField command.
+*/
+class RemoveMetaField final
+	: public Cmd::Unit<RemoveMetaField>
+{
+	HORD_CMD_IMPL_BOILERPLATE(
+		RemoveMetaField,
+		"Cmd::Data::RemoveMetaField"
+	);
+
+public:
+/** @name Operations */ /// @{
+	/**
+		Remove field by index.
+
+		@param object Object to modify.
+		@param index Index of field.
+	*/
+	exec_result_type
+	operator()(
+		Object::Unit& object,
+		unsigned const index
+	) noexcept;
+
+	/**
+		Remove field by name.
+
+		@param object Object to modify.
+		@param name Name of field.
+	*/
+	exec_result_type
+	operator()(
+		Object::Unit& object,
+		String const& name
+	) noexcept;
+/// @}
+};
+
 /** @} */ // end of doc-group cmd_data
 /** @} */ // end of doc-group cmd
 
@@ -148,6 +188,7 @@ public:
 /** @cond INTERNAL */
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::SetMetaField);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::RenameMetaField);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::RemoveMetaField);
 /** @endcond */ // INTERNAL
 
 } // namespace Cmd
