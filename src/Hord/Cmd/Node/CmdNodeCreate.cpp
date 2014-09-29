@@ -50,23 +50,23 @@ HORD_SCOPE_CLASS::operator()(
 			!hive.has_object(parent)
 		)
 	) {
-		return commit("parent not found");
+		return commit_error("parent not found");
 	} else if (
 		Hord::Node::ID_NULL != layout_ref &&
 		!hive.has_object(layout_ref)
 	) {
-		return commit("layout ref not found");
+		return commit_error("layout ref not found");
 	} else if (
 		Hord::Node::ID_NULL != layout_ref &&
 		Object::BaseType::Node != hive.find_ptr(
 			layout_ref
 		)->get_base_type()
 	) {
-		return commit("layout ref not a node");
+		return commit_error("layout ref not a node");
 	} else if (slug.empty()) {
-		return commit("slug empty");
+		return commit_error("slug empty");
 	} else if (Object::SLUG_MAX_SIZE < slug.size()) {
-		return commit("slug too long");
+		return commit_error("slug too long");
 	} else {
 		for (auto const& pair : hive.get_objects()) {
 			auto const* const object = pair.second.get();
@@ -75,7 +75,7 @@ HORD_SCOPE_CLASS::operator()(
 				parent == object->get_parent() &&
 				slug   == object->get_slug()
 			) {
-				return commit("slug already exists");
+				return commit_error("slug already exists");
 			}
 		}
 	}
@@ -86,7 +86,7 @@ HORD_SCOPE_CLASS::operator()(
 		Hord::Node::Type{unit_type}
 	);
 	if (nullptr == tinfo) {
-		return commit("unknown unit type");
+		return commit_error("unknown unit type");
 	}
 	// NB: Leak ErrorCode::datastore_closed
 	m_id = Hord::Node::ID{datastore.generate_id(
@@ -94,11 +94,11 @@ HORD_SCOPE_CLASS::operator()(
 	)};
 	auto obj = tinfo->construct(m_id, Object::ID_NULL);
 	if (nullptr == obj) {
-		return commit("allocation failed");
+		return commit_error("allocation failed");
 	}
 	auto emplace_pair = hive.get_objects().emplace(m_id, std::move(obj));
 	if (!emplace_pair.second) {
-		return commit("id already exists");
+		return commit_error("id already exists");
 	}
 	datastore.create_object(
 		m_id, *tinfo, IO::Linkage::resident
@@ -117,12 +117,12 @@ HORD_SCOPE_CLASS::operator()(
 } catch (Error const& err) {
 	notify_exception_current();
 	if (ErrorCode::datastore_object_already_exists == err.get_code()) {
-		return commit("id already exists");
+		return commit_error("id already exists");
 	}
-	return commit("unknown error");
+	return commit_error("unknown error");
 } catch (...) {
 	notify_exception_current();
-	return commit("unknown error");
+	return commit_error("unknown error");
 }
 #undef HORD_SCOPE_FUNC
 

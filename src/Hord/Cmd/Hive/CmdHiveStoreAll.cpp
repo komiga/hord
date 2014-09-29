@@ -68,10 +68,10 @@ HORD_SCOPE_CLASS::operator()() noexcept try {
 	switch (err.get_code()) {
 	case ErrorCode::serialization_prop_improper_state: // fall-through
 	case ErrorCode::serialization_io_failed:
-		return commit("serialization error");
+		return commit_error("serialization error");
 
 	default:
-		return commit("unknown error");
+		return commit_error("unknown error");
 	}
 }
 #undef HORD_SCOPE_FUNC

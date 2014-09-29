@@ -395,7 +395,7 @@ protected:
 		@returns @c ok().
 	*/
 	exec_result_type
-	commit(
+	commit_error(
 		String&& message
 	) noexcept {
 		set_result(Cmd::Result::error);

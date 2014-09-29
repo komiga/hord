@@ -163,7 +163,7 @@ HORD_SCOPE_CLASS::operator()(
 		auto const* const
 		tinfo = driver.get_object_type_info(sinfo.object_type);
 		if (nullptr == tinfo) {
-			return commit("object type unknown");
+			return commit_error("object type unknown");
 		}
 		auto const emplace_pair = hive.get_objects().emplace(
 			sinfo.object_id,
@@ -173,9 +173,9 @@ HORD_SCOPE_CLASS::operator()(
 			)
 		);
 		if (!emplace_pair.second) {
-			return commit("object already exists");
+			return commit_error("object already exists");
 		} else if (nullptr == emplace_pair.first->second) {
-			return commit("object allocation failed");
+			return commit_error("object allocation failed");
 		}
 		auto& obj = *emplace_pair.first->second;
 		init_object(datastore, obj, sinfo, prop_types);
@@ -187,10 +187,10 @@ HORD_SCOPE_CLASS::operator()(
 	switch (err.get_code()) {
 	case ErrorCode::serialization_prop_improper_state: // fall-through
 	case ErrorCode::serialization_io_failed:
-		return commit("serialization error");
+		return commit_error("serialization error");
 
 	default:
-		return commit("unknown error");
+		return commit_error("unknown error");
 	}
 }
 #undef HORD_SCOPE_FUNC

@@ -68,13 +68,13 @@ HORD_SCOPE_CLASS::operator()(
 	m_created = false;
 	auto& fields = object.get_metadata().fields;
 	if (fields.size() <= index) {
-		return commit("field index is out-of-bounds");
+		return commit_error("field index is out-of-bounds");
 	}
 	set_value(object, fields[index].value, new_value);
 	return commit();
 } catch (...) {
 	notify_exception_current();
-	return commit("unknown error");
+	return commit_error("unknown error");
 }
 #undef HORD_SCOPE_FUNC
 
@@ -88,7 +88,7 @@ HORD_SCOPE_CLASS::operator()(
 ) noexcept try {
 	m_created = false;
 	if (name.empty()) {
-		return commit("empty name");
+		return commit_error("empty name");
 	}
 	auto& fields = object.get_metadata().fields;
 	for (auto it = fields.begin(); fields.end() != it; ++it) {
@@ -106,10 +106,10 @@ HORD_SCOPE_CLASS::operator()(
 		m_created = true;
 		return commit();
 	}
-	return commit("field does not exist");
+	return commit_error("field does not exist");
 } catch (...) {
 	notify_exception_current();
-	return commit("unknown error");
+	return commit_error("unknown error");
 }
 #undef HORD_SCOPE_FUNC
 
