@@ -115,19 +115,13 @@ HORD_SCOPE_CLASS::operator()(
 
 	return commit();
 } catch (Error const& err) {
-	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error creating node:\n")
-	;
-	Log::report_error(err);
+	notify_exception_current();
 	if (ErrorCode::datastore_object_already_exists == err.get_code()) {
 		return commit("id already exists");
 	}
 	return commit("unknown error");
 } catch (...) {
-	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error creating node:\n")
-	;
-	Log::report_error_ptr(std::current_exception());
+	notify_exception_current();
 	return commit("unknown error");
 }
 #undef HORD_SCOPE_FUNC

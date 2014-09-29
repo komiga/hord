@@ -60,10 +60,7 @@ HORD_SCOPE_CLASS::operator()() noexcept try {
 	}
 	return commit();
 } catch (Error const& err) {
-	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error storing props:\n")
-	;
-	Log::report_error(err);
+	notify_exception_current();
 	switch (err.get_code()) {
 	case ErrorCode::serialization_prop_improper_state: // fall-through
 	case ErrorCode::serialization_io_failed:
