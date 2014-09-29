@@ -13,6 +13,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/traits.hpp>
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
+#include <Hord/Hive/Unit.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/System/Context.hpp>
 
