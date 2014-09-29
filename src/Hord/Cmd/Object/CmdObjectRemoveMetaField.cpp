@@ -6,7 +6,7 @@
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Cmd/Data.hpp>
+#include <Hord/Cmd/Object.hpp>
 
 #include <exception>
 
@@ -14,14 +14,14 @@
 
 namespace Hord {
 namespace Cmd {
-namespace Data {
+namespace Object {
 
-#define HORD_SCOPE_CLASS Cmd::Data::RemoveMetaField
+#define HORD_SCOPE_CLASS Cmd::Object::RemoveMetaField
 
 #define HORD_SCOPE_FUNC remove_field
 static void
 remove_field(
-	Object::Unit& object,
+	Hord::Object::Unit& object,
 	Hord::Data::Metadata::field_vector_type::const_iterator const it
 ) {
 	object.get_metadata().fields.erase(it);
@@ -35,7 +35,7 @@ remove_field(
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Object::Unit& object,
+	Hord::Object::Unit& object,
 	unsigned const index
 ) noexcept try {
 	auto& fields = object.get_metadata().fields;
@@ -56,7 +56,7 @@ HORD_SCOPE_CLASS::operator()(
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Object::Unit& object,
+	Hord::Object::Unit& object,
 	String const& name
 ) noexcept try {
 	auto const& fields = object.get_metadata().fields;
@@ -76,6 +76,6 @@ HORD_SCOPE_CLASS::operator()(
 }
 #undef HORD_SCOPE_FUNC
 
-} // namespace Data
+} // namespace Object
 } // namespace Cmd
 } // namespace Hord

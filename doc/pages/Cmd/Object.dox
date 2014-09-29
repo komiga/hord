@@ -1,0 +1,10 @@
+
+/**
+
+@addtogroup cmd
+@defgroup cmd_object Group: Object
+@details
+
+General commands for operating on objects.
+
+*/

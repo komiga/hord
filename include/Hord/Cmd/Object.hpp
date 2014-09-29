@@ -1,6 +1,6 @@
 /**
-@file Cmd/Data.hpp
-@brief %Data commands.
+@file Cmd/Object.hpp
+@brief %Object commands.
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -12,12 +12,13 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
 
 namespace Hord {
 namespace Cmd {
-namespace Data {
+namespace Object {
 
 // Forward declarations
 class SetMetaField;
@@ -29,7 +30,7 @@ class RemoveMetaField;
 	@{
 */
 /**
-	@addtogroup cmd_data
+	@addtogroup cmd_object
 	@{
 */
 
@@ -41,7 +42,7 @@ class SetMetaField final
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		SetMetaField,
-		"Cmd::Data::SetMetaField"
+		"Cmd::Object::SetMetaField"
 	);
 
 private:
@@ -67,9 +68,9 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::Unit& object,
+		Hord::Object::Unit& object,
 		unsigned const index,
-		Hord::Data::FieldValue const& new_value
+		Data::FieldValue const& new_value
 	) noexcept;
 
 	/**
@@ -82,9 +83,9 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::Unit& object,
+		Hord::Object::Unit& object,
 		String const& name,
-		Hord::Data::FieldValue const& new_value,
+		Data::FieldValue const& new_value,
 		bool const create = false
 	) noexcept;
 /// @}
@@ -98,14 +99,14 @@ class RenameMetaField final
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		RenameMetaField,
-		"Cmd::Data::RenameMetaField"
+		"Cmd::Object::RenameMetaField"
 	);
 
 private:
 	Cmd::Result
 	set_name(
-		Object::Unit& object,
-		Hord::Data::MetaField& field,
+		Hord::Object::Unit& object,
+		Data::MetaField& field,
 		String const& new_name
 	);
 
@@ -120,7 +121,7 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::Unit& object,
+		Hord::Object::Unit& object,
 		unsigned const index,
 		String const& new_name
 	) noexcept;
@@ -134,7 +135,7 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::Unit& object,
+		Hord::Object::Unit& object,
 		String const& old_name,
 		String const& new_name
 	) noexcept;
@@ -149,7 +150,7 @@ class RemoveMetaField final
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		RemoveMetaField,
-		"Cmd::Data::RemoveMetaField"
+		"Cmd::Object::RemoveMetaField"
 	);
 
 public:
@@ -162,7 +163,7 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::Unit& object,
+		Hord::Object::Unit& object,
 		unsigned const index
 	) noexcept;
 
@@ -174,21 +175,21 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::Unit& object,
+		Hord::Object::Unit& object,
 		String const& name
 	) noexcept;
 /// @}
 };
 
-/** @} */ // end of doc-group cmd_data
+/** @} */ // end of doc-group cmd_object
 /** @} */ // end of doc-group cmd
 
-} // namespace Data
+} // namespace Object
 
 /** @cond INTERNAL */
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::SetMetaField);
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::RenameMetaField);
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::RemoveMetaField);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetMetaField);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::RenameMetaField);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::RemoveMetaField);
 /** @endcond */ // INTERNAL
 
 } // namespace Cmd

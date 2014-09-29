@@ -6,7 +6,7 @@
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Cmd/Data.hpp>
+#include <Hord/Cmd/Object.hpp>
 
 #include <exception>
 
@@ -14,14 +14,14 @@
 
 namespace Hord {
 namespace Cmd {
-namespace Data {
+namespace Object {
 
-#define HORD_SCOPE_CLASS Cmd::Data::SetMetaField
+#define HORD_SCOPE_CLASS Cmd::Object::SetMetaField
 
 #define HORD_SCOPE_FUNC set_value
 static void
 set_value(
-	Object::Unit& object,
+	Hord::Object::Unit& object,
 	Hord::Data::FieldValue& value,
 	Hord::Data::FieldValue const& new_value
 ) {
@@ -61,7 +61,7 @@ set_value(
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Object::Unit& object,
+	Hord::Object::Unit& object,
 	unsigned const index,
 	Hord::Data::FieldValue const& new_value
 ) noexcept try {
@@ -84,7 +84,7 @@ HORD_SCOPE_CLASS::operator()(
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Object::Unit& object,
+	Hord::Object::Unit& object,
 	String const& name,
 	Hord::Data::FieldValue const& new_value,
 	bool const create
@@ -119,6 +119,6 @@ HORD_SCOPE_CLASS::operator()(
 }
 #undef HORD_SCOPE_FUNC
 
-} // namespace Data
+} // namespace Object
 } // namespace Cmd
 } // namespace Hord
