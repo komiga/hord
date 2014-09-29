@@ -68,6 +68,7 @@ project = function()
 			precore.subst("${ROOT}/dep/trait_wrangler/"),
 			precore.subst("${ROOT}/dep/ceformat/"),
 			precore.subst("${ROOT}/dep/Cacophony/"),
+			precore.subst("${ROOT}/dep/am/"),
 		}
 end}})
 
