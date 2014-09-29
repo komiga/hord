@@ -19,23 +19,23 @@ namespace Data {
 #define HORD_SCOPE_CLASS Cmd::Data::RenameMetaField
 
 #define HORD_SCOPE_FUNC set_name // pseudo
-HORD_SCOPE_CLASS::result_type
+Cmd::Result
 HORD_SCOPE_CLASS::set_name(
 	Object::Unit& object,
 	Hord::Data::MetaField& field,
 	String const& new_name
 ) {
 	if (new_name == field.name) {
-		return true;
+		return Cmd::Result::success_no_action;
 	} else if (new_name.empty()) {
 		set_message("new name must not be empty");
-		return false;
+		return Cmd::Result::error;
 	}
 	auto const& fields = object.get_metadata().fields;
 	for (auto const& it_field : fields) {
 		if (&it_field != &field && new_name == it_field.name) {
 			set_message("another field already has this name");
-			return false;
+			return Cmd::Result::error;
 		}
 	}
 	field.name = new_name;
@@ -43,12 +43,12 @@ HORD_SCOPE_CLASS::set_name(
 		IO::PropType::metadata,
 		IO::PropState::modified
 	);
-	return true;
+	return Cmd::Result::success;
 }
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC exec // pseudo
-HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Object::Unit& object,
 	unsigned const index,
@@ -71,7 +71,7 @@ HORD_SCOPE_CLASS::operator()(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC exec // pseudo
-HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Object::Unit& object,
 	String const& old_name,

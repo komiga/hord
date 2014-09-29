@@ -113,7 +113,7 @@ init_object(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC exec // pseudo
-HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	IO::PropTypeBit prop_types
 ) noexcept try {

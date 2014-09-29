@@ -66,7 +66,7 @@ public:
 		supplied for a particular object are ignored when loading
 		props.
 	*/
-	result_type
+	exec_result_type
 	operator()(
 		Object::ID const parent,
 		Hord::Node::ID const layout_ref,

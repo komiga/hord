@@ -43,7 +43,7 @@ struct unit_ensure_traits;
 	@note This should be placed within a class definition.
 
 	@remarks Defines base to the Cmd::Unit specialization, imports
-	base::result_type, and defines all special member functions.
+	base::exec_result_type, and defines all special member functions.
 
 	@param impl_ Implementation class.
 	@param name_ Name of command (string literal).
@@ -54,7 +54,7 @@ struct unit_ensure_traits;
 		using this_type = impl_;									\
 		friend base;												\
 	public:															\
-		using base::result_type;									\
+		using base::exec_result_type;								\
 	private:														\
 		impl_() = delete;											\
 		impl_(impl_ const&) = delete;								\
@@ -125,7 +125,7 @@ public:
 	/**
 		Command execution result type.
 	*/
-	using result_type = bool;
+	using exec_result_type = bool;
 
 private:
 	using this_type = Unit<impl_type>;
@@ -137,7 +137,7 @@ private:
 	>;
 
 	System::Context& m_context;
-	result_type m_result{false};
+	Cmd::Result m_result{Cmd::Result::error};
 	String m_message{};
 
 	Unit() = delete;
@@ -147,7 +147,7 @@ private:
 
 	void
 	set_result(
-		result_type const result
+		Cmd::Result const result
 	) noexcept {
 		m_result = result;
 	}
@@ -262,7 +262,7 @@ public:
 	*/
 	bool
 	ok() const noexcept {
-		return m_result;
+		return !bad();
 	}
 
 	/**
@@ -272,7 +272,7 @@ public:
 	*/
 	bool
 	bad() const noexcept {
-		return !m_result;
+		return m_result == Cmd::Result::error;
 	}
 /// @}
 
@@ -280,29 +280,33 @@ protected:
 /** @name Operations */ /// @{
 	/**
 		Commit command with success.
+
+		@returns @c ok().
 	*/
-	result_type
+	exec_result_type
 	commit() noexcept {
-		set_result(true);
+		set_result(Cmd::Result::success);
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
-		return m_result;
+		return ok();
 	}
 
 	/**
 		Commit command with error message.
+
+		@returns @c ok().
 	*/
-	result_type
+	exec_result_type
 	commit(
 		String&& message
 	) noexcept {
-		set_result(false);
+		set_result(Cmd::Result::error);
 		set_message(std::move(message));
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
-		return m_result;
+		return ok();
 	}
 
 	/**
@@ -310,16 +314,18 @@ protected:
 
 		@note This assumes the error message was already assigned
 		if the result is an error.
+
+		@returns @c ok().
 	*/
-	result_type
+	exec_result_type
 	commit_with(
-		result_type const result
+		Cmd::Result const result
 	) noexcept {
 		set_result(result);
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
-		return m_result;
+		return ok();
 	}
 /// @}
 };

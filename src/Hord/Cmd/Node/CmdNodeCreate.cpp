@@ -32,7 +32,7 @@ HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC exec // pseudo
-HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Object::ID const parent,
 	Hord::Node::ID const layout_ref,

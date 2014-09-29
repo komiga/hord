@@ -60,7 +60,7 @@ public:
 
 		@param prop_types Properties to load for all objects.
 	*/
-	result_type
+	exec_result_type
 	operator()(
 		IO::PropTypeBit prop_types
 	) noexcept;
@@ -108,7 +108,7 @@ public:
 		@note Only props that are IO::PropState::modified will be
 		stored.
 	*/
-	result_type
+	exec_result_type
 	operator()() noexcept;
 /// @}
 };

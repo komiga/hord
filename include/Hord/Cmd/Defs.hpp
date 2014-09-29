@@ -15,13 +15,24 @@ namespace Hord {
 namespace Cmd {
 
 // Forward declarations
+enum class Result : unsigned;
 
 /**
 	@addtogroup cmd
 	@{
 */
 
-
+/**
+	Command result.
+*/
+enum class Result : unsigned {
+	/** Success. */
+	success = 0,
+	/** Success (no action taken). */
+	success_no_action,
+	/** Error. */
+	error,
+};
 
 /** @} */ // end of doc-group cmd
 

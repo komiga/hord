@@ -59,7 +59,7 @@ set_value(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC exec // pseudo
-HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Object::Unit& object,
 	unsigned const index,
@@ -82,7 +82,7 @@ HORD_SCOPE_CLASS::operator()(
 #undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC exec // pseudo
-HORD_SCOPE_CLASS::result_type
+HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Object::Unit& object,
 	String const& name,

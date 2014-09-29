@@ -64,7 +64,7 @@ public:
 		@param index Index of field.
 		@param new_value New value for field.
 	*/
-	result_type
+	exec_result_type
 	operator()(
 		Object::Unit& object,
 		unsigned const index,
@@ -79,7 +79,7 @@ public:
 		@param new_value New value for field.
 		@param create Whether to create the field if it does not exist.
 	*/
-	result_type
+	exec_result_type
 	operator()(
 		Object::Unit& object,
 		String const& name,
@@ -101,7 +101,7 @@ class RenameMetaField final
 	)
 
 private:
-	result_type
+	Cmd::Result
 	set_name(
 		Object::Unit& object,
 		Hord::Data::MetaField& field,
@@ -117,7 +117,7 @@ public:
 		@param index Index of field.
 		@param new_name New name.
 	*/
-	result_type
+	exec_result_type
 	operator()(
 		Object::Unit& object,
 		unsigned const index,
@@ -131,7 +131,7 @@ public:
 		@param old_name Name of field.
 		@param new_name New name.
 	*/
-	result_type
+	exec_result_type
 	operator()(
 		Object::Unit& object,
 		String const& old_name,
