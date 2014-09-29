@@ -17,6 +17,8 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/System/Context.hpp>
 
+#include <am/hash/murmur.hpp>
+
 #include <type_traits>
 #include <utility>
 
@@ -70,6 +72,17 @@ struct unit_ensure_traits;
 		) noexcept													\
 			: base(context)											\
 		{}															\
+		static constexpr ::Hord::Cmd::type_info						\
+		command_info() noexcept {									\
+			return {												\
+				::am::hash::murmur3_c<::Hord::Cmd::ID_HASH_LENGTH>(	\
+					HORD_STR_LIT(name_),							\
+					sizeof(HORD_STR_LIT(name_)),					\
+					::Hord::Cmd::ID_HASH_SEED						\
+				),													\
+				HORD_STR_LIT(name_)									\
+			};														\
+		}															\
 		static constexpr char const*								\
 		command_name() noexcept { return HORD_STR_LIT(name_); }
 //
