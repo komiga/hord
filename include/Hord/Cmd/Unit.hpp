@@ -276,13 +276,21 @@ public:
 	}
 
 	/**
+		Check if command execution succeeded with action.
+	*/
+	bool
+	ok_action() const noexcept {
+		return Cmd::Result::success == m_result;
+	}
+
+	/**
 		Check if command execution failed.
 
 		@remarks A just-constructed command unit will yield @c true.
 	*/
 	bool
 	bad() const noexcept {
-		return m_result == Cmd::Result::error;
+		return Cmd::Result::error == m_result;
 	}
 /// @}
 };
