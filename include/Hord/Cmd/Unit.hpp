@@ -184,18 +184,6 @@ public:
 	{}
 /// @}
 
-/** @name Operators */ /// @{
-	/**
-		Negation operator.
-
-		@remarks Equivalent to bad().
-	*/
-	bool
-	operator!() const noexcept {
-		return bad();
-	}
-/// @}
-
 /** @name Properties */ /// @{
 	/**
 		Get context.
