@@ -15,6 +15,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/String.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/Cmd/Defs.hpp>
+#include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
 #include <am/hash/murmur.hpp>
@@ -26,6 +27,7 @@ namespace Hord {
 namespace Cmd {
 
 // Forward declarations
+class UnitBase;
 template<class>
 class Unit;
 template<class>
@@ -124,41 +126,30 @@ struct unit_ensure_traits;
 
 /**
 	Command base class.
-
-	@note Command implementations should derive from this class.
-
-	@tparam Impl Command implementation class.
 */
-template<class Impl>
-class Unit {
+class UnitBase {
 public:
-	/**
-		Command implementation class.
-	*/
-	using impl_type = Impl;
 	/**
 		Command execution result type.
 	*/
 	using exec_result_type = bool;
-
 private:
-	using this_type = Unit<impl_type>;
-
-	using unit_commit_impl
-	= Cmd::unit_commit_impl<
-		impl_type,
-		Cmd::has_unit_commit_impl<impl_type>::value
-	>;
+	using this_type = UnitBase;
 
 	System::Context& m_context;
 	Cmd::Result m_result{Cmd::Result::error};
 	String m_message{};
 
-	Unit() = delete;
-	Unit(Unit const&) = delete;
-	Unit& operator=(Unit const&) = delete;
-	Unit& operator=(Unit&&) = delete;
+	UnitBase() = delete;
+	UnitBase(UnitBase const&) = delete;
+	UnitBase& operator=(UnitBase const&) = delete;
+	UnitBase& operator=(UnitBase&&) = delete;
 
+protected:
+/** @name Internal properties */ /// @{
+	/**
+		Set result.
+	*/
 	void
 	set_result(
 		Cmd::Result const result
@@ -166,8 +157,6 @@ private:
 		m_result = result;
 	}
 
-protected:
-/** @name Internal properties */ /// @{
 	/**
 		Set message.
 	*/
@@ -179,19 +168,28 @@ protected:
 	}
 /// @}
 
+/** @cond INTERNAL */
+	void
+	base_notify_complete(
+		Cmd::type_info const& type_info
+	) noexcept {
+		get_context().notify_complete(*this, type_info);
+	}
+/** @endcond */ // INTERNAL
+
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	~Unit() = default;
+	~UnitBase() = default;
 
 	/** Move constructor. */
-	Unit(Unit&&) = default;
+	UnitBase(UnitBase&&) = default;
 
 	/**
 		Constructor with context.
 	*/
 	explicit
-	Unit(
+	UnitBase(
 		System::Context& context
 	) noexcept
 		: m_context(context)
@@ -289,6 +287,64 @@ public:
 		return m_result == Cmd::Result::error;
 	}
 /// @}
+};
+
+/**
+	Command implementation base class.
+
+	@note Command implementations should derive from this class.
+
+	@tparam Impl Command implementation class.
+*/
+template<class Impl>
+class Unit
+	: public Cmd::UnitBase
+{
+	using base = Cmd::UnitBase;
+
+public:
+	/**
+		Command execution result type.
+	*/
+	using exec_result_type = base::exec_result_type;
+
+	/**
+		Command implementation class.
+	*/
+	using impl_type = Impl;
+
+private:
+	using this_type = Unit<impl_type>;
+
+	using unit_commit_impl
+	= Cmd::unit_commit_impl<
+		impl_type,
+		Cmd::has_unit_commit_impl<impl_type>::value
+	>;
+
+	Unit() = delete;
+	Unit(Unit const&) = delete;
+	Unit& operator=(Unit const&) = delete;
+	Unit& operator=(Unit&&) = delete;
+
+public:
+/** @name Special member functions */ /// @{
+	/** Destructor. */
+	~Unit() = default;
+
+	/** Move constructor. */
+	Unit(Unit&&) = default;
+
+	/**
+		Constructor with context.
+	*/
+	explicit
+	Unit(
+		System::Context& context
+	) noexcept
+		: base(context)
+	{}
+/// @}
 
 protected:
 /** @name Operations */ /// @{
@@ -303,6 +359,7 @@ protected:
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
+		base_notify_complete(impl_type::command_info());
 		return ok();
 	}
 
@@ -320,6 +377,7 @@ protected:
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
+		base_notify_complete(impl_type::command_info());
 		return ok();
 	}
 
@@ -339,6 +397,7 @@ protected:
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
+		base_notify_complete(impl_type::command_info());
 		return ok();
 	}
 /// @}

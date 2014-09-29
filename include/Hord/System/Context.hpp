@@ -19,6 +19,14 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <utility>
 
 namespace Hord {
+
+namespace Cmd {
+
+struct type_info;
+class UnitBase;
+
+} // namespace Cmd
+
 namespace System {
 
 // Forward declarations
@@ -54,10 +62,22 @@ private:
 		System::Driver::datastore_hive_pair& hive_pair
 	);
 
+protected:
+/** @name Implementation */ /// @{
+	/**
+		notify_complete() implementation.
+	*/
+	virtual void
+	notify_complete_impl(
+		Cmd::UnitBase const& command,
+		Cmd::type_info const& type_info
+	) noexcept = 0;
+/// @}
+
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	~Context() noexcept;
+	virtual ~Context() noexcept = 0;
 
 	/** Move constructor. */
 	Context(Context&&) noexcept;
@@ -121,6 +141,25 @@ public:
 	Hive::Unit const&
 	get_hive() const noexcept {
 		return m_hive;
+	}
+/// @}
+
+/** @name Operations */ /// @{
+	/**
+		Notify the context that a command completed.
+
+		@note This should not be called directly. It is called
+		automatically by Cmd::Unit::commit() after unit commit.
+
+		@param command Command unit.
+		@param type_info Command type info.
+	*/
+	void
+	notify_complete(
+		Cmd::UnitBase const& command,
+		Cmd::type_info const& type_info
+	) noexcept {
+		notify_complete_impl(command, type_info);
 	}
 /// @}
 };
