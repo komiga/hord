@@ -21,6 +21,7 @@ namespace Cmd {
 namespace Object {
 
 // Forward declarations
+class SetSlug;
 class SetMetaField;
 class RenameMetaField;
 class RemoveMetaField;
@@ -33,6 +34,33 @@ class RemoveMetaField;
 	@addtogroup cmd_object
 	@{
 */
+
+/**
+	Set slug command.
+*/
+class SetSlug final
+	: public Cmd::Unit<SetSlug>
+{
+	HORD_CMD_IMPL_BOILERPLATE(
+		SetSlug,
+		"Cmd::Object::SetSlug"
+	);
+
+public:
+/** @name Operations */ /// @{
+	/**
+		Set slug.
+
+		@param object Object to modify.
+		@param new_slug New slug.
+	*/
+	exec_result_type
+	operator()(
+		Hord::Object::Unit& object,
+		String new_slug
+	) noexcept;
+/// @}
+};
 
 /**
 	Set MetaField value command.
