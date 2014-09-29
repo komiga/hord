@@ -76,6 +76,8 @@ HORD_SCOPE_CLASS::operator()() noexcept try {
 }
 #undef HORD_SCOPE_FUNC
 
+#undef HORD_SCOPE_CLASS
+
 } // namespace Hive
 } // namespace Cmd
 } // namespace Hord

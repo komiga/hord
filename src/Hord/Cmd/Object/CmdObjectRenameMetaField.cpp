@@ -89,6 +89,8 @@ HORD_SCOPE_CLASS::operator()(
 }
 #undef HORD_SCOPE_FUNC
 
+#undef HORD_SCOPE_CLASS
+
 } // namespace Object
 } // namespace Cmd
 } // namespace Hord
