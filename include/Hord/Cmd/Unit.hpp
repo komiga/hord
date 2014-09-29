@@ -52,7 +52,7 @@ struct unit_ensure_traits;
 	member functions, base alias to the Cmd::Unit specialization,
 	and the following:
 	@remarks
-	- <code>static constexpr Cmd::ID command_id();</code>
+	- <code>static constexpr Cmd::ID const COMMAND_ID;</code>
 	- <code>static constexpr char const* command_name();</code>
 	- <code>static constexpr Cmd::type_info command_info();</code>
 
@@ -80,20 +80,19 @@ struct unit_ensure_traits;
 		) noexcept													\
 			: base(context)											\
 		{}															\
-		static constexpr ::Hord::Cmd::ID							\
-		command_id() noexcept {										\
-			return													\
+		static constexpr ::Hord::Cmd::ID const						\
+		COMMAND_ID =												\
 			::am::hash::murmur3_c<::Hord::Cmd::ID_HASH_LENGTH>(		\
 				HORD_STR_LIT(name_),								\
 				sizeof(HORD_STR_LIT(name_)),						\
 				::Hord::Cmd::ID_HASH_SEED							\
-			);														\
-		}															\
+			)														\
+		;															\
 		static constexpr char const*								\
 		command_name() noexcept { return HORD_STR_LIT(name_); }		\
 		static constexpr ::Hord::Cmd::type_info						\
 		command_info() noexcept {									\
-			return {command_id(), command_name()};					\
+			return {COMMAND_ID, command_name()};					\
 		}
 //
 
