@@ -40,7 +40,7 @@ class Create final
 	HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(
 		Create,
 		"Cmd::Node::Create"
-	)
+	);
 
 private:
 	Hord::Node::ID m_id{Hord::Node::ID_NULL};
@@ -81,7 +81,9 @@ public:
 
 } // namespace Node
 
+/** @cond INTERNAL */
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Node::Create);
+/** @endcond */ // INTERNAL
 
 } // namespace Cmd
 } // namespace Hord

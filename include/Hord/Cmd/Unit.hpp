@@ -76,7 +76,7 @@ struct unit_ensure_traits;
 /**
 	Ensure traits for implementation class.
 
-	@pre Must be used within the namespace @c ::Hord::Cmd.
+	@pre Must be used within the namespace @c Hord::Cmd.
 
 	@param impl_ Implementation class.
 */
@@ -94,7 +94,7 @@ struct unit_ensure_traits;
 	HORD_CMD_IMPL_BOILERPLATE(impl_, name_)							\
 	private:														\
 		void														\
-		commit_impl() noexcept;
+		commit_impl() noexcept
 //
 
 /**

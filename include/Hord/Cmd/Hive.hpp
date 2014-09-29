@@ -40,7 +40,7 @@ class Init final
 	HORD_CMD_IMPL_BOILERPLATE(
 		Init,
 		"Cmd::Hive::Init"
-	)
+	);
 
 public:
 /** @name Operations */ /// @{
@@ -76,7 +76,7 @@ class StoreAll final
 	HORD_CMD_IMPL_BOILERPLATE(
 		StoreAll,
 		"Cmd::Hive::StoreAll"
-	)
+	);
 
 private:
 	unsigned m_num_objects_stored{0u};
@@ -118,8 +118,10 @@ public:
 
 } // namespace Hive
 
+/** @cond INTERNAL */
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Hive::Init);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Hive::StoreAll);
+/** @endcond */ // INTERNAL
 
 } // namespace Cmd
 } // namespace Hord

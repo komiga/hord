@@ -41,7 +41,7 @@ class SetMetaField final
 	HORD_CMD_IMPL_BOILERPLATE(
 		SetMetaField,
 		"Cmd::Data::SetMetaField"
-	)
+	);
 
 private:
 	bool m_created{false};
@@ -98,7 +98,7 @@ class RenameMetaField final
 	HORD_CMD_IMPL_BOILERPLATE(
 		RenameMetaField,
 		"Cmd::Data::RenameMetaField"
-	)
+	);
 
 private:
 	Cmd::Result
@@ -145,8 +145,10 @@ public:
 
 } // namespace Data
 
+/** @cond INTERNAL */
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::SetMetaField);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Data::RenameMetaField);
+/** @endcond */ // INTERNAL
 
 } // namespace Cmd
 } // namespace Hord
