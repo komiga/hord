@@ -20,7 +20,7 @@ namespace Hive {
 
 #define HORD_SCOPE_CLASS Cmd::Hive::StoreAll
 
-#define HORD_SCOPE_FUNC 
+#define HORD_SCOPE_FUNC store_object
 static void
 store_object(
 	IO::Datastore& datastore,
