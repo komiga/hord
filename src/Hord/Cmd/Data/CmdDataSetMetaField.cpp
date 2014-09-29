@@ -74,7 +74,7 @@ HORD_SCOPE_CLASS::operator()(
 	return commit();
 } catch (...) {
 	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error initializing:\n")
+		<< DUCT_GR_MSG_FQN("error setting value:\n")
 	;
 	Log::report_error_ptr(std::current_exception());
 	return commit("unknown error");
@@ -112,7 +112,7 @@ HORD_SCOPE_CLASS::operator()(
 	return commit("field does not exist");
 } catch (...) {
 	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error initializing:\n")
+		<< DUCT_GR_MSG_FQN("error setting value:\n")
 	;
 	Log::report_error_ptr(std::current_exception());
 	return commit("unknown error");
