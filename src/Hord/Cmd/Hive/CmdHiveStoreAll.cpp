@@ -58,7 +58,11 @@ HORD_SCOPE_CLASS::operator()() noexcept try {
 			m_num_objects_stored
 		);
 	}
-	return commit();
+	return commit_with(
+		0 == m_num_objects_stored
+		? Cmd::Result::success_no_action
+		: Cmd::Result::success
+	);
 } catch (Error const& err) {
 	notify_exception_current();
 	switch (err.get_code()) {

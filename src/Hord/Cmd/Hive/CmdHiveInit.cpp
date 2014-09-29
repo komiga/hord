@@ -127,7 +127,7 @@ HORD_SCOPE_CLASS::operator()(
 		Log::acquire()
 			<< DUCT_GR_MSG_FQN("hive already initialized")
 		;
-		return commit();
+		return commit_with(Cmd::Result::success_no_action);
 	}
 
 	prop_types = enum_combine(
