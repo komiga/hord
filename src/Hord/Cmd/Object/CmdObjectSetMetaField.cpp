@@ -73,10 +73,7 @@ HORD_SCOPE_CLASS::operator()(
 	set_value(object, fields[index].value, new_value);
 	return commit();
 } catch (...) {
-	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error setting value:\n")
-	;
-	Log::report_error_ptr(std::current_exception());
+	notify_exception_current();
 	return commit("unknown error");
 }
 #undef HORD_SCOPE_FUNC
@@ -111,10 +108,7 @@ HORD_SCOPE_CLASS::operator()(
 	}
 	return commit("field does not exist");
 } catch (...) {
-	Log::acquire(Log::error)
-		<< DUCT_GR_MSG_FQN("error setting value:\n")
-	;
-	Log::report_error_ptr(std::current_exception());
+	notify_exception_current();
 	return commit("unknown error");
 }
 #undef HORD_SCOPE_FUNC
