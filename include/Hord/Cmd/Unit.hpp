@@ -22,6 +22,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <type_traits>
 #include <utility>
+#include <exception>
 
 namespace Hord {
 namespace Cmd {
@@ -167,15 +168,6 @@ protected:
 		m_message = std::move(message);
 	}
 /// @}
-
-/** @cond INTERNAL */
-	void
-	base_notify_complete(
-		Cmd::type_info const& type_info
-	) noexcept {
-		get_context().notify_complete(*this, type_info);
-	}
-/** @endcond */ // INTERNAL
 
 public:
 /** @name Special member functions */ /// @{
@@ -327,6 +319,13 @@ private:
 	Unit& operator=(Unit const&) = delete;
 	Unit& operator=(Unit&&) = delete;
 
+	void
+	commit_post() noexcept {
+		get_context().notify_complete(
+			*this, impl_type::command_info()
+		);
+	}
+
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
@@ -359,7 +358,7 @@ protected:
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
-		base_notify_complete(impl_type::command_info());
+		commit_post();
 		return ok();
 	}
 
@@ -377,7 +376,7 @@ protected:
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
-		base_notify_complete(impl_type::command_info());
+		commit_post();
 		return ok();
 	}
 
@@ -397,7 +396,7 @@ protected:
 		unit_commit_impl::func(
 			static_cast<impl_type*>(this)
 		);
-		base_notify_complete(impl_type::command_info());
+		commit_post();
 		return ok();
 	}
 /// @}
