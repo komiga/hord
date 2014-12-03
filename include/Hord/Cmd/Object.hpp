@@ -1,6 +1,7 @@
 /**
 @file
 @brief %Object commands.
+@ingroup cmd_object
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -26,10 +27,6 @@ class SetMetaField;
 class RenameMetaField;
 class RemoveMetaField;
 
-/**
-	@addtogroup cmd
-	@{
-*/
 /**
 	@addtogroup cmd_object
 	@{
@@ -210,7 +207,6 @@ public:
 };
 
 /** @} */ // end of doc-group cmd_object
-/** @} */ // end of doc-group cmd
 
 } // namespace Object
 

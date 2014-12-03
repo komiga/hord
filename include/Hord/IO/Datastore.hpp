@@ -1,6 +1,7 @@
 /**
 @file
 @brief Datastore class.
+@ingroup datastore
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -41,10 +42,6 @@ namespace IO {
 // Forward declarations
 class Datastore;
 
-/**
-	@addtogroup io
-	@{
-*/
 /**
 	@addtogroup datastore
 	@{
@@ -650,7 +647,6 @@ public:
 };
 
 /** @} */ // end of doc-group datastore
-/** @} */ // end of doc-group io
 
 } // namespace IO
 

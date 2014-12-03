@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup data
+@ingroup data
 @defgroup metadata Metadata
 @details
 

@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup object
+@ingroup object
 @defgroup node Node
 @details
 

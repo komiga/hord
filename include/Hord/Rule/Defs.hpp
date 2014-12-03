@@ -1,6 +1,7 @@
 /**
 @file
 @brief Rule definitions.
+@ingroup rule
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -19,10 +20,6 @@ namespace Rule {
 class Unit; // external
 enum class UnitType : Object::TypeValue;
 
-/**
-	@addtogroup object
-	@{
-*/
 /**
 	@addtogroup rule
 	@{
@@ -115,7 +112,6 @@ namespace Rule {
 using Type = Object::GenType<Rule::UnitType>;
 
 /** @} */ // end of doc-group rule
-/** @} */ // end of doc-group object
 
 } // namespace Rule
 } // namespace Hord

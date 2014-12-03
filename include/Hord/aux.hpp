@@ -1,6 +1,7 @@
 /**
 @file
 @brief Auxiliary stdlib specializations.
+@ingroup aux
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -20,10 +21,6 @@ see @ref index or the accompanying LICENSE file for full text.
 namespace Hord {
 namespace aux {
 
-/**
-	@addtogroup etc
-	@{
-*/
 /**
 	@addtogroup aux
 	@{
@@ -92,7 +89,6 @@ using unordered_set
 >;
 
 /** @} */ // end of doc-group aux
-/** @} */ // end of doc-group etc
 
 } // namespace aux
 } // namespace Hord

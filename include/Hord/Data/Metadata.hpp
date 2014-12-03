@@ -1,6 +1,7 @@
 /**
 @file
 @brief Metadata classes.
+@ingroup metadata
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -25,10 +26,6 @@ namespace Data {
 struct MetaField;
 struct Metadata;
 
-/**
-	@addtogroup data
-	@{
-*/
 /**
 	@addtogroup metadata
 	@{
@@ -213,7 +210,6 @@ public:
 };
 
 /** @} */ // end of doc-group metadata
-/** @} */ // end of doc-group data
 
 } // namespace Data
 } // namespace Hord

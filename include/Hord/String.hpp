@@ -1,6 +1,7 @@
 /**
 @file
 @brief String type.
+@ingroup string
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -14,10 +15,6 @@ see @ref index or the accompanying LICENSE file for full text.
 
 namespace Hord {
 
-/**
-	@addtogroup etc
-	@{
-*/
 /**
 	@addtogroup string
 	@{
@@ -38,6 +35,5 @@ namespace Hord {
 using String = aux::basic_string<char>;
 
 /** @} */ // end of doc-group string
-/** @} */ // end of doc-group etc
 
 } // namespace Hord

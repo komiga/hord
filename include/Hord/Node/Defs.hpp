@@ -1,6 +1,7 @@
 /**
 @file
 @brief Node definitions.
+@ingroup node
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -20,10 +21,6 @@ namespace Node {
 // Forward declarations
 enum class UnitType : Object::TypeValue;
 
-/**
-	@addtogroup object
-	@{
-*/
 /**
 	@addtogroup node
 	@{
@@ -81,7 +78,6 @@ static constexpr IO::PropStateStore const
 SUPPLIED_PROPS{true, true};
 
 /** @} */ // end of doc-group node
-/** @} */ // end of doc-group object
 
 } // namespace Node
 } // namespace Hord

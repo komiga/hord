@@ -1,6 +1,7 @@
 /**
 @file
 @brief Prop state store.
+@ingroup prop
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -21,10 +22,6 @@ namespace IO {
 // Forward declarations
 class PropStateStore;
 
-/**
-	@addtogroup io
-	@{
-*/
 /**
 	@addtogroup prop
 	@{
@@ -577,7 +574,6 @@ end(
 }
 
 /** @} */ // end of doc-group prop
-/** @} */ // end of doc-group io
 
 } // namespace IO
 } // namespace Hord

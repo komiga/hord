@@ -1,6 +1,7 @@
 /**
 @file
 @brief Basic anchor unit class.
+@ingroup anchor
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -20,10 +21,6 @@ namespace Anchor {
 // Forward declarations
 class UnitBasic;
 
-/**
-	@addtogroup object
-	@{
-*/
 /**
 	@addtogroup anchor
 	@{
@@ -80,7 +77,6 @@ private:
 };
 
 /** @} */ // end of doc-group anchor
-/** @} */ // end of doc-group object
 
 } // namespace Anchor
 

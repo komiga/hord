@@ -1,6 +1,7 @@
 /**
 @file
 @brief Basic node unit class.
+@ingroup node
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -20,10 +21,6 @@ namespace Node {
 // Forward declarations
 class UnitBasic;
 
-/**
-	@addtogroup object
-	@{
-*/
 /**
 	@addtogroup node
 	@{
@@ -80,7 +77,6 @@ private:
 };
 
 /** @} */ // end of doc-group node
-/** @} */ // end of doc-group object
 
 } // namespace Node
 

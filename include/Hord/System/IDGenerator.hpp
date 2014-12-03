@@ -1,6 +1,7 @@
 /**
 @file
 @brief IDGenerator class.
+@ingroup driver
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -20,10 +21,6 @@ namespace System {
 // Forward declarations
 class IDGenerator;
 
-/**
-	@addtogroup system
-	@{
-*/
 /**
 	@addtogroup driver
 	@{
@@ -109,7 +106,6 @@ public:
 };
 
 /** @} */ // end of doc-group driver
-/** @} */ // end of doc-group system
 
 } // namespace System
 } // namespace Hord

@@ -1,6 +1,7 @@
 /**
 @file
 @brief %Datastore commands.
+@ingroup cmd_datastore
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -22,10 +23,6 @@ namespace Datastore {
 class Init;
 class StoreAll;
 
-/**
-	@addtogroup cmd
-	@{
-*/
 /**
 	@addtogroup cmd_datastore
 	@{
@@ -114,7 +111,6 @@ public:
 };
 
 /** @} */ // end of doc-group cmd_datastore
-/** @} */ // end of doc-group cmd
 
 } // namespace Datastore
 

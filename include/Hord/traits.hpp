@@ -1,6 +1,7 @@
 /**
 @file
 @brief Type traits and helpers.
+@ingroup traits
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -20,10 +21,6 @@ namespace tw = ::trait_wrangler;
 
 namespace traits {
 
-/**
-	@addtogroup etc
-	@{
-*/
 /**
 	@addtogroup traits
 	@{
@@ -52,7 +49,6 @@ struct disallow_t
 {};
 
 /** @} */ // end of doc-group traits
-/** @} */ // end of doc-group etc
 
 } // namespace traits
 } // namespace Hord

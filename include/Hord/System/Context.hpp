@@ -1,6 +1,7 @@
 /**
 @file
 @brief Context class.
+@ingroup context
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -32,7 +33,7 @@ namespace System {
 class Context;
 
 /**
-	@addtogroup system
+	@addtogroup context
 	@{
 */
 
@@ -172,7 +173,7 @@ public:
 /// @}
 };
 
-/** @} */ // end of doc-group system
+/** @} */ // end of doc-group context
 
 } // namespace System
 } // namespace Hord

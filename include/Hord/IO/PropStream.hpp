@@ -1,6 +1,7 @@
 /**
 @file
 @brief PropStream classes.
+@ingroup prop
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -25,10 +26,6 @@ class PropStream;
 class InputPropStream;
 class OutputPropStream;
 
-/**
-	@addtogroup io
-	@{
-*/
 /**
 	@addtogroup prop
 	@{
@@ -290,7 +287,6 @@ public:
 };
 
 /** @} */ // end of doc-group prop
-/** @} */ // end of doc-group io
 
 } // namespace IO
 } // namespace Hord

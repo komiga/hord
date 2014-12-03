@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup cmd
+@ingroup cmd
 @defgroup cmd_object Group: Object
 @details
 

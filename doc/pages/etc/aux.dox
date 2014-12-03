@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup etc
+@ingroup etc
 @defgroup aux Auxiliary stdlib specializations
 @details
 

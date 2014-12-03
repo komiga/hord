@@ -1,6 +1,7 @@
 /**
 @file
 @brief Logging utilities.
+@ingroup log
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -38,10 +39,6 @@ namespace Log {
 class Controller;
 class OutputStream;
 
-/**
-	@addtogroup etc
-	@{
-*/
 /**
 	@addtogroup log
 	@{
@@ -398,7 +395,6 @@ report_error_ptr(
 );
 
 /** @} */ // end of doc-group log
-/** @} */ // end of doc-group etc
 
 } // namespace Log
 } // namespace Hord

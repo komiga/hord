@@ -1,6 +1,8 @@
 /**
 @file
 @brief Column class.
+@ingroup node
+@ingroup column
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -22,14 +24,6 @@ namespace Node {
 // Forward declarations
 struct Column;
 
-/**
-	@addtogroup object
-	@{
-*/
-/**
-	@addtogroup node
-	@{
-*/
 /**
 	@addtogroup column
 	@{
@@ -103,8 +97,6 @@ public:
 };
 
 /** @} */ // end of doc-group column
-/** @} */ // end of doc-group node
-/** @} */ // end of doc-group object
 
 } // namespace Node
 } // namespace Hord

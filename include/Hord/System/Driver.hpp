@@ -1,6 +1,7 @@
 /**
 @file
 @brief Driver.
+@ingroup driver
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -26,7 +27,7 @@ namespace System {
 class Driver;
 
 /**
-	@addtogroup system
+	@addtogroup driver
 	@{
 */
 
@@ -179,7 +180,7 @@ public:
 /// @}
 };
 
-/** @} */ // end of doc-group system
+/** @} */ // end of doc-group driver
 
 } // namespace System
 } // namespace Hord

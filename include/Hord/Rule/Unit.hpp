@@ -1,6 +1,7 @@
 /**
 @file
 @brief Base rule class.
+@ingroup rule
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -22,10 +23,6 @@ namespace Rule {
 // Forward declarations
 class Unit;
 
-/**
-	@addtogroup object
-	@{
-*/
 /**
 	@addtogroup rule
 	@{
@@ -105,7 +102,6 @@ public:
 };
 
 /** @} */ // end of doc-group rule
-/** @} */ // end of doc-group object
 
 } // namespace Rule
 } // namespace Hord

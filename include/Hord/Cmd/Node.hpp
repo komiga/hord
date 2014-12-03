@@ -1,6 +1,7 @@
 /**
 @file
 @brief %Node commands.
+@ingroup cmd_node
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -22,10 +23,6 @@ namespace Node {
 // Forward declarations
 class Create;
 
-/**
-	@addtogroup cmd
-	@{
-*/
 /**
 	@addtogroup cmd_node
 	@{
@@ -77,7 +74,6 @@ public:
 };
 
 /** @} */ // end of doc-group cmd_node
-/** @} */ // end of doc-group cmd
 
 } // namespace Node
 

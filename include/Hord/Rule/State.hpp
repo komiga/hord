@@ -1,6 +1,7 @@
 /**
 @file
 @brief Rule State class.
+@ingroup rule
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -17,10 +18,6 @@ namespace Rule {
 // Forward declarations
 class State;
 
-/**
-	@addtogroup object
-	@{
-*/
 /**
 	@addtogroup rule
 	@{
@@ -51,7 +48,6 @@ protected:
 };
 
 /** @} */ // end of doc-group rule
-/** @} */ // end of doc-group object
 
 } // namespace Rule
 } // namespace Hord

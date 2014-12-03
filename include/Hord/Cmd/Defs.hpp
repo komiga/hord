@@ -1,6 +1,7 @@
 /**
 @file
 @brief Command definitions.
+@ingroup cmd
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;

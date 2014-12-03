@@ -1,6 +1,7 @@
 /**
 @file
 @brief Utilities.
+@ingroup utility
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -21,10 +22,6 @@ namespace Hord {
 
 // Forward declarations
 
-/**
-	@addtogroup etc
-	@{
-*/
 /**
 	@addtogroup utility
 	@{
@@ -102,6 +99,5 @@ operator"" _hash(
 }
 
 /** @} */ // end of doc-group utility
-/** @} */ // end of doc-group etc
 
 } // namespace Hord
