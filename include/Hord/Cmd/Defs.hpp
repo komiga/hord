@@ -11,9 +11,6 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 
-#include <am/hash/common.hpp>
-#include <am/hash/murmur.hpp>
-
 namespace Hord {
 namespace Cmd {
 
@@ -26,21 +23,10 @@ struct type_info;
 	@{
 */
 
-/** @cond INTERNAL */
-static constexpr am::hash::HashLength const
-ID_HASH_LENGTH{am::hash::HL32};
-/** @endcond */ // INTERNAL
-
 /**
 	Command ID.
 */
-using ID = am::detail::hash::murmur_hash_type<Cmd::ID_HASH_LENGTH>;
-
-/** @cond INTERNAL */
-enum : Cmd::ID {
-	ID_HASH_SEED = Cmd::ID{0xa57634c5}
-};
-/** @endcond */ // INTERNAL
+using ID = HashValue;
 
 /**
 	Command result.

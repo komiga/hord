@@ -11,14 +11,12 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
-#include <Hord/utility.hpp>
 #include <Hord/String.hpp>
+#include <Hord/utility.hpp>
 #include <Hord/Hive/Unit.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
-
-#include <am/hash/murmur.hpp>
 
 #include <type_traits>
 #include <utility>
@@ -81,13 +79,7 @@ struct unit_ensure_traits;
 			: base(context)											\
 		{}															\
 		static constexpr ::Hord::Cmd::ID const						\
-		COMMAND_ID =												\
-			::am::hash::murmur3_c<::Hord::Cmd::ID_HASH_LENGTH>(		\
-				HORD_STR_LIT(name_),								\
-				sizeof(HORD_STR_LIT(name_)),						\
-				::Hord::Cmd::ID_HASH_SEED							\
-			)														\
-		;															\
+		COMMAND_ID = name_ ## _hash;								\
 		static constexpr char const*								\
 		command_name() noexcept { return HORD_STR_LIT(name_); }		\
 		static constexpr ::Hord::Cmd::type_info						\
