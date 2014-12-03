@@ -1,5 +1,5 @@
 /**
-@file Cmd/Datastore.hpp
+@file
 @brief %Datastore commands.
 
 @author Timothy Howard

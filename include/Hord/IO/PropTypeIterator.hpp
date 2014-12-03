@@ -1,5 +1,5 @@
 /**
-@file IO/PropTypeIterator.hpp
+@file
 @brief PropType iterator.
 
 @author Timothy Howard

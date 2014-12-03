@@ -1,5 +1,5 @@
 /**
-@file IO/PropStream.hpp
+@file
 @brief PropStream classes.
 
 @author Timothy Howard

@@ -1,5 +1,5 @@
 /**
-@file Node/Unit.hpp
+@file
 @brief Node unit class.
 
 @author Timothy Howard

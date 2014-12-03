@@ -1,5 +1,5 @@
 /**
-@file Rule/Defs.hpp
+@file
 @brief Rule definitions.
 
 @author Timothy Howard

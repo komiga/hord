@@ -1,5 +1,5 @@
 /**
-@file IO/StorageInfo.hpp
+@file
 @brief %Object storage information.
 
 @author Timothy Howard

@@ -1,5 +1,5 @@
 /**
-@file Cmd/Node.hpp
+@file
 @brief %Node commands.
 
 @author Timothy Howard

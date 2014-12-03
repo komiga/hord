@@ -1,5 +1,5 @@
 /**
-@file Rule/State.hpp
+@file
 @brief Rule State class.
 
 @author Timothy Howard

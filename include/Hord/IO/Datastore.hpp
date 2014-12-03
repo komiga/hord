@@ -1,5 +1,5 @@
 /**
-@file IO/Datastore.hpp
+@file
 @brief Datastore class.
 
 @author Timothy Howard

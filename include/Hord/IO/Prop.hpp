@@ -1,5 +1,5 @@
 /**
-@file IO/Prop.hpp
+@file
 @brief Prop structures.
 
 @author Timothy Howard

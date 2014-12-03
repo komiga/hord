@@ -1,5 +1,5 @@
 /**
-@file Cmd/Defs.hpp
+@file
 @brief Command definitions.
 
 @author Timothy Howard

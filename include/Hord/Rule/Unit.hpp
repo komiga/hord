@@ -1,5 +1,5 @@
 /**
-@file Rule/Unit.hpp
+@file
 @brief Base rule class.
 
 @author Timothy Howard

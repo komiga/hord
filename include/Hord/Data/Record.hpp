@@ -1,5 +1,5 @@
 /**
-@file Data/Record.hpp
+@file
 @brief Record struct.
 
 @author Timothy Howard

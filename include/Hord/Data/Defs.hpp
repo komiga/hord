@@ -1,5 +1,5 @@
 /**
-@file Data/Defs.hpp
+@file
 @brief Data definitions.
 
 @author Timothy Howard

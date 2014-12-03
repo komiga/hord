@@ -1,5 +1,5 @@
 /**
-@file IO/PropStateStore.hpp
+@file
 @brief Prop state store.
 
 @author Timothy Howard

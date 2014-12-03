@@ -1,5 +1,5 @@
 /**
-@file LockFile.hpp
+@file
 @brief LockFile class.
 
 @author Timothy Howard

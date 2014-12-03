@@ -1,5 +1,5 @@
 /**
-@file Data/Metadata.hpp
+@file
 @brief Metadata classes.
 
 @author Timothy Howard

@@ -1,5 +1,5 @@
 /**
-@file Data/Field.hpp
+@file
 @brief Field struct.
 
 @author Timothy Howard

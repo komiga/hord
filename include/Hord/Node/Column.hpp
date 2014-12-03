@@ -1,5 +1,5 @@
 /**
-@file Node/Column.hpp
+@file
 @brief Column class.
 
 @author Timothy Howard
