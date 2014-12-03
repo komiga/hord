@@ -37,7 +37,10 @@ link_parents(
 				<< "Object " << obj << " has itself as parent\n"
 			;
 			parent = Object::ID_NULL;
-		} else if (!datastore.has_object(obj.get_parent())) {
+		} else if (
+			Object::ID_NULL != obj.get_parent() &&
+			!datastore.has_object(obj.get_parent())
+		) {
 			Log::acquire(Log::error)
 				<< "Object " << obj << " points to invalid parent: "
 				<< Object::IDPrinter{obj.get_parent()}
