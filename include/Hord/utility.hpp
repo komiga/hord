@@ -50,7 +50,7 @@ enum : HashValue {
 /** @cond INTERNAL */
 namespace {
 	enum : HashImpl::seed_type {
-		HASH_SEED = 0xad756e1b,
+		HASH_SEED = 0xAD756E1B,
 	};
 } // anonymous namespace
 /** @endcond */ // INTERNAL
