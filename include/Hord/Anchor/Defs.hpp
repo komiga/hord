@@ -32,10 +32,7 @@ enum class UnitType : Object::TypeValue;
 /**
 	Anchor ID.
 
-	@sa Object::ID,
-		Rule::ID,
-		Anchor::ID,
-		Node::ID
+	@sa Object::ID
 */
 using ID = Object::GenID<Object::BaseType::Anchor>;
 

@@ -34,9 +34,7 @@ enum class UnitType : Object::TypeValue;
 	@note This type is only to telegraph intent in functions;
 	it is entirely equivalent to @c Object::ID.
 
-	@sa Object::ID,
-		Hive::ID,
-		Node::ID
+	@sa Object::ID
 */
 using ID = Object::GenID<Object::BaseType::Rule>;
 
