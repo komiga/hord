@@ -12,7 +12,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
-#include <Hord/Hive/Unit.hpp>
+#include <Hord/IO/Datastore.hpp>
 
 #include <iosfwd>
 
@@ -33,7 +33,6 @@ namespace Object {
 	unmodified and @c false is returned.
 
 	@pre @code
-		object.get_base_type() != Object::BaseType::Hive &&
 		!object.is_null()
 	@endcode
 
@@ -64,7 +63,7 @@ namespace Object {
 bool
 set_parent(
 	Object::Unit& object,
-	Hive::Unit& hive,
+	IO::Datastore& datastore,
 	Object::ID const new_parent
 ) noexcept;
 
@@ -106,13 +105,13 @@ public:
 		Constructor with object.
 
 		@post @code
-			this->id == object.get_id_bare()
+			this->id == object.get_id()
 		@endcode
 	*/
 	IDPrinter(
 		Object::Unit const& object
 	) noexcept
-		: id(object.get_id_bare())
+		: id(object.get_id())
 	{}
 /// @}
 };

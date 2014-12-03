@@ -5,8 +5,6 @@
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/Object/Ops.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Node/Unit.hpp>
 #include <Hord/Cmd/Node.hpp>
@@ -41,24 +39,18 @@ HORD_SCOPE_CLASS::operator()(
 ) noexcept try {
 	auto& driver = get_driver();
 	auto& datastore = get_datastore();
-	auto& hive = get_hive();
 
 	// Validate
-	if (
-		Object::ID_NULL == parent || (
-			Object::ID_HIVE != parent &&
-			!hive.has_object(parent)
-		)
-	) {
+	if (!datastore.has_object(parent)) {
 		return commit_error("parent not found");
 	} else if (
 		Hord::Node::ID_NULL != layout_ref &&
-		!hive.has_object(layout_ref)
+		!datastore.has_object(layout_ref)
 	) {
 		return commit_error("layout ref not found");
 	} else if (
 		Hord::Node::ID_NULL != layout_ref &&
-		Object::BaseType::Node != hive.find_ptr(
+		Object::BaseType::Node != datastore.find_ptr(
 			layout_ref
 		)->get_base_type()
 	) {
@@ -68,7 +60,7 @@ HORD_SCOPE_CLASS::operator()(
 	} else if (Object::SLUG_MAX_SIZE < slug.size()) {
 		return commit_error("slug too long");
 	} else {
-		for (auto const& pair : hive.get_objects()) {
+		for (auto const& pair : datastore.get_objects()) {
 			auto const* const object = pair.second.get();
 			if (
 				nullptr      != object &&
@@ -96,7 +88,7 @@ HORD_SCOPE_CLASS::operator()(
 	if (nullptr == obj) {
 		return commit_error("allocation failed");
 	}
-	auto emplace_pair = hive.get_objects().emplace(m_id, std::move(obj));
+	auto emplace_pair = datastore.get_objects().emplace(m_id, std::move(obj));
 	if (!emplace_pair.second) {
 		return commit_error("id already exists");
 	}
@@ -108,7 +100,7 @@ HORD_SCOPE_CLASS::operator()(
 	auto& node = static_cast<Hord::Node::Unit&>(
 		*emplace_pair.first->second
 	);
-	Object::set_parent(node, hive, parent);
+	Object::set_parent(node, datastore, parent);
 	node.set_slug(slug);
 	node.set_layout_ref(layout_ref);
 	node.get_prop_states().assign_all(IO::PropState::modified);

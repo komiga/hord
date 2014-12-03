@@ -1,7 +1,5 @@
 
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/UnitBasic.hpp>
 #include <Hord/Anchor/Defs.hpp>
 #include <Hord/Anchor/UnitBasic.hpp>
 #include <Hord/Node/Defs.hpp>
@@ -35,7 +33,7 @@ Driver::Driver(
 ) /*noexcept*/
 	: m_id_generator()
 	, m_object_types()
-	, m_hives()
+	, m_datastores()
 {
 	static_assert(
 		8u == sizeof(std::chrono::steady_clock::rep),
@@ -48,7 +46,6 @@ Driver::Driver(
 	);
 	// TODO: Register standard rule types
 	if (register_standard_object_types) {
-		register_object_type(Hive::UnitBasic::info);
 		register_object_type(Anchor::UnitBasic::info);
 		register_object_type(Node::UnitBasic::info);
 	}
@@ -85,76 +82,44 @@ Driver::get_object_type_info(
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC placehold_hive
+#define HORD_SCOPE_FUNC placehold_datastore
 namespace {
 HORD_DEF_FMT_FQN(
 	s_err_root_shared,
-	"cannot placehold hive with non-unique root path `%s`"
+	"cannot placehold datastore with non-unique root path `%s`"
 );
 } // anonymous namespace
 
-System::Driver::datastore_hive_pair&
-Driver::placehold_hive(
-	Hive::Type const hive_type,
+IO::Datastore&
+Driver::placehold_datastore(
 	IO::Datastore::type_info const& type_info,
 	String root_path
 ) {
 	if (root_path.empty()) {
 		HORD_THROW_FQN(
-			ErrorCode::driver_hive_root_empty,
-			"cannot placehold hive with empty root path"
+			ErrorCode::driver_datastore_root_empty,
+			"cannot placehold datastore with empty root path"
 		);
-	} else if (
-		// FIXME: This is rank.
-		m_hives.cend()
-		!= std::find_if(m_hives.cbegin(), m_hives.cend(),
-			[&root_path](hive_map_type::value_type const& pair) -> bool {
-				return 0 == root_path.compare(
-					pair.second.datastore->get_root_path()
-				);
-			}
-		)
-	) {
+	} else if (find_datastore(root_path)) {
 		HORD_THROW_FMT(
-			ErrorCode::driver_hive_root_shared,
+			ErrorCode::driver_datastore_root_shared,
 			s_err_root_shared,
 			root_path
 		);
 	}
 
-	// Phew. Now let's try to construct and insert this guy
-	IO::Datastore* const
-	datastore_ptr = type_info.construct(std::move(root_path));
+	auto datastore_ptr = type_info.construct(std::move(root_path));
 	if (nullptr == datastore_ptr) {
 		HORD_THROW_FQN(
 			ErrorCode::driver_datastore_construct_failed,
 			"failed to construct datastore"
 		);
 	}
-	auto const* const hive_tinfo = get_object_type_info(hive_type);
-	if (nullptr == hive_tinfo) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_hive_type_not_found,
-			"failed to construct hive"
-		);
-	}
-	Hive::ID const id = m_id_generator.generate_unique(m_hives);
-	auto hive_ptr = hive_tinfo->construct(id, Object::ID_NULL);
-	if (nullptr == datastore_ptr) {
-		HORD_THROW_FQN(
-			ErrorCode::driver_hive_construct_failed,
-			"failed to construct hive"
-		);
-	}
-
-	auto const& result_pair = m_hives.emplace(
-		id,
-		datastore_hive_pair{
-			duct::cc_unique_ptr<IO::Datastore>{datastore_ptr},
-			std::move(hive_ptr)
-		}
+	auto const result_pair = m_datastores.emplace(
+		datastore_ptr->get_id(),
+		std::move(datastore_ptr)
 	);
-	return result_pair.first->second;
+	return *result_pair.first->second;
 }
 #undef HORD_SCOPE_FUNC
 

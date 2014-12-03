@@ -38,17 +38,16 @@ emplace_child(
 bool
 set_parent(
 	Object::Unit& object,
-	Hive::Unit& hive,
+	IO::Datastore& datastore,
 	Object::ID const new_parent
 ) noexcept {
 	assert(!object.is_null());
-	assert(Object::BaseType::Hive != object.get_base_type());
 
 	if (new_parent == object.get_id()) {
 		return false;
 	}
 
-	auto* const old_ptr = hive.find_ptr(object.get_parent());
+	auto* const old_ptr = datastore.find_ptr(object.get_parent());
 	if (old_ptr) {
 		if (object.get_parent() == new_parent) {
 			// To ensure object is in parent's children collection
@@ -58,7 +57,7 @@ set_parent(
 			object.set_parent(Object::ID_NULL);
 		}
 	}
-	auto* const new_ptr = hive.find_ptr(new_parent);
+	auto* const new_ptr = datastore.find_ptr(new_parent);
 	if (new_ptr) {
 		return emplace_child(object, *new_ptr);
 	} else {
@@ -101,7 +100,7 @@ operator<<(
 	auto const& type_info = object.get_type_info();
 	ceformat::write<s_fmt_object_identity>(
 		stream,
-		object.get_id_bare().value(),
+		object.get_id().value(),
 		Object::get_base_type_name(type_info.type.base()),
 		type_info.unit_name,
 		object.get_slug()

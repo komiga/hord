@@ -16,29 +16,28 @@ namespace System {
 #define HORD_SCOPE_CLASS System::Context
 
 #define HORD_SCOPE_FUNC ctor // pseudo
-System::Driver::datastore_hive_pair&
-get_hive_pair(
+IO::Datastore&
+lookup_datastore(
 	System::Driver& driver,
-	Hive::ID const hive_id
+	IO::Datastore::ID const datastore_id
 ) {
-	auto const it = driver.find_hive(hive_id);
-	if (driver.get_hives().end() == it) {
+	auto* const datastore = driver.find_datastore(datastore_id);
+	if (nullptr == datastore) {
 		HORD_THROW_FQN(
-			ErrorCode::context_invalid_hive,
-			"hive ID does not exist within driver"
+			ErrorCode::context_invalid_datastore,
+			"datastore does not exist within driver"
 		);
 	}
-	return it->second;
+	return *datastore;
 }
 #undef HORD_SCOPE_FUNC
 
 Context::Context(
 	System::Driver& driver,
-	System::Driver::datastore_hive_pair& hive_pair
+	IO::Datastore& datastore
 )
 	: m_driver(driver)
-	, m_datastore(*hive_pair.datastore)
-	, m_hive(static_cast<Hive::Unit&>(*hive_pair.hive))
+	, m_datastore(datastore)
 {}
 
 Context::~Context() noexcept = default;
@@ -47,11 +46,11 @@ Context::Context(Context&&) noexcept = default;
 
 Context::Context(
 	System::Driver& driver,
-	Hive::ID const hive_id
+	IO::Datastore::ID const datastore_id
 )
 	: Context(
 		driver,
-		get_hive_pair(driver, hive_id)
+		lookup_datastore(driver, datastore_id)
 	)
 {}
 

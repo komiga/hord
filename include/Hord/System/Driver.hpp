@@ -12,13 +12,10 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/String.hpp>
+#include <Hord/utility.hpp>
 #include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
-
-#include <duct/cc_unique_ptr.hpp>
 
 #include <utility>
 
@@ -38,20 +35,11 @@ class Driver;
 */
 class Driver final {
 public:
-	/** Datastore-hive pair. */
-	struct datastore_hive_pair final {
-		/** Datastore. */
-		duct::cc_unique_ptr<IO::Datastore> datastore;
-
-		/** Hive. */
-		Object::UPtr hive;
-	};
-
-	/** Datastore-hive collection. */
-	using hive_map_type
+	/** Datastore collection. */
+	using datastore_map_type
 	= aux::unordered_map<
-		Hive::ID,
-		datastore_hive_pair
+		IO::Datastore::ID,
+		IO::Datastore::UPtr
 	>;
 
 private:
@@ -63,7 +51,8 @@ private:
 
 	System::IDGenerator m_id_generator;
 	object_type_map_type m_object_types;
-	hive_map_type m_hives;
+	IO::Datastore::ID m_datastore_id_gen;
+	datastore_map_type m_datastores;
 
 	Driver() = delete;
 	Driver(Driver const&) = delete;
@@ -96,11 +85,11 @@ public:
 	}
 
 	/**
-		Get hive collection.
+		Get datastores collection.
 	*/
-	hive_map_type&
-	get_hives() noexcept {
-		return m_hives;
+	System::Driver::datastore_map_type&
+	get_datastores() noexcept {
+		return m_datastores;
 	}
 /// @}
 
@@ -133,33 +122,31 @@ public:
 
 /** @name Operations */ /// @{
 	/**
-		Placehold hive.
+		Placehold datastore.
 
-		@warning @c ErrorCode::driver_hive_root_shared is only caused
-		by string comparison. It is possible for multiple hives to
-		share the same actual directory (which is often used by a
-		datastore to lock access to the hive), but the second one
-		to attempt deserialization will fail
-		with @c ErrorCode::driver_datastore_locked.
+		@warning @c ErrorCode::driver_datastore_root_shared is only caused
+		by string comparison. It is possible for multiple datastores to
+		share the same actual path (which is often used by a datastore
+		to lock access), but the second one to attempt deserialization
+		will fail with @c ErrorCode::driver_datastore_locked.
 
-		@post Emplaced hive with @a root_path
+		@post Emplaced datastore with @a root_path
 		and @c IO::StorageState::placeholder.
 
-		@throws Error{ErrorCode::driver_hive_root_empty}
+		@throws Error{ErrorCode::driver_datastore_root_empty}
 		If <code>root_path.empty() == true</code>.
 
-		@throws Error{ErrorCode::driver_hive_root_shared}
+		@throws Error{ErrorCode::driver_datastore_root_shared}
 		If the root path has already been placeheld.
 
 		@throws Error{ErrorCode::driver_datastore_construct_failed}
 		If the datastore failed to construct (see
 		IO::Datastore::type_info::construct()).
 
-		@returns The placeheld hive.
+		@returns The placeheld datastore.
 	*/
-	System::Driver::datastore_hive_pair&
-	placehold_hive(
-		Hive::Type const hive_type,
+	IO::Datastore&
+	placehold_datastore(
 		IO::Datastore::type_info const& type_info,
 		String root_path
 	);
@@ -167,16 +154,27 @@ public:
 
 /** @name Collections */ /// @{
 	/**
-		Lookup a hive.
-
-		@returns Iterator to datastore-hive pair, or hive
-		collection's end iterator if @a id was not found.
+		Lookup a datastore by ID.
 	*/
-	System::Driver::hive_map_type::iterator
-	find_hive(
-		Hive::ID const id
+	IO::Datastore*
+	find_datastore(
+		IO::Datastore::ID const id
 	) noexcept {
-		return m_hives.find(id);
+		auto const it = m_datastores.find(id);
+		return m_datastores.end() != it
+			? it->second.get()
+			: nullptr
+		;
+	}
+
+	/**
+		Lookup a datastore by root path.
+	*/
+	IO::Datastore*
+	find_datastore(
+		String const& root_path
+	) noexcept {
+		return find_datastore(hash_string(root_path));
 	}
 /// @}
 };

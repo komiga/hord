@@ -15,7 +15,6 @@
 #include <Hord/Rule/Unit.hpp>
 //#include <Hord/Node/Column.hpp>
 #include <Hord/Node/UnitBasic.hpp>
-#include <Hord/Hive/UnitBasic.hpp>
 //#include <Hord/IO/Datastore.hpp>
 //#include <Hord/System/IDGenerator.hpp>
 #include <Hord/System/Driver.hpp>
@@ -31,10 +30,6 @@ using Hord::enum_cast;
 signed
 main() {
 	// group driver
-	auto hive = Hord::Hive::UnitBasic::info.construct(
-		Hord::Hive::ID{42u},
-		Hord::Object::ID_NULL
-	);
 	Hord::System::Driver driver{true};
 
 	// group error
@@ -54,7 +49,7 @@ main() {
 	Hord::Node::Column column{};
 	auto node = Hord::Node::UnitBasic::info.construct(
 		Hord::Node::ID{42},
-		hive->get_id()
+		Hord::Object::ID_NULL
 	);
 
 	// Registering rule types
@@ -96,13 +91,9 @@ main() {
 		Hord::Log::report_error(err);
 	}
 
-	// Placeholding hives
-	auto hive_basic_type = Hord::Object::type_cast<Hord::Hive::UnitType>(
-		Hord::Hive::UnitBasic::info.type
-	);
+	// Placeholding datastores
 	try {
-		driver.placehold_hive(
-			hive_basic_type,
+		driver.placehold_datastore(
 			DummyDatastore::s_type_info,
 			Hord::String{}
 		);
@@ -111,21 +102,11 @@ main() {
 	}
 
 	std::cout
-		<< "first hive id: "
-		<< Hord::Object::IDPrinter{
-			*driver.placehold_hive(
-				hive_basic_type,
-				DummyDatastore::s_type_info,
-				"./bork"
-			).hive
-		}
+		<< "first datastore id: "
+		<< driver.placehold_datastore(DummyDatastore::s_type_info, "./bork").get_id()
 	<< std::endl;
 	try {
-		driver.placehold_hive(
-			hive_basic_type,
-			DummyDatastore::s_type_info,
-			"./bork"
-		);
+		driver.placehold_datastore(DummyDatastore::s_type_info, "./bork");
 	} catch (Hord::Error const& err) {
 		Hord::Log::report_error(err);
 	}

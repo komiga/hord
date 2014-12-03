@@ -1,4 +1,5 @@
 
+#include <Hord/utility.hpp>
 #include <Hord/IO/Datastore.hpp>
 
 #include <utility>
@@ -17,9 +18,11 @@ Datastore::Datastore(
 	String root_path
 ) noexcept
 	: m_type_info(&tinfo)
+	, m_id(hash_string(root_path))
 	, m_states()
 	, m_root_path(std::move(root_path))
 	, m_storage_info()
+	, m_objects()
 {}
 
 Datastore::~Datastore() = default;
@@ -41,21 +44,6 @@ Datastore::~Datastore() = default;
 			" datastore is locked"						\
 		);												\
 	}
-
-#define HORD_SCOPE_FUNC set_root_path
-void
-Datastore::set_root_path(
-	String root_path
-) {
-	if (is_open()) {
-		HORD_THROW_FQN(
-			ErrorCode::datastore_property_immutable,
-			"cannot change root path while datastore is open"
-		);
-	}
-	m_root_path.assign(std::move(root_path));
-}
-#undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC open
 void
@@ -83,6 +71,7 @@ Datastore::close() {
 	HORD_LOCKED_CHECK_;
 	if (is_open()) {
 		close_impl();
+		disable_state(State::initialized);
 	}
 }
 #undef HORD_SCOPE_FUNC

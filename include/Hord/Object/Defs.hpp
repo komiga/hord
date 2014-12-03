@@ -71,12 +71,10 @@ using TypeValue = std::uint32_t;
 enum class BaseType : Object::TypeValue {
 	/** Typeless. */
 	null = 0u,
-	/** @ref hive. */
-	Hive,
-	/** @ref rule. */
-	Rule,
 	/** @ref anchor. */
 	Anchor,
+	/** @ref rule. */
+	Rule,
 	/** @ref node. */
 	Node
 };
@@ -115,9 +113,8 @@ get_base_type_name(
 ) noexcept {
 	switch (base_type) {
 	case Object::BaseType::null:   return "null";
-	case Object::BaseType::Hive:   return "Hive";
-	case Object::BaseType::Rule:   return "Rule";
 	case Object::BaseType::Anchor: return "Anchor";
+	case Object::BaseType::Rule:   return "Rule";
 	case Object::BaseType::Node:   return "Node";
 	}
 	return "INVALID";
@@ -180,7 +177,7 @@ using Type = Object::GenType<Object::UnitType>;
 	@pre Object::unit_type_traits specialized for @a T.
 
 	@tparam T Unit type.
-	@sa Hive::Type,
+	@sa Anchor::Type,
 		Rule::Type,
 		Node::Type
 */
@@ -504,8 +501,7 @@ using ID = Object::GenID<Object::BaseType::null>;
 
 namespace {
 enum : Object::IDValue {
-	id_value_null = Object::IDValue{0},
-	id_value_hive = Object::IDValue{1}
+	id_value_null = Object::IDValue{0}
 };
 }
 
@@ -518,7 +514,7 @@ enum : Object::IDValue {
 
 	@tparam B Base type.
 
-	@sa Hive::ID,
+	@sa Anchor::ID,
 		Rule::ID,
 		Node::ID
 */
@@ -657,14 +653,11 @@ public:
 	/**
 		Check if ID is reserved.
 
-		@note ID_NULL and ID_HIVE are reserved IDs.
+		@note ID_NULL is a reserved ID.
 	*/
 	constexpr bool
 	is_reserved() const noexcept {
-		return
-			id_value_null == m_value ||
-			id_value_hive == m_value
-		;
+		return id_value_null == m_value;
 	}
 /// @}
 
@@ -713,11 +706,7 @@ static constexpr Object::ID const
 /**
 	Null ID.
 */
-ID_NULL{Object::IDValue{id_value_null}},
-/**
-	Hive ID.
-*/
-ID_HIVE{Object::IDValue{id_value_hive}};
+ID_NULL{Object::IDValue{id_value_null}};
 
 /**
 	Trait to test if a type is a GenID.

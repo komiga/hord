@@ -33,7 +33,7 @@ class Unit;
 /**
 	Base object.
 
-	@sa Hive::Unit,
+	@sa Anchor::Unit,
 		Rule::Unit,
 		Node::Unit
 */
@@ -236,29 +236,9 @@ public:
 
 	/**
 		Get ID.
-
-		@remarks This returns the in-hive ID, which yields
-		Object::ID_HIVE if the object is itself a hive.
-
-		@sa get_id_bare()
 	*/
 	Object::ID
 	get_id() const noexcept {
-		return
-			Object::BaseType::Hive == get_type().base()
-			? Object::ID_HIVE
-			: get_id_bare()
-		;
-	}
-
-	/**
-		Get bare ID.
-
-		@remarks This returns the bare ID without morphing it to
-		Object::ID_HIVE when the object is a hive.
-	*/
-	Object::ID
-	get_id_bare() const noexcept {
 		return m_id;
 	}
 

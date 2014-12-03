@@ -74,24 +74,14 @@ enum class ErrorCode : unsigned {
 	driver_command_table_range_shared,
 
 	/**
-		Attempted to placehold a hive with an empty root path.
+		Attempted to placehold a datastore with an empty root path.
 	*/
-	driver_hive_root_empty,
+	driver_datastore_root_empty,
 	/**
-		Attempted to placehold a hive with a root path that is
-		shared with another placeheld hive.
+		Attempted to placehold a datastore with a root path that is
+		shared with another placeheld datastore.
 	*/
-	driver_hive_root_shared,
-
-	/**
-		Hive type not found in driver (not registered).
-	*/
-	driver_hive_type_not_found,
-	/**
-		Failed to construct hive.
-	*/
-	driver_hive_construct_failed,
-
+	driver_datastore_root_shared,
 	/**
 		Failed to construct datastore.
 
@@ -194,9 +184,9 @@ enum class ErrorCode : unsigned {
 
 /** @name Context */ /// @{
 	/**
-		Hive ID does not exist in driver.
+		Datastore does not exist in driver.
 	*/
-	context_invalid_hive,
+	context_invalid_datastore,
 
 	/**
 		Origin stage does not belong to an active command.

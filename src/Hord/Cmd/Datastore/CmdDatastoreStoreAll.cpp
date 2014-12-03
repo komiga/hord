@@ -6,9 +6,7 @@
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/IO/Ops.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
-#include <Hord/Cmd/Hive.hpp>
+#include <Hord/Cmd/Datastore.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
@@ -16,9 +14,9 @@
 
 namespace Hord {
 namespace Cmd {
-namespace Hive {
+namespace Datastore {
 
-#define HORD_SCOPE_CLASS Cmd::Hive::StoreAll
+#define HORD_SCOPE_CLASS Cmd::Datastore::StoreAll
 
 #define HORD_SCOPE_FUNC store_object
 static void
@@ -42,15 +40,7 @@ store_object(
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()() noexcept try {
 	auto& datastore = get_datastore();
-	auto& hive = get_hive();
-
-	store_object(
-		datastore,
-		hive,
-		m_num_props_stored,
-		m_num_objects_stored
-	);
-	for (auto& obj_pair : hive.get_objects()) {
+	for (auto& obj_pair : datastore.get_objects()) {
 		store_object(
 			datastore,
 			*obj_pair.second, 
@@ -78,6 +68,6 @@ HORD_SCOPE_CLASS::operator()() noexcept try {
 
 #undef HORD_SCOPE_CLASS
 
-} // namespace Hive
+} // namespace Datastore
 } // namespace Cmd
 } // namespace Hord

@@ -224,12 +224,6 @@ enum class StorageState : unsigned {
 
 		Specifically, after successful serialization or
 		deserialization.
-
-		@note For hives, this means that the runtime only
-		has identifying information for all children, not that all
-		children are fully deserialized. In a typical configuration,
-		children are fully deserialized on demand, but always at
-		least placeheld.
 	*/
 	original,
 
@@ -237,14 +231,6 @@ enum class StorageState : unsigned {
 		Differs from external storage.
 
 		Runtime-side modifications not yet serialized.
-
-		@note Hives will only have this state when:
-		-# one of its base props are modified (IO::PropType::identity,
-		   IO::PropType::metadata, and IO::PropType::scratch); or
-		-# a child is added or removed (IO::PropType::primary).
-		@note
-		If a child object is modified, it does not affect the
-		hive's state.
 	*/
 	modified,
 
@@ -258,12 +244,12 @@ enum class StorageState : unsigned {
 */
 enum class Linkage : unsigned {
 	/**
-		Object is resident in hive.
+		Object is resident in datastore.
 	*/
 	resident = 0u,
 
 	/**
-		Object is not resident in hive.
+		Object is not resident in datastore.
 	*/
 	orphan,
 

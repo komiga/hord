@@ -12,12 +12,14 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
+#include <Hord/utility.hpp>
 #include <Hord/System/IDGenerator.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/StorageInfo.hpp>
 #include <Hord/Object/Defs.hpp>
 
+#include <duct/cc_unique_ptr.hpp>
 #include <duct/StateStore.hpp>
 
 #include <cassert>
@@ -25,6 +27,15 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <iosfwd>
 
 namespace Hord {
+
+/** @cond INTERNAL */
+namespace Cmd {
+namespace Datastore {
+	class Init;
+} // namespace Datastore
+} // namespace Cmd
+/** @endcond */ // INTERNAL
+
 namespace IO {
 
 // Forward declarations
@@ -42,13 +53,23 @@ class Datastore;
 /**
 	Base datastore.
 
-	This is the data interface for hives.
-
 	@note %Datastores must be locked when a single prop stream is
 	active.
 */
 class Datastore {
+	friend class Cmd::Datastore::Init;
+
 public:
+	/**
+		Owning pointer to datastore.
+	*/
+	using UPtr = duct::cc_unique_ptr<IO::Datastore>;
+
+	/**
+		Datastore ID.
+	*/
+	using ID = HashValue;
+
 	/**
 		Type info.
 	*/
@@ -62,7 +83,7 @@ public:
 			- The constructed datastore; or
 			- @c nullptr if construction failed.
 		*/
-		IO::Datastore*
+		IO::Datastore::UPtr
 		(&construct)(
 			String root_path
 		) noexcept;
@@ -99,6 +120,13 @@ public:
 	= aux::unordered_map<
 		Object::ID,
 		IO::StorageInfo
+	>;
+
+	/** Object map. */
+	using object_map_type
+	= aux::unordered_map<
+		Object::ID,
+		Object::UPtr
 	>;
 
 protected:
@@ -228,9 +256,11 @@ protected:
 		opened = 1 << 0,
 		/** %Datastore is locked. */
 		locked = 1 << 1,
+		/** %Resident objects have been initialized. */
+		initialized = 1 << 2,
 
 		/** First reserved state. */
-		RESERVED_FIRST = 1 << 2,
+		RESERVED_FIRST = 1 << 3,
 		/** Last reserved state. */
 		RESERVED_LAST = 1 << 7
 	};
@@ -292,9 +322,11 @@ protected:
 
 private:
 	IO::Datastore::type_info const* m_type_info;
+	IO::Datastore::ID m_id;
 	duct::StateStore<State> m_states;
 	String m_root_path;
 	storage_info_map_type m_storage_info;
+	object_map_type m_objects;
 
 	Datastore() = delete;
 	Datastore(Datastore const&) = delete;
@@ -329,15 +361,12 @@ public:
 	}
 
 	/**
-		Set root path.
-
-		@throws Error{ErrorCode::datastore_property_immutable}
-		If the datastore is open.
+		Get ID.
 	*/
-	void
-	set_root_path(
-		String root_path
-	);
+	IO::Datastore::ID
+	get_id() const noexcept {
+		return m_id;
+	}
 
 	/**
 		Get root path.
@@ -363,6 +392,17 @@ public:
 		return test_state(State::locked);
 	}
 
+	/**
+		Check if the datastore is initialized.
+
+		@note This state is assigned when Cmd::Datastore::Init has
+		been executed.
+	*/
+	bool
+	is_initialized() const noexcept {
+		return test_state(State::initialized);
+	}
+
 protected:
 	/**
 		Get storage info (mutable).
@@ -379,6 +419,22 @@ public:
 	storage_info_map_type const&
 	get_storage_info() const noexcept {
 		return m_storage_info;
+	}
+
+	/**
+		Get resident object map (mutable).
+	*/
+	object_map_type&
+	get_objects() noexcept {
+		return m_objects;
+	}
+
+	/**
+		Get resident object map.
+	*/
+	object_map_type const&
+	get_objects() const noexcept {
+		return m_objects;
 	}
 /// @}
 
@@ -486,7 +542,7 @@ public:
 
 /** @name Objects */ /// @{
 	/**
-		Generate a %Hive-unique ID.
+		Generate a unique ID.
 
 		@throws Error{ErrorCode::datastore_closed}
 		If the datastore is closed.
@@ -538,6 +594,58 @@ public:
 	destroy_object(
 		Object::ID const object_id
 	);
+
+	/**
+		Check if a resident object exists.
+	*/
+	bool
+	has_object(
+		Object::ID const id
+	) const noexcept(noexcept(m_objects.find(id))) {
+		return
+			id.is_reserved()
+			? false
+			: m_objects.cend() != m_objects.find(id)
+		;
+	}
+
+	/**
+		Find resident object pointer by ID.
+
+		@note Will return @c nullptr when <code>id == Object::ID_NULL</code>.
+	*/
+	Object::Unit*
+	find_ptr(
+		Object::ID const id
+	) noexcept {
+		if (Object::ID_NULL != id) {
+			auto const it = m_objects.find(id);
+			return
+				m_objects.end() != it
+				? it->second.get()
+				: nullptr
+			;
+		} else {
+			return nullptr;
+		}
+	}
+
+	/** @copydoc find_ptr(Object::ID const id) noexcept */
+	Object::Unit const*
+	find_ptr(
+		Object::ID const id
+	) const noexcept {
+		if (Object::ID_NULL != id) {
+			auto const it = m_objects.find(id);
+			return
+				m_objects.cend() != it
+				? it->second.get()
+				: nullptr
+			;
+		} else {
+			return nullptr;
+		}
+	}
 /// @}
 };
 

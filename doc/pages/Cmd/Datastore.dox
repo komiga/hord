@@ -1,0 +1,10 @@
+
+/**
+
+@addtogroup cmd
+@defgroup cmd_datastore Group: Datastore
+@details
+
+Commands for operating on datastores.
+
+*/

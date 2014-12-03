@@ -7,9 +7,7 @@
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/IO/Ops.hpp>
 #include <Hord/Object/Ops.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
-#include <Hord/Cmd/Hive.hpp>
+#include <Hord/Cmd/Datastore.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
@@ -21,16 +19,16 @@
 
 namespace Hord {
 namespace Cmd {
-namespace Hive {
+namespace Datastore {
 
-#define HORD_SCOPE_CLASS Cmd::Hive::Init
+#define HORD_SCOPE_CLASS Cmd::Datastore::Init
 
 #define HORD_SCOPE_FUNC link_parents
 void
 link_parents(
-	Hord::Hive::Unit& hive
+	IO::Datastore& datastore
 ) {
-	auto& objects = hive.get_objects();
+	auto& objects = datastore.get_objects();
 	for (auto& obj_pair : objects) {
 		auto& obj = *obj_pair.second;
 		auto parent = obj.get_parent();
@@ -38,23 +36,18 @@ link_parents(
 			Log::acquire(Log::error)
 				<< "Object " << obj << " has itself as parent\n"
 			;
-			parent = Object::ID_HIVE;
-		} else if (
-			Object::ID_HIVE != obj.get_parent() && (
-				Object::ID_NULL == obj.get_parent() ||
-				!hive.has_object(obj.get_parent())
-			)
-		) {
+			parent = Object::ID_NULL;
+		} else if (!datastore.has_object(obj.get_parent())) {
 			Log::acquire(Log::error)
 				<< "Object " << obj << " points to invalid parent: "
 				<< Object::IDPrinter{obj.get_parent()}
 				<< "\n"
 			;
-			parent = Object::ID_HIVE;
+			parent = Object::ID_NULL;
 		}
-		// NB: Ignoring circular & invalid parenting; client should
-		// decide what to do with these objects
-		Object::set_parent(obj, hive, parent);
+		// NB: Ignoring circular; client should decide what to do
+		// with these objects
+		Object::set_parent(obj, datastore, parent);
 	}
 }
 #undef HORD_SCOPE_FUNC
@@ -119,45 +112,24 @@ HORD_SCOPE_CLASS::operator()(
 ) noexcept try {
 	auto const& driver = get_driver();
 	auto& datastore = get_datastore();
-	auto& hive = get_hive();
-
-	if (hive.get_prop_states().is_initialized(
-		IO::PropType::identity
-	)) {
+	if (datastore.is_initialized()) {
 		Log::acquire()
-			<< DUCT_GR_MSG_FQN("hive already initialized")
+			<< DUCT_GR_MSG_FQN("datastore already initialized")
 		;
 		return commit_with(Cmd::Result::success_no_action);
 	}
 
+	// Identity must be loaded
 	prop_types = enum_combine(
 		IO::PropTypeBit::identity,
 		prop_types
 	);
 
+	// Create and initialize resident objects
 	auto const& si_map = make_const(datastore).get_storage_info();
-	{
-	auto it_hive = si_map.find(Object::ID_HIVE);
-	if (si_map.cend() == it_hive) {
-		// If there is no storage info for the hive, the datastore
-		// must be new. We have to setup the storage info here
-		// because the datastore doesn't know anything about the
-		// hive object, and thus none of its type info.
-		it_hive = datastore.create_object(
-			Object::ID_HIVE,
-			hive.get_type_info(),
-			IO::Linkage::resident
-		);
-	}
-	init_object(datastore, hive, it_hive->second, prop_types);
-	}
-
 	for (auto const& si_pair : si_map) {
 		auto const& sinfo = si_pair.second;
-		if (
-			IO::Linkage::resident != sinfo.linkage ||
-			Object::ID_HIVE == sinfo.object_id
-		) {
+		if (IO::Linkage::resident != sinfo.linkage) {
 			continue;
 		}
 		auto const* const
@@ -165,7 +137,7 @@ HORD_SCOPE_CLASS::operator()(
 		if (nullptr == tinfo) {
 			return commit_error("object type unknown");
 		}
-		auto const emplace_pair = hive.get_objects().emplace(
+		auto const emplace_pair = datastore.get_objects().emplace(
 			sinfo.object_id,
 			tinfo->construct(
 				sinfo.object_id,
@@ -180,7 +152,9 @@ HORD_SCOPE_CLASS::operator()(
 		auto& obj = *emplace_pair.first->second;
 		init_object(datastore, obj, sinfo, prop_types);
 	}
-	link_parents(hive);
+	link_parents(datastore);
+
+	datastore.enable_state(IO::Datastore::State::initialized);
 	return commit();
 } catch (Error const& err) {
 	notify_exception_current();
@@ -197,6 +171,6 @@ HORD_SCOPE_CLASS::operator()(
 
 #undef HORD_SCOPE_CLASS
 
-} // namespace Hive
+} // namespace Datastore
 } // namespace Cmd
 } // namespace Hord

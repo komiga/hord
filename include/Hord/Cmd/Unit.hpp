@@ -13,7 +13,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
 #include <Hord/utility.hpp>
-#include <Hord/Hive/Unit.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
@@ -233,22 +232,6 @@ public:
 	IO::Datastore const&
 	get_datastore() const noexcept {
 		return get_context().get_datastore();
-	}
-
-	/**
-		Get hive.
-	*/
-	Hive::Unit&
-	get_hive() noexcept {
-		return get_context().get_hive();
-	}
-
-	/**
-		Get hive.
-	*/
-	Hive::Unit const&
-	get_hive() const noexcept {
-		return get_context().get_hive();
 	}
 
 	/**

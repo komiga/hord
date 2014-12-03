@@ -1,6 +1,6 @@
 /**
-@file Cmd/Hive.hpp
-@brief %Hive commands.
+@file Cmd/Datastore.hpp
+@brief %Datastore commands.
 
 @author Timothy Howard
 @copyright 2013-2014 Timothy Howard under the MIT license;
@@ -16,7 +16,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 namespace Hord {
 namespace Cmd {
-namespace Hive {
+namespace Datastore {
 
 // Forward declarations
 class Init;
@@ -27,19 +27,19 @@ class StoreAll;
 	@{
 */
 /**
-	@addtogroup cmd_hive
+	@addtogroup cmd_datastore
 	@{
 */
 
 /**
-	Hive init command.
+	Datastore init command.
 */
 class Init final
 	: public Cmd::Unit<Init>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		Init,
-		"Cmd::Hive::Init"
+		"Cmd::Datastore::Init"
 	);
 
 public:
@@ -68,14 +68,14 @@ public:
 };
 
 /**
-	Hive store-all command.
+	Datastore store-all command.
 */
 class StoreAll final
 	: public Cmd::Unit<StoreAll>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		StoreAll,
-		"Cmd::Hive::StoreAll"
+		"Cmd::Datastore::StoreAll"
 	);
 
 private:
@@ -113,14 +113,14 @@ public:
 /// @}
 };
 
-/** @} */ // end of doc-group cmd_hive
+/** @} */ // end of doc-group cmd_datastore
 /** @} */ // end of doc-group cmd
 
-} // namespace Hive
+} // namespace Datastore
 
 /** @cond INTERNAL */
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Hive::Init);
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Hive::StoreAll);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::Init);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::StoreAll);
 /** @endcond */ // INTERNAL
 
 } // namespace Cmd

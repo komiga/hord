@@ -11,8 +11,6 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
-#include <Hord/Hive/Defs.hpp>
-#include <Hord/Hive/Unit.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/System/Driver.hpp>
 
@@ -41,17 +39,13 @@ class Context;
 /**
 	%Context.
 
-	@warning The context requires the attached datastore and hive
-	exist as long as the context exists.
-
-	@remarks This class provides an interface to objects of a
-	specific hive.
+	@warning The context requires the attached datastore to exist
+	as long as the context exists.
 */
 class Context {
 private:
 	System::Driver& m_driver;
 	IO::Datastore& m_datastore;
-	Hive::Unit& m_hive;
 
 	Context() = delete;
 	Context(Context const&) = delete;
@@ -60,7 +54,7 @@ private:
 
 	Context(
 		System::Driver& driver,
-		System::Driver::datastore_hive_pair& hive_pair
+		IO::Datastore& datastore
 	);
 
 protected:
@@ -96,18 +90,18 @@ public:
 	/**
 		Constructor with properties.
 
-		@throws Error{ErrorCode::context_invalid_hive}
-		If @a hive_id does not exist within @a driver.
+		@throws Error{ErrorCode::context_invalid_datastore}
+		If @a datastore_id does not exist within @a driver.
 	*/
 	Context(
 		System::Driver& driver,
-		Hive::ID const hive_id
+		IO::Datastore::ID const datastore_id
 	);
 /// @}
 
 /** @name Properties */ /// @{
 	/**
-		Get driver.
+		Get driver (mutable).
 	*/
 	System::Driver&
 	get_driver() noexcept {
@@ -123,7 +117,7 @@ public:
 	}
 
 	/**
-		Get datastore.
+		Get datastore (mutable).
 	*/
 	IO::Datastore&
 	get_datastore() noexcept {
@@ -136,22 +130,6 @@ public:
 	IO::Datastore const&
 	get_datastore() const noexcept {
 		return m_datastore;
-	}
-
-	/**
-		Get hive (mutable).
-	*/
-	Hive::Unit&
-	get_hive() noexcept {
-		return m_hive;
-	}
-
-	/**
-		Get hive.
-	*/
-	Hive::Unit const&
-	get_hive() const noexcept {
-		return m_hive;
 	}
 /// @}
 

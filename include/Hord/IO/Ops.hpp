@@ -11,7 +11,6 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Unit.hpp>
-#include <Hord/Hive/Unit.hpp>
 #include <Hord/IO/Datastore.hpp>
 
 namespace Hord {

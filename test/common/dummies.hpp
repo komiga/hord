@@ -25,13 +25,13 @@ private:
 	DummyDatastore& operator=(DummyDatastore&&) = delete;
 
 public:
-	static Datastore*
+	static Datastore::UPtr
 	construct(
 		Hord::String root_path
 	) noexcept {
-		return new(std::nothrow) DummyDatastore(
-			std::move(root_path)
-		);
+		return Datastore::UPtr{
+			new(std::nothrow) DummyDatastore(std::move(root_path))
+		};
 	}
 
 	static type_info const s_type_info;
