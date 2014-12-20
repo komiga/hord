@@ -93,8 +93,7 @@ private:
 		OutputSerializer& ser
 	) const;
 
-	// Object::Unit implementation
-
+// Object::Unit implementation
 	void
 	deserialize_impl(
 		IO::InputPropStream& prop_stream

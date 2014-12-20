@@ -1,13 +1,10 @@
 
 #include <Hord/String.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
-
-#include <duct/EndianUtils.hpp>
-#include <duct/IO/arithmetic.hpp>
-#include <duct/IO/unicode.hpp>
 
 #include <cassert>
 #include <limits>

@@ -38,8 +38,8 @@ public:
 	using rule_id_vector_type = aux::vector<Rule::ID>;
 
 /** @name Properties */ /// @{
-	/** Permitted field types. */
-	Data::FieldMask mask{Data::FieldMask::any};
+	/** Field type. */
+	Data::FieldType type{Data::FieldType::Text};
 
 	/** Title. */
 	String title{};

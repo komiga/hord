@@ -17,17 +17,17 @@ Column::read(
 	ser_tag_read,
 	InputSerializer& ser
 ) {
-	Data::FieldMask des_mask{};
+	Data::FieldType des_type{};
 	String des_title{};
 	rule_id_vector_type des_rules{};
 	ser(
-		des_mask,
+		des_type,
 		des_title,
 		des_rules
 	);
 
 	// commit
-	this->mask = des_mask;
+	this->type = des_type;
 	this->title.operator=(std::move(des_title));
 	this->rules.operator=(std::move(des_rules));
 }
@@ -38,7 +38,7 @@ Column::write(
 	OutputSerializer& ser
 ) const {
 	ser(
-		this->mask,
+		this->type,
 		this->title,
 		this->rules
 	);
