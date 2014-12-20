@@ -113,10 +113,10 @@ get_base_type_name(
 	Object::BaseType const base_type
 ) noexcept {
 	switch (base_type) {
-	case Object::BaseType::null:   return "null";
-	case Object::BaseType::Anchor: return "Anchor";
-	case Object::BaseType::Rule:   return "Rule";
-	case Object::BaseType::Node:   return "Node";
+	case Object::BaseType::null:	return "null";
+	case Object::BaseType::Anchor:	return "Anchor";
+	case Object::BaseType::Rule:	return "Rule";
+	case Object::BaseType::Node:	return "Node";
 	}
 	return "INVALID";
 }
@@ -178,9 +178,6 @@ using Type = Object::GenType<Object::UnitType>;
 	@pre Object::unit_type_traits specialized for @a T.
 
 	@tparam T Unit type.
-	@sa Anchor::Type,
-		Rule::Type,
-		Node::Type
 */
 template<class T>
 struct GenType final {
@@ -500,11 +497,11 @@ using IDValue = std::uint32_t;
 */
 using ID = Object::GenID<Object::BaseType::null>;
 
-namespace {
+/** @cond INTERNAL */
 enum : Object::IDValue {
-	id_value_null = Object::IDValue{0}
+	id_value_null = Object::IDValue{0},
 };
-}
+/** @endcond */ // INTERNAL
 
 /**
 	Amorphic object ID.
@@ -514,10 +511,6 @@ enum : Object::IDValue {
 	ID with Object::id_cast().
 
 	@tparam B Base type.
-
-	@sa Anchor::ID,
-		Rule::ID,
-		Node::ID
 */
 template<Object::BaseType const B>
 struct GenID final {
