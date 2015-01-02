@@ -35,4 +35,4 @@ configuration {}
 		"src/Hord/**.cpp"
 	}
 
-action_clean()
+precore.action_clean("out", "lib")

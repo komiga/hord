@@ -54,4 +54,4 @@ include("general")
 include("io")
 include("object")
 
-action_clean()
+precore.action_clean("out")
