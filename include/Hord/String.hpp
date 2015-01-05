@@ -34,6 +34,18 @@ namespace Hord {
 */
 using String = aux::basic_string<char>;
 
+/**
+	Compare strings for equality.
+*/
+inline bool
+string_equal(
+	String const& x,
+	unsigned const size,
+	char const* const data
+) {
+	return 0 == x.compare(0, x.size(), data, size);
+}
+
 /** @} */ // end of doc-group string
 
 } // namespace Hord
