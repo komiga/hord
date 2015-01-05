@@ -13,12 +13,10 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/serialization.hpp>
-#include <Hord/Data/Record.hpp>
 #include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/Node/Defs.hpp>
-#include <Hord/Node/Column.hpp>
 
 namespace Hord {
 namespace Node {
@@ -56,16 +54,8 @@ public:
 		: base::ensure_traits<D>
 	{};
 
-	/** Column vector. */
-	using column_vector_type = aux::vector<Node::Column>;
-
-	/** Record vector. */
-	using record_vector_type = aux::vector<Data::Record>;
-
 private:
 	Node::ID m_layout_ref{Node::ID_NULL};
-	column_vector_type m_layout{};
-	record_vector_type m_records{};
 
 	Unit() = delete;
 	Unit(Unit const&) = delete;
@@ -147,39 +137,6 @@ public:
 	Node::ID
 	get_layout_ref() const noexcept {
 		return m_layout_ref;
-	}
-
-	// TODO: Notes for when layout_ref is non-Node::ID_NULL
-	/**
-		Get layout.
-	*/
-	column_vector_type const&
-	get_layout() const noexcept {
-		return m_layout;
-	}
-
-	/**
-		Get mutable layout.
-	*/
-	column_vector_type&
-	get_layout() noexcept {
-		return m_layout;
-	}
-
-	/**
-		Get record collection.
-	*/
-	record_vector_type const&
-	get_records() const noexcept {
-		return m_records;
-	}
-
-	/**
-		Get mutable record collection.
-	*/
-	record_vector_type&
-	get_records() noexcept {
-		return m_records;
 	}
 /// @}
 };

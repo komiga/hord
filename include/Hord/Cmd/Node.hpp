@@ -12,6 +12,7 @@ see @ref index or the accompanying LICENSE file for full text.
 
 #include <Hord/config.hpp>
 #include <Hord/IO/Defs.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Node/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
@@ -65,7 +66,7 @@ public:
 	*/
 	exec_result_type
 	operator()(
-		Object::ID const parent,
+		Hord::Object::ID const parent,
 		Hord::Node::ID const layout_ref,
 		String const& slug,
 		Hord::Node::UnitType const unit_type

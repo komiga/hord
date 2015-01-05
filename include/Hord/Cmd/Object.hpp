@@ -95,7 +95,7 @@ public:
 	operator()(
 		Hord::Object::Unit& object,
 		unsigned const index,
-		Data::FieldValue const& new_value
+		Data::ValueRef const& new_value
 	) noexcept;
 
 	/**
@@ -110,7 +110,7 @@ public:
 	operator()(
 		Hord::Object::Unit& object,
 		String const& name,
-		Data::FieldValue const& new_value,
+		Data::ValueRef const& new_value,
 		bool const create = false
 	) noexcept;
 /// @}
@@ -131,7 +131,7 @@ private:
 	Cmd::Result
 	set_name(
 		Hord::Object::Unit& object,
-		Data::MetaField& field,
+		Hord::Data::ValueStore::Iterator& it,
 		String const& new_name
 	);
 

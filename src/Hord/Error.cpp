@@ -20,6 +20,9 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("lockfile_immutable"),
 	HORD_STR_LIT("lockfile_acquire_failed"),
 
+// table
+	HORD_STR_LIT("table_schema_column_name_shared"),
+
 // driver
 	// HORD_STR_LIT("driver_object_type_reserved"),
 	HORD_STR_LIT("driver_object_type_shared"),

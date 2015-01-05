@@ -18,39 +18,14 @@ namespace Object {
 
 #define HORD_SCOPE_CLASS Cmd::Object::SetMetaField
 
-#define HORD_SCOPE_FUNC set_value
+#define HORD_SCOPE_FUNC set_value // pseudo
 static void
 set_value(
 	Hord::Object::Unit& object,
-	Hord::Data::FieldValue& value,
-	Hord::Data::FieldValue const& new_value
+	Hord::Data::ValueStore::Iterator& it,
+	Hord::Data::ValueRef const& new_value
 ) {
-	if (new_value.type != value.type) {
-		value = new_value;
-	} else {
-		switch (new_value.type) {
-		case Hord::Data::FieldType::Text:
-			if (new_value.str == value.str) {
-				return;
-			}
-			value.str = new_value.str;
-			break;
-
-		case Hord::Data::FieldType::Number:
-			if (new_value.num == value.num) {
-				return;
-			}
-			value.num = new_value.num;
-			break;
-
-		case Hord::Data::FieldType::Boolean:
-			if (new_value.bin == value.bin) {
-				return;
-			}
-			value.bin = new_value.bin;
-			break;
-		}
-	}
+	it.set_value(new_value);
 	object.get_prop_states().assign(
 		IO::PropType::metadata,
 		IO::PropState::modified
@@ -63,14 +38,14 @@ HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	unsigned const index,
-	Hord::Data::FieldValue const& new_value
+	Hord::Data::ValueRef const& new_value
 ) noexcept try {
 	m_created = false;
-	auto& fields = object.get_metadata().fields;
-	if (fields.size() <= index) {
+	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
 	}
-	set_value(object, fields[index].value, new_value);
+	auto it = object.get_metadata().names().iterator_at(index);
+	set_value(object, it, new_value);
 	return commit();
 } catch (...) {
 	notify_exception_current();
@@ -83,22 +58,24 @@ HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	String const& name,
-	Hord::Data::FieldValue const& new_value,
+	Hord::Data::ValueRef const& new_value,
 	bool const create
 ) noexcept try {
 	m_created = false;
 	if (name.empty()) {
 		return commit_error("empty name");
 	}
-	auto& fields = object.get_metadata().fields;
-	for (auto it = fields.begin(); fields.end() != it; ++it) {
-		if (name == it->name) {
-			set_value(object, it->value, new_value);
+	auto it = object.get_metadata().names().begin();
+	for (; it.can_advance(); ++it) {
+		auto const value_ref = it.get_value();
+		if (string_equal(name, value_ref.size, value_ref.data.string)) {
+			auto it_value = object.get_metadata().values().iterator_at(it.index);
+			set_value(object, it_value, new_value);
 			return commit();
 		}
 	}
 	if (create) {
-		fields.push_back(Hord::Data::MetaField{name, new_value});
+		object.get_metadata().table().push_back({name, new_value});
 		object.get_prop_states().assign(
 			IO::PropType::metadata,
 			IO::PropState::modified

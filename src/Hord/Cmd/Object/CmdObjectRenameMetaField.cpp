@@ -1,8 +1,10 @@
 
 #include <Hord/aux.hpp>
+#include <Hord/String.hpp>
 #include <Hord/utility.hpp>
 #include <Hord/Log.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Data/Table.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
@@ -22,23 +24,27 @@ namespace Object {
 Cmd::Result
 HORD_SCOPE_CLASS::set_name(
 	Hord::Object::Unit& object,
-	Hord::Data::MetaField& field,
+	Hord::Data::ValueStore::Iterator& it,
 	String const& new_name
 ) {
-	if (new_name == field.name) {
-		return Cmd::Result::success_no_action;
-	} else if (new_name.empty()) {
+	if (new_name.empty()) {
 		set_message("new name must not be empty");
 		return Cmd::Result::error;
 	}
-	auto const& fields = object.get_metadata().fields;
-	for (auto const& it_field : fields) {
-		if (&it_field != &field && new_name == it_field.name) {
+	auto it_search = object.get_metadata().names().begin();
+	for (; it_search.can_advance(); ++it_search) {
+		auto const value_ref = it_search.get_value();
+		if (!string_equal(new_name, value_ref.size, value_ref.data.string)) {
+			// Do nothing
+		} else if (it_search == it) {
+			return Cmd::Result::success_no_action;
+		} else {
 			set_message("another field already has this name");
 			return Cmd::Result::error;
 		}
 	}
-	field.name = new_name;
+
+	it.set_value(new_name);
 	object.get_prop_states().assign(
 		IO::PropType::metadata,
 		IO::PropState::modified
@@ -54,13 +60,11 @@ HORD_SCOPE_CLASS::operator()(
 	unsigned const index,
 	String const& new_name
 ) noexcept try {
-	auto& fields = object.get_metadata().fields;
-	if (fields.size() <= index) {
+	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
 	}
-	return commit_with(
-		set_name(object, fields[index], new_name)
-	);
+	auto it = object.get_metadata().names().iterator_at(index);
+	return commit_with(set_name(object, it, new_name));
 } catch (...) {
 	notify_exception_current();
 	return commit_error("unknown error");
@@ -74,12 +78,11 @@ HORD_SCOPE_CLASS::operator()(
 	String const& old_name,
 	String const& new_name
 ) noexcept try {
-	auto& fields = object.get_metadata().fields;
-	for (auto& field : fields) {
-		if (old_name == field.name) {
-			return commit_with(
-				set_name(object, field, new_name)
-			);
+	auto it = object.get_metadata().names().begin();
+	for (; it.can_advance(); ++it) {
+		auto const value_ref = it.get_value();
+		if (string_equal(old_name, value_ref.size, value_ref.data.string)) {
+			return commit_with(set_name(object, it, new_name));
 		}
 	}
 	return commit_error("field does not exist");

@@ -1,14 +1,11 @@
 
-#include <Hord/serialization.hpp>
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 
-#include <cassert>
-#include <type_traits>
-#include <new>
-#include <limits>
+#include <duct/debug.hpp>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
@@ -18,6 +15,12 @@ namespace Data {
 // class Metadata implementation
 
 #define HORD_SCOPE_CLASS Metadata
+
+Data::TableSchema const
+Metadata::s_schema{
+	{"name", {Data::ValueType::string, Data::Size::b8}},
+	{"value", {Data::ValueType::dynamic, Data::Size::b8}}
+};
 
 #define HORD_SCOPE_FUNC deserialize
 namespace {
@@ -31,28 +34,16 @@ void
 Metadata::deserialize(
 	IO::InputPropStream& prop_stream
 ) try {
-	assert(IO::PropType::metadata == prop_stream.get_type());
+	DUCT_ASSERTE(IO::PropType::metadata == prop_stream.get_type());
 	auto ser = prop_stream.make_serializer();
-	std::uint32_t size = 0;
-	ser(size);
 
-	// fields
-	field_vector_type des_fields{static_cast<std::size_t>(size)};
-	for (auto& field : des_fields) {
-		ser(field);
-		if (
-			enum_cast(Data::FieldType::Text)    > enum_cast(field.value.type) ||
-			enum_cast(Data::FieldType::Boolean) < enum_cast(field.value.type)
-		) {
-			HORD_THROW_FQN(
-				ErrorCode::serialization_data_malformed,
-				"invalid field type encountered"
-			);
-		}
-	}
+	// table
+	Data::Table des_table{};
+	ser(des_table);
+	des_table.configure(Data::Metadata::s_schema);
 
 	// commit
-	this->fields.operator=(std::move(des_fields));
+	m_table.operator=(std::move(des_table));
 } catch (SerializerError& serr) {
 	HORD_THROW_SER_PROP(
 		s_err_read_failed,
@@ -75,15 +66,11 @@ void
 Metadata::serialize(
 	IO::OutputPropStream& prop_stream
 ) const try {
-	assert(IO::PropType::metadata == prop_stream.get_type());
+	DUCT_ASSERTE(IO::PropType::metadata == prop_stream.get_type());
 	auto ser = prop_stream.make_serializer();
-	assert(std::numeric_limits<std::uint32_t>::max() >= this->fields.size());
-	ser(static_cast<std::uint32_t>(this->fields.size()));
 
-	// fields
-	for (auto const& field : this->fields) {
-		ser(field);
-	}
+	// table
+	ser(m_table);
 } catch (SerializerError& serr) {
 	HORD_THROW_SER_PROP(
 		s_err_write_failed,

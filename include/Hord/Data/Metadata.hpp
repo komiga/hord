@@ -15,16 +15,14 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/String.hpp>
 #include <Hord/serialization.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Data/Table.hpp>
 #include <Hord/IO/PropStream.hpp>
-
-#include <duct/cc_unique_ptr.hpp>
 
 namespace Hord {
 namespace Data {
 
 // Forward declarations
-struct MetaField;
-struct Metadata;
+class Metadata;
 
 /**
 	@addtogroup metadata
@@ -32,127 +30,30 @@ struct Metadata;
 */
 
 /**
-	Metadata field.
-*/
-struct MetaField {
-public:
-/** @name Properties */ /// @{
-	/**
-		Name.
-
-		@warning This field will be truncated to 255 code units.
-	*/
-	String name{};
-
-	/** Value. */
-	Data::FieldValue value;
-/// @}
-
-private:
-	MetaField& operator=(MetaField const&) = delete;
-
-public:
-/** @name Special member functions */ /// @{
-	/** Destructor. */
-	~MetaField() noexcept = default;
-
-	/** Default constructor. */
-	MetaField() = default;
-	/** Move constructor. */
-	MetaField(MetaField&&) = default;
-	/** Move assignment operator. */
-	MetaField& operator=(MetaField&&) = default;
-	/** Copy constructor. */
-	MetaField(MetaField const&) = default;
-
-	/**
-		Constructor with name and type (default value).
-	*/
-	explicit
-	MetaField(
-		String name,
-		Data::FieldType const type
-	) noexcept
-		: value(type)
-	{
-		set_name(std::move(name));
-	}
-
-	/**
-		Constructor with name and value.
-	*/
-	explicit
-	MetaField(
-		String name,
-		Data::FieldValue value
-	) noexcept
-		: value(std::move(value))
-	{
-		set_name(std::move(name));
-	}
-/// @}
-
-public:
-/** @name Properties */ /// @{
-	/**
-		Set name.
-	*/
-	void
-	set_name(
-		String new_name
-	) noexcept {
-		this->name.assign(std::move(new_name));
-		if (0xFF < this->name.size()) {
-			this->name.resize(0xFF);
-			// TODO: Truncate invalid unit sequence (if any) after resize
-		}
-	}
-/// @}
-
-/** @name Serialization */ /// @{
-	/**
-		Serialize.
-
-		@throws SerializerError{..}
-		If a serialization operation failed.
-	*/
-	template<class Ser>
-	ser_result_type
-	serialize(
-		ser_tag_serialize,
-		Ser& ser
-	) {
-		auto& self = const_safe<Ser>(*this);
-		ser(
-			self.value.type,
-			Cacophony::make_string_cfg<std::uint8_t>(self.name)
-		);
-		switch (self.value.type) {
-		case Data::FieldType::Text   : ser(self.value.str); break;
-		case Data::FieldType::Number : ser(self.value.num); break;
-		case Data::FieldType::Boolean: ser(self.value.bin); break;
-		}
-	}
-/// @}
-};
-
-/**
 	Metadata.
 
 	@sa IO::PropType::metadata
 */
-struct Metadata final {
+class Metadata final {
 public:
-	/** MetaField vector. */
-	using field_vector_type
-	= aux::vector<Data::MetaField>;
+	/**
+		Table schema.
+	*/
+	static Data::TableSchema const s_schema;
 
-/** @name Properties */ /// @{
-	/** Fields. */
-	field_vector_type fields{};
-/// @}
+	/**
+		Column indices.
+	*/
+	enum : unsigned {
+		/** Name column. */
+		COL_NAME,
+		/** Value column. */
+		COL_VALUE,
+	};
 
 private:
+	Data::Table m_table{s_schema};
+
 	Metadata(Metadata const&) = delete;
 	Metadata& operator=(Metadata const&) = delete;
 
@@ -169,6 +70,48 @@ public:
 	Metadata& operator=(Metadata&&) = default;
 /// @}
 
+/** @name Properties */ /// @{
+	/**
+		Get table (mutable).
+	*/
+	Data::Table&
+	table() noexcept {
+		return m_table;
+	}
+
+	/**
+		Get table.
+	*/
+	Data::Table const&
+	table() const noexcept {
+		return m_table;
+	}
+
+	/**
+		Get name column.
+	*/
+	Data::ValueStore&
+	names() noexcept {
+		return m_table.column(COL_NAME);
+	}
+
+	/**
+		Get value column.
+	*/
+	Data::ValueStore&
+	values() noexcept {
+		return m_table.column(COL_VALUE);
+	}
+
+	/**
+		Get the number of fields.
+	*/
+	unsigned
+	num_fields() const noexcept {
+		return m_table.num_rows();
+	}
+/// @}
+
 /** @name Serialization */ /// @{
 	/**
 		Deserialize from prop stream.
@@ -181,9 +124,6 @@ public:
 
 		@throws Error{ErrorCode::serialization_io_failed}
 		If an input operation failed.
-
-		@throws Error{ErrorCode::serialization_data_malformed}
-		If an invalid field type is encountered in the prop stream.
 	*/
 	void
 	deserialize(

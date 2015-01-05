@@ -49,6 +49,14 @@ enum class ErrorCode : unsigned {
 	lockfile_acquire_failed,
 /// @}
 
+/** @name Table */ /// @{
+	/**
+		Attempted to insert a column with a name that is
+		shared with another column.
+	*/
+	table_schema_column_name_shared,
+/// @}
+
 /** @name Driver */ /// @{
 	/*
 		Attempted to register an object unit type that is reserved

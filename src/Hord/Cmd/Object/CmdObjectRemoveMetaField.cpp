@@ -1,5 +1,6 @@
 
 #include <Hord/aux.hpp>
+#include <Hord/String.hpp>
 #include <Hord/utility.hpp>
 #include <Hord/Log.hpp>
 #include <Hord/Data/Defs.hpp>
@@ -22,9 +23,9 @@ namespace Object {
 static void
 remove_field(
 	Hord::Object::Unit& object,
-	Hord::Data::Metadata::field_vector_type::const_iterator const it
+	unsigned const index
 ) {
-	object.get_metadata().fields.erase(it);
+	object.get_metadata().table().remove(index);
 	object.get_prop_states().assign(
 		IO::PropType::metadata,
 		IO::PropState::modified
@@ -38,11 +39,10 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	unsigned const index
 ) noexcept try {
-	auto& fields = object.get_metadata().fields;
-	if (fields.size() <= index) {
+	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
 	}
-	remove_field(object, fields.cbegin() + index);
+	remove_field(object, index);
 	return commit();
 } catch (...) {
 	notify_exception_current();
@@ -56,10 +56,11 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	String const& name
 ) noexcept try {
-	auto const& fields = object.get_metadata().fields;
-	for (auto it = fields.cbegin(); fields.cend() != it; ++it) {
-		if (name == it->name) {
-			remove_field(object, it);
+	auto it = object.get_metadata().names().begin();
+	for (; it.can_advance(); ++it) {
+		auto const value_ref = it.get_value();
+		if (string_equal(name, value_ref.size, value_ref.data.string)) {
+			remove_field(object, it.index);
 			return commit();
 		}
 	}
