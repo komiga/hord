@@ -32,7 +32,7 @@ HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Object::ID const parent,
+	Hord::Object::ID const parent,
 	Hord::Node::ID const layout_ref,
 	String const& slug,
 	Hord::Node::UnitType const unit_type
@@ -41,7 +41,10 @@ HORD_SCOPE_CLASS::operator()(
 	auto& datastore = get_datastore();
 
 	// Validate
-	if (!datastore.has_object(parent)) {
+	if (
+		parent != Hord::Object::ID_NULL &&
+		!datastore.has_object(parent)
+	) {
 		return commit_error("parent not found");
 	} else if (
 		Hord::Node::ID_NULL != layout_ref &&
@@ -50,22 +53,24 @@ HORD_SCOPE_CLASS::operator()(
 		return commit_error("layout ref not found");
 	} else if (
 		Hord::Node::ID_NULL != layout_ref &&
-		Object::BaseType::Node != datastore.find_ptr(
+		Hord::Object::BaseType::Node != datastore.find_ptr(
 			layout_ref
 		)->get_base_type()
 	) {
 		return commit_error("layout ref not a node");
 	} else if (slug.empty()) {
 		return commit_error("slug empty");
-	} else if (Object::SLUG_MAX_SIZE < slug.size()) {
+	} else if (Hord::Object::SLUG_MAX_SIZE < slug.size()) {
 		return commit_error("slug too long");
 	} else {
+		// TODO: Only check children of parent
+		// (all should be resident when command is executed)
 		for (auto const& pair : datastore.get_objects()) {
 			auto const* const object = pair.second.get();
 			if (
-				nullptr      != object &&
-				parent == object->get_parent() &&
-				slug   == object->get_slug()
+				nullptr != object &&
+				parent  == object->get_parent() &&
+				slug    == object->get_slug()
 			) {
 				return commit_error("slug already exists");
 			}
@@ -84,7 +89,7 @@ HORD_SCOPE_CLASS::operator()(
 	m_id = Hord::Node::ID{datastore.generate_id(
 	    driver.get_id_generator()
 	)};
-	auto obj = tinfo->construct(m_id, Object::ID_NULL);
+	auto obj = tinfo->construct(m_id, Hord::Object::ID_NULL);
 	if (nullptr == obj) {
 		return commit_error("allocation failed");
 	}
@@ -100,7 +105,7 @@ HORD_SCOPE_CLASS::operator()(
 	auto& node = static_cast<Hord::Node::Unit&>(
 		*emplace_pair.first->second
 	);
-	Object::set_parent(node, datastore, parent);
+	Hord::Object::set_parent(node, datastore, parent);
 	node.set_slug(slug);
 	node.set_layout_ref(layout_ref);
 	node.get_prop_states().assign_all(IO::PropState::modified);
