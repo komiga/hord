@@ -14,7 +14,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/String.hpp>
 
 #include <am/hash/common.hpp>
-#include <am/hash/murmur.hpp>
+#include <am/hash/fnv.hpp>
 
 #include <duct/utility.hpp>
 
@@ -34,7 +34,7 @@ using duct::enum_bitand;
 using duct::enum_combine;
 
 /** @cond INTERNAL */
-using HashImpl = am::hash::murmur3;
+using HashImpl = am::hash::fnv1a<am::hash::HashLength::HL64>;
 /** @endcond */ // INTERNAL
 
 /**
@@ -47,12 +47,17 @@ enum : HashValue {
 	HASH_EMPTY = HashValue{0}
 };
 
+/**
+	Hash combiner.
+*/
+using HashCombiner = am::hash::fnv1a_combiner<am::hash::HashLength::HL64>;
+
 /** @cond INTERNAL */
-namespace {
+/*namespace {
 	enum : HashImpl::seed_type {
 		HASH_SEED = 0xAD756E1B,
 	};
-} // anonymous namespace
+}*/ // anonymous namespace
 /** @endcond */ // INTERNAL
 
 /**
@@ -63,7 +68,7 @@ hash(
 	char const* const data,
 	unsigned const size
 ) noexcept {
-	return am::hash::calc<HashImpl>(data, size, HASH_SEED);
+	return am::hash::calc<HashImpl>(data, size);
 }
 
 /**
@@ -73,7 +78,7 @@ inline HashValue
 hash_string(
 	String const& string
 ) noexcept {
-	return am::hash::calc_string<HashImpl>(string, HASH_SEED);
+	return am::hash::calc_string<HashImpl>(string);
 }
 
 /**
@@ -84,7 +89,7 @@ hash_ce(
 	char const* const data,
 	unsigned const size
 ) noexcept {
-	return am::hash::calc_ce<HashImpl>(data, size, HASH_SEED);
+	return am::hash::calc_ce<HashImpl>(data, size);
 }
 
 /**
