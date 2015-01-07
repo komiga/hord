@@ -657,8 +657,8 @@ Table::Iterator::operator++() noexcept {
 		++inner_index;
 		if (inner_index < chunk->num_records) {
 			auto const record = record_read(chunk->data + data_offset);
-			data_offset += record.size;
-			DUCT_DEBUG_ASSERTE(data_offset < chunk->size);
+			data_offset += record_written_size(record);
+			DUCT_DEBUG_ASSERTE(data_offset <= chunk->size);
 		} else {
 			++chunk_index;
 			inner_index = 0;
@@ -687,8 +687,8 @@ Table::Iterator::operator+=(
 		Record record;
 		while (count--) {
 			record = record_read(chunk->data + data_offset);
-			data_offset += record.size;
-			DUCT_DEBUG_ASSERTE(data_offset < chunk->size);
+			data_offset += record_written_size(record);
+			DUCT_DEBUG_ASSERTE(data_offset <= chunk->size);
 		}
 	} else {
 		*this = table->end();
