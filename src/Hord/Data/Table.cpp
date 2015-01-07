@@ -557,14 +557,13 @@ record_make(
 static unsigned
 field_offset(
 	Record const& record,
-	unsigned num_fields,
-	Data::Type const* const fields,
-	unsigned field_index
+	Data::TableSchema const& schema,
+	unsigned index
 ) noexcept {
-	num_fields = min_ce(field_index, num_fields);
+	unsigned const num = min_ce(index, schema.num_columns());
 	unsigned offset = 0;
-	for (field_index = 0; field_index < num_fields; ++field_index) {
-		offset += value_read_size_whole(fields[field_index], record.data + offset);
+	for (index = 0; index < num; ++index) {
+		offset += value_read_size_whole(schema.column(index).type, record.data + offset);
 	}
 	DUCT_DEBUG_ASSERTE(offset <= record.size);
 	return offset;
@@ -573,10 +572,9 @@ field_offset(
 inline static unsigned
 record_data_size(
 	Record const& record,
-	unsigned const num_fields,
-	Data::Type const* const fields
+	Data::TableSchema const& schema
 ) noexcept {
-	return field_offset(record, num_fields, fields, num_fields);
+	return field_offset(record, schema, schema.num_columns());
 }
 
 } // anonymous namespace
@@ -657,31 +655,10 @@ bool
 Table::configure(
 	Data::TableSchema const& schema
 ) {
-	if (schema.get_hash() == m_hash) {
-		return false;
-	}
-	bool changed = false;
-	auto const& schema_columns = schema.get_columns();
-	m_columns.reserve(schema_columns.size());
-	auto it_schema = schema_columns.cbegin();
-	auto it_table = m_columns.begin();
-	for (; it_schema != schema_columns.cend(); ++it_schema, ++it_table) {
-		if (it_table == m_columns.end()) {
-			it_table = m_columns.insert(it_table, it_schema->type);
-			changed = true;
-		} else if (*it_table != it_schema->type) {
-			*it_table = it_schema->type;
-			changed = true;
-		}
-	}
-	if (it_table != m_columns.end()) {
-		m_columns.erase(it_table, m_columns.end());
-		changed = true;
-	}
+	bool changed = m_schema.assign(schema);
 	if (changed) {
 		clear();
 	}
-	m_hash = schema.get_hash();
 	return changed;
 }
 #undef HORD_SCOPE_FUNC
@@ -735,7 +712,7 @@ Table::optimize_storage() {
 			records.push_back({});
 			auto& record = records.back();
 			record.data = orig_record.data;
-			record.size = record_data_size(orig_record, num_columns(), m_columns.data());
+			record.size = record_data_size(orig_record, m_schema);
 			accum_data_size += record_written_size(record);
 			if (0 < take_count && put_capacity <= accum_data_size) {
 				table_write_records(*it_put, records, max_ce(put_capacity, accum_data_size));
@@ -774,7 +751,7 @@ Table::insert(
 	unsigned index = 0;
 	for (; index < num_fields; ++index) {
 		auto& value = fields[index];
-		auto const type = m_columns[index];
+		auto const type = column(index).type;
 		bool const is_dynamic = type == Data::ValueType::dynamic;
 		value_morph(value, type);
 		record_size += max_ce(
@@ -783,7 +760,7 @@ Table::insert(
 		);
 	}
 	for (; index < num_columns(); ++index) {
-		record_size += value_init_size(m_columns[index]);
+		record_size += value_init_size(column(index).type);
 	}
 
 	if (m_chunks.empty()) {
@@ -803,7 +780,7 @@ Table::insert(
 	unsigned index = 0;
 	for (; index < num_fields; ++index) {
 		auto const& value = fields[index];
-		bool const is_dynamic = m_columns[index].type() == Data::ValueType::dynamic;
+		bool const is_dynamic = column(index).type.type() == Data::ValueType::dynamic;
 		offset += value_write(value, record.data + offset, is_dynamic);
 	}
 	// Zero the rest of the record
@@ -850,7 +827,7 @@ Table::set_field(
 	if (column_index >= num_columns() || !it.can_advance()) {
 		return;
 	}
-	auto const type = m_columns[column_index];
+	auto const type = column(column_index).type;
 	if (type.type() == Data::ValueType::null) {
 		return;
 	}
@@ -858,16 +835,14 @@ Table::set_field(
 	value_morph(new_value, type);
 
 	auto record = record_read(m_chunks[it.chunk_index].data + it.data_offset);
-	unsigned const offset = field_offset(
-		record, num_columns(), m_columns.data(), column_index
-	);
+	unsigned const offset = field_offset(record, m_schema, column_index);
 	unsigned const old_size = value_read_size_whole(type, record.data + offset);
 	unsigned const new_size = value_written_size(new_value, is_dynamic);
 	++column_index;
 	unsigned offset_last = offset + old_size;
 	if (new_size != old_size) {
 		for (; column_index < num_columns(); ++column_index) {
-			offset_last += value_read_size_whole(m_columns[column_index], record.data + offset_last);
+			offset_last += value_read_size_whole(column(column_index).type, record.data + offset_last);
 		}
 	}
 
@@ -896,15 +871,13 @@ Table::get_field(
 	if (column_index >= num_columns() || !it.can_advance()) {
 		return {};
 	}
-	auto const type = m_columns[column_index];
+	auto const type = column(column_index).type;
 	if (type.type() == Data::ValueType::null) {
 		return {};
 	}
 	auto const& chunk = m_chunks[it.chunk_index];
 	auto const record = record_read(chunk.data + it.data_offset);
-	unsigned const offset = field_offset(
-		record, num_columns(), m_columns.data(), column_index
-	);
+	unsigned const offset = field_offset(record, m_schema, column_index);
 	return value_read(type, record.data + offset);
 }
 
@@ -918,8 +891,9 @@ Table::read(
 	free_chunks();
 
 	std::uint32_t format_version;
-	ser(format_version, m_hash);
-	ser(Cacophony::make_vector_cfg<std::uint8_t>(m_columns));
+	ser(format_version);
+	DUCT_ASSERTE(format_version == 0);
+	ser(m_schema);
 
 	std::uint32_t num_chunks;
 	ser(num_chunks);
@@ -947,8 +921,8 @@ Table::write(
 ) const {
 	const_cast<Data::Table*>(this)->optimize_storage();
 	std::uint32_t const format_version = 0;
-	ser(format_version, m_hash);
-	ser(Cacophony::make_vector_cfg<std::uint8_t>(m_columns));
+	ser(format_version);
+	ser(m_schema);
 
 	ser(static_cast<std::uint32_t>(m_chunks.size()));
 	std::uint32_t num_records;

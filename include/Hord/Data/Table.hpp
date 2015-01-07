@@ -171,15 +171,9 @@ public:
 	*/
 	using chunk_vector_type = aux::vector<Chunk>;
 
-	/**
-		Column vector type.
-	*/
-	using column_vector_type = aux::vector<Data::Type>;
-
 private:
 	unsigned m_num_records{0};
-	Data::SchemaHashValue m_hash{HASH_EMPTY};
-	column_vector_type m_columns{};
+	Data::TableSchema m_schema{};
 	chunk_vector_type m_chunks{};
 
 	Table(Table const&) = delete;
@@ -210,11 +204,19 @@ public:
 
 /** @name Properties */ /// @{
 	/**
-		Get schema hash.
+		Get schema (mutable).
 	*/
-	Data::SchemaHashValue
-	get_hash() const noexcept {
-		return m_hash;
+	Data::TableSchema&
+	get_schema() noexcept {
+		return m_schema;
+	}
+
+	/**
+		Get schema.
+	*/
+	Data::TableSchema const&
+	get_schema() const noexcept {
+		return m_schema;
 	}
 
 	/**
@@ -230,7 +232,7 @@ public:
 	*/
 	unsigned
 	num_columns() const noexcept {
-		return m_columns.size();
+		return m_schema.num_columns();
 	}
 
 	/**
@@ -251,6 +253,16 @@ public:
 /// @}
 
 /** @name Layout */ /// @{
+	/**
+		Get a column by index.
+	*/
+	Data::TableSchema::Column const&
+	column(
+		unsigned const index
+	) const {
+		return m_schema.column(index);
+	}
+
 	// TODO: Replace this function with a table schema mutation interface
 	/**
 		Configure the table with a schema.
@@ -261,16 +273,6 @@ public:
 	configure(
 		Data::TableSchema const& schema
 	);
-
-	/**
-		Get column type by index.
-	*/
-	Data::Type
-	column(
-		unsigned const index
-	) noexcept {
-		return index < m_columns.size() ? m_columns[index] : Data::Type{};
-	}
 /// @}
 
 /** @name Iteration */ /// @{
