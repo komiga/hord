@@ -83,7 +83,8 @@ TableSchema::remove(
 
 namespace {
 
-constexpr static unsigned const CHUNK_SIZE = 0x2000;
+constexpr static unsigned const
+CHUNK_SIZE = 0x2000;
 
 enum : unsigned {
 	VTP_NONE = 0,
@@ -598,7 +599,7 @@ static unsigned
 field_offset(
 	Record const& record,
 	unsigned num_fields,
-	Data::Type const* fields,
+	Data::Type const* const fields,
 	unsigned field_index
 ) noexcept {
 	num_fields = min_ce(field_index, num_fields);
@@ -736,7 +737,7 @@ Table::insert(
 	Record record;
 	{ // Calculate record size
 	// TODO: Cache init size
-	num_fields = min_ce(static_cast<unsigned>(m_columns.size()), num_fields);
+	num_fields = min_ce(num_columns(), num_fields);
 	unsigned record_size = 0;
 	unsigned index = 0;
 	for (; index < num_fields; ++index) {
@@ -749,7 +750,7 @@ Table::insert(
 			value_written_size(value, is_dynamic)
 		);
 	}
-	for (; index < m_columns.size(); ++index) {
+	for (; index < num_columns(); ++index) {
 		record_size += value_init_size(m_columns[index]);
 	}
 
@@ -774,7 +775,7 @@ Table::insert(
 		offset += value_write(value, record.data + offset, is_dynamic);
 	}
 	// Zero the rest of the record
-	if (index < m_columns.size()) {
+	if (index < num_columns()) {
 		std::memset(record.data + offset, 0, record.size - offset);
 	}
 	++m_chunks[it.chunk_index].num_records;
@@ -814,7 +815,7 @@ Table::set_field(
 	Data::ValueRef new_value
 ) {
 	DUCT_ASSERTE(it.table == this);
-	if (column_index >= m_columns.size() || !it.can_advance()) {
+	if (column_index >= num_columns() || !it.can_advance()) {
 		return;
 	}
 	auto const type = m_columns[column_index];
@@ -826,14 +827,14 @@ Table::set_field(
 
 	auto record = record_read(m_chunks[it.chunk_index].data + it.data_offset);
 	unsigned const offset = field_offset(
-		record, m_columns.size(), m_columns.data(), column_index
+		record, num_columns(), m_columns.data(), column_index
 	);
 	unsigned const old_size = value_read_size_whole(type, record.data + offset);
 	unsigned const new_size = value_written_size(new_value, is_dynamic);
 	++column_index;
 	unsigned offset_last = offset + old_size;
 	if (new_size != old_size) {
-		for (; column_index < m_columns.size(); ++column_index) {
+		for (; column_index < num_columns(); ++column_index) {
 			offset_last += value_read_size_whole(m_columns[column_index], record.data + offset_last);
 		}
 	}
@@ -860,7 +861,7 @@ Table::get_field(
 	unsigned const column_index
 ) const noexcept {
 	DUCT_ASSERTE(it.table == this);
-	if (column_index >= m_columns.size() || !it.can_advance()) {
+	if (column_index >= num_columns() || !it.can_advance()) {
 		return {};
 	}
 	auto const type = m_columns[column_index];
@@ -870,7 +871,7 @@ Table::get_field(
 	auto const& chunk = m_chunks[it.chunk_index];
 	auto const record = record_read(chunk.data + it.data_offset);
 	unsigned const offset = field_offset(
-		record, m_columns.size(), m_columns.data(), column_index
+		record, num_columns(), m_columns.data(), column_index
 	);
 	return value_read(type, record.data + offset);
 }
