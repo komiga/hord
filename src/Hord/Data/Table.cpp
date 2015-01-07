@@ -543,6 +543,20 @@ record_meta_size() {
 	return sizeof(std::uint32_t);
 }
 
+inline constexpr static unsigned
+record_written_size(
+	unsigned const data_size
+) {
+	return record_meta_size() + data_size;
+}
+
+inline constexpr static unsigned
+record_written_size(
+	Record const& record
+) {
+	return record_written_size(record.size);
+}
+
 static unsigned
 record_write(
 	Record const& record,
@@ -577,7 +591,7 @@ record_resize(
 	}
 	bool const record_moved = segment_resize(
 		chunk, split, it,
-		record_meta_size() + record.size,
+		record_written_size(record),
 		record_meta_size() + new_size
 	);
 	record.size = new_size;
@@ -783,12 +797,12 @@ Table::optimize_storage() {
 		offset = it_take->offset_head();
 		for (unsigned index = 0; index < it_take->num_records; ++index) {
 			orig_record = record_read(it_take->data + offset);
-			offset += record_meta_size() + orig_record.size;
+			offset += record_written_size(orig_record);
 			records.push_back({});
 			auto& record = records.back();
 			record.data = orig_record.data;
 			record.size = record_data_size(orig_record, num_columns(), m_columns.data());
-			accum_data_size += record_meta_size() + record.size;
+			accum_data_size += record_written_size(record);
 			if (0 < take_count && put_capacity <= accum_data_size) {
 				table_write_records(*it_put, records, max_ce(put_capacity, accum_data_size));
 				++it_put;
@@ -840,7 +854,7 @@ Table::insert(
 
 	if (m_chunks.empty()) {
 		Data::Table::Chunk chunk{};
-		chunk_allocate(chunk, max_ce(record_meta_size() + record_size, CHUNK_SIZE));
+		chunk_allocate(chunk, max_ce(record_written_size(record_size), CHUNK_SIZE));
 		m_chunks.push_back(chunk);
 		it = begin();
 	}
@@ -875,7 +889,7 @@ Table::remove(
 		return;
 	}
 	auto& chunk = m_chunks[it.chunk_index];
-	unsigned const size = record_meta_size() + record_read(chunk.data + it.data_offset).size;
+	unsigned const size = record_written_size(record_read(chunk.data + it.data_offset));
 	Data::Table::Chunk split_unused{};
 	DUCT_ASSERTE(!segment_resize(chunk, split_unused, it, size, 0));
 	--chunk.num_records;
