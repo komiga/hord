@@ -363,6 +363,22 @@ public:
 	num_columns() const noexcept {
 		return m_columns.size();
 	}
+
+	/**
+		Check if table is empty.
+	*/
+	bool
+	empty() const noexcept {
+		return num_records() == 0;
+	}
+
+	/**
+		Check if table is not empty.
+	*/
+	bool
+	any() const noexcept {
+		return 0 < num_records();
+	}
 /// @}
 
 /** @name Layout */ /// @{
