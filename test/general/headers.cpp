@@ -9,7 +9,6 @@
 #include <Hord/Log.hpp>
 #include <Hord/Data/Defs.hpp>
 #include <Hord/Data/Metadata.hpp>
-#include <Hord/Data/ValueStore.hpp>
 #include <Hord/Data/Table.hpp>
 //#include <Hord/Object/Unit.hpp>
 #include <Hord/Object/Ops.hpp>
@@ -40,7 +39,6 @@ main() {
 	Hord::Data::ValueRef vr{"abacaba"};
 
 	// group data
-	Hord::Data::ValueStore value_store{};
 	Hord::Data::TableSchema table_schema{};
 	Hord::Data::Table table{table_schema};
 
