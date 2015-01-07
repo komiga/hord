@@ -121,9 +121,27 @@ public:
 	get_columns() const noexcept {
 		return m_columns;
 	}
+
+	/**
+		Get number of columns.
+	*/
+	unsigned
+	num_columns() const noexcept {
+		return m_columns.size();
+	}
 /// @}
 
 /** @name Layout */ /// @{
+	/**
+		Get a column by index.
+	*/
+	Data::TableSchema::Column const&
+	column(
+		unsigned const index
+	) const {
+		return m_columns.at(index);
+	}
+
 	/**
 		Update schema hash.
 
