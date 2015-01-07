@@ -452,6 +452,12 @@ public:
 
 /** @name Modification */ /// @{
 	/**
+		Optimize record storage.
+	*/
+	void
+	optimize_storage();
+
+	/**
 		Remove all records.
 	*/
 	void clear() noexcept;
