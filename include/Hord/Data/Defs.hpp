@@ -273,23 +273,22 @@ public:
 /** @cond INTERNAL */
 namespace {
 
-template<class T>
-struct type_traits;
-
-template<>
-struct type_traits<std::nullptr_t> {
-	static constexpr Data::Type const
-	value{Data::ValueType::null};
+template<class>
+struct type_traits_impl {
+	static constexpr Data::Type
+	value() { return {Data::ValueType::null}; }
 };
 
 #define HORD_DEFINE_TYPE_TO_DATA_TYPE(T, VT, VF, SZ)				\
-	template<> struct type_traits<T> {								\
-		static constexpr Data::Type const							\
-		value{														\
-			Data::ValueType:: VT,									\
-			Data::ValueFlag:: VF,									\
-			Data::Size:: SZ											\
-		};															\
+	template<> struct type_traits_impl<T> {							\
+		static constexpr Data::Type									\
+		value() {													\
+			return {												\
+				Data::ValueType:: VT,								\
+				Data::ValueFlag:: VF,								\
+				Data::Size:: SZ										\
+			};														\
+		}															\
 	} //
 
 HORD_DEFINE_TYPE_TO_DATA_TYPE(std::int8_t , integer, integer_signed, b8);
@@ -308,9 +307,9 @@ HORD_DEFINE_TYPE_TO_DATA_TYPE(double, decimal, none, b64);
 #undef HORD_DEFINE_TYPE_TO_DATA_TYPE
 
 template<Object::BaseType const B>
-struct type_traits<Object::GenID<B>> {
+struct type_traits_impl<Object::GenID<B>> {
 	static constexpr Data::Type const
-	value{Data::ValueType::object_id};
+	value() { return {Data::ValueType::object_id}; }
 };
 
 } // anonymous namespace
@@ -324,8 +323,10 @@ struct type_traits<Object::GenID<B>> {
 */
 template<class T>
 struct type_traits {
-	static constexpr Data::Type const
-	value{Data::type_traits<typename std::remove_const<T>::type>::value};
+	static constexpr Data::Type
+	value() {
+		return {Data::type_traits_impl<typename std::remove_const<T>::type>::value()};
+	}
 };
 
 /**
@@ -355,6 +356,7 @@ public:
 		char const* string;
 
 		ValueData() noexcept : u64(0) {}
+		ValueData(std::nullptr_t const) noexcept : ValueData() {}
 		ValueData(void const* const data) noexcept : dynamic(data) {}
 		ValueData(char const* const data) noexcept : string(data) {}
 		ValueData(std::int8_t const value) noexcept : s8(value) {}
@@ -403,7 +405,7 @@ public:
 	ValueRef(
 		T const value
 	) noexcept
-		: type(Data::type_traits<T>::value)
+		: type(Data::type_traits<T>::value())
 		, size(0)
 		, data(value)
 	{}
