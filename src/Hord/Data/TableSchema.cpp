@@ -40,6 +40,30 @@ TableSchema::update() noexcept {
 	return m_hash != previous;
 }
 
+bool
+TableSchema::assign(
+	TableSchema const& schema
+) noexcept {
+	if (m_hash == schema.get_hash()) {
+		return false;
+	}
+	auto const& new_columns = schema.get_columns();
+	bool changed = m_columns.size() != new_columns.size();
+	if (!changed) {
+		auto x = m_columns.cbegin();
+		auto y = new_columns.cbegin();
+		for (; x != m_columns.cend(); ++x, ++y) {
+			if (x->type != y->type) {
+				changed = true;
+				break;
+			}
+		}
+	}
+	m_columns = new_columns;
+	m_hash = schema.get_hash();
+	return changed;
+}
+
 #define HORD_SCOPE_FUNC insert
 namespace {
 HORD_DEF_FMT_FQN(

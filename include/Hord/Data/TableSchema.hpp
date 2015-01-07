@@ -133,6 +133,16 @@ public:
 	update() noexcept;
 
 	/**
+		Update schema hash.
+
+		@returns @c true if a type or the number of columns changed.
+	*/
+	bool
+	assign(
+		Data::TableSchema const& schema
+	) noexcept;
+
+	/**
 		Insert a column.
 
 		@throws Error{ErrorCode::table_schema_column_name_shared}
