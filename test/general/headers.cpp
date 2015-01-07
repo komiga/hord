@@ -7,13 +7,13 @@
 //#include <Hord/ErrorCode.hpp>
 #include <Hord/Error.hpp>
 #include <Hord/Log.hpp>
-//#include <Hord/Data/Metadata.hpp>
-//#include <Hord/Data/Field.hpp>
-//#include <Hord/Data/Record.hpp>
+#include <Hord/Data/Defs.hpp>
+#include <Hord/Data/Metadata.hpp>
+#include <Hord/Data/ValueStore.hpp>
+#include <Hord/Data/Table.hpp>
 //#include <Hord/Object/Unit.hpp>
 #include <Hord/Object/Ops.hpp>
 #include <Hord/Rule/Unit.hpp>
-//#include <Hord/Node/Column.hpp>
 #include <Hord/Node/UnitBasic.hpp>
 //#include <Hord/IO/Datastore.hpp>
 //#include <Hord/System/IDGenerator.hpp>
@@ -36,17 +36,17 @@ main() {
 	Hord::Error const err_test{Hord::ErrorCode::unknown, "oh no!"};
 
 	// group metadata
-	Hord::Data::MetaField meta_field{};
 	Hord::Data::Metadata metadata{};
+	Hord::Data::ValueRef vr{"abacaba"};
 
 	// group data
-	Hord::Data::Field field{};
-	Hord::Data::Record record{};
+	Hord::Data::ValueStore value_store{};
+	Hord::Data::TableSchema table_schema{};
+	Hord::Data::Table table{table_schema};
 
 	// group node
 	//Hord::Rule::State rule_state{};
 	//Hord::Rule::Unit rule{};
-	Hord::Node::Column column{};
 	auto node = Hord::Node::UnitBasic::info.construct(
 		Hord::Node::ID{42},
 		Hord::Object::ID_NULL
