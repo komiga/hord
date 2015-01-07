@@ -44,6 +44,25 @@ public:
 
 		/** Type. */
 		Data::Type type;
+
+		/**
+			Serialize.
+
+			@throws SerializerError{..}
+			If a serialization operation failed.
+		*/
+		template<class Ser>
+		ser_result_type
+		serialize(
+			ser_tag_serialize,
+			Ser& ser
+		) {
+			auto& self = const_safe<Ser>(*this);
+			ser(
+				Cacophony::make_string_cfg<std::uint8_t>(self.name),
+				self.type
+			);
+		}
 	};
 
 	/**

@@ -1,6 +1,7 @@
 
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
+#include <Hord/serialization.hpp>
 #include <Hord/Data/TableSchema.hpp>
 #include <Hord/IO/Defs.hpp>
 
@@ -77,6 +78,33 @@ TableSchema::remove(
 	DUCT_ASSERTE(index < m_columns.size());
 	m_columns.erase(m_columns.cbegin() + index);
 }
+
+#define HORD_SCOPE_FUNC read
+ser_result_type
+TableSchema::read(
+	ser_tag_read,
+	InputSerializer& ser
+) {
+	m_hash = HASH_EMPTY;
+	std::uint32_t format_version;
+	ser(format_version);
+	DUCT_ASSERTE(format_version == 0);
+	ser(Cacophony::make_vector_cfg<std::uint8_t>(m_columns));
+	update();
+}
+#undef HORD_SCOPE_FUNC
+
+#define HORD_SCOPE_FUNC write
+ser_result_type
+TableSchema::write(
+	ser_tag_write,
+	OutputSerializer& ser
+) const {
+	std::uint32_t const format_version = 0;
+	ser(format_version);
+	ser(Cacophony::make_vector_cfg<std::uint8_t>(m_columns));
+}
+#undef HORD_SCOPE_FUNC
 
 #undef HORD_SCOPE_CLASS
 
