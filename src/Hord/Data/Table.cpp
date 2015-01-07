@@ -30,8 +30,8 @@ bool
 TableSchema::update() noexcept {
 	auto const previous = m_hash;
 	HashCombiner hc;
-	std::uint64_t const num = static_cast<std::uint64_t>(m_columns.size());
-	hc.add(reinterpret_cast<char const*>(&num), sizeof(std::uint64_t));
+	std::uint32_t const num = static_cast<std::uint32_t>(m_columns.size());
+	hc.add(reinterpret_cast<char const*>(&num), sizeof(std::uint32_t));
 	for (auto const& column : m_columns) {
 		hc.add(reinterpret_cast<char const*>(&column.type), sizeof(Data::TypeValue));
 		hc.add_string(column.name);
