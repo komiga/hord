@@ -543,6 +543,17 @@ record_meta_size() {
 	return sizeof(std::uint32_t);
 }
 
+static unsigned
+record_write(
+	Record const& record,
+	std::uint8_t* output
+) {
+	*reinterpret_cast<std::uint32_t*>(output) = record.size;
+	output += record_meta_size();
+	std::memcpy(output, record.data, record.size);
+	return record_meta_size() + record.size;
+}
+
 static Record
 record_read(
 	std::uint8_t* data
@@ -609,6 +620,15 @@ field_offset(
 	}
 	DUCT_DEBUG_ASSERTE(offset <= record.size);
 	return offset;
+}
+
+inline static unsigned
+record_data_size(
+	Record const& record,
+	unsigned const num_fields,
+	Data::Type const* const fields
+) noexcept {
+	return field_offset(record, num_fields, fields, num_fields);
 }
 
 } // anonymous namespace
@@ -724,6 +744,70 @@ Table::clear() noexcept {
 		chunk_clear(chunk);
 	}
 	m_num_records = 0;
+}
+
+static void
+table_write_records(
+	Data::Table::Chunk& chunk,
+	aux::vector<Record>& records,
+	unsigned const size
+) {
+	if (chunk.size < size) {
+		chunk_allocate(chunk, size);
+	}
+	unsigned offset = 0;
+	for (auto const& record : records) {
+		offset += record_write(record, chunk.data + offset);
+	}
+	chunk_set_bounds(chunk, records.size(), 0, offset);
+	records.clear();
+}
+
+void
+Table::optimize_storage() {
+	if (empty()) {
+		return;
+	}
+
+	m_chunks.insert(m_chunks.cbegin(), Data::Table::Chunk{});
+	auto it_put = m_chunks.begin();
+	auto it_take = it_put + 1;
+	unsigned offset;
+	unsigned take_count = 0;
+	unsigned accum_data_size = 0;
+	unsigned put_capacity = CHUNK_SIZE;
+	Record orig_record;
+	aux::vector<Record> records{};
+	records.reserve(256);
+	for (; it_take != m_chunks.end(); ++it_take) {
+		offset = it_take->offset_head();
+		for (unsigned index = 0; index < it_take->num_records; ++index) {
+			orig_record = record_read(it_take->data + offset);
+			offset += record_meta_size() + orig_record.size;
+			records.push_back({});
+			auto& record = records.back();
+			record.data = orig_record.data;
+			record.size = record_data_size(orig_record, num_columns(), m_columns.data());
+			accum_data_size += record_meta_size() + record.size;
+			if (0 < take_count && put_capacity <= accum_data_size) {
+				table_write_records(*it_put, records, max_ce(put_capacity, accum_data_size));
+				++it_put;
+				take_count = 0;
+				accum_data_size = 0;
+				put_capacity = max_ce(it_put->size, CHUNK_SIZE);
+			}
+		}
+		++take_count;
+	}
+	if (!records.empty()) {
+		table_write_records(*it_put, records, max_ce(put_capacity, accum_data_size));
+		++it_put;
+	}
+	it_take = it_put;
+	for (; it_take != m_chunks.end(); ++it_take) {
+		chunk_free(*it_take);
+	}
+	m_chunks.erase(it_put, m_chunks.end());
 }
 
 void
@@ -913,6 +997,7 @@ Table::write(
 	ser_tag_write,
 	OutputSerializer& ser
 ) const {
+	const_cast<Data::Table*>(this)->optimize_storage();
 	std::uint32_t const format_version = 0;
 	ser(format_version, m_hash);
 	ser(Cacophony::make_vector_cfg<std::uint8_t>(m_columns));
