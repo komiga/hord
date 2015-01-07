@@ -13,6 +13,7 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Data/Table.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
@@ -131,7 +132,7 @@ private:
 	Cmd::Result
 	set_name(
 		Hord::Object::Unit& object,
-		Hord::Data::ValueStore::Iterator& it,
+		Hord::Data::Table::Iterator& it,
 		String const& new_name
 	);
 

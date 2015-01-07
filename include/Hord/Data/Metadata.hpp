@@ -88,27 +88,11 @@ public:
 	}
 
 	/**
-		Get name column.
-	*/
-	Data::ValueStore&
-	names() noexcept {
-		return m_table.column(COL_NAME);
-	}
-
-	/**
-		Get value column.
-	*/
-	Data::ValueStore&
-	values() noexcept {
-		return m_table.column(COL_VALUE);
-	}
-
-	/**
 		Get the number of fields.
 	*/
 	unsigned
 	num_fields() const noexcept {
-		return m_table.num_rows();
+		return m_table.num_records();
 	}
 /// @}
 

@@ -16,7 +16,6 @@ see @ref index or the accompanying LICENSE file for full text.
 #include <Hord/utility.hpp>
 #include <Hord/serialization.hpp>
 #include <Hord/Data/Defs.hpp>
-#include <Hord/Data/ValueStore.hpp>
 
 #include <duct/debug.hpp>
 
@@ -24,7 +23,6 @@ namespace Hord {
 namespace Data {
 
 // Forward declarations
-struct Column;
 class Table;
 
 /**
@@ -169,23 +167,162 @@ public:
 */
 class Table {
 public:
+	struct Chunk {
+		std::uint8_t* data{nullptr};
+		std::uint8_t* head{nullptr};
+		std::uint8_t* tail{nullptr};
+		unsigned size{0};
+		unsigned num_records{0};
+
+		unsigned
+		offset_head() const noexcept {
+			return head - data;
+		}
+		unsigned
+		offset_tail() const noexcept {
+			return tail - data;
+		}
+
+		unsigned
+		space_head() const noexcept {
+			return offset_head();
+		}
+		unsigned
+		space_tail() const noexcept {
+			return size - offset_tail();
+		}
+
+		unsigned
+		space_used() const noexcept {
+			return tail - head;
+		}
+
+		unsigned
+		space() const noexcept {
+			return space_used() - size;
+		}
+	};
+
+	friend struct Iterator;
+	struct Iterator {
+		Data::Table* table;
+		unsigned index;
+		unsigned chunk_index;
+		unsigned inner_index;
+		unsigned data_offset;
+
+		bool
+		operator==(
+			Iterator const& rhs
+		) const noexcept {
+			return table == rhs.table && index == rhs.index;
+		}
+
+		bool
+		operator!=(
+			Iterator const& rhs
+		) const noexcept {
+			return !this->operator==(rhs);
+		}
+
+		bool
+		operator<(
+			Iterator const& rhs
+		) const noexcept {
+			return index < rhs.index;
+		}
+
+		/**
+			Advance.
+		*/
+		Iterator&
+		operator++() noexcept;
+
+		/**
+			Advance by count.
+		*/
+		Iterator&
+		operator+=(
+			unsigned count
+		) noexcept;
+
+		/**
+			Whether the iterator can advance.
+		*/
+		bool
+		can_advance() const noexcept {
+			return table && index < table->m_num_records;
+		}
+
+		/**
+			Insert a record at iterator.
+
+			@sa Data::Table::insert()
+		*/
+		void
+		insert(
+			unsigned const num_fields,
+			Data::ValueRef* const fields
+		) noexcept {
+			table->insert(*this, num_fields, fields);
+		}
+
+		/**
+			Remove record at iterator.
+		*/
+		void
+		remove() noexcept {
+			table->remove(*this);
+		}
+
+		/**
+			Set field value at iterator.
+		*/
+		void
+		set_field(
+			unsigned const column_index,
+			Data::ValueRef value
+		) {
+			table->set_field(*this, column_index, value);
+		}
+
+		/**
+			Get field value at iterator.
+		*/
+		Data::ValueRef
+		get_field(
+			unsigned const column_index
+		) const noexcept {
+			return table->get_field(*this, column_index);
+		}
+	};
+
+	/**
+		Chunk vector type.
+	*/
+	using chunk_vector_type = aux::vector<Chunk>;
+
 	/**
 		Column vector type.
 	*/
-	using column_vector_type = aux::vector<Data::ValueStore>;
+	using column_vector_type = aux::vector<Data::Type>;
 
 private:
-	unsigned m_num_rows{0};
+	unsigned m_num_records{0};
 	Data::SchemaHashValue m_hash{HASH_EMPTY};
 	column_vector_type m_columns{};
+	chunk_vector_type m_chunks{};
 
 	Table(Table const&) = delete;
 	Table& operator=(Table const&) = delete;
 
+private:
+	void free_chunks();
+
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
-	~Table() noexcept = default;
+	~Table() noexcept;
 
 	/** Default constructor. */
 	Table() = default;
@@ -212,27 +349,11 @@ public:
 	}
 
 	/**
-		Get columns (mutable).
-	*/
-	column_vector_type&
-	get_columns() noexcept {
-		return m_columns;
-	}
-
-	/**
-		Get columns.
-	*/
-	column_vector_type const&
-	get_columns() const noexcept {
-		return m_columns;
-	}
-
-	/**
-		Get number of rows.
+		Get number of records.
 	*/
 	unsigned
-	num_rows() const noexcept {
-		return m_num_rows;
+	num_records() const noexcept {
+		return m_num_records;
 	}
 
 	/**
@@ -245,28 +366,7 @@ public:
 /// @}
 
 /** @name Layout */ /// @{
-	/**
-		Get column by index (mutable).
-	*/
-	Data::ValueStore&
-	column(
-		unsigned const index
-	) noexcept {
-		DUCT_ASSERTE(index < m_columns.size());
-		return m_columns[index];
-	}
-
-	/**
-		Get column by index.
-	*/
-	Data::ValueStore const&
-	column(
-		unsigned const index
-	) const noexcept {
-		DUCT_ASSERTE(index < m_columns.size());
-		return m_columns[index];
-	}
-
+	// TODO: Replace this function with a table schema mutation interface
 	/**
 		Configure the table with a schema.
 
@@ -276,24 +376,122 @@ public:
 	configure(
 		Data::TableSchema const& schema
 	);
+
+	/**
+		Get column type by index.
+	*/
+	Data::Type
+	column(
+		unsigned const index
+	) noexcept {
+		return index < m_columns.size() ? m_columns[index] : Data::Type{};
+	}
+/// @}
+
+/** @name Iteration */ /// @{
+	/**
+		Get beginning iterator.
+	*/
+	Data::Table::Iterator
+	begin() {
+		if (m_chunks.empty()) {
+			return {this, m_num_records, 0, 0, 0};
+		} else {
+			auto const& chunk = m_chunks.front();
+			return {this, 0, 0, 0, chunk.offset_head()};
+		}
+	}
+
+	/**
+		Get ending iterator.
+	*/
+	Data::Table::Iterator
+	end() {
+		if (m_chunks.empty()) {
+			return {this, m_num_records, 0, 0, 0};
+		} else {
+			auto const& chunk = m_chunks.back();
+			return {
+				this,
+				m_num_records,
+				static_cast<unsigned>(m_chunks.size() - 1),
+				chunk.num_records,
+				chunk.offset_tail()
+			};
+		}
+	}
+
+	/**
+		Get iterator at index.
+	*/
+	Data::Table::Iterator
+	iterator_at(
+		unsigned const index
+	) {
+		auto it = begin();
+		it += min_ce(index, m_num_records);
+		return it;
+	}
 /// @}
 
 /** @name Modification */ /// @{
 	/**
-		Push values to the end of the table.
+		Remove all records.
+	*/
+	void clear() noexcept;
+
+	/**
+		Insert a record.
+
+		@note Fields may be morphed to other types.
 	*/
 	void
-	push_back(
-		std::initializer_list<Data::ValueRef> const values
+	insert(
+		Data::Table::Iterator& it,
+		unsigned num_fields,
+		Data::ValueRef* const fields
 	) noexcept;
 
 	/**
-		Remove row.
+		Push a record to the end of the table.
+
+		@sa insert()
+	*/
+	void
+	push_back(
+		unsigned num_fields,
+		Data::ValueRef* const fields
+	) noexcept {
+		auto it = end();
+		insert(it, num_fields, fields);
+	}
+
+	/**
+		Remove a record.
 	*/
 	void
 	remove(
-		unsigned const index
+		Data::Table::Iterator& it
 	) noexcept;
+
+	/**
+		Set field value.
+	*/
+	void
+	set_field(
+		Data::Table::Iterator& it,
+		unsigned column_index,
+		Data::ValueRef value
+	);
+
+	/**
+		Get field value.
+	*/
+	Data::ValueRef
+	get_field(
+		Data::Table::Iterator const& it,
+		unsigned const column_index
+	) const noexcept;
 /// @}
 
 /** @name Serialization */ /// @{

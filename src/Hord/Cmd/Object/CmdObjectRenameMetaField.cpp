@@ -24,16 +24,16 @@ namespace Object {
 Cmd::Result
 HORD_SCOPE_CLASS::set_name(
 	Hord::Object::Unit& object,
-	Hord::Data::ValueStore::Iterator& it,
+	Hord::Data::Table::Iterator& it,
 	String const& new_name
 ) {
 	if (new_name.empty()) {
 		set_message("new name must not be empty");
 		return Cmd::Result::error;
 	}
-	auto it_search = object.get_metadata().names().begin();
+	auto it_search = object.get_metadata().table().begin();
 	for (; it_search.can_advance(); ++it_search) {
-		auto const value_ref = it_search.get_value();
+		auto const value_ref = it_search.get_field(Data::Metadata::COL_NAME);
 		if (!string_equal(new_name, value_ref.size, value_ref.data.string)) {
 			// Do nothing
 		} else if (it_search == it) {
@@ -44,7 +44,7 @@ HORD_SCOPE_CLASS::set_name(
 		}
 	}
 
-	it.set_value(new_name);
+	it.set_field(Data::Metadata::COL_NAME, new_name);
 	object.get_prop_states().assign(
 		IO::PropType::metadata,
 		IO::PropState::modified
@@ -63,7 +63,7 @@ HORD_SCOPE_CLASS::operator()(
 	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
 	}
-	auto it = object.get_metadata().names().iterator_at(index);
+	auto it = object.get_metadata().table().iterator_at(index);
 	return commit_with(set_name(object, it, new_name));
 } catch (...) {
 	notify_exception_current();
@@ -78,9 +78,9 @@ HORD_SCOPE_CLASS::operator()(
 	String const& old_name,
 	String const& new_name
 ) noexcept try {
-	auto it = object.get_metadata().names().begin();
+	auto it = object.get_metadata().table().begin();
 	for (; it.can_advance(); ++it) {
-		auto const value_ref = it.get_value();
+		auto const value_ref = it.get_field(Data::Metadata::COL_NAME);
 		if (string_equal(old_name, value_ref.size, value_ref.data.string)) {
 			return commit_with(set_name(object, it, new_name));
 		}

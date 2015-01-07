@@ -22,10 +22,10 @@ namespace Object {
 static void
 set_value(
 	Hord::Object::Unit& object,
-	Hord::Data::ValueStore::Iterator& it,
+	Hord::Data::Table::Iterator& it,
 	Hord::Data::ValueRef const& new_value
 ) {
-	it.set_value(new_value);
+	it.set_field(Data::Metadata::COL_VALUE, new_value);
 	object.get_prop_states().assign(
 		IO::PropType::metadata,
 		IO::PropState::modified
@@ -44,7 +44,7 @@ HORD_SCOPE_CLASS::operator()(
 	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
 	}
-	auto it = object.get_metadata().names().iterator_at(index);
+	auto it = object.get_metadata().table().iterator_at(index);
 	set_value(object, it, new_value);
 	return commit();
 } catch (...) {
@@ -65,17 +65,19 @@ HORD_SCOPE_CLASS::operator()(
 	if (name.empty()) {
 		return commit_error("empty name");
 	}
-	auto it = object.get_metadata().names().begin();
+	auto it = object.get_metadata().table().begin();
 	for (; it.can_advance(); ++it) {
-		auto const value_ref = it.get_value();
+		auto const value_ref = it.get_field(Data::Metadata::COL_NAME);
 		if (string_equal(name, value_ref.size, value_ref.data.string)) {
-			auto it_value = object.get_metadata().values().iterator_at(it.index);
-			set_value(object, it_value, new_value);
+			set_value(object, it, new_value);
 			return commit();
 		}
 	}
 	if (create) {
-		object.get_metadata().table().push_back({name, new_value});
+		Data::ValueRef fields[2];
+		fields[Data::Metadata::COL_NAME] = {name};
+		fields[Data::Metadata::COL_VALUE] = {new_value};
+		object.get_metadata().table().push_back(2, fields);
 		object.get_prop_states().assign(
 			IO::PropType::metadata,
 			IO::PropState::modified
