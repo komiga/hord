@@ -1,11 +1,9 @@
 /**
+@copyright MIT license; see @ref index or the accompanying LICENSE file.
+
 @file
 @brief Table class.
 @ingroup data
-
-@author Timothy Howard
-@copyright 2013-2014 Timothy Howard under the MIT license;
-see @ref index or the accompanying LICENSE file for full text.
 */
 
 #pragma once
