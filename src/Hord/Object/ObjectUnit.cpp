@@ -2,6 +2,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <Hord/utility.hpp>
 #include <Hord/serialization.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
@@ -45,6 +46,7 @@ Unit::set_slug(
 		m_slug.resize(Object::SLUG_MAX_SIZE);
 		// TODO: Truncate invalid unit sequence (if any) after resize
 	}
+	m_slug_hash = hash_string(m_slug);
 }
 
 // serialization

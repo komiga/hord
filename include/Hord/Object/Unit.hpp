@@ -12,6 +12,7 @@
 #include <Hord/aux.hpp>
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
+#include <Hord/utility.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStateStore.hpp>
 #include <Hord/IO/PropStream.hpp>
@@ -73,6 +74,7 @@ private:
 
 	Object::ID m_parent;
 	String m_slug{};
+	HashValue m_slug_hash{HASH_EMPTY};
 	Data::Metadata m_metadata{};
 	String m_scratch_space{};
 
@@ -311,6 +313,14 @@ public:
 	String const&
 	get_slug() const noexcept {
 		return m_slug;
+	}
+
+	/**
+		Get slug hash.
+	*/
+	HashValue
+	get_slug_hash() const noexcept {
+		return m_slug_hash;
 	}
 
 	/**
