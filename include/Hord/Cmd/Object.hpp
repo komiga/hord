@@ -110,7 +110,7 @@ public:
 		Hord::Object::Unit& object,
 		String const& name,
 		Data::ValueRef const& new_value,
-		bool const create = false
+		bool const create = true
 	) noexcept;
 /// @}
 };
