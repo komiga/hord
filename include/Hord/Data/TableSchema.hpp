@@ -59,8 +59,8 @@ public:
 		) {
 			auto& self = const_safe<Ser>(*this);
 			ser(
-				Cacophony::make_string_cfg<std::uint8_t>(self.name),
-				self.type
+				self.type,
+				Cacophony::make_string_cfg<std::uint8_t>(self.name)
 			);
 		}
 	};
