@@ -2,7 +2,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief Metadata classes.
+@brief Metadata class.
 @ingroup metadata
 */
 
