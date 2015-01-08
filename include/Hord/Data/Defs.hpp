@@ -37,11 +37,6 @@ struct ValueRef;
 using TypeValue = std::uint8_t;
 
 /**
-	Schema hash value.
-*/
-using SchemaHashValue = HashValue;
-
-/**
 	Data value types.
 */
 enum class ValueType : Data::TypeValue {

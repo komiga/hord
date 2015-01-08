@@ -69,7 +69,7 @@ public:
 	using column_vector_type = aux::vector<Column>;
 
 private:
-	Data::SchemaHashValue m_hash{HASH_EMPTY};
+	HashValue m_hash{HASH_EMPTY};
 	column_vector_type m_columns{};
 
 	TableSchema(TableSchema const&) = delete;
@@ -99,7 +99,7 @@ public:
 	/**
 		Get schema hash.
 	*/
-	Data::SchemaHashValue
+	HashValue
 	get_hash() const noexcept {
 		return m_hash;
 	}
