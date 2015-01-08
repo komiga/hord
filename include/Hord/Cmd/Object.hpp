@@ -22,6 +22,7 @@ namespace Object {
 
 // Forward declarations
 class SetSlug;
+class SetParent;
 class SetMetaField;
 class RenameMetaField;
 class RemoveMetaField;
@@ -36,6 +37,7 @@ class RemoveMetaField;
 */
 struct Base {
 	friend class SetSlug;
+	friend class SetParent;
 	friend class SetMetaField;
 	friend class RenameMetaField;
 	friend class RemoveMetaField;
@@ -79,6 +81,34 @@ public:
 	operator()(
 		Hord::Object::Unit& object,
 		String new_slug
+	) noexcept;
+/// @}
+};
+
+/**
+	Set parent command.
+*/
+class SetParent final
+	: public Hord::Cmd::Object::Base
+	, public Cmd::Unit<SetParent>
+{
+	HORD_CMD_IMPL_BOILERPLATE(
+		SetParent,
+		"Cmd::Object::SetParent"
+	);
+
+public:
+/** @name Operations */ /// @{
+	/**
+		Set parent.
+
+		@param object Object to modify.
+		@param new_parent New parent.
+	*/
+	exec_result_type
+	operator()(
+		Hord::Object::Unit& object,
+		Hord::Object::ID const new_parent
 	) noexcept;
 /// @}
 };
