@@ -19,6 +19,7 @@ namespace Hord {
 namespace Object {
 
 // Forward declarations
+struct IDPrinter;
 
 /**
 	@addtogroup object
