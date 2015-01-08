@@ -43,6 +43,8 @@ HORD_SCOPE_CLASS::operator()(
 	unsigned const index,
 	Hord::Data::ValueRef const& new_value
 ) noexcept try {
+	m_id = object.get_id();
+
 	m_created = false;
 	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
@@ -64,6 +66,8 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Data::ValueRef const& new_value,
 	bool const create
 ) noexcept try {
+	m_id = object.get_id();
+
 	m_created = false;
 	if (name.empty()) {
 		return commit_error("empty name");

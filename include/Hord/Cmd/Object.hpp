@@ -32,10 +32,35 @@ class RemoveMetaField;
 */
 
 /**
+	Base object command properties.
+*/
+struct Base {
+	friend class SetSlug;
+	friend class SetMetaField;
+	friend class RenameMetaField;
+	friend class RemoveMetaField;
+
+protected:
+	Hord::Object::ID m_id;
+
+public:
+/** @name Properties */ /// @{
+	/**
+		Get object ID.
+	*/
+	Hord::Object::ID
+	get_object_id() const noexcept {
+		return m_id;
+	}
+/// @}
+};
+
+/**
 	Set slug command.
 */
 class SetSlug final
-	: public Cmd::Unit<SetSlug>
+	: public Hord::Cmd::Object::Base
+	, public Cmd::Unit<SetSlug>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		SetSlug,
@@ -62,7 +87,8 @@ public:
 	Set MetaField value command.
 */
 class SetMetaField final
-	: public Cmd::Unit<SetMetaField>
+	: public Hord::Cmd::Object::Base
+	, public Cmd::Unit<SetMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		SetMetaField,
@@ -119,7 +145,8 @@ public:
 	Rename MetaField command.
 */
 class RenameMetaField final
-	: public Cmd::Unit<RenameMetaField>
+	: public Hord::Cmd::Object::Base
+	, public Cmd::Unit<RenameMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		RenameMetaField,
@@ -170,7 +197,8 @@ public:
 	Rename MetaField command.
 */
 class RemoveMetaField final
-	: public Cmd::Unit<RemoveMetaField>
+	: public Hord::Cmd::Object::Base
+	, public Cmd::Unit<RemoveMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		RemoveMetaField,

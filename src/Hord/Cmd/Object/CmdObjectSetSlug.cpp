@@ -26,6 +26,9 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	String new_slug
 ) noexcept try {
+	m_id = object.get_id();
+
+	// TODO: Check for collision in parent children
 	if (new_slug.empty()) {
 		return commit_error("slug cannot be empty");
 	} else if (Hord::Object::SLUG_MAX_SIZE < new_slug.size()) {
@@ -44,6 +47,8 @@ HORD_SCOPE_CLASS::operator()(
 	return commit_error("unknown error");
 }
 #undef HORD_SCOPE_FUNC
+
+#undef HORD_SCOPE_CLASS
 
 } // namespace Object
 } // namespace Cmd
