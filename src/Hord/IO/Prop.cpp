@@ -1,3 +1,6 @@
+/**
+@copyright MIT license; see @ref index or the accompanying LICENSE file.
+*/
 
 #include <Hord/Object/Unit.hpp>
 #include <Hord/IO/Prop.hpp>
