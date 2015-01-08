@@ -445,6 +445,66 @@ public:
 		, data(str.data())
 	{}
 /// @}
+
+/** @name Properties */ /// @{
+	/**
+		Get signed integer value.
+
+		@returns @c 0 if the value is not an integer.
+	*/
+	std::int64_t
+	integer_signed() const noexcept {
+		if (type.type() != Data::ValueType::integer) {
+			return 0;
+		}
+		if (!enum_bitand(type.flags(), Data::ValueFlag::integer_signed)) {
+			return integer_unsigned();
+		}
+		switch (type.size()) {
+		case Data::Size::b8 : return data.s8;
+		case Data::Size::b16: return data.s16;
+		case Data::Size::b32: return data.s32;
+		case Data::Size::b64: return data.s64;
+		}
+	}
+
+	/**
+		Get unsigned integer value.
+
+		@returns @c 0 if the value is not an integer.
+	*/
+	std::uint64_t
+	integer_unsigned() const noexcept {
+		if (type.type() != Data::ValueType::integer) {
+			return 0;
+		}
+		if (enum_bitand(type.flags(), Data::ValueFlag::integer_signed)) {
+			return integer_signed();
+		}
+		switch (type.size()) {
+		case Data::Size::b8 : return data.u8;
+		case Data::Size::b16: return data.u16;
+		case Data::Size::b32: return data.u32;
+		case Data::Size::b64: return data.u64;
+		}
+	}
+
+	/**
+		Get decimal value.
+
+		@returns @c 0.0f if the value is not a decimal.
+	*/
+	double
+	decimal() const noexcept {
+		if (type.type() != Data::ValueType::decimal) {
+			return 0.0f;
+		} else if (type.size() == Data::Size::b64) {
+			return data.f64;
+		} else {
+			return data.f32;
+		}
+	}
+/// @}
 };
 
 /** @} */ // end of doc-group data
