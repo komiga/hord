@@ -65,6 +65,11 @@ public:
 	*/
 	using ID = HashValue;
 
+	enum : HashValue {
+		/** Null ID. */
+		ID_NULL = ID{HASH_EMPTY},
+	};
+
 	/**
 		Type info.
 	*/
