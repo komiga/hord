@@ -203,6 +203,26 @@ public:
 		}
 	}
 /// @}
+
+/** @name Operators */ /// @{
+	/**
+		Equal-to operator.
+	*/
+	bool
+	operator==(
+		Data::ValueRef const& rhs
+	) const noexcept;
+
+	/**
+		Not-equal-to operator.
+	*/
+	bool
+	operator!=(
+		Data::ValueRef const& rhs
+	) const noexcept {
+		return !(*this == rhs);
+	}
+/// @}
 };
 
 /** @} */ // end of doc-group data
