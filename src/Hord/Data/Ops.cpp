@@ -15,10 +15,6 @@
 namespace Hord {
 namespace Data {
 
-// class ValueRef implementation
-
-#define HORD_SCOPE_CLASS ValueRef
-
 namespace {
 static constexpr ceformat::Format const
 	s_fmt_integer_signed{"%d"},
@@ -65,8 +61,6 @@ operator<<(
 	}
 	return stream;
 }
-
-#undef HORD_SCOPE_CLASS
 
 } // namespace Data
 } // namespace Hord
