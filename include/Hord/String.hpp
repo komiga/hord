@@ -11,6 +11,8 @@
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 
+#include <cstring>
+
 namespace Hord {
 
 /**
@@ -42,6 +44,19 @@ string_equal(
 	char const* const data
 ) {
 	return 0 == x.compare(0, x.size(), data, size);
+}
+
+/**
+	Compare strings for equality.
+*/
+inline bool
+string_equal(
+	unsigned const l_size,
+	char const* const l_data,
+	unsigned const r_size,
+	char const* const r_data
+) {
+	return l_size == r_size && std::strncmp(l_data, r_data, l_size) == 0;
 }
 
 /** @} */ // end of doc-group string
