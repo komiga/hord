@@ -9,7 +9,7 @@
 #pragma once
 
 #include <Hord/config.hpp>
-#include <Hord/Data/Defs.hpp>
+#include <Hord/Data/ValueRef.hpp>
 
 #include <iosfwd>
 

@@ -5,6 +5,8 @@
 #include <Hord/utility.hpp>
 #include <Hord/String.hpp>
 #include <Hord/serialization.hpp>
+#include <Hord/Data/Defs.hpp>
+#include <Hord/Data/ValueRef.hpp>
 #include <Hord/Data/TableSchema.hpp>
 #include <Hord/Data/Table.hpp>
 #include <Hord/IO/Defs.hpp>

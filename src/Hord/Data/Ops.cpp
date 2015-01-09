@@ -4,6 +4,7 @@
 
 #include <Hord/utility.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Data/ValueRef.hpp>
 #include <Hord/Data/Ops.hpp>
 #include <Hord/Object/Ops.hpp>
 

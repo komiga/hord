@@ -11,6 +11,7 @@
 #include <Hord/config.hpp>
 #include <Hord/String.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Data/ValueRef.hpp>
 #include <Hord/Data/Table.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>

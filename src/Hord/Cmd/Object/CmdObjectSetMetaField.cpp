@@ -6,6 +6,7 @@
 #include <Hord/utility.hpp>
 #include <Hord/Log.hpp>
 #include <Hord/Data/Defs.hpp>
+#include <Hord/Data/ValueRef.hpp>
 #include <Hord/Data/Metadata.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
