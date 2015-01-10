@@ -19,7 +19,7 @@ namespace {
 static constexpr ceformat::Format const
 	s_fmt_integer_signed{"%d"},
 	s_fmt_integer_unsigned{"%u"},
-	s_fmt_decimal{"%f"}
+	s_fmt_decimal{"%.8g"}
 ;
 } // anonymous namespace
 
