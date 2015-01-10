@@ -189,9 +189,9 @@ public:
 	/** Default constructor. */
 	Table() = default;
 	/** Move constructor. */
-	Table(Table&&) = default;
+	Table(Table&& other) noexcept;
 	/** Move assignment operator. */
-	Table& operator=(Table&&) = default;
+	Table& operator=(Table&& other) noexcept;
 
 	/**
 		Construct with schema.

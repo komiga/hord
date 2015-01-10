@@ -14,6 +14,7 @@
 #include <duct/debug.hpp>
 
 #include <cstring>
+#include <utility>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
@@ -534,6 +535,24 @@ void Table::free_chunks() {
 
 Table::~Table() noexcept {
 	free_chunks();
+}
+
+Table::Table(
+	Table&& other
+) noexcept {
+	(*this) = std::move(other);
+}
+
+Table&
+Table::operator=(
+	Table&& other
+) noexcept {
+	clear();
+	std::swap(m_num_records, other.m_num_records);
+	std::swap(m_schema, other.m_schema);
+	std::swap(m_chunks, other.m_chunks);
+	other.clear();
+	return *this;
 }
 
 Table::Table(
