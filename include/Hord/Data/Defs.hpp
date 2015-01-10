@@ -24,6 +24,7 @@ enum class ValueType : std::uint8_t;
 enum class ValueFlag : std::uint8_t;
 enum class Size : std::uint8_t;
 struct Type;
+struct ValueTypeProperties;
 
 /**
 	@addtogroup data
@@ -340,6 +341,77 @@ struct type_traits {
 		return {Data::type_traits_impl<typename std::remove_const<T>::type>::value()};
 	}
 };
+
+/**
+	Value type property flags.
+*/
+enum : unsigned {
+	VTP_NONE = 0,
+	VTP_DYNAMIC_SIZE = 1 << 0,
+};
+
+/**
+	Value type properties.
+*/
+struct ValueTypeProperties {
+	unsigned const flags;
+	unsigned const fixed_size[4];
+};
+
+namespace {
+constexpr static Data::ValueTypeProperties const
+s_type_properties[]{
+	// null
+	{VTP_NONE, {0}},
+
+	// dynamic
+	{VTP_NONE, {0}},
+
+	// integer
+	{VTP_NONE, {1, 2, 4, 8}},
+
+	// decimal
+	{VTP_NONE, {4, 4, 4, 8}},
+
+	// object_id
+	{VTP_NONE, {sizeof(Object::IDValue)}},
+
+	// string
+	{VTP_DYNAMIC_SIZE, {0}},
+};
+} // anonymous namespace
+
+/**
+	Get value type properties for a value type.
+*/
+inline constexpr Data::ValueTypeProperties const&
+type_properties(
+	Data::ValueType const type
+) noexcept {
+	return Data::s_type_properties[enum_cast(type)];
+}
+
+/**
+	Get value type properties for a type.
+*/
+inline constexpr Data::ValueTypeProperties const&
+type_properties(
+	Data::Type const type
+) noexcept {
+	return Data::type_properties(type.type());
+}
+
+/**
+	Get size in bytes of dynamic data size.
+
+	@note Data::Size::b32 is the maximum dynamic data size.
+*/
+inline constexpr unsigned
+data_size_dynamic(
+	Data::Size const size
+) noexcept {
+	return min_ce(4u, 1u << enum_cast(size));
+}
 
 /** @} */ // end of doc-group data
 

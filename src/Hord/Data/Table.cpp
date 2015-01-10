@@ -25,72 +25,10 @@ namespace {
 constexpr static unsigned const
 CHUNK_SIZE = 0x2000;
 
-enum : unsigned {
-	VTP_NONE = 0,
-	VTP_DYNAMIC_SIZE = 1 << 0,
-};
-
 struct Record {
 	unsigned size;
 	std::uint8_t* data;
 };
-
-inline constexpr static unsigned
-data_size_dynamic(
-	Data::Size const size
-) noexcept {
-	return min_ce(4u, 1u << enum_cast(size));
-}
-
-inline static std::int64_t
-value_clamp_signed(
-	std::int64_t const value,
-	Data::Size const size
-) noexcept {
-	auto const min = std::int64_t{1} << ((enum_cast(size) + 3) - 1);
-	return max_ce(min, min_ce(value, ~(~std::int64_t{0} << (enum_cast(size) + 3))));
-}
-
-inline static std::uint64_t
-value_clamp_unsigned(
-	std::uint64_t const value,
-	Data::Size const size
-) noexcept {
-	return max_ce(std::uint64_t{0}, min_ce(value, ~std::uint64_t{0} >> (enum_cast(size) + 3)));
-}
-
-struct ValueTypeProperties {
-	unsigned const flags;
-	unsigned const fixed_size[4];
-};
-
-constexpr static ValueTypeProperties const
-s_properties[]{
-	// null
-	{VTP_NONE, {0}},
-
-	// dynamic
-	{VTP_NONE, {0}},
-
-	// integer
-	{VTP_NONE, {1, 2, 4, 8}},
-
-	// decimal
-	{VTP_NONE, {4, 4, 4, 8}},
-
-	// object_id
-	{VTP_NONE, {sizeof(Object::IDValue)}},
-
-	// string
-	{VTP_DYNAMIC_SIZE, {0}},
-};
-
-inline constexpr static ValueTypeProperties const&
-value_properties(
-	Data::Type const type
-) noexcept {
-	return s_properties[enum_cast(type.type())];
-}
 
 /*inline static unsigned
 value_zero_size(
@@ -99,9 +37,9 @@ value_zero_size(
 	if (type.type() == Data::ValueType::dynamic) {
 		return sizeof(Data::TypeValue);
 	}
-	auto const& vp = value_properties(type);
-	if (vp.flags & VTP_DYNAMIC_SIZE) {
-		return data_size_dynamic(type.size());
+	auto const& vp = Data::type_properties(type);
+	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
+		return Data::data_size_dynamic(type.size());
 	} else {
 		return vp.fixed_size[enum_cast(type.size())];
 	}
@@ -114,9 +52,9 @@ value_init_size(
 	if (type.type() == Data::ValueType::dynamic) {
 		return sizeof(Data::TypeValue) + 0x20;
 	}
-	auto const& vp = value_properties(type);
-	if (vp.flags & VTP_DYNAMIC_SIZE) {
-		return data_size_dynamic(type.size()) * 0x10;
+	auto const& vp = Data::type_properties(type);
+	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
+		return Data::data_size_dynamic(type.size()) * 0x10;
 	} else {
 		return vp.fixed_size[enum_cast(type.size())];
 	}
@@ -127,63 +65,12 @@ value_data_size(
 	Data::ValueRef const& value
 ) {
 	DUCT_DEBUG_ASSERTE(value.type.type() != Data::ValueType::dynamic);
-	auto const& vp = value_properties(value.type);
-	if (vp.flags & VTP_DYNAMIC_SIZE) {
+	auto const& vp = Data::type_properties(value.type);
+	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
 		return value.size;
 	} else {
 		return vp.fixed_size[enum_cast(value.type.size())];
 	}
-}
-
-static void
-value_morph(
-	Data::ValueRef& value,
-	Data::Type const type
-) {
-	if (type == value.type || type.type() == Data::ValueType::dynamic) {
-		return;
-	} else if (type.type() != value.type.type()) {
-		value.data.u64 = 0;
-	} else if (value_properties(type).flags & VTP_DYNAMIC_SIZE) {
-		switch (data_size_dynamic(type.size())) {
-		case 1: value.size = min_ce(value.size, static_cast<unsigned>(~std::uint8_t {0})); break;
-		case 2: value.size = min_ce(value.size, static_cast<unsigned>(~std::uint16_t{0})); break;
-		case 4: value.size = min_ce(value.size, ~unsigned{0}); break;
-		}
-	} else if (type.type() == Data::ValueType::integer) {
-		if (enum_bitand(type.flags(), ValueFlag::integer_signed)) {
-			std::int64_t x;
-			switch (value.type.size()) {
-			case Data::Size::b8 : x = value.data.s8 ; break;
-			case Data::Size::b16: x = value.data.s16; break;
-			case Data::Size::b32: x = value.data.s32; break;
-			case Data::Size::b64: x = value.data.s64; break;
-			}
-			x = value_clamp_signed(x, type.size());
-			switch (type.size()) {
-			case Data::Size::b8 : x = value.data.s8  = static_cast<std::int8_t >(x); break;
-			case Data::Size::b16: x = value.data.s16 = static_cast<std::int16_t>(x); break;
-			case Data::Size::b32: x = value.data.s32 = static_cast<std::int32_t>(x); break;
-			case Data::Size::b64: x = value.data.s64 = x; break;
-			}
-		} else {
-			std::uint64_t x;
-			switch (value.type.size()) {
-			case Data::Size::b8 : x = value.data.u8 ; break;
-			case Data::Size::b16: x = value.data.u16; break;
-			case Data::Size::b32: x = value.data.u32; break;
-			case Data::Size::b64: x = value.data.u64; break;
-			}
-			x = value_clamp_unsigned(x, type.size());
-			switch (type.size()) {
-			case Data::Size::b8 : x = value.data.u8  = static_cast<std::uint8_t >(x); break;
-			case Data::Size::b16: x = value.data.u16 = static_cast<std::uint16_t>(x); break;
-			case Data::Size::b32: x = value.data.u32 = static_cast<std::uint32_t>(x); break;
-			case Data::Size::b64: x = value.data.u64 = x; break;
-			}
-		}
-	}
-	value.type = type;
 }
 
 inline static unsigned
@@ -193,8 +80,8 @@ value_written_size(
 ) {
 	DUCT_DEBUG_ASSERTE(value.type.type() != Data::ValueType::dynamic);
 	unsigned meta_size = write_type ? sizeof(Data::TypeValue) : 0;
-	if (value_properties(value.type).flags & VTP_DYNAMIC_SIZE) {
-		meta_size += data_size_dynamic(value.type.size());
+	if (Data::type_properties(value.type).flags & Data::VTP_DYNAMIC_SIZE) {
+		meta_size += Data::data_size_dynamic(value.type.size());
 	}
 	return meta_size + value_data_size(value);
 }
@@ -209,9 +96,9 @@ value_read_size(
 		data += sizeof(Data::TypeValue);
 		DUCT_DEBUG_ASSERTE(type.type() != Data::ValueType::dynamic);
 	}
-	auto const& vp = value_properties(type);
-	if (vp.flags & VTP_DYNAMIC_SIZE) {
-		switch (data_size_dynamic(type.size())) {
+	auto const& vp = Data::type_properties(type);
+	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
+		switch (Data::data_size_dynamic(type.size())) {
 		case 1: return *reinterpret_cast<std::uint8_t const*>(data);
 		case 2: return *reinterpret_cast<std::uint16_t const*>(data);
 		case 4: return *reinterpret_cast<std::uint32_t const*>(data);
@@ -234,8 +121,8 @@ value_read_size_whole(
 		meta_size += sizeof(Data::TypeValue);
 		DUCT_DEBUG_ASSERTE(type.type() != Data::ValueType::dynamic);
 	}
-	if (value_properties(type).flags & VTP_DYNAMIC_SIZE) {
-		meta_size += data_size_dynamic(type.size());
+	if (Data::type_properties(type).flags & Data::VTP_DYNAMIC_SIZE) {
+		meta_size += Data::data_size_dynamic(type.size());
 	}
 	return meta_size + value_read_size(type, data);
 }
@@ -252,16 +139,16 @@ value_read(
 	}
 	ValueRef value{};
 	value.type = type;
-	auto const& vp = value_properties(type);
+	auto const& vp = Data::type_properties(type);
 	if (type.type() == Data::ValueType::null) {
 		// Do nothing
-	} else if (vp.flags & VTP_DYNAMIC_SIZE) {
-		switch (data_size_dynamic(type.size())) {
+	} else if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
+		switch (Data::data_size_dynamic(type.size())) {
 		case 1: value.size = *reinterpret_cast<std::uint8_t const*>(data); break;
 		case 2: value.size = *reinterpret_cast<std::uint16_t const*>(data); break;
 		case 4: value.size = *reinterpret_cast<std::uint32_t const*>(data); break;
 		}
-		data += data_size_dynamic(type.size());
+		data += Data::data_size_dynamic(type.size());
 		value.data.dynamic = data;
 	} else {
 		switch (vp.fixed_size[enum_cast(type.size())]) {
@@ -286,11 +173,11 @@ value_write(
 		*reinterpret_cast<Data::TypeValue*>(output) = value.type.value();
 		output += sizeof(Data::TypeValue);
 	}
-	auto const& vp = value_properties(value.type);
+	auto const& vp = Data::type_properties(value.type);
 	if (value.type.type() == Data::ValueType::null) {
 		// Do nothing
-	} else if (vp.flags & VTP_DYNAMIC_SIZE) {
-		unsigned const meta_size = data_size_dynamic(value.type.size());
+	} else if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
+		unsigned const meta_size = Data::data_size_dynamic(value.type.size());
 		switch (meta_size) {
 		case 1: *reinterpret_cast<std::uint8_t*>(output) = min_ce(value.size, static_cast<unsigned>(~std::uint8_t{0})); break;
 		case 2: *reinterpret_cast<std::uint16_t*>(output) = min_ce(value.size, static_cast<unsigned>(~std::uint16_t{0})); break;
@@ -758,7 +645,7 @@ Table::insert(
 		auto& value = fields[index];
 		auto const type = column(index).type;
 		bool const is_dynamic = type == Data::ValueType::dynamic;
-		value_morph(value, type);
+		value.morph(type);
 		record_size += max_ce(
 			value_init_size(type),
 			value_written_size(value, is_dynamic)
@@ -837,7 +724,7 @@ Table::set_field(
 		return;
 	}
 	bool const is_dynamic = type.type() == Data::ValueType::dynamic;
-	value_morph(new_value, type);
+	new_value.morph(type);
 
 	auto record = record_read(m_chunks[it.chunk_index].data + it.data_offset);
 	unsigned const offset = field_offset(record, m_schema, column_index);

@@ -223,6 +223,18 @@ public:
 		return !(*this == rhs);
 	}
 /// @}
+
+/** @name Operations */ /// @{
+	/**
+		Morph value to the specified type.
+
+		@note Does nothing if type is dynamic.
+	*/
+	void
+	morph(
+		Data::Type const type
+	) noexcept;
+/// @}
 };
 
 /** @} */ // end of doc-group data
