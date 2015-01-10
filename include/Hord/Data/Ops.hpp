@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Hord/config.hpp>
+#include <Hord/Data/Defs.hpp>
 #include <Hord/Data/ValueRef.hpp>
 
 #include <iosfwd>
@@ -69,6 +70,40 @@ operator<<(
 	std::ostream& stream,
 	Data::ValueRefPrinter const& printer
 );
+
+/**
+	Value parser flags.
+*/
+enum : unsigned {
+	VPFLAG_NONE				= 0,
+	VPFLAG_SIGN				= 1 << 0,
+	VPFLAG_NUMERAL			= 1 << 1,
+	VPFLAG_DECIMAL			= 1 << 2,
+	VPFLAG_DECIMAL_NUMERAL	= 1 << 3,
+	VPFLAG_EXPONENT			= 1 << 4,
+	VPFLAG_EXPONENT_SIGN	= 1 << 5,
+	VPFLAG_EXPONENT_NUMERAL	= 1 << 6,
+	VPFLAG_IS_NEGATIVE		= 1 << 7,
+};
+
+/**
+	Value parser data.
+*/
+struct ValueParser {
+	unsigned flags;
+	unsigned decimal_pos;
+	unsigned exponent_pos;
+};
+
+/**
+	Parse value from char array.
+*/
+Data::Type
+parse_value(
+	ValueParser& parser,
+	unsigned const string_size,
+	char const* const string
+) noexcept;
 
 /** @} */ // end of doc-group data
 
