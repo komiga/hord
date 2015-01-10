@@ -39,7 +39,7 @@ value_zero_size(
 	}
 	auto const& vp = Data::type_properties(type);
 	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
-		return Data::data_size_dynamic(type.size());
+		return Data::size_meta(type.size());
 	} else {
 		return vp.fixed_size[enum_cast(type.size())];
 	}
@@ -54,7 +54,7 @@ value_init_size(
 	}
 	auto const& vp = Data::type_properties(type);
 	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
-		return Data::data_size_dynamic(type.size()) * 0x10;
+		return Data::size_meta(type.size()) * 0x10;
 	} else {
 		return vp.fixed_size[enum_cast(type.size())];
 	}
@@ -81,7 +81,7 @@ value_written_size(
 	DUCT_DEBUG_ASSERTE(value.type.type() != Data::ValueType::dynamic);
 	unsigned meta_size = write_type ? sizeof(Data::TypeValue) : 0;
 	if (Data::type_properties(value.type).flags & Data::VTP_DYNAMIC_SIZE) {
-		meta_size += Data::data_size_dynamic(value.type.size());
+		meta_size += Data::size_meta(value.type.size());
 	}
 	return meta_size + value_data_size(value);
 }
@@ -98,7 +98,7 @@ value_read_size(
 	}
 	auto const& vp = Data::type_properties(type);
 	if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
-		switch (Data::data_size_dynamic(type.size())) {
+		switch (Data::size_meta(type.size())) {
 		case 1: return *reinterpret_cast<std::uint8_t const*>(data);
 		case 2: return *reinterpret_cast<std::uint16_t const*>(data);
 		case 4: return *reinterpret_cast<std::uint32_t const*>(data);
@@ -122,7 +122,7 @@ value_read_size_whole(
 		DUCT_DEBUG_ASSERTE(type.type() != Data::ValueType::dynamic);
 	}
 	if (Data::type_properties(type).flags & Data::VTP_DYNAMIC_SIZE) {
-		meta_size += Data::data_size_dynamic(type.size());
+		meta_size += Data::size_meta(type.size());
 	}
 	return meta_size + value_read_size(type, data);
 }
@@ -143,12 +143,12 @@ value_read(
 	if (type.type() == Data::ValueType::null) {
 		// Do nothing
 	} else if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
-		switch (Data::data_size_dynamic(type.size())) {
+		switch (Data::size_meta(type.size())) {
 		case 1: value.size = *reinterpret_cast<std::uint8_t const*>(data); break;
 		case 2: value.size = *reinterpret_cast<std::uint16_t const*>(data); break;
 		case 4: value.size = *reinterpret_cast<std::uint32_t const*>(data); break;
 		}
-		data += Data::data_size_dynamic(type.size());
+		data += Data::size_meta(type.size());
 		value.data.dynamic = data;
 	} else {
 		switch (vp.fixed_size[enum_cast(type.size())]) {
@@ -177,7 +177,7 @@ value_write(
 	if (value.type.type() == Data::ValueType::null) {
 		// Do nothing
 	} else if (vp.flags & Data::VTP_DYNAMIC_SIZE) {
-		unsigned const meta_size = Data::data_size_dynamic(value.type.size());
+		unsigned const meta_size = Data::size_meta(value.type.size());
 		switch (meta_size) {
 		case 1: *reinterpret_cast<std::uint8_t*>(output) = min_ce(value.size, static_cast<unsigned>(~std::uint8_t{0})); break;
 		case 2: *reinterpret_cast<std::uint16_t*>(output) = min_ce(value.size, static_cast<unsigned>(~std::uint16_t{0})); break;

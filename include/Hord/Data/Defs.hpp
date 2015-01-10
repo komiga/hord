@@ -79,8 +79,7 @@ enum class ValueFlag : Data::TypeValue {
 
 	@note Size has no effect on @c ValueType::object_id.
 	Size is a storage hint for @c ValueType::dynamic. Variably-sized
-	types (e.g., string) only use b64 as a storage hint. The maximum
-	variably-sized size value is b32.
+	types (e.g., string) only use b64 as a storage hint.
 */
 enum class Size : Data::TypeValue {
 	/** 8 bits. */
@@ -402,12 +401,12 @@ type_properties(
 }
 
 /**
-	Get size in bytes of dynamic data size.
+	Get meta data size in bytes.
 
-	@note Data::Size::b32 is the maximum dynamic data size.
+	@note Data::Size::b32 is the maximum meta data size.
 */
 inline constexpr unsigned
-data_size_dynamic(
+size_meta(
 	Data::Size const size
 ) noexcept {
 	return min_ce(4u, 1u << enum_cast(size));

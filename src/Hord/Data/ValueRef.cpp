@@ -67,7 +67,7 @@ ValueRef::morph(
 	} else if (new_type.type() != type.type()) {
 		data.u64 = 0;
 	} else if (Data::type_properties(new_type).flags & VTP_DYNAMIC_SIZE) {
-		switch (Data::data_size_dynamic(new_type.size())) {
+		switch (Data::size_meta(new_type.size())) {
 		case 1: size = min_ce(size, static_cast<unsigned>(~std::uint8_t {0})); break;
 		case 2: size = min_ce(size, static_cast<unsigned>(~std::uint16_t{0})); break;
 		case 4: size = min_ce(size, ~unsigned{0}); break;
