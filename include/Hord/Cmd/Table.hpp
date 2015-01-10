@@ -2,8 +2,8 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief %Node commands.
-@ingroup cmd_node
+@brief %Table commands.
+@ingroup cmd_table
 */
 
 #pragma once
@@ -11,44 +11,44 @@
 #include <Hord/config.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Node/Defs.hpp>
+#include <Hord/Table/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
 
 namespace Hord {
 namespace Cmd {
-namespace Node {
+namespace Table {
 
 // Forward declarations
 class Create;
 
 /**
-	@addtogroup cmd_node
+	@addtogroup cmd_table
 	@{
 */
 
 /**
-	Node create command.
+	Table create command.
 */
 class Create final
 	: public Cmd::Unit<Create>
 {
 	HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(
 		Create,
-		"Cmd::Node::Create"
+		"Cmd::Table::Create"
 	);
 
 private:
-	Hord::Node::ID m_id{Hord::Node::ID_NULL};
+	Hord::Table::ID m_id{Hord::Table::ID_NULL};
 
 public:
 /** @name Properties */ /// @{
 	/**
-		Get ID of created node.
+		Get ID of created table.
 
-		@returns Node::ID_NULL if the command failed.
+		@returns Table::ID_NULL if the command failed.
 	*/
-	Hord::Node::ID
+	Hord::Table::ID
 	get_id() const noexcept {
 		return m_id;
 	}
@@ -65,19 +65,19 @@ public:
 	exec_result_type
 	operator()(
 		Hord::Object::ID const parent,
-		Hord::Node::ID const layout_ref,
+		Hord::Table::ID const schema_ref,
 		String const& slug,
-		Hord::Node::UnitType const unit_type
+		Hord::Table::UnitType const unit_type
 	) noexcept;
 /// @}
 };
 
-/** @} */ // end of doc-group cmd_node
+/** @} */ // end of doc-group cmd_table
 
-} // namespace Node
+} // namespace Table
 
 /** @cond INTERNAL */
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Node::Create);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Table::Create);
 /** @endcond */ // INTERNAL
 
 } // namespace Cmd

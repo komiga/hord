@@ -32,10 +32,6 @@ class Unit;
 
 /**
 	Base object.
-
-	@sa Anchor::Unit,
-		Rule::Unit,
-		Node::Unit
 */
 class Unit {
 public:

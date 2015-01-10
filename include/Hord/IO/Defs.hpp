@@ -69,7 +69,7 @@ enum class PropType : unsigned {
 		The following standard objects provide this prop:
 
 		- Rule::Unit
-		- Node::Unit
+		- Table::Unit
 	*/
 	primary,
 
@@ -77,9 +77,7 @@ enum class PropType : unsigned {
 		Auxiliary object data.
 
 		This prop stores object data least likely to mutate.
-		The following standard objects provide this prop:
-
-		- Node::Unit
+		No standard objects provide this prop.
 	*/
 	auxiliary,
 

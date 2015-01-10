@@ -8,8 +8,6 @@
 #include <Hord/Log.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Ops.hpp>
-#include <Hord/Rule/Unit.hpp>
-#include <Hord/Node/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/PropTypeIterator.hpp>

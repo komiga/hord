@@ -2,8 +2,8 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief Node definitions.
-@ingroup node
+@brief Table definitions.
+@ingroup table
 */
 
 #pragma once
@@ -14,68 +14,68 @@
 #include <Hord/IO/PropStateStore.hpp>
 
 namespace Hord {
-namespace Node {
+namespace Table {
 
 // Forward declarations
 enum class UnitType : Object::TypeValue;
 
 /**
-	@addtogroup node
+	@addtogroup table
 	@{
 */
 
 /**
-	Node ID.
+	Table ID.
 
 	@note This type is only to telegraph intent in functions;
 	it is entirely equivalent to @c Object::ID.
 
 	@sa Object::ID
 */
-using ID = Object::GenID<Object::BaseType::Node>;
+using ID = Object::GenID<Object::BaseType::Table>;
 
-static constexpr Node::ID const
+static constexpr Table::ID const
 /**
 	Null ID.
 */
 ID_NULL{Object::ID_NULL};
 
 /**
-	Standard node unit types.
+	Standard table unit types.
 */
 enum class UnitType : Object::TypeValue {
-	/** Basic node unit. */
+	/** Basic table unit. */
 	basic = 1u
 };
 
-} // namespace Node
+} // namespace Table
 
 /** @cond INTERNAL */
 namespace Object {
 template<>
-struct unit_type_traits<Node::UnitType>
+struct unit_type_traits<Table::UnitType>
 	: public Object::unit_type_traits_impl<
-		Node::UnitType,
-		Object::BaseType::Node
+		Table::UnitType,
+		Object::BaseType::Table
 	>
 {};
 }
 /** @endcond */ // INTERNAL
 
-namespace Node {
+namespace Table {
 
 /**
-	Node object type.
+	Table object type.
 */
-using Type = Object::GenType<Node::UnitType>;
+using Type = Object::GenType<Table::UnitType>;
 
 /**
-	Supplied props for node objects.
+	Supplied props for table objects.
 */
 static constexpr IO::PropStateStore const
-SUPPLIED_PROPS{true, true};
+SUPPLIED_PROPS{true, false};
 
-/** @} */ // end of doc-group node
+/** @} */ // end of doc-group table
 
-} // namespace Node
+} // namespace Table
 } // namespace Hord

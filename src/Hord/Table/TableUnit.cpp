@@ -4,8 +4,9 @@
 
 #include <Hord/String.hpp>
 #include <Hord/serialization.hpp>
+#include <Hord/Data/Table.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Node/Unit.hpp>
+#include <Hord/Table/Unit.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
 
@@ -14,11 +15,11 @@
 #include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
-namespace Node {
+namespace Table {
 
 // class Unit implementation
 
-#define HORD_SCOPE_CLASS Node::Unit
+#define HORD_SCOPE_CLASS Table::Unit
 
 Unit::~Unit() noexcept = default;
 
@@ -27,7 +28,7 @@ Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
 	Object::type_info const& tinfo,
-	Node::ID const id,
+	Table::ID const id,
 	Object::ID const parent
 ) noexcept
 	: base(
@@ -37,23 +38,23 @@ Unit::Unit(
 	)
 {}
 
-void
-Unit::set_layout_ref(
-	Node::ID const node_id
-) noexcept {
-	m_layout_ref = node_id;
-	/* TODO */
-}
-
 // serialization
 
 #define HORD_SCOPE_FUNC deserialize_prop_primary
 void
 Unit::deserialize_prop_primary(
 	IO::InputPropStream& /*prop_stream*/,
-	InputSerializer& /*ser*/
+	InputSerializer& ser
 ) {
-	/* TODO */
+	Table::ID des_schema_ref{Table::ID_NULL};
+	ser(des_schema_ref);
+
+	Data::Table des_data;
+	ser(des_data);
+
+	// commit
+	set_schema_ref(des_schema_ref);
+	m_data = std::move(des_data);
 }
 #undef HORD_SCOPE_FUNC
 
@@ -61,36 +62,13 @@ Unit::deserialize_prop_primary(
 void
 Unit::serialize_prop_primary(
 	IO::OutputPropStream& /*prop_stream*/,
-	OutputSerializer& /*ser*/
-) const {
-	/* TODO */
-}
-#undef HORD_SCOPE_FUNC
-
-
-// - auxiliary
-
-#define HORD_SCOPE_FUNC deserialize_prop_auxiliary
-void
-Unit::deserialize_prop_auxiliary(
-	IO::InputPropStream& /*prop_stream*/,
-	InputSerializer& ser
-) {
-	Node::ID des_layout_ref{Node::ID_NULL};
-	ser(des_layout_ref);
-	/* TODO */
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC serialize_prop_auxiliary
-void
-Unit::serialize_prop_auxiliary(
-	IO::OutputPropStream& /*prop_stream*/,
 	OutputSerializer& ser
 ) const {
-	ser(m_layout_ref);
+	ser(m_schema_ref);
+	ser(m_data);
 }
 #undef HORD_SCOPE_FUNC
+
 
 // - impl
 
@@ -110,10 +88,6 @@ Unit::deserialize_impl(
 	switch (prop_stream.get_type()) {
 	case IO::PropType::primary:
 		deserialize_prop_primary(prop_stream, ser);
-		break;
-
-	case IO::PropType::auxiliary:
-		deserialize_prop_auxiliary(prop_stream, ser);
 		break;
 
 	default:
@@ -148,10 +122,6 @@ Unit::serialize_impl(
 		serialize_prop_primary(prop_stream, ser);
 		break;
 
-	case IO::PropType::auxiliary:
-		serialize_prop_auxiliary(prop_stream, ser);
-		break;
-
 	default:
 		// Object::Unit should protect us from this
 		assert(false);
@@ -168,5 +138,5 @@ Unit::serialize_impl(
 
 #undef HORD_SCOPE_CLASS
 
-} // namespace Node
+} // namespace Table
 } // namespace Hord

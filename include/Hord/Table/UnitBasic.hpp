@@ -2,36 +2,36 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief Basic node unit class.
-@ingroup node
+@brief Basic table unit class.
+@ingroup table
 */
 
 #pragma once
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Node/Defs.hpp>
-#include <Hord/Node/Unit.hpp>
+#include <Hord/Table/Defs.hpp>
+#include <Hord/Table/Unit.hpp>
 
 namespace Hord {
-namespace Node {
+namespace Table {
 
 // Forward declarations
 class UnitBasic;
 
 /**
-	@addtogroup node
+	@addtogroup table
 	@{
 */
 
 /**
-	Basic node unit class.
+	Basic table unit class.
 */
 class UnitBasic final
-	: public Node::Unit
+	: public Table::Unit
 {
 private:
-	using base = Node::Unit;
+	using base = Table::Unit;
 
 	static Object::UPtr
 	construct(
@@ -45,9 +45,9 @@ public:
 	*/
 	static constexpr Object::type_info const
 	info{
-		"Hord.Node.Basic",
-		Node::Type{Node::UnitType::basic},
-		{Node::SUPPLIED_PROPS},
+		"Hord.Table.Basic",
+		Table::Type{Table::UnitType::basic},
+		{Table::SUPPLIED_PROPS},
 		UnitBasic::construct
 	};
 
@@ -68,16 +68,16 @@ public:
 
 private:
 	UnitBasic(
-		Node::ID const id,
+		Table::ID const id,
 		Object::ID const parent
 	) noexcept;
 /// @}
 };
 
-/** @} */ // end of doc-group node
+/** @} */ // end of doc-group table
 
-} // namespace Node
+} // namespace Table
 
-template struct Node::Unit::ensure_traits<Node::UnitBasic>;
+template struct Table::Unit::ensure_traits<Table::UnitBasic>;
 
 } // namespace Hord

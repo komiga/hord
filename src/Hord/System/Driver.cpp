@@ -5,8 +5,8 @@
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Anchor/Defs.hpp>
 #include <Hord/Anchor/UnitBasic.hpp>
-#include <Hord/Node/Defs.hpp>
-#include <Hord/Node/UnitBasic.hpp>
+#include <Hord/Table/Defs.hpp>
+#include <Hord/Table/UnitBasic.hpp>
 #include <Hord/System/Driver.hpp>
 
 #include <duct/cc_unique_ptr.hpp>
@@ -50,7 +50,7 @@ Driver::Driver(
 	// TODO: Register standard rule types
 	if (register_standard_object_types) {
 		register_object_type(Anchor::UnitBasic::info);
-		register_object_type(Node::UnitBasic::info);
+		register_object_type(Table::UnitBasic::info);
 	}
 }
 

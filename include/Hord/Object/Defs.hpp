@@ -75,8 +75,8 @@ enum class BaseType : Object::TypeValue {
 	Anchor,
 	/** @ref rule. */
 	Rule,
-	/** @ref node. */
-	Node
+	/** @ref table. */
+	Table
 };
 
 /**
@@ -115,7 +115,7 @@ get_base_type_name(
 	case Object::BaseType::null:	return "null";
 	case Object::BaseType::Anchor:	return "Anchor";
 	case Object::BaseType::Rule:	return "Rule";
-	case Object::BaseType::Node:	return "Node";
+	case Object::BaseType::Table:	return "Table";
 	}
 	return "INVALID";
 }

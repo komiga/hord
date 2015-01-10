@@ -269,6 +269,8 @@ public:
 } // namespace Object
 
 /** @cond INTERNAL */
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetSlug);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetParent);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetMetaField);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::RenameMetaField);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::RemoveMetaField);

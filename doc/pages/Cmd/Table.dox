@@ -1,0 +1,10 @@
+
+/**
+
+@ingroup cmd
+@defgroup cmd_table Group: Table
+@details
+
+Commands for operating on tables.
+
+*/

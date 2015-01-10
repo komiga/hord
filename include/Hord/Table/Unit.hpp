@@ -2,8 +2,8 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief Node unit class.
-@ingroup node
+@brief Table unit class.
+@ingroup table
 */
 
 #pragma once
@@ -11,24 +11,25 @@
 #include <Hord/config.hpp>
 #include <Hord/aux.hpp>
 #include <Hord/serialization.hpp>
+#include <Hord/Data/Table.hpp>
 #include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
-#include <Hord/Node/Defs.hpp>
+#include <Hord/Table/Defs.hpp>
 
 namespace Hord {
-namespace Node {
+namespace Table {
 
 // Forward declarations
 class Unit;
 
 /**
-	@addtogroup node
+	@addtogroup table
 	@{
 */
 
 /**
-	Base node unit class.
+	Base table unit class.
 
 	@note This object supplies the primary and auxiliary props.
 	Specialized units shall not change serialization.
@@ -53,7 +54,8 @@ public:
 	{};
 
 private:
-	Node::ID m_layout_ref{Node::ID_NULL};
+	Table::ID m_schema_ref{Table::ID_NULL};
+	Data::Table m_data;
 
 	Unit() = delete;
 	Unit(Unit const&) = delete;
@@ -66,17 +68,6 @@ private:
 	);
 	void
 	serialize_prop_primary(
-		IO::OutputPropStream& prop_stream,
-		OutputSerializer& ser
-	) const;
-
-	void
-	deserialize_prop_auxiliary(
-		IO::InputPropStream& prop_stream,
-		InputSerializer& ser
-	);
-	void
-	serialize_prop_auxiliary(
 		IO::OutputPropStream& prop_stream,
 		OutputSerializer& ser
 	) const;
@@ -111,7 +102,7 @@ protected:
 	*/
 	Unit(
 		Object::type_info const& tinfo,
-		Node::ID const id,
+		Table::ID const id,
 		Object::ID const parent
 	) noexcept;
 /// @}
@@ -119,27 +110,42 @@ protected:
 public:
 /** @name Properties */ /// @{
 	/**
-		Set layout reference.
-
-		@note If @a node_id is non-@c Node::ID_NULL, the layout
-		property will be cleared.
+		Set schema reference.
 	*/
 	void
-	set_layout_ref(
-		Node::ID const node_id
-	) noexcept;
+	set_schema_ref(
+		Table::ID const table_id
+	) noexcept {
+		m_schema_ref = table_id;
+	}
 
 	/**
-		Get layout reference.
+		Get schema reference.
 	*/
-	Node::ID
-	get_layout_ref() const noexcept {
-		return m_layout_ref;
+	Table::ID
+	get_schema_ref() const noexcept {
+		return m_schema_ref;
+	}
+
+	/**
+		Get table data (mutable).
+	*/
+	Data::Table&
+	get_data() noexcept {
+		return m_data;
+	}
+
+	/**
+		Get table data.
+	*/
+	Data::Table const&
+	get_data() const noexcept {
+		return m_data;
 	}
 /// @}
 };
 
-/** @} */ // end of doc-group node
+/** @} */ // end of doc-group table
 
-} // namespace Node
+} // namespace Table
 } // namespace Hord

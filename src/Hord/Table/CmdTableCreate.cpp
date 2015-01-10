@@ -8,9 +8,9 @@
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/Object/Ops.hpp>
-#include <Hord/Node/Defs.hpp>
-#include <Hord/Node/Unit.hpp>
-#include <Hord/Cmd/Node.hpp>
+#include <Hord/Table/Defs.hpp>
+#include <Hord/Table/Unit.hpp>
+#include <Hord/Cmd/Table.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
@@ -20,14 +20,14 @@
 
 namespace Hord {
 namespace Cmd {
-namespace Node {
+namespace Table {
 
-#define HORD_SCOPE_CLASS Cmd::Node::Create
+#define HORD_SCOPE_CLASS Cmd::Table::Create
 
 #define HORD_SCOPE_FUNC commit_impl
 HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 	if (bad()) {
-		m_id = Hord::Node::ID_NULL;
+		m_id = Hord::Table::ID_NULL;
 	}
 }
 #undef HORD_SCOPE_FUNC
@@ -36,9 +36,9 @@ HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Hord::Object::ID const parent,
-	Hord::Node::ID const layout_ref,
+	Hord::Table::ID const schema_ref,
 	String const& slug,
-	Hord::Node::UnitType const unit_type
+	Hord::Table::UnitType const unit_type
 ) noexcept try {
 	auto& driver = get_driver();
 	auto& datastore = get_datastore();
@@ -50,17 +50,17 @@ HORD_SCOPE_CLASS::operator()(
 	) {
 		return commit_error("parent not found");
 	} else if (
-		Hord::Node::ID_NULL != layout_ref &&
-		!datastore.has_object(layout_ref)
+		Hord::Table::ID_NULL != schema_ref &&
+		!datastore.has_object(schema_ref)
 	) {
-		return commit_error("layout ref not found");
+		return commit_error("schema ref not found");
 	} else if (
-		Hord::Node::ID_NULL != layout_ref &&
-		Hord::Object::BaseType::Node != datastore.find_ptr(
-			layout_ref
+		Hord::Table::ID_NULL != schema_ref &&
+		Hord::Object::BaseType::Table != datastore.find_ptr(
+			schema_ref
 		)->get_base_type()
 	) {
-		return commit_error("layout ref not a node");
+		return commit_error("schema ref not a table");
 	} else if (slug.empty()) {
 		return commit_error("slug empty");
 	} else if (Hord::Object::SLUG_MAX_SIZE < slug.size()) {
@@ -83,13 +83,13 @@ HORD_SCOPE_CLASS::operator()(
 	// Create
 	auto const* const
 	tinfo = driver.get_object_type_info(
-		Hord::Node::Type{unit_type}
+		Hord::Table::Type{unit_type}
 	);
 	if (nullptr == tinfo) {
 		return commit_error("unknown unit type");
 	}
 	// NB: Leak ErrorCode::datastore_closed
-	m_id = Hord::Node::ID{datastore.generate_id(
+	m_id = Hord::Table::ID{datastore.generate_id(
 	    driver.get_id_generator()
 	)};
 	auto obj = tinfo->construct(m_id, Hord::Object::ID_NULL);
@@ -105,13 +105,13 @@ HORD_SCOPE_CLASS::operator()(
 	);
 
 	// Properties
-	auto& node = static_cast<Hord::Node::Unit&>(
+	auto& table = static_cast<Hord::Table::Unit&>(
 		*emplace_pair.first->second
 	);
-	Hord::Object::set_parent(node, datastore, parent);
-	node.set_slug(slug);
-	node.set_layout_ref(layout_ref);
-	node.get_prop_states().assign_all(IO::PropState::modified);
+	Hord::Object::set_parent(table, datastore, parent);
+	table.set_slug(slug);
+	table.set_schema_ref(schema_ref);
+	table.get_prop_states().assign_all(IO::PropState::modified);
 
 	return commit();
 } catch (Error const& err) {
@@ -128,6 +128,6 @@ HORD_SCOPE_CLASS::operator()(
 
 #undef HORD_SCOPE_CLASS
 
-} // namespace Node
+} // namespace Table
 } // namespace Cmd
 } // namespace Hord

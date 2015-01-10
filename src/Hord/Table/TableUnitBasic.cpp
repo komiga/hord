@@ -4,19 +4,19 @@
 
 #include <Hord/String.hpp>
 #include <Hord/Object/Defs.hpp>
-#include <Hord/Node/UnitBasic.hpp>
+#include <Hord/Table/UnitBasic.hpp>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
 namespace Hord {
-namespace Node {
+namespace Table {
 
 // class UnitBasic implementation
 
-#define HORD_SCOPE_CLASS Node::UnitBasic
+#define HORD_SCOPE_CLASS Table::UnitBasic
 
 constexpr Object::type_info const
-Node::UnitBasic::info;
+Table::UnitBasic::info;
 
 Object::UPtr
 UnitBasic::construct(
@@ -24,7 +24,7 @@ UnitBasic::construct(
 	Object::ID const parent
 ) noexcept {
 	return Object::UPtr{
-		new(std::nothrow) Node::UnitBasic(Node::ID{id}, parent)
+		new(std::nothrow) Table::UnitBasic(Table::ID{id}, parent)
 	};
 }
 
@@ -34,11 +34,11 @@ UnitBasic::UnitBasic(UnitBasic&&) = default;
 UnitBasic& UnitBasic::operator=(UnitBasic&&) = default;
 
 UnitBasic::UnitBasic(
-	Node::ID const id,
+	Table::ID const id,
 	Object::ID const parent
 ) noexcept
 	: base(
-		Node::UnitBasic::info,
+		Table::UnitBasic::info,
 		id,
 		parent
 	)
@@ -46,5 +46,5 @@ UnitBasic::UnitBasic(
 
 #undef HORD_SCOPE_CLASS
 
-} // namespace Node
+} // namespace Table
 } // namespace Hord
