@@ -234,6 +234,15 @@ public:
 	morph(
 		Data::Type const type
 	) noexcept;
+
+	/**
+		Read value from NUL-terminated string.
+	*/
+	void
+	read_from_string(
+		unsigned const size,
+		char const* const string
+	) noexcept;
 /// @}
 };
 

@@ -7,6 +7,7 @@
 #include <Hord/Data/ValueRef.hpp>
 
 #include <cmath>
+#include <cstdlib>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
@@ -105,6 +106,136 @@ ValueRef::morph(
 		}
 	}
 	type = new_type;
+}
+
+void
+ValueRef::read_from_string(
+	unsigned const string_size,
+	char const* const string
+) noexcept {
+	enum : unsigned {
+		PART_SIGN				= 1 << 0,
+		PART_NUMERAL			= 1 << 1,
+		PART_DECIMAL			= 1 << 2,
+		PART_DECIMAL_NUMERAL	= 1 << 3,
+		PART_EXPONENT			= 1 << 4,
+		PART_EXPONENT_SIGN		= 1 << 5,
+		PART_EXPONENT_NUMERAL	= 1 << 6,
+	};
+
+	auto it = string;
+	auto const end = string + string_size;
+	char c;
+	unsigned parts = 0;
+	if (!string || string_size == 0) {
+		goto l_assign_null;
+	}
+	for (; it < end; ++it) {
+		c = *it;
+		switch (c) {
+		case 'n':
+			if (
+				it == string && string_size == 4 &&
+				string_equal(string_size, string + 1, 3, "ull")
+			) {
+				goto l_assign_null;
+			} else {
+				goto l_assign_string;
+			}
+			break;
+
+		case '-': case '+':
+			if (
+				(parts & PART_EXPONENT_SIGN) ||
+				(~parts & PART_EXPONENT && parts & PART_SIGN) ||
+				(parts & PART_EXPONENT_NUMERAL)
+			) {
+				goto l_assign_string;
+			}
+			if (parts & PART_EXPONENT) {
+				parts |= PART_EXPONENT_SIGN;
+			} else {
+				parts |= PART_SIGN;
+			}
+			break;
+
+		case '.':
+			if (
+				(parts & PART_EXPONENT) ||
+				(parts & PART_DECIMAL)
+			) {
+				goto l_assign_string;
+			}
+			parts |= PART_DECIMAL;
+			break;
+
+		case 'e': case 'E':
+			if (parts & PART_EXPONENT) {
+				goto l_assign_string;
+			}
+			parts |= PART_EXPONENT;
+			break;
+
+		default:
+			if ('0' <= c && c <= '9') {
+				if (parts & PART_EXPONENT) {
+					parts |= PART_EXPONENT_NUMERAL;
+				} else if (parts & PART_DECIMAL) {
+					parts |= PART_NUMERAL | PART_DECIMAL_NUMERAL;
+				} else {
+					parts |= PART_NUMERAL;
+				}
+			} else {
+				goto l_assign_string;
+			}
+			break;
+		}
+	}
+
+	// Assign to integer or decimal
+	if (
+		// missing numeral part in number
+		(~parts & PART_NUMERAL) ||
+		// missing numeral part after number exponent
+		(parts & PART_EXPONENT && ~parts & PART_EXPONENT_NUMERAL)
+	) {
+		goto l_assign_string;
+	}
+	if (parts & PART_DECIMAL || parts & PART_EXPONENT) {
+		type = {
+			Data::ValueType::decimal,
+			Data::Size::b64
+		};
+		data.f64 = std::strtod(string, nullptr);
+	} else {
+		if (string[0] == '-') {
+			type = {
+				Data::ValueType::integer,
+				Data::ValueFlag::integer_signed,
+				Data::Size::b64
+			};
+			data.s64 = std::int64_t{std::strtoll(string, nullptr, 10)};
+		} else {
+			type = {
+				Data::ValueType::integer,
+				Data::Size::b64
+			};
+			data.u64 = std::uint64_t{std::strtoull(string, nullptr, 10)};
+		}
+	}
+	return;
+
+l_assign_null:
+	type = Data::ValueType::null;
+	size = 0;
+	data.s64 = 0;
+	return;
+
+l_assign_string:
+	type = {Data::ValueType::string, Data::Size::b32};
+	size = string_size;
+	data.string = string;
+	return;
 }
 
 #undef HORD_SCOPE_CLASS
