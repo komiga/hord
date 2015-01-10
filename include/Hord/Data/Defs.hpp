@@ -179,7 +179,7 @@ public:
 	*/
 	constexpr bool
 	operator==(
-		Type const& rhs
+		Data::Type const& rhs
 	) const noexcept {
 		return value() == rhs.value();
 	}
@@ -189,9 +189,29 @@ public:
 	*/
 	constexpr bool
 	operator!=(
-		Type const& rhs
+		Data::Type const& rhs
 	) const noexcept {
 		return value() != rhs.value();
+	}
+
+	/**
+		Equal-to operator (ValueType).
+	*/
+	constexpr bool
+	operator==(
+		Data::ValueType const& rhs
+	) const noexcept {
+		return type() == rhs;
+	}
+
+	/**
+		Not-equal-to operator (ValueType).
+	*/
+	constexpr bool
+	operator!=(
+		Data::ValueType const& rhs
+	) const noexcept {
+		return type() != rhs;
 	}
 /// @}
 
