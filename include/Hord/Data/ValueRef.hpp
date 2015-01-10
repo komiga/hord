@@ -237,11 +237,15 @@ public:
 
 	/**
 		Read value from NUL-terminated string.
+
+		If @a assume_signed is true, integers will be read as signed
+		if no negative sign is found.
 	*/
 	void
 	read_from_string(
 		unsigned const size,
-		char const* const string
+		char const* const string,
+		bool const assume_signed = true
 	) noexcept;
 /// @}
 };

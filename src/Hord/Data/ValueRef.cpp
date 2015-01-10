@@ -111,7 +111,8 @@ ValueRef::morph(
 void
 ValueRef::read_from_string(
 	unsigned const string_size,
-	char const* const string
+	char const* const string,
+	bool const assume_signed
 ) noexcept {
 	enum : unsigned {
 		PART_SIGN				= 1 << 0,
@@ -208,7 +209,7 @@ ValueRef::read_from_string(
 		};
 		data.f64 = std::strtod(string, nullptr);
 	} else {
-		if (string[0] == '-') {
+		if (string[0] == '-' || assume_signed) {
 			type = {
 				Data::ValueType::integer,
 				Data::ValueFlag::integer_signed,
