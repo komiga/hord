@@ -31,7 +31,7 @@ operator<<(
 	Data::ValueRef const& value = printer.value;
 	switch (value.type.type()) {
 	case Data::ValueType::null:
-		stream << "(null)";
+		stream << "null";
 		break;
 
 	case Data::ValueType::dynamic:
