@@ -19,7 +19,7 @@ namespace Hord {
 namespace Cmd {
 namespace Datastore {
 
-#define HORD_SCOPE_CLASS Cmd::Datastore::StoreAll
+#define HORD_SCOPE_CLASS Cmd::Datastore::Store
 
 #define HORD_SCOPE_FUNC store_object
 static void

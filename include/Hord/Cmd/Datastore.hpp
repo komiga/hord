@@ -19,7 +19,7 @@ namespace Datastore {
 
 // Forward declarations
 class Init;
-class StoreAll;
+class Store;
 
 /**
 	@addtogroup cmd_datastore
@@ -53,7 +53,7 @@ public:
 		states are not changed if the datastore does not have storage
 		for them.
 
-		@param prop_types Properties to load for all objects.
+		@param prop_types Props to load for all objects.
 	*/
 	exec_result_type
 	operator()(
@@ -63,14 +63,14 @@ public:
 };
 
 /**
-	Datastore store-all command.
+	Datastore store command.
 */
-class StoreAll final
-	: public Cmd::Unit<StoreAll>
+class Store final
+	: public Cmd::Unit<Store>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
-		StoreAll,
-		"Cmd::Datastore::StoreAll"
+		Store,
+		"Cmd::Datastore::Store"
 	);
 
 private:
@@ -114,7 +114,7 @@ public:
 
 /** @cond INTERNAL */
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::Init);
-HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::StoreAll);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::Store);
 /** @endcond */ // INTERNAL
 
 } // namespace Cmd
