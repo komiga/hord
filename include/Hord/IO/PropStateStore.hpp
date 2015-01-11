@@ -480,6 +480,25 @@ public:
 		return *this;
 	}
 
+	/**
+		Assign selected props to state.
+
+		@returns @c *this.
+	*/
+	PropStateStore&
+	assign(
+		IO::PropTypeBit const prop_types,
+		IO::PropState const state
+	) noexcept {
+		for (auto const type : prop_types) {
+			assign(type, state);
+		}
+		return *this;
+	}
+
+	/**
+		Assign all props to state.
+	*/
 	PropStateStore&
 	assign_all(
 		IO::PropState const state
