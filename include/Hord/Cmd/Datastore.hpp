@@ -98,13 +98,18 @@ public:
 
 /** @name Operations */ /// @{
 	/**
-		Execute command.
-
-		@note Only props that are IO::PropState::modified will be
-		stored.
+		Store all modified props for all objects.
 	*/
 	exec_result_type
 	operator()() noexcept;
+
+	/**
+		Store all modified props for the specified object.
+	*/
+	exec_result_type
+	operator()(
+		Hord::Object::ID object_id
+	) noexcept;
 /// @}
 };
 

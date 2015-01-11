@@ -39,18 +39,52 @@ store_object(
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC exec // pseudo
+#define HORD_SCOPE_FUNC exec_all // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()() noexcept try {
 	auto& datastore = get_datastore();
 	for (auto& obj_pair : datastore.get_objects()) {
 		store_object(
 			datastore,
-			*obj_pair.second, 
+			*obj_pair.second,
 			m_num_props_stored,
 			m_num_objects_stored
 		);
 	}
+	return commit_with(
+		0 == m_num_objects_stored
+		? Cmd::Result::success_no_action
+		: Cmd::Result::success
+	);
+} catch (Error const& err) {
+	notify_exception_current();
+	switch (err.get_code()) {
+	case ErrorCode::serialization_prop_improper_state: // fall-through
+	case ErrorCode::serialization_io_failed:
+		return commit_error("serialization error");
+
+	default:
+		return commit_error("unknown error");
+	}
+}
+#undef HORD_SCOPE_FUNC
+
+#define HORD_SCOPE_FUNC exec_single // pseudo
+HORD_SCOPE_CLASS::exec_result_type
+HORD_SCOPE_CLASS::operator()(
+	Hord::Object::ID const object_id
+) noexcept try {
+	auto& datastore = get_datastore();
+	auto* const object = datastore.find_ptr(object_id);
+	if (!object) {
+		return commit_error("object does not exist");
+	}
+	store_object(
+		datastore,
+		*object,
+		m_num_props_stored,
+		m_num_objects_stored
+	);
 	return commit_with(
 		0 == m_num_objects_stored
 		? Cmd::Result::success_no_action
