@@ -10,6 +10,7 @@
 
 #include <Hord/config.hpp>
 #include <Hord/IO/Defs.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
 
@@ -19,6 +20,7 @@ namespace Datastore {
 
 // Forward declarations
 class Init;
+class Load;
 class Store;
 
 /**
@@ -47,16 +49,87 @@ public:
 		props.
 
 		@par
-		@note Storage-unsupplied requested props of set
-		IO::PropTypeBit::base are initialized with dummy values and
-		set to IO::PropState::modified. Primary and auxiliary prop
-		states are not changed if the datastore does not have storage
-		for them.
+		@note Storage-unsupplied requested props are initialized with
+		dummy values (or unchanged from the initial state for primary
+		and auxiliary states) and set to IO::PropState::modified.
 
 		@param prop_types Props to load for all objects.
 	*/
 	exec_result_type
 	operator()(
+		IO::PropTypeBit prop_types
+	) noexcept;
+/// @}
+};
+
+/**
+	Datastore load command.
+*/
+class Load final
+	: public Cmd::Unit<Load>
+{
+	HORD_CMD_IMPL_BOILERPLATE(
+		Load,
+		"Cmd::Datastore::Load"
+	);
+
+	friend class Init;
+
+protected:
+	static unsigned
+	load_or_initialize(
+		IO::Datastore& datastore,
+		Hord::Object::Unit& object,
+		IO::StorageInfo const& sinfo,
+		IO::PropTypeBit prop_types
+	);
+
+private:
+	unsigned m_num_objects_loaded{0u};
+	unsigned m_num_props_loaded{0u};
+
+public:
+/** @name Properties */ /// @{
+	/**
+		Get the number of objects loaded.
+	*/
+	unsigned
+	num_objects_loaded() const noexcept {
+		return m_num_objects_loaded;
+	}
+
+	/**
+		Get the number of props loaded.
+	*/
+	unsigned
+	num_props_loaded() const noexcept {
+		return m_num_props_loaded;
+	}
+/// @}
+
+public:
+/** @name Operations */ /// @{
+	/**
+		Load uninitialized props for all objects.
+
+		@note Any props not supplied for a particular object are
+		ignored.
+
+		@param prop_types Props to load for all objects.
+	*/
+	exec_result_type
+	operator()(
+		IO::PropTypeBit prop_types
+	) noexcept;
+
+	/**
+		Load uninitialized props for an object.
+
+		@note Any props not supplied by the object are ignored.
+	*/
+	exec_result_type
+	operator()(
+		Hord::Object::ID object_id,
 		IO::PropTypeBit prop_types
 	) noexcept;
 /// @}
@@ -119,6 +192,7 @@ public:
 
 /** @cond INTERNAL */
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::Init);
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::Load);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Datastore::Store);
 /** @endcond */ // INTERNAL
 

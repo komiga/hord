@@ -58,59 +58,6 @@ link_parents(
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC init_object
-void
-init_object(
-	IO::Datastore& datastore,
-	Object::Unit& obj,
-	IO::StorageInfo const& sinfo,
-	IO::PropTypeBit prop_types
-) {
-	prop_types = obj.get_prop_states().supplied_of(prop_types);
-	IO::load_props(
-		datastore,
-		obj,
-		sinfo.prop_storage.initialized_of(prop_types)
-	);
-
-	// Initialize any base props requested that were not stored.
-	// Can't do anything about primary and auxiliary props.
-	auto const unstored_types
-	= sinfo.prop_storage.uninitialized_of(static_cast<IO::PropTypeBit>(
-		enum_bitand(IO::PropTypeBit::base, prop_types)
-	));
-	if (enum_bitand(IO::PropTypeBit::identity, unstored_types)) {
-		enum : std::size_t {
-			BUF_SIZE = 8u
-		};
-		char ms_buf[BUF_SIZE];
-		duct::IO::omemstream ms{ms_buf, BUF_SIZE};
-		ms << Object::IDPrinter{obj.get_id()};
-		obj.set_slug(String{ms_buf, BUF_SIZE});
-		obj.set_parent(Object::ID_NULL);
-		obj.get_prop_states().assign(
-			IO::PropType::identity,
-			IO::PropState::modified
-		);
-	}
-	if (enum_bitand(IO::PropTypeBit::metadata, unstored_types)) {
-		// Metadata collection should already be empty; no base
-		// values to add
-		obj.get_prop_states().assign(
-			IO::PropType::metadata,
-			IO::PropState::modified
-		);
-	}
-	if (enum_bitand(IO::PropTypeBit::scratch, unstored_types)) {
-		// Scratch space should also be empty
-		obj.get_prop_states().assign(
-			IO::PropType::scratch,
-			IO::PropState::modified
-		);
-	}
-}
-#undef HORD_SCOPE_FUNC
-
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
@@ -156,7 +103,9 @@ HORD_SCOPE_CLASS::operator()(
 			return commit_error("object allocation failed");
 		}
 		auto& obj = *emplace_pair.first->second;
-		init_object(datastore, obj, sinfo, prop_types);
+		Cmd::Datastore::Load::load_or_initialize(
+			datastore, obj, sinfo, prop_types
+		);
 	}
 	link_parents(datastore);
 
