@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Hord/config.hpp>
+#include <Hord/utility.hpp>
 
 namespace Hord {
 namespace Cmd {
