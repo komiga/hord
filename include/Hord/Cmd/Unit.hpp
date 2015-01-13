@@ -242,6 +242,14 @@ public:
 	}
 
 	/**
+		Get result.
+	*/
+	Cmd::Result
+	get_result() const noexcept {
+		return m_result;
+	}
+
+	/**
 		Check if command execution succeeded.
 	*/
 	bool
