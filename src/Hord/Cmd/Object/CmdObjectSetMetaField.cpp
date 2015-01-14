@@ -45,6 +45,7 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Data::ValueRef const& new_value
 ) noexcept try {
 	m_id = object.get_id();
+	m_field_index = signed_cast(index);
 
 	m_created = false;
 	if (object.get_metadata().num_fields() <= index) {
@@ -68,6 +69,7 @@ HORD_SCOPE_CLASS::operator()(
 	bool const create
 ) noexcept try {
 	m_id = object.get_id();
+	m_field_index = -1;
 
 	m_created = false;
 	if (name.empty()) {
@@ -77,6 +79,7 @@ HORD_SCOPE_CLASS::operator()(
 	for (; it.can_advance(); ++it) {
 		auto const value_ref = it.get_field(Data::Metadata::COL_NAME);
 		if (string_equal(name, value_ref.size, value_ref.data.string)) {
+			m_field_index = signed_cast(it.index);
 			set_value(object, it, new_value);
 			return commit();
 		}
@@ -91,6 +94,7 @@ HORD_SCOPE_CLASS::operator()(
 			IO::PropState::modified
 		);
 		m_created = true;
+		m_field_index = signed_cast(object.get_metadata().num_fields()) - 1;
 		return commit();
 	}
 	return commit_error("field does not exist");

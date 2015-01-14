@@ -25,6 +25,8 @@ namespace Object {
 struct Base;
 class SetSlug;
 class SetParent;
+
+struct MetadataBase;
 class SetMetaField;
 class RenameMetaField;
 class RemoveMetaField;
@@ -116,10 +118,36 @@ public:
 };
 
 /**
+	Base metadata command properties.
+*/
+struct MetadataBase {
+	friend class SetMetaField;
+	friend class RenameMetaField;
+	friend class RemoveMetaField;
+
+protected:
+	signed m_field_index{-1};
+
+public:
+/** @name Properties */ /// @{
+	/**
+		Get field index.
+
+		@returns -1 when no index was known.
+	*/
+	signed
+	get_field_index() const noexcept {
+		return m_field_index;
+	}
+/// @}
+};
+
+/**
 	Set MetaField value command.
 */
 class SetMetaField final
 	: public Hord::Cmd::Object::Base
+	, public Hord::Cmd::Object::MetadataBase
 	, public Cmd::Unit<SetMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
@@ -178,6 +206,7 @@ public:
 */
 class RenameMetaField final
 	: public Hord::Cmd::Object::Base
+	, public Hord::Cmd::Object::MetadataBase
 	, public Cmd::Unit<RenameMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
@@ -230,6 +259,7 @@ public:
 */
 class RemoveMetaField final
 	: public Hord::Cmd::Object::Base
+	, public Hord::Cmd::Object::MetadataBase
 	, public Cmd::Unit<RemoveMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(

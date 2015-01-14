@@ -43,6 +43,7 @@ HORD_SCOPE_CLASS::operator()(
 	unsigned const index
 ) noexcept try {
 	m_id = object.get_id();
+	m_field_index = signed_cast(index);
 
 	if (object.get_metadata().num_fields() <= index) {
 		return commit_error("field index is out-of-bounds");
@@ -63,11 +64,13 @@ HORD_SCOPE_CLASS::operator()(
 	String const& name
 ) noexcept try {
 	m_id = object.get_id();
+	m_field_index = -1;
 
 	auto it = object.get_metadata().table().begin();
 	for (; it.can_advance(); ++it) {
 		auto const value_ref = it.get_field(Data::Metadata::COL_NAME);
 		if (string_equal(name, value_ref.size, value_ref.data.string)) {
+			m_field_index = signed_cast(it.index);
 			remove_field(object, it);
 			return commit();
 		}
