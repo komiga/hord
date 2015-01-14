@@ -22,6 +22,7 @@ namespace Cmd {
 namespace Object {
 
 // Forward declarations
+struct Base;
 class SetSlug;
 class SetParent;
 class SetMetaField;
@@ -44,7 +45,7 @@ struct Base {
 	friend class RemoveMetaField;
 
 protected:
-	Hord::Object::ID m_id;
+	Hord::Object::ID m_id{Hord::Object::ID_NULL};
 
 public:
 /** @name Properties */ /// @{
