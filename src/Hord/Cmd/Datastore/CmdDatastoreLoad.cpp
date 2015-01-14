@@ -40,6 +40,9 @@ HORD_SCOPE_CLASS::load_or_initialize(
 	);
 	// Initialize any base props requested that were not in storage.
 	// Metadata and scratch space should already be empty.
+	// Object root-ness not managed herein; invariants through commands
+	// (firstly Cmd::Datastore::Init, later Cmd::Object::SetParent)
+	// will ensure it is already accurate.
 	auto const unstored_types = sinfo.prop_storage.uninitialized_of(prop_types);
 	if (enum_bitand(IO::PropTypeBit::identity, unstored_types)) {
 		enum : std::size_t {

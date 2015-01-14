@@ -129,6 +129,12 @@ public:
 		Object::UPtr
 	>;
 
+	/** Object ID set. */
+	using id_set_type
+	= aux::unordered_set<
+		Object::ID
+	>;
+
 protected:
 /** @name Implementation */ /// @{
 	/**
@@ -327,6 +333,7 @@ private:
 	String m_root_path;
 	storage_info_map_type m_storage_info;
 	object_map_type m_objects;
+	id_set_type m_root_objects;
 
 	Datastore() = delete;
 	Datastore(Datastore const&) = delete;
@@ -435,6 +442,22 @@ public:
 	object_map_type const&
 	get_objects() const noexcept {
 		return m_objects;
+	}
+
+	/**
+		Get resident root object set (mutable).
+	*/
+	id_set_type&
+	get_root_objects() noexcept {
+		return m_root_objects;
+	}
+
+	/**
+		Get resident root object set.
+	*/
+	id_set_type const&
+	get_root_objects() const noexcept {
+		return m_root_objects;
 	}
 /// @}
 

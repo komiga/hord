@@ -26,6 +26,7 @@ Datastore::Datastore(
 	, m_root_path(std::move(root_path))
 	, m_storage_info()
 	, m_objects()
+	, m_root_objects()
 {}
 
 Datastore::~Datastore() = default;
@@ -75,6 +76,7 @@ Datastore::close() {
 	if (is_open()) {
 		close_impl();
 		disable_state(State::initialized);
+		m_root_objects.clear();
 	}
 }
 #undef HORD_SCOPE_FUNC

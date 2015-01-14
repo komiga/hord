@@ -54,6 +54,9 @@ link_parents(
 		// NB: Ignoring circular; client should decide what to do
 		// with these objects
 		Object::set_parent(obj, datastore, parent);
+		if (obj.get_parent() == Object::ID_NULL) {
+			datastore.get_root_objects().emplace(obj.get_id());
+		}
 	}
 }
 #undef HORD_SCOPE_FUNC

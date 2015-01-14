@@ -37,7 +37,17 @@ HORD_SCOPE_CLASS::operator()(
 		// NB: Circumvents Object::set_parent() making the parent ID_NULL
 		return commit_with(Cmd::Result::success_no_action);
 	}
-	if (Hord::Object::set_parent(object, datastore, new_parent)) {
+	bool const success = Hord::Object::set_parent(object, datastore, new_parent);
+	auto const end = datastore.get_root_objects().end();
+	auto const it = datastore.get_root_objects().find(object.get_id());
+	if (object.get_parent() == Hord::Object::ID_NULL) {
+		if (it == end) {
+			datastore.get_root_objects().emplace(object.get_id());
+		}
+	} else if (it != end) {
+		datastore.get_root_objects().erase(it);
+	}
+	if (success) {
 		return commit();
 	} else {
 		return commit_error("Object::set_parent() failed");
