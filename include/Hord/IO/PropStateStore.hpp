@@ -341,10 +341,8 @@ public:
 	) const noexcept {
 		return state_of(
 			prop_types,
-			enum_combine(
-				IO::PropState::original,
-				IO::PropState::modified
-			)
+			IO::PropState::original |
+			IO::PropState::modified
 		);
 	}
 
@@ -357,10 +355,8 @@ public:
 	) const noexcept {
 		return not_state_of(
 			prop_types,
-			enum_combine(
-				IO::PropState::original,
-				IO::PropState::modified
-			)
+			IO::PropState::original |
+			IO::PropState::modified
 		);
 	}
 
@@ -383,18 +379,17 @@ public:
 			}
 		}
 		return prop_types;
-		/*return static_cast<IO::PropTypeBit>(
-			enum_cast(prop_types) & enum_bitor(
+		/*return prop_types & (
 			(has(IO::PropType::identity  , state)
-			? IO::PropTypeBit::identity  : IO::PropTypeBit::none),
+			? IO::PropTypeBit::identity  : IO::PropTypeBit::none) |
 			(has(IO::PropType::metadata  , state)
-			? IO::PropTypeBit::metadata  : IO::PropTypeBit::none),
+			? IO::PropTypeBit::metadata  : IO::PropTypeBit::none) |
 			(has(IO::PropType::scratch   , state)
-			? IO::PropTypeBit::scratch   : IO::PropTypeBit::none),
+			? IO::PropTypeBit::scratch   : IO::PropTypeBit::none) |
 			(has(IO::PropType::primary   , state)
-			? IO::PropTypeBit::primary   : IO::PropTypeBit::none),
+			? IO::PropTypeBit::primary   : IO::PropTypeBit::none) |
 			(has(IO::PropType::auxiliary , state)
-			? IO::PropTypeBit::auxiliary : IO::PropTypeBit::none))
+			? IO::PropTypeBit::auxiliary : IO::PropTypeBit::none)
 		);*/
 	}
 

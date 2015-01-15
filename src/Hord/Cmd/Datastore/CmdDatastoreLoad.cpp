@@ -44,7 +44,7 @@ HORD_SCOPE_CLASS::load_or_initialize(
 	// (firstly Cmd::Datastore::Init, later Cmd::Object::SetParent)
 	// will ensure it is already accurate.
 	auto const unstored_types = sinfo.prop_storage.uninitialized_of(prop_types);
-	if (enum_bitand(IO::PropTypeBit::identity, unstored_types)) {
+	if (enum_cast(unstored_types & IO::PropTypeBit::identity)) {
 		enum : std::size_t {
 			BUF_SIZE = 16u
 		};

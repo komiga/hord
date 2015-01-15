@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-using duct::enum_combine;
+using namespace duct::enum_ops;
 using Type = Hord::IO::PropType;
 using TypeBit = Hord::IO::PropTypeBit;
 
@@ -25,10 +25,7 @@ test(
 			<< Hord::IO::get_prop_type_name(type)
 			<< '\n'
 		;
-		reconstructed = enum_combine(
-			reconstructed,
-			Hord::IO::prop_type_bit(type)
-		);
+		reconstructed |= Hord::IO::prop_type_bit(type);
 	}
 	std::cout << '\n';
 	DUCT_ASSERTE(types == reconstructed);

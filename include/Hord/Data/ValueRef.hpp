@@ -155,7 +155,7 @@ public:
 		if (type.type() != Data::ValueType::integer) {
 			return 0;
 		}
-		if (!enum_bitand(type.flags(), Data::ValueFlag::integer_signed)) {
+		if (!enum_cast(type.flags() & Data::ValueFlag::integer_signed)) {
 			return integer_unsigned();
 		}
 		switch (type.size()) {
@@ -176,7 +176,7 @@ public:
 		if (type.type() != Data::ValueType::integer) {
 			return 0;
 		}
-		if (enum_bitand(type.flags(), Data::ValueFlag::integer_signed)) {
+		if (enum_cast(type.flags() & Data::ValueFlag::integer_signed)) {
 			return integer_signed();
 		}
 		switch (type.size()) {

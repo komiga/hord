@@ -74,7 +74,7 @@ ValueRef::morph(
 		case 4: size = min_ce(size, ~unsigned{0}); break;
 		}
 	} else if (new_type.type() == Data::ValueType::integer) {
-		if (enum_bitand(new_type.flags(), ValueFlag::integer_signed)) {
+		if (enum_cast(new_type.flags() & ValueFlag::integer_signed)) {
 			std::int64_t x;
 			switch (type.size()) {
 			case Data::Size::b8 : x = data.s8 ; break;

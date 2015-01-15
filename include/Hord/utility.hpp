@@ -28,12 +28,11 @@ namespace Hord {
 using duct::bit;
 using duct::make_const;
 using duct::enum_cast;
-using duct::enum_bitand;
-using duct::enum_combine;
 using duct::unsigned_cast;
 using duct::signed_cast;
 using duct::min_ce;
 using duct::max_ce;
+using namespace duct::enum_ops;
 
 /** @cond INTERNAL */
 using HashImpl = am::hash::fnv1a<am::hash::HashLength::HL64>;

@@ -76,10 +76,7 @@ HORD_SCOPE_CLASS::operator()(
 	}
 
 	// Identity must be loaded
-	prop_types = enum_combine(
-		IO::PropTypeBit::identity,
-		prop_types
-	);
+	prop_types |= IO::PropTypeBit::identity;
 
 	// Create and initialize resident objects
 	auto const& si_map = make_const(datastore).get_storage_info();

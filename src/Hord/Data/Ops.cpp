@@ -40,7 +40,7 @@ operator<<(
 		break;
 
 	case Data::ValueType::integer:
-		if (enum_bitand(value.type.flags(), Data::ValueFlag::integer_signed)) {
+		if (enum_cast(value.type.flags() & Data::ValueFlag::integer_signed)) {
 			ceformat::write<s_fmt_integer_signed>(stream, value.integer_signed());
 		} else {
 			ceformat::write<s_fmt_integer_unsigned>(stream, value.integer_unsigned());
