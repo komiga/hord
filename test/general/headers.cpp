@@ -13,7 +13,7 @@
 //#include <Hord/Object/Unit.hpp>
 #include <Hord/Object/Ops.hpp>
 #include <Hord/Rule/Unit.hpp>
-#include <Hord/Node/UnitBasic.hpp>
+#include <Hord/Table/UnitBasic.hpp>
 //#include <Hord/IO/Datastore.hpp>
 //#include <Hord/System/IDGenerator.hpp>
 #include <Hord/System/Driver.hpp>
@@ -45,8 +45,8 @@ main() {
 	// group node
 	//Hord::Rule::State rule_state{};
 	//Hord::Rule::Unit rule{};
-	auto node = Hord::Node::UnitBasic::info.construct(
-		Hord::Node::ID{42},
+	auto node = Hord::Table::UnitBasic::info.construct(
+		Hord::Table::ID{42},
 		Hord::Object::ID_NULL
 	);
 

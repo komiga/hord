@@ -2,7 +2,7 @@
 #include <Hord/utility.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Ops.hpp>
-#include <Hord/Node/UnitBasic.hpp>
+#include <Hord/Table/UnitBasic.hpp>
 
 #include <iostream>
 
@@ -10,8 +10,8 @@ using namespace Hord;
 
 signed
 main() {
-	auto node = Node::UnitBasic::info.construct(
-		Node::ID{0x2a2a2a2a},
+	auto node = Table::UnitBasic::info.construct(
+		Table::ID{0x2a2a2a2a},
 		Object::ID_NULL
 	);
 	node->set_slug("sluggy");
