@@ -377,11 +377,20 @@ record_written_size(
 	return record_meta_size() + data_size;
 }
 
-inline constexpr static unsigned
+inline static unsigned
 record_written_size(
 	Record const& record
 ) {
 	return record_written_size(record.size);
+}
+
+inline static unsigned
+record_write_size(
+	Record const& record,
+	std::uint8_t* output
+) {
+	*reinterpret_cast<std::uint32_t*>(output) = record.size;
+	return record_meta_size();
 }
 
 static unsigned
@@ -389,8 +398,7 @@ record_write(
 	Record const& record,
 	std::uint8_t* output
 ) {
-	*reinterpret_cast<std::uint32_t*>(output) = record.size;
-	output += record_meta_size();
+	output += record_write_size(record, output);
 	std::memcpy(output, record.data, record.size);
 	return record_meta_size() + record.size;
 }
