@@ -72,9 +72,6 @@ private:
 	HashValue m_hash{HASH_EMPTY};
 	column_vector_type m_columns{};
 
-	TableSchema(TableSchema const&) = delete;
-	TableSchema& operator=(TableSchema const&) = delete;
-
 public:
 /** @name Special member functions */ /// @{
 	/** Destructor. */
@@ -84,8 +81,12 @@ public:
 	TableSchema() = default;
 	/** Move constructor. */
 	TableSchema(TableSchema&&) = default;
+	/** Copy constructor. */
+	TableSchema(TableSchema const&) = default;
 	/** Move assignment operator. */
 	TableSchema& operator=(TableSchema&&) = default;
+	/** Copy assignment operator. */
+	TableSchema& operator=(TableSchema const&) = default;
 
 	/**
 		Construct with column initializer list.
