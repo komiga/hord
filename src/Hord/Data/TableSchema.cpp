@@ -32,14 +32,18 @@ TableSchema::TableSchema(
 bool
 TableSchema::update() noexcept {
 	auto const previous = m_hash;
-	HashCombiner hc;
-	std::uint32_t const num = static_cast<std::uint32_t>(m_columns.size());
-	hc.add(reinterpret_cast<char const*>(&num), sizeof(std::uint32_t));
-	for (auto const& column : m_columns) {
-		hc.add(reinterpret_cast<char const*>(&column.type), sizeof(Data::TypeValue));
-		hc.add_string(column.name);
+	if (num_columns() == 0) {
+		m_hash = HASH_EMPTY;
+	} else {
+		HashCombiner hc;
+		std::uint32_t const num = static_cast<std::uint32_t>(m_columns.size());
+		hc.add(reinterpret_cast<char const*>(&num), sizeof(std::uint32_t));
+		for (auto const& column : m_columns) {
+			hc.add(reinterpret_cast<char const*>(&column.type), sizeof(Data::TypeValue));
+			hc.add_string(column.name);
+		}
+		m_hash = hc.value();
 	}
-	m_hash = hc.value();
 	return m_hash != previous;
 }
 
