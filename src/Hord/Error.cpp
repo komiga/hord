@@ -24,7 +24,9 @@ s_error_invalid[]{HORD_STR_LIT("INVALID")},
 	HORD_STR_LIT("lockfile_acquire_failed"),
 
 // table
-	HORD_STR_LIT("table_schema_column_name_shared"),
+	HORD_STR_LIT("table_column_index_invalid"),
+	HORD_STR_LIT("table_column_name_empty"),
+	HORD_STR_LIT("table_column_name_shared"),
 
 // driver
 	// HORD_STR_LIT("driver_object_type_reserved"),

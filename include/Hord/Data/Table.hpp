@@ -262,14 +262,45 @@ public:
 		return m_schema.column(index);
 	}
 
-	// TODO: Replace this function with a table schema mutation interface
 	/**
-		Configure the table with a schema.
+		Configure the table with a new schema.
 
-		@returns @c true if the schema differed.
+		@note When modifying a column, the replacement column's
+		@c index is the column to modify. When inserting a column,
+		@c index must be @c ~0u.
+
+		@par
+		@warning The new schema's hash must be accurate before this
+		is used.
+
+		@returns @c true if a type or the number of columns changed.
+
+		@throws Error{ErrorCode::table_column_index_invalid}
+		If a column index is invalid.
+
+		@throws Error{ErrorCode::table_column_name_empty}
+		If a column has an empty name.
+
+		@throws Error{ErrorCode::table_column_name_shared}
+		If a column name is non-unique.
 	*/
 	bool
 	configure(
+		Data::TableSchema const& schema
+	);
+
+	/**
+		Replace schema without retaining data.
+
+		@warning This will clear the table.
+
+		@par
+		@warning No validation is done on the new schema.
+
+		@returns @c true if a type or the number of columns changed.
+	*/
+	bool
+	replace_schema(
 		Data::TableSchema const& schema
 	);
 /// @}

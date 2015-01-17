@@ -49,10 +49,18 @@ enum class ErrorCode : unsigned {
 
 /** @name Table */ /// @{
 	/**
-		Attempted to insert a column with a name that is
-		shared with another column.
+		Attempted to configure a table with a column referencing a
+		column that did not exist in the original schema.
 	*/
-	table_schema_column_name_shared,
+	table_column_index_invalid,
+	/**
+		Attempted to configure a table with a unnamed column.
+	*/
+	table_column_name_empty,
+	/**
+		Attempted to configure a table with a non-unique column.
+	*/
+	table_column_name_shared,
 /// @}
 
 /** @name Driver */ /// @{

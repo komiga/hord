@@ -566,12 +566,208 @@ Table::operator=(
 Table::Table(
 	Data::TableSchema const& schema
 ) noexcept {
-	configure(schema);
+	replace_schema(schema);
+}
+
+static void
+table_rewrite_records(
+	Data::Table::Chunk& chunk,
+	aux::vector<Record>& records,
+	unsigned const size,
+	Data::TableSchema::column_vector_type const& old_columns,
+	Data::TableSchema::column_vector_type const& new_columns,
+	aux::vector<unsigned>& old_offsets
+) {
+	if (chunk.size < size) {
+		chunk_allocate(chunk, size);
+	}
+	unsigned const num_old = old_columns.size();
+	auto const end_new = new_columns.cend();
+	unsigned offset = 0;
+	unsigned value_offset;
+	bool is_dynamic;
+	Data::ValueRef value;
+	for (auto const& record : records) {
+		value_offset = 0;
+		for (unsigned value_index = 0; value_index < num_old; ++value_index) {
+			old_offsets[value_index] = value_offset;
+			value_offset += value_read_size_whole(
+				old_columns[value_index].type,
+				record.data + value_offset
+			);
+		}
+		offset += record_write_size(record, chunk.data + offset);
+		value_offset = offset;
+		for (auto it = new_columns.cbegin(); it < end_new; ++it) {
+			is_dynamic = it->type.type() == Data::ValueType::dynamic;
+			if (it->index == ~0u) {
+				if (is_dynamic) {
+					value = {};
+				} else {
+					value = {it->type};
+				}
+			} else {
+				value = value_read(
+					old_columns[it->index].type,
+					record.data + old_offsets[it->index]
+				);
+				value.morph(it->type);
+			}
+			value_offset += value_write(value, chunk.data + value_offset, is_dynamic);
+		}
+		offset += record.size;
+	}
+	chunk_set_bounds(chunk, records.size(), 0, offset);
+	records.clear();
 }
 
 #define HORD_SCOPE_FUNC configure
 bool
 Table::configure(
+	Data::TableSchema const& schema
+) {
+	auto const& old_columns = m_schema.get_columns();
+	auto const& new_columns = schema.get_columns();
+	unsigned const num_old = old_columns.size();
+	unsigned const num_new = new_columns.size();
+	// Nothing to validate; makes table empty
+	if (num_new == 0) {
+		return replace_schema(schema);
+	}
+
+	bool rewrite_records = num_new != num_old;
+	bool column_renamed = false;
+	auto const end_new = new_columns.cend();
+	{// Validate new schema and compare
+	unsigned index = 0;
+	for (auto it = new_columns.cbegin(); it < end_new; ++it, ++index) {
+		if (it->index != ~0u && it->index >= num_old) {
+			HORD_THROW_FUNC(
+				ErrorCode::table_column_index_invalid,
+				"column index is out-of-bounds"
+			);
+		} else if (it->name.empty()) {
+			HORD_THROW_FUNC(
+				ErrorCode::table_column_name_empty,
+				"column name is empty"
+			);
+		} else {
+			for (auto search = it + 1; search < end_new; ++search) {
+				if (search->name == it->name) {
+					HORD_THROW_FUNC(
+						ErrorCode::table_column_name_shared,
+						"column name is shared with another column"
+					);
+				}
+			}
+		}
+		// NB: Renamed columns are irrelevant if rewriting records
+		if (!rewrite_records) {
+			rewrite_records = it->index == ~0u || it->index != index;
+			if (!rewrite_records) {
+				auto const& old_column = old_columns[it->index];
+				rewrite_records = it->type != old_column.type;
+				if (!column_renamed) {
+					column_renamed = it->name != old_column.name;
+				}
+			}
+		}
+	}}
+
+	// NB: Must validate new before doing this
+	if (num_old == 0) {
+		return replace_schema(schema);
+	} else if (!rewrite_records) {
+		if (column_renamed) {
+			// Only column names changed
+			return m_schema.assign(schema);
+		} else {
+			// No change
+			return false;
+		}
+	}
+
+	{// Rewrite records with new field layout
+	m_chunks.insert(m_chunks.cbegin(), Data::Table::Chunk{});
+	auto it_put = m_chunks.begin();
+	auto it_take = it_put + 1;
+	unsigned offset;
+	unsigned take_count = 0;
+	unsigned accum_data_size = 0;
+	unsigned put_capacity = CHUNK_SIZE;
+	Record orig_record;
+	aux::vector<Record> records{};
+	records.reserve(256);
+	aux::vector<unsigned> old_offsets{num_old};
+	Data::ValueRef value;
+	for (; it_take != m_chunks.end(); ++it_take) {
+		offset = it_take->offset_head();
+		for (unsigned record_index = 0; record_index < it_take->num_records; ++record_index) {
+			orig_record = record_read(it_take->data + offset);
+			offset += record_written_size(orig_record);
+			for (
+				unsigned value_index = 0, value_offset = 0;
+				value_index < num_old;
+				++value_index
+			) {
+				old_offsets[value_index] = value_offset;
+				value_offset += value_read_size_whole(
+					old_columns[value_index].type,
+					orig_record.data + value_offset
+				);
+			}
+			records.push_back({});
+			auto& record = records.back();
+			record.data = orig_record.data;
+			record.size = 0;
+			for (auto it = new_columns.cbegin(); it < end_new; ++it) {
+				if (it->index == ~0u) {
+					record.size += value_init_size(it->type);
+				} else {
+					value = value_read(
+						old_columns[it->index].type,
+						orig_record.data + old_offsets[it->index]
+					);
+					value.morph(it->type);
+					record.size += value_written_size(
+						value,
+						it->type.type() == Data::ValueType::dynamic
+					);
+				}
+			}
+			accum_data_size += record_meta_size() + record.size;
+			if (0 < take_count && put_capacity <= accum_data_size) {
+				table_rewrite_records(
+					*it_put, records, max_ce(put_capacity, accum_data_size),
+					old_columns, new_columns, old_offsets
+				);
+				++it_put;
+				take_count = 0;
+				accum_data_size = 0;
+				put_capacity = max_ce(it_put->size, CHUNK_SIZE);
+			}
+		}
+		++take_count;
+	}
+	if (!records.empty()) {
+		table_rewrite_records(
+			*it_put, records, max_ce(put_capacity, accum_data_size),
+			old_columns, new_columns, old_offsets
+		);
+		++it_put;
+	}
+	for (it_take = it_put; it_take != m_chunks.end(); ++it_take) {
+		chunk_free(*it_take);
+	}
+	m_chunks.erase(it_put, m_chunks.end());
+	}
+	return m_schema.assign(schema);
+}
+#undef HORD_SCOPE_FUNC
+
+#define HORD_SCOPE_FUNC replace_schema
+bool
+Table::replace_schema(
 	Data::TableSchema const& schema
 ) {
 	bool changed = m_schema.assign(schema);
