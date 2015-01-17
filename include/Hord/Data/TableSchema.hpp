@@ -37,12 +37,63 @@ public:
 		Column schema.
 	*/
 	struct Column {
-		/** Name. */
-		String name;
+	/** @name Properties */ /// @{
+		/**
+			Index.
+
+			This is only used when configuring a table.
+			See @c Data::Table::configure().
+		*/
+		unsigned index{~0u};
 
 		/** Type. */
-		Data::Type type;
+		Data::Type type{};
 
+		/** Name. */
+		String name{};
+	/// @}
+
+	/** @name Special member functions */ /// @{
+		/** Destructor. */
+		~Column() noexcept = default;
+
+		/** Default constructor. */
+		Column() = default;
+		/** Move constructor. */
+		Column(Column&&) = default;
+		/** Copy constructor. */
+		Column(Column const&) = default;
+		/** Move assignment operator. */
+		Column& operator=(Column&&) = default;
+		/** Copy assignment operator. */
+		Column& operator=(Column const&) = default;
+
+		/**
+			Construct with name and type.
+		*/
+		Column(
+			String name,
+			Data::Type type
+		) noexcept
+			: type(type)
+			, name(std::move(name))
+		{}
+
+		/**
+			Construct with index, name, and type.
+		*/
+		Column(
+			unsigned index,
+			String name,
+			Data::Type type
+		) noexcept
+			: index(index)
+			, type(type)
+			, name(std::move(name))
+		{}
+	/// @}
+
+	/** @name Serialization */ /// @{
 		/**
 			Serialize.
 
@@ -61,6 +112,7 @@ public:
 				Cacophony::make_string_cfg<std::uint8_t>(self.name)
 			);
 		}
+	/// @}
 	};
 
 	/**
