@@ -142,6 +142,9 @@ public:
 
 	/**
 		Construct with column initializer list.
+
+		@note Column indices are ~0u; they must be assigned manually
+		if reconfiguring a table.
 	*/
 	TableSchema(
 		std::initializer_list<Data::TableSchema::Column> const ilist
