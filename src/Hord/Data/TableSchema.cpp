@@ -71,45 +71,6 @@ TableSchema::assign(
 	return changed;
 }
 
-#define HORD_SCOPE_FUNC insert
-namespace {
-HORD_DEF_FMT_FQN(
-	s_err_column_name_shared,
-	"cannot insert column with non-unique name `%s`"
-);
-} // anonymous namespace
-
-void
-TableSchema::insert(
-	unsigned const index,
-	String name,
-	Data::Type const type
-) {
-	DUCT_ASSERTE(index <= m_columns.size());
-	for (auto const& column : m_columns) {
-		if (column.name == name) {
-			HORD_THROW_FMT(
-				ErrorCode::table_schema_column_name_shared,
-				s_err_column_name_shared,
-				name
-			);
-		}
-	}
-	m_columns.insert(
-		m_columns.cbegin() + index,
-		Data::TableSchema::Column{std::move(name), type}
-	);
-}
-#undef HORD_SCOPE_FUNC
-
-void
-TableSchema::remove(
-	unsigned const index
-) noexcept {
-	DUCT_ASSERTE(index < m_columns.size());
-	m_columns.erase(m_columns.cbegin() + index);
-}
-
 #define HORD_SCOPE_FUNC read
 ser_result_type
 TableSchema::read(

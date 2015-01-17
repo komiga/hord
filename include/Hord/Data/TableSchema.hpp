@@ -158,27 +158,6 @@ public:
 	assign(
 		Data::TableSchema const& schema
 	) noexcept;
-
-	/**
-		Insert a column.
-
-		@throws Error{ErrorCode::table_schema_column_name_shared}
-		If a column with @a name already exists.
-	*/
-	void
-	insert(
-		unsigned const index,
-		String name,
-		Data::Type const type
-	);
-
-	/**
-		Remove a column.
-	*/
-	void
-	remove(
-		unsigned const index
-	) noexcept;
 /// @}
 
 /** @name Serialization */ /// @{
