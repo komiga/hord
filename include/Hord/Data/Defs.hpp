@@ -99,6 +99,22 @@ value_type_last{Data::ValueType::object_id};
 /** @endcond */ // INTERNAL
 
 /**
+	Get the name of a value type.
+*/
+char const*
+get_value_type_name(
+	Data::ValueType const value_type
+) noexcept;
+
+/**
+	Get the name of a data size.
+*/
+char const*
+get_size_name(
+	Data::Size const size
+) noexcept;
+
+/**
 	Type.
 */
 struct Type {
