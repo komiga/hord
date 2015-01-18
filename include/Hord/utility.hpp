@@ -32,6 +32,7 @@ using duct::unsigned_cast;
 using duct::signed_cast;
 using duct::min_ce;
 using duct::max_ce;
+using duct::array_extent;
 using namespace duct::enum_ops;
 
 /** @cond INTERNAL */
