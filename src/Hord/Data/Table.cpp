@@ -637,6 +637,7 @@ Table::configure(
 
 	bool rewrite_records = num_new != num_old;
 	bool column_renamed = false;
+	bool has_reference = false;
 	auto const end_new = new_columns.cend();
 	{// Validate new schema and compare
 	unsigned index = 0;
@@ -662,12 +663,13 @@ Table::configure(
 			}
 		}
 		// NB: Renamed columns are irrelevant if rewriting records
+		has_reference |= it->index != ~0u;
 		if (!rewrite_records) {
 			rewrite_records = it->index == ~0u || it->index != index;
 			if (!rewrite_records) {
 				auto const& old_column = old_columns[it->index];
 				rewrite_records = it->type != old_column.type;
-				if (!column_renamed) {
+				if (!rewrite_records && !column_renamed) {
 					column_renamed = it->name != old_column.name;
 				}
 			}
@@ -675,7 +677,8 @@ Table::configure(
 	}}
 
 	// NB: Must validate new before doing this
-	if (num_old == 0) {
+	// Implicitly includes condition of num_old == 0
+	if (!has_reference) {
 		return replace_schema(schema);
 	} else if (!rewrite_records) {
 		if (column_renamed) {
