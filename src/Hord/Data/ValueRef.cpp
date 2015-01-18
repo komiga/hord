@@ -23,7 +23,7 @@ bool
 ValueRef::operator==(
 	Data::ValueRef const& rhs
 ) const noexcept {
-	if (type != rhs.type) {
+	if (type.type() != rhs.type.type()) {
 		return false;
 	}
 	switch (type.type()) {
