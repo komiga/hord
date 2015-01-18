@@ -53,5 +53,6 @@ include("etc")
 include("general")
 include("io")
 include("object")
+include("data")
 
 precore.action_clean("out")
