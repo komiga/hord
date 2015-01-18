@@ -42,21 +42,25 @@ ValueRef::operator==(
 	}
 }
 
-inline static std::int64_t
-value_clamp_signed(
-	std::int64_t const value,
+inline constexpr static std::int64_t
+s64_min(
 	Data::Size const size
-) noexcept {
-	auto const min = std::int64_t{1} << ((enum_cast(size) + 3) - 1);
-	return max_ce(min, min_ce(value, ~(~std::int64_t{0} << (enum_cast(size) + 3))));
+) {
+	return (std::int64_t{1} << 63) | (std::int64_t{1} << ((8 << enum_cast(size)) - 1));
 }
 
-inline static std::uint64_t
-value_clamp_unsigned(
-	std::uint64_t const value,
+inline constexpr static std::int64_t
+s64_max(
 	Data::Size const size
-) noexcept {
-	return max_ce(std::uint64_t{0}, min_ce(value, ~std::uint64_t{0} >> (enum_cast(size) + 3)));
+) {
+	return ~(static_cast<std::int64_t>(~0ll) << ((8 << enum_cast(size)) - 1));
+}
+
+inline constexpr static std::uint64_t
+u64_max(
+	Data::Size const size
+) {
+	return ~((static_cast<std::uint64_t>(~0ull) << ((8 << enum_cast(size)) - 1)) << 1);
 }
 
 void
@@ -74,35 +78,45 @@ ValueRef::morph(
 		case 4: size = min_ce(size, static_cast<unsigned>(static_cast<std::uint32_t>(~0u))); break;
 		}
 	} else if (new_type.type() == Data::ValueType::integer) {
-		if (enum_cast(new_type.flags() & ValueFlag::integer_signed)) {
-			std::int64_t x;
+		std::int64_t xs;
+		std::uint64_t xu;
+		if (enum_cast(type.flags() & ValueFlag::integer_signed)) {
 			switch (type.size()) {
-			case Data::Size::b8 : x = data.s8 ; break;
-			case Data::Size::b16: x = data.s16; break;
-			case Data::Size::b32: x = data.s32; break;
-			case Data::Size::b64: x = data.s64; break;
+			case Data::Size::b8 : xs = data.s8 ; break;
+			case Data::Size::b16: xs = data.s16; break;
+			case Data::Size::b32: xs = data.s32; break;
+			case Data::Size::b64: xs = data.s64; break;
 			}
-			x = value_clamp_signed(x, new_type.size());
+			xu = static_cast<std::uint64_t>(max_ce(std::int64_t{0}, xs));
+		} else {
+			switch (type.size()) {
+			case Data::Size::b8 : xu = data.u8 ; break;
+			case Data::Size::b16: xu = data.u16; break;
+			case Data::Size::b32: xu = data.u32; break;
+			case Data::Size::b64: xu = data.u64; break;
+			}
+			xs = static_cast<std::int64_t>(
+				min_ce(static_cast<std::uint64_t>(s64_max(Data::Size::b64)), xu)
+			);
+		}
+		if (enum_cast(new_type.flags() & ValueFlag::integer_signed)) {
+			xs = max_ce(
+				s64_min(new_type.size()),
+				min_ce(xs, s64_max(new_type.size()))
+			);
 			switch (new_type.size()) {
-			case Data::Size::b8 : x = data.s8  = static_cast<std::int8_t >(x); break;
-			case Data::Size::b16: x = data.s16 = static_cast<std::int16_t>(x); break;
-			case Data::Size::b32: x = data.s32 = static_cast<std::int32_t>(x); break;
-			case Data::Size::b64: x = data.s64 = x; break;
+			case Data::Size::b8 : data.s8  = static_cast<std::int8_t >(xs); break;
+			case Data::Size::b16: data.s16 = static_cast<std::int16_t>(xs); break;
+			case Data::Size::b32: data.s32 = static_cast<std::int32_t>(xs); break;
+			case Data::Size::b64: data.s64 = xs; break;
 			}
 		} else {
-			std::uint64_t x;
-			switch (type.size()) {
-			case Data::Size::b8 : x = data.u8 ; break;
-			case Data::Size::b16: x = data.u16; break;
-			case Data::Size::b32: x = data.u32; break;
-			case Data::Size::b64: x = data.u64; break;
-			}
-			x = value_clamp_unsigned(x, new_type.size());
+			xu = min_ce(xu, u64_max(new_type.size()));
 			switch (new_type.size()) {
-			case Data::Size::b8 : x = data.u8  = static_cast<std::uint8_t >(x); break;
-			case Data::Size::b16: x = data.u16 = static_cast<std::uint16_t>(x); break;
-			case Data::Size::b32: x = data.u32 = static_cast<std::uint32_t>(x); break;
-			case Data::Size::b64: x = data.u64 = x; break;
+			case Data::Size::b8 : data.u8  = static_cast<std::uint8_t >(xu); break;
+			case Data::Size::b16: data.u16 = static_cast<std::uint16_t>(xu); break;
+			case Data::Size::b32: data.u32 = static_cast<std::uint32_t>(xu); break;
+			case Data::Size::b64: data.u64 = xu; break;
 			}
 		}
 	}
