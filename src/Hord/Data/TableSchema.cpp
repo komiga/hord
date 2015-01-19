@@ -83,6 +83,10 @@ TableSchema::read(
 	ser(format_version);
 	DUCT_ASSERTE(format_version == 0);
 	ser(Cacophony::make_vector_cfg<std::uint8_t>(m_columns));
+	unsigned index = 0;
+	for (auto& column : m_columns) {
+		column.index = index++;
+	}
 	update();
 }
 #undef HORD_SCOPE_FUNC
