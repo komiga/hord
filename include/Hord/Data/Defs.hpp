@@ -94,8 +94,12 @@ enum class Size : Data::TypeValue {
 
 /** @cond INTERNAL */
 constexpr auto const
-value_type_first{Data::ValueType::null},
-value_type_last{Data::ValueType::object_id};
+value_type_first = Data::ValueType::null,
+value_type_last = Data::ValueType::string;
+
+constexpr auto const
+size_first = Data::Size::b8,
+size_last = Data::Size::b64;
 /** @endcond */ // INTERNAL
 
 /**
