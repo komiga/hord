@@ -126,7 +126,7 @@ private:
 	enum : unsigned {
 		mask_type = 0x07,
 		mask_flags = 0x07,
-		shift_flags = 4,
+		shift_flags = 3,
 		shift_size = 6,
 	};
 
