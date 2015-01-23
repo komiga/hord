@@ -93,10 +93,6 @@ public:
 	%Base metadata command properties.
 */
 struct MetadataBase {
-	friend class SetMetaField;
-	friend class RenameMetaField;
-	friend class RemoveMetaField;
-
 protected:
 	signed m_field_index{-1};
 
