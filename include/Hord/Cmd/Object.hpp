@@ -22,7 +22,6 @@ namespace Cmd {
 namespace Object {
 
 // Forward declarations
-struct Base;
 class SetSlug;
 class SetParent;
 
@@ -37,36 +36,10 @@ class RemoveMetaField;
 */
 
 /**
-	Base object command properties.
-*/
-struct Base {
-	friend class SetSlug;
-	friend class SetParent;
-	friend class SetMetaField;
-	friend class RenameMetaField;
-	friend class RemoveMetaField;
-
-protected:
-	Hord::Object::ID m_id{Hord::Object::ID_NULL};
-
-public:
-/** @name Properties */ /// @{
-	/**
-		Get object ID.
-	*/
-	Hord::Object::ID
-	get_object_id() const noexcept {
-		return m_id;
-	}
-/// @}
-};
-
-/**
 	Set slug command.
 */
 class SetSlug final
-	: public Hord::Cmd::Object::Base
-	, public Cmd::Unit<SetSlug>
+	: public Cmd::Unit<SetSlug>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		SetSlug,
@@ -93,8 +66,7 @@ public:
 	Set parent command.
 */
 class SetParent final
-	: public Hord::Cmd::Object::Base
-	, public Cmd::Unit<SetParent>
+	: public Cmd::Unit<SetParent>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
 		SetParent,
@@ -118,7 +90,7 @@ public:
 };
 
 /**
-	Base metadata command properties.
+	%Base metadata command properties.
 */
 struct MetadataBase {
 	friend class SetMetaField;
@@ -146,8 +118,7 @@ public:
 	Set MetaField value command.
 */
 class SetMetaField final
-	: public Hord::Cmd::Object::Base
-	, public Hord::Cmd::Object::MetadataBase
+	: public Hord::Cmd::Object::MetadataBase
 	, public Cmd::Unit<SetMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
@@ -205,8 +176,7 @@ public:
 	Rename MetaField command.
 */
 class RenameMetaField final
-	: public Hord::Cmd::Object::Base
-	, public Hord::Cmd::Object::MetadataBase
+	: public Hord::Cmd::Object::MetadataBase
 	, public Cmd::Unit<RenameMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(
@@ -258,8 +228,7 @@ public:
 	Rename MetaField command.
 */
 class RemoveMetaField final
-	: public Hord::Cmd::Object::Base
-	, public Hord::Cmd::Object::MetadataBase
+	: public Hord::Cmd::Object::MetadataBase
 	, public Cmd::Unit<RemoveMetaField>
 {
 	HORD_CMD_IMPL_BOILERPLATE(

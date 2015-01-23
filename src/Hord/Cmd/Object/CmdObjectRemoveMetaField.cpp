@@ -42,7 +42,7 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	unsigned const index
 ) noexcept try {
-	m_id = object.get_id();
+	m_object_id = object.get_id();
 	m_field_index = signed_cast(index);
 
 	if (object.get_metadata().num_fields() <= index) {
@@ -63,7 +63,7 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	String const& name
 ) noexcept try {
-	m_id = object.get_id();
+	m_object_id = object.get_id();
 	m_field_index = -1;
 
 	auto it = object.get_metadata().table().begin();

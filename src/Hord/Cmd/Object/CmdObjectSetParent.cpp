@@ -27,7 +27,7 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::Unit& object,
 	Hord::Object::ID const new_parent
 ) noexcept try {
-	m_id = object.get_id();
+	m_object_id = object.get_id();
 
 	// TODO: Check for collision in parent children
 	auto& datastore = get_datastore();

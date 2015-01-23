@@ -27,7 +27,7 @@ HORD_SCOPE_CLASS::operator()(
 	String new_slug
 ) noexcept try {
 	auto& datastore = get_datastore();
-	m_id = object.get_id();
+	m_object_id = object.get_id();
 
 	if (new_slug.empty()) {
 		return commit_error("slug cannot be empty");

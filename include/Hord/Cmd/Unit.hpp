@@ -12,6 +12,7 @@
 #include <Hord/traits.hpp>
 #include <Hord/String.hpp>
 #include <Hord/utility.hpp>
+#include <Hord/Object/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
@@ -130,6 +131,7 @@ public:
 		Command execution result type.
 	*/
 	using exec_result_type = bool;
+
 private:
 	using this_type = UnitBase;
 
@@ -137,6 +139,12 @@ private:
 	Cmd::Result m_result{Cmd::Result::error};
 	String m_message{};
 
+protected:
+/** @name Common properties */ /// @{
+	Hord::Object::ID m_object_id{Hord::Object::ID_NULL};
+/// @}
+
+private:
 	UnitBase() = delete;
 	UnitBase(UnitBase const&) = delete;
 	UnitBase& operator=(UnitBase const&) = delete;
@@ -273,6 +281,17 @@ public:
 	bool
 	bad() const noexcept {
 		return Cmd::Result::error == m_result;
+	}
+
+	/**
+		Get object ID the command acted upon.
+
+		@note This will be Object::ID_NULL for any commands that
+		operate on no or multiple objects.
+	*/
+	Hord::Object::ID
+	get_object_id() const noexcept {
+		return m_object_id;
 	}
 /// @}
 };
