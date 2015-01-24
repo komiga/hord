@@ -2,6 +2,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <Hord/String.hpp>
 #include <Hord/IO/Defs.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Ops.hpp>
@@ -74,6 +75,40 @@ set_parent(
 		}
 		return false;
 	}
+}
+
+static void
+push_path_parent(
+	String& path,
+	Object::Unit const& object,
+	IO::Datastore const& datastore
+) noexcept {
+	auto* const parent = datastore.find_ptr(object.get_parent());
+	if (parent) {
+		push_path_parent(path, *parent, datastore);
+		path.append(parent->get_slug());
+		path.append(1, '/');
+	} else if (object.get_parent() != Object::ID_NULL) {
+		path.append("<non-existent>/");
+	}
+}
+
+String
+path_to(
+	Object::ID const id,
+	IO::Datastore const& datastore
+) noexcept {
+	String path;
+	path.reserve(96);
+	path.assign(1, '/');
+	auto* const object = datastore.find_ptr(id);
+	if (object) {
+		push_path_parent(path, *object, datastore);
+		path.append(object->get_slug());
+	} else if (id != Object::ID_NULL) {
+		path.append("<non-existent>");
+	}
+	return path;
 }
 
 namespace {

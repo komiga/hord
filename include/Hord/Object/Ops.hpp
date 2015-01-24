@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Hord/config.hpp>
+#include <Hord/String.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
 #include <Hord/IO/Datastore.hpp>
@@ -66,6 +67,25 @@ set_parent(
 	IO::Datastore& datastore,
 	Object::ID const new_parent
 ) noexcept;
+
+/**
+	Get the path to an object.
+	@{
+*/
+String
+path_to(
+	Object::ID const id,
+	IO::Datastore const& datastore
+) noexcept;
+
+inline String
+path_to(
+	Object::Unit const& object,
+	IO::Datastore const& datastore
+) noexcept {
+	return path_to(object.get_id(), datastore);
+}
+/** @} */
 
 /**
 	Object %ID printer.
