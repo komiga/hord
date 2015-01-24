@@ -182,6 +182,47 @@ Datastore::destroy_object(
 }
 #undef HORD_SCOPE_FUNC
 
+static Object::Unit const*
+find_by_slug(
+	IO::Datastore const& datastore,
+	IO::Datastore::id_set_type const& children,
+	unsigned const slug_size,
+	char const* slug
+) {
+	for (auto const id : children) {
+		auto const* object = datastore.find_ptr(id);
+		if (object && string_equal(object->get_slug(), slug_size, slug)) {
+			return object;
+		}
+	}
+	return nullptr;
+}
+
+Object::Unit const*
+Datastore::find_ptr_path(
+	String const& path
+) const noexcept {
+	if (path.empty() || (path.size() == 1 && path[0] == '/')) {
+		return nullptr;
+	}
+	Object::Unit const* object = nullptr;
+	auto a = path.find('/');
+	decltype(a) b;
+	while (a != String::npos) {
+		b = path.find(++a, '/');
+		object = find_by_slug(
+			*this,
+			object ? object->get_children() : m_root_objects,
+			min_ce(b, path.size()) - a, &path[a]
+		);
+		if (!object || b == String::npos) {
+			break;
+		}
+		a = path.find(b + 1, '/');
+	}
+	return object;
+}
+
 #undef HORD_CLOSED_CHECK_
 #undef HORD_LOCKED_CHECK_
 

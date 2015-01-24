@@ -636,6 +636,7 @@ public:
 		Find resident object pointer by ID.
 
 		@note Will return @c nullptr when <code>id == Object::ID_NULL</code>.
+		@{
 	*/
 	Object::Unit*
 	find_ptr(
@@ -653,7 +654,6 @@ public:
 		}
 	}
 
-	/** @copydoc find_ptr(Object::ID const id) noexcept */
 	Object::Unit const*
 	find_ptr(
 		Object::ID const id
@@ -669,6 +669,24 @@ public:
 			return nullptr;
 		}
 	}
+	/** @} */
+
+	/**
+		Find resident object pointer by path.
+		@{
+	*/
+	Object::Unit*
+	find_ptr_path(
+		String const& path
+	) noexcept {
+		return const_cast<Object::Unit*>(make_const(*this).find_ptr_path(path));
+	}
+
+	Object::Unit const*
+	find_ptr_path(
+		String const& path
+	) const noexcept;
+	/** @} */
 /// @}
 };
 
