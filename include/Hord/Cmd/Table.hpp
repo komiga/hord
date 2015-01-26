@@ -41,11 +41,7 @@ class Create final
 public:
 /** @name Operations */ /// @{
 	/**
-		Execute command.
-
-		@note IO::PropType::identity is implicit, and any types not
-		supplied for a particular object are ignored when loading
-		props.
+		Create table.
 	*/
 	exec_result_type
 	operator()(
