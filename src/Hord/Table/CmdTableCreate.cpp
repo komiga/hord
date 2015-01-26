@@ -44,6 +44,7 @@ HORD_SCOPE_CLASS::operator()(
 	auto& datastore = get_datastore();
 
 	// Validate
+	auto const* schema_ref_obj = datastore.find_ptr(schema_ref);
 	if (
 		parent != Hord::Object::ID_NULL &&
 		!datastore.has_object(parent)
@@ -51,14 +52,12 @@ HORD_SCOPE_CLASS::operator()(
 		return commit_error("parent not found");
 	} else if (
 		Hord::Table::ID_NULL != schema_ref &&
-		!datastore.has_object(schema_ref)
+		!schema_ref_obj
 	) {
 		return commit_error("schema ref not found");
 	} else if (
 		Hord::Table::ID_NULL != schema_ref &&
-		Hord::Object::BaseType::Table != datastore.find_ptr(
-			schema_ref
-		)->get_base_type()
+		Hord::Object::BaseType::Table != schema_ref_obj->get_base_type()
 	) {
 		return commit_error("schema ref not a table");
 	} else if (slug.empty()) {
@@ -69,7 +68,7 @@ HORD_SCOPE_CLASS::operator()(
 		// TODO: Only check children of parent
 		// (all should be resident when command is executed)
 		for (auto const& pair : datastore.get_objects()) {
-			auto const* const object = pair.second.get();
+			auto const* object = pair.second.get();
 			if (
 				nullptr != object &&
 				parent  == object->get_parent() &&
@@ -81,17 +80,14 @@ HORD_SCOPE_CLASS::operator()(
 	}
 
 	// Create
-	auto const* const
-	tinfo = driver.get_object_type_info(
+	auto const* tinfo = driver.get_object_type_info(
 		Hord::Table::Type{unit_type}
 	);
 	if (nullptr == tinfo) {
 		return commit_error("unknown unit type");
 	}
 	// NB: Leak ErrorCode::datastore_closed
-	m_object_id = Hord::Table::ID{datastore.generate_id(
-	    driver.get_id_generator()
-	)};
+	m_object_id = datastore.generate_id(driver.get_id_generator());
 	auto obj = tinfo->construct(m_object_id, Hord::Object::ID_NULL);
 	if (nullptr == obj) {
 		return commit_error("allocation failed");
@@ -111,6 +107,11 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::set_parent(table, datastore, parent);
 	table.set_slug(slug);
 	table.set_schema_ref(schema_ref);
+	if (schema_ref_obj) {
+		table.get_data().replace_schema(
+			static_cast<Hord::Table::Unit const*>(schema_ref_obj)->get_data().get_schema()
+		);
+	}
 	table.get_prop_states().assign_all(IO::PropState::modified);
 
 	return commit();
