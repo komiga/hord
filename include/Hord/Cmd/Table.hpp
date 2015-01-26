@@ -38,22 +38,7 @@ class Create final
 		"Cmd::Table::Create"
 	);
 
-private:
-	Hord::Table::ID m_id{Hord::Table::ID_NULL};
-
 public:
-/** @name Properties */ /// @{
-	/**
-		Get ID of created table.
-
-		@returns Table::ID_NULL if the command failed.
-	*/
-	Hord::Table::ID
-	get_id() const noexcept {
-		return m_id;
-	}
-/// @}
-
 /** @name Operations */ /// @{
 	/**
 		Execute command.

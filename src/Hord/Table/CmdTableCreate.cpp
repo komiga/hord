@@ -27,7 +27,7 @@ namespace Table {
 #define HORD_SCOPE_FUNC commit_impl
 HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 	if (bad()) {
-		m_id = Hord::Table::ID_NULL;
+		m_object_id = Hord::Table::ID_NULL;
 	}
 }
 #undef HORD_SCOPE_FUNC
@@ -89,19 +89,19 @@ HORD_SCOPE_CLASS::operator()(
 		return commit_error("unknown unit type");
 	}
 	// NB: Leak ErrorCode::datastore_closed
-	m_id = Hord::Table::ID{datastore.generate_id(
+	m_object_id = Hord::Table::ID{datastore.generate_id(
 	    driver.get_id_generator()
 	)};
-	auto obj = tinfo->construct(m_id, Hord::Object::ID_NULL);
+	auto obj = tinfo->construct(m_object_id, Hord::Object::ID_NULL);
 	if (nullptr == obj) {
 		return commit_error("allocation failed");
 	}
-	auto emplace_pair = datastore.get_objects().emplace(m_id, std::move(obj));
+	auto emplace_pair = datastore.get_objects().emplace(m_object_id, std::move(obj));
 	if (!emplace_pair.second) {
 		return commit_error("id already exists");
 	}
 	datastore.create_object(
-		m_id, *tinfo, IO::Linkage::resident
+		m_object_id, *tinfo, IO::Linkage::resident
 	);
 
 	// Properties
