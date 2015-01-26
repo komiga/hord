@@ -46,7 +46,7 @@ public:
 	static constexpr Object::type_info const
 	info{
 		"Hord.Table.Basic",
-		Table::Type{Table::UnitType::basic},
+		Table::Type{Table::UnitType::Basic},
 		{Table::SUPPLIED_PROPS},
 		UnitBasic::construct
 	};

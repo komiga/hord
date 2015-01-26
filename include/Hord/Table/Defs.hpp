@@ -45,7 +45,7 @@ ID_NULL{Object::ID_NULL};
 */
 enum class UnitType : Object::TypeValue {
 	/** Basic table unit. */
-	basic = 1u
+	Basic = 1u
 };
 
 } // namespace Table

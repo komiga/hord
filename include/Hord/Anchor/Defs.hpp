@@ -44,7 +44,7 @@ enum class UnitType : Object::TypeValue {
 	/** Typeless. */
 	null = 0u,
 	/** Basic anchor unit. */
-	basic = 1u
+	Basic = 1u
 };
 
 } // namespace Anchor
