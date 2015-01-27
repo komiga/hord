@@ -81,8 +81,8 @@ HORD_SCOPE_CLASS::operator()(
 	} else {
 		auto const& parent_children = parent_obj ? parent_obj->get_children() : datastore.get_root_objects();
 		for (auto child_id : parent_children) {
-			auto object = datastore.find_ptr(child_id);
-			if (object && slug == object->get_slug()) {
+			auto child_obj = datastore.find_ptr(child_id);
+			if (child_obj && slug == child_obj->get_slug()) {
 				return commit_error("slug already exists");
 			}
 		}
