@@ -70,13 +70,15 @@ using TypeValue = std::uint32_t;
 */
 enum class BaseType : Object::TypeValue {
 	/** Typeless. */
-	null = 0u,
+	null = 0,
+	/** @ref schema. */
+	Schema = 0x1,
 	/** @ref anchor. */
-	Anchor,
+	Anchor = 0x4,
 	/** @ref rule. */
-	Rule,
+	Rule = 0x5,
 	/** @ref table. */
-	Table
+	Table = 0x6,
 };
 
 /**
@@ -92,7 +94,7 @@ enum class BaseType : Object::TypeValue {
 */
 enum class UnitType : Object::TypeValue {
 	/** Typeless. */
-	null = 0u
+	null = 0
 };
 
 /**
@@ -113,6 +115,7 @@ get_base_type_name(
 ) noexcept {
 	switch (base_type) {
 	case Object::BaseType::null:	return "null";
+	case Object::BaseType::Schema:	return "Schema";
 	case Object::BaseType::Anchor:	return "Anchor";
 	case Object::BaseType::Rule:	return "Rule";
 	case Object::BaseType::Table:	return "Table";

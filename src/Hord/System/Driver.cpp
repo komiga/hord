@@ -3,6 +3,9 @@
 */
 
 #include <Hord/Object/Defs.hpp>
+#include <Hord/Schema/Defs.hpp>
+#include <Hord/Schema/UnitGeneric.hpp>
+#include <Hord/Schema/UnitTable.hpp>
 #include <Hord/Anchor/Defs.hpp>
 #include <Hord/Anchor/UnitBasic.hpp>
 #include <Hord/Table/Defs.hpp>
@@ -49,6 +52,8 @@ Driver::Driver(
 	);
 	// TODO: Register standard rule types
 	if (register_standard_object_types) {
+		register_object_type(Schema::UnitGeneric::info);
+		register_object_type(Schema::UnitTable::info);
 		register_object_type(Anchor::UnitBasic::info);
 		register_object_type(Table::UnitBasic::info);
 	}
