@@ -40,7 +40,7 @@ HORD_SCOPE_CLASS::operator()(
 	bool const success = Hord::Object::set_parent(object, datastore, new_parent);
 	auto const end = datastore.get_root_objects().end();
 	auto const it = datastore.get_root_objects().find(object.get_id());
-	if (object.get_parent() == Hord::Object::ID_NULL) {
+	if (object.get_parent().is_null()) {
 		if (it == end) {
 			datastore.get_root_objects().emplace(object.get_id());
 		}
