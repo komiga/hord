@@ -46,7 +46,7 @@ Unit::deserialize_prop_primary(
 	IO::InputPropStream& /*prop_stream*/,
 	InputSerializer& ser
 ) {
-	Table::ID des_schema_ref{Table::ID_NULL};
+	Schema::ID des_schema_ref{Schema::ID_NULL};
 	ser(des_schema_ref);
 
 	Data::Table des_data;

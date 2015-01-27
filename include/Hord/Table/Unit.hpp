@@ -15,6 +15,7 @@
 #include <Hord/IO/PropStream.hpp>
 #include <Hord/Object/Defs.hpp>
 #include <Hord/Object/Unit.hpp>
+#include <Hord/Schema/Defs.hpp>
 #include <Hord/Table/Defs.hpp>
 
 namespace Hord {
@@ -54,7 +55,7 @@ public:
 	{};
 
 private:
-	Table::ID m_schema_ref{Table::ID_NULL};
+	Schema::ID m_schema_ref{Table::ID_NULL};
 	Data::Table m_data;
 
 	Unit() = delete;
@@ -114,15 +115,15 @@ public:
 	*/
 	void
 	set_schema_ref(
-		Table::ID const table_id
+		Schema::ID const schema_id
 	) noexcept {
-		m_schema_ref = table_id;
+		m_schema_ref = schema_id;
 	}
 
 	/**
 		Get schema reference.
 	*/
-	Table::ID
+	Schema::ID
 	get_schema_ref() const noexcept {
 		return m_schema_ref;
 	}

@@ -8,6 +8,8 @@
 #include <Hord/IO/Prop.hpp>
 #include <Hord/IO/Datastore.hpp>
 #include <Hord/Object/Ops.hpp>
+#include <Hord/Schema/Defs.hpp>
+#include <Hord/Schema/UnitTable.hpp>
 #include <Hord/Table/Defs.hpp>
 #include <Hord/Table/Unit.hpp>
 #include <Hord/Cmd/Table.hpp>
@@ -35,31 +37,32 @@ HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Hord::Object::ID const parent,
-	Hord::Table::ID const schema_ref,
+	Hord::Object::ID const parent_id,
+	Hord::Schema::ID const schema_id,
 	String const& slug,
-	Hord::Table::UnitType const unit_type
+	Hord::Table::UnitType const unit_type,
+	bool const attach_to_schema
 ) noexcept try {
 	auto& driver = get_driver();
 	auto& datastore = get_datastore();
 
 	// Validate
-	auto const* schema_ref_obj = datastore.find_ptr(schema_ref);
+	auto const* schema_obj = datastore.find_ptr(schema_id);
 	if (
-		parent != Hord::Object::ID_NULL &&
-		!datastore.has_object(parent)
+		parent_id != Hord::Object::ID_NULL &&
+		!datastore.has_object(parent_id)
 	) {
 		return commit_error("parent not found");
 	} else if (
-		Hord::Table::ID_NULL != schema_ref &&
-		!schema_ref_obj
+		Hord::Schema::ID_NULL != schema_id &&
+		!schema_obj
 	) {
-		return commit_error("schema ref not found");
+		return commit_error("schema not found");
 	} else if (
-		Hord::Table::ID_NULL != schema_ref &&
-		Hord::Object::BaseType::Table != schema_ref_obj->get_base_type()
+		Hord::Schema::ID_NULL != schema_id &&
+		Hord::Object::BaseType::Schema != schema_obj->get_base_type()
 	) {
-		return commit_error("schema ref not a table");
+		return commit_error("given schema ID is not a schema");
 	} else if (slug.empty()) {
 		return commit_error("slug empty");
 	} else if (Hord::Object::SLUG_MAX_SIZE < slug.size()) {
@@ -71,7 +74,7 @@ HORD_SCOPE_CLASS::operator()(
 			auto const* object = pair.second.get();
 			if (
 				nullptr != object &&
-				parent  == object->get_parent() &&
+				parent_id  == object->get_parent() &&
 				slug    == object->get_slug()
 			) {
 				return commit_error("slug already exists");
@@ -104,13 +107,19 @@ HORD_SCOPE_CLASS::operator()(
 	auto& table = static_cast<Hord::Table::Unit&>(
 		*emplace_pair.first->second
 	);
-	Hord::Object::set_parent(table, datastore, parent);
+	Hord::Object::set_parent(table, datastore, parent_id);
 	table.set_slug(slug);
-	table.set_schema_ref(schema_ref);
-	if (schema_ref_obj) {
-		table.get_data().replace_schema(
-			static_cast<Hord::Table::Unit const*>(schema_ref_obj)->get_data().get_schema()
-		);
+	if (attach_to_schema) {
+		table.set_schema_ref(schema_id);
+	}
+	if (schema_obj) {
+		auto schema_obj_typed = static_cast<Hord::Schema::Unit const*>(schema_obj);
+		table.get_metadata().table().assign(schema_obj_typed->get_init_metadata().table());
+		if (Hord::Schema::UnitType::Table == static_cast<Hord::Schema::UnitType>(schema_obj->get_unit_type())) {
+			table.get_data().replace_schema(
+				static_cast<Hord::Schema::UnitTable const*>(schema_obj)->get_data_schema()
+			);
+		}
 	}
 	table.get_prop_states().assign_all(IO::PropState::modified);
 
