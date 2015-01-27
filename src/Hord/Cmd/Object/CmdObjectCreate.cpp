@@ -12,7 +12,7 @@
 #include <Hord/Schema/UnitTable.hpp>
 #include <Hord/Table/Defs.hpp>
 #include <Hord/Table/Unit.hpp>
-#include <Hord/Cmd/Table.hpp>
+#include <Hord/Cmd/Object.hpp>
 #include <Hord/System/Driver.hpp>
 #include <Hord/System/Context.hpp>
 
@@ -22,14 +22,33 @@
 
 namespace Hord {
 namespace Cmd {
-namespace Table {
+namespace Object {
 
-#define HORD_SCOPE_CLASS Cmd::Table::Create
+#define HORD_SCOPE_CLASS Cmd::Object::Create
+
+#define HORD_SCOPE_FUNC init_table // pseudo
+static void
+init_table(
+	Hord::Table::Unit& table,
+	Hord::Schema::ID schema_id,
+	Hord::Schema::Unit const* schema_obj,
+	bool schema_ref
+) {
+	if (schema_ref) {
+		table.set_schema_ref(schema_id);
+	}
+	if (schema_obj && Hord::Schema::UnitType::Table == static_cast<Hord::Schema::UnitType>(schema_obj->get_unit_type())) {
+		table.get_data().replace_schema(
+			static_cast<Hord::Schema::UnitTable const*>(schema_obj)->get_data_schema()
+		);
+	}
+}
+#undef HORD_SCOPE_FUNC
 
 #define HORD_SCOPE_FUNC commit_impl
 HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 	if (bad()) {
-		m_object_id = Hord::Table::ID_NULL;
+		m_object_id = Hord::Object::ID_NULL;
 	}
 }
 #undef HORD_SCOPE_FUNC
@@ -37,20 +56,21 @@ HORD_CMD_IMPL_COMMIT_DEF(HORD_SCOPE_CLASS) {
 #define HORD_SCOPE_FUNC exec // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
-	Hord::Object::ID const parent_id,
-	Hord::Schema::ID const schema_id,
+	Hord::Object::Type type,
+	Hord::Object::ID parent_id,
+	Hord::Schema::ID schema_id,
 	String const& slug,
-	Hord::Table::UnitType const unit_type,
-	bool const attach_to_schema
+	bool schema_ref
 ) noexcept try {
 	auto& driver = get_driver();
 	auto& datastore = get_datastore();
 
 	// Validate
+	auto const* parent_obj = datastore.find_ptr(parent_id);
 	auto const* schema_obj = datastore.find_ptr(schema_id);
 	if (
 		parent_id != Hord::Object::ID_NULL &&
-		!datastore.has_object(parent_id)
+		!parent_obj
 	) {
 		return commit_error("parent not found");
 	} else if (
@@ -68,24 +88,17 @@ HORD_SCOPE_CLASS::operator()(
 	} else if (Hord::Object::SLUG_MAX_SIZE < slug.size()) {
 		return commit_error("slug too long");
 	} else {
-		// TODO: Only check children of parent
-		// (all should be resident when command is executed)
-		for (auto const& pair : datastore.get_objects()) {
-			auto const* object = pair.second.get();
-			if (
-				nullptr != object &&
-				parent_id  == object->get_parent() &&
-				slug    == object->get_slug()
-			) {
+		auto const& parent_children = parent_obj ? parent_obj->get_children() : datastore.get_root_objects();
+		for (auto child_id : parent_children) {
+			auto object = datastore.find_ptr(child_id);
+			if (object && slug == object->get_slug()) {
 				return commit_error("slug already exists");
 			}
 		}
 	}
 
 	// Create
-	auto const* tinfo = driver.get_object_type_info(
-		Hord::Table::Type{unit_type}
-	);
+	auto const* tinfo = driver.get_object_type_info(type);
 	if (nullptr == tinfo) {
 		return commit_error("unknown unit type");
 	}
@@ -99,29 +112,36 @@ HORD_SCOPE_CLASS::operator()(
 	if (!emplace_pair.second) {
 		return commit_error("id already exists");
 	}
-	datastore.create_object(
-		m_object_id, *tinfo, IO::Linkage::resident
-	);
+	datastore.create_object(m_object_id, *tinfo, IO::Linkage::resident);
 
-	// Properties
-	auto& table = static_cast<Hord::Table::Unit&>(
-		*emplace_pair.first->second
-	);
-	Hord::Object::set_parent(table, datastore, parent_id);
-	table.set_slug(slug);
-	if (attach_to_schema) {
-		table.set_schema_ref(schema_id);
+	// Base object properties
+	auto& object = *emplace_pair.first->second;
+	auto schema_obj_typed = static_cast<Hord::Schema::Unit const*>(schema_obj);
+	Hord::Object::set_parent(object, datastore, parent_id);
+	object.set_slug(slug);
+	if (schema_obj_typed) {
+		object.get_metadata().table().assign(schema_obj_typed->get_init_metadata().table());
 	}
-	if (schema_obj) {
-		auto schema_obj_typed = static_cast<Hord::Schema::Unit const*>(schema_obj);
-		table.get_metadata().table().assign(schema_obj_typed->get_init_metadata().table());
-		if (Hord::Schema::UnitType::Table == static_cast<Hord::Schema::UnitType>(schema_obj->get_unit_type())) {
-			table.get_data().replace_schema(
-				static_cast<Hord::Schema::UnitTable const*>(schema_obj)->get_data_schema()
-			);
-		}
+
+	// Base type-specific properties
+	switch (type.base()) {
+	case Hord::Object::BaseType::null:
+	case Hord::Object::BaseType::Schema:
+	case Hord::Object::BaseType::Anchor:
+	case Hord::Object::BaseType::Rule:
+		// Do nothing
+		break;
+
+	case Hord::Object::BaseType::Table:
+		init_table(
+			static_cast<Hord::Table::Unit&>(object),
+			schema_id,
+			schema_obj_typed,
+			schema_ref
+		);
+		break;
 	}
-	table.get_prop_states().assign_all(IO::PropState::modified);
+	object.get_prop_states().assign_all(IO::PropState::modified);
 
 	return commit();
 } catch (Error const& err) {
@@ -138,6 +158,6 @@ HORD_SCOPE_CLASS::operator()(
 
 #undef HORD_SCOPE_CLASS
 
-} // namespace Table
+} // namespace Object
 } // namespace Cmd
 } // namespace Hord

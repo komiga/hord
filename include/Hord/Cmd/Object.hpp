@@ -14,6 +14,7 @@
 #include <Hord/Data/ValueRef.hpp>
 #include <Hord/Data/Table.hpp>
 #include <Hord/Object/Defs.hpp>
+#include <Hord/Schema/Defs.hpp>
 #include <Hord/Cmd/Defs.hpp>
 #include <Hord/Cmd/Unit.hpp>
 
@@ -22,6 +23,7 @@ namespace Cmd {
 namespace Object {
 
 // Forward declarations
+class Create;
 class SetSlug;
 class SetParent;
 
@@ -34,6 +36,38 @@ class RemoveMetaField;
 	@addtogroup cmd_object
 	@{
 */
+
+/**
+	Object create command.
+*/
+class Create final
+	: public Cmd::Unit<Create>
+{
+	HORD_CMD_IMPL_BOILERPLATE_WITH_COMMIT(
+		Create,
+		"Cmd::Object::Create"
+	);
+
+public:
+/** @name Operations */ /// @{
+	/**
+		Create object.
+
+		If @a schema_id is non-null, it must refer to a @ref schema.
+
+		If @a schema_ref is @c true and @a type is a @ref table,
+		its @c schema_ref property will be set to @a schema_id.
+	*/
+	exec_result_type
+	operator()(
+		Hord::Object::Type type,
+		Hord::Object::ID parent_id,
+		Hord::Schema::ID schema_id,
+		String const& slug,
+		bool schema_ref
+	) noexcept;
+/// @}
+};
 
 /**
 	Set slug command.
@@ -265,6 +299,7 @@ public:
 } // namespace Object
 
 /** @cond INTERNAL */
+HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::Create);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetSlug);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetParent);
 HORD_CMD_IMPL_ENSURE_TRAITS(Cmd::Object::SetMetaField);
