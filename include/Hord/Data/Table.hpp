@@ -359,6 +359,16 @@ public:
 	optimize_storage();
 
 	/**
+		Assign to a copy of another table.
+
+		@returns @c true if the schema changed.
+	*/
+	bool
+	assign(
+		Data::Table const& table
+	);
+
+	/**
 		Remove all records.
 	*/
 	void clear() noexcept;

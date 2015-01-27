@@ -853,6 +853,27 @@ Table::optimize_storage() {
 	m_chunks.erase(it_put, m_chunks.end());
 }
 
+bool
+Table::assign(
+	Data::Table const& table
+) {
+	clear();
+	bool schema_changed = replace_schema(table.get_schema());
+	unsigned head;
+	unsigned tail;
+	for (auto const& chunk : table.m_chunks) {
+		Data::Table::Chunk chunk_copy{};
+		head = chunk.offset_head();
+		tail = chunk.offset_tail();
+		chunk_allocate(chunk_copy, chunk.size);
+		chunk_set_bounds(chunk_copy, chunk.num_records, head, tail);
+		std::memcpy(chunk_copy.data + head, chunk.data + head, chunk.space_used());
+		m_chunks.push_back(chunk_copy);
+	}
+	m_num_records = table.m_num_records;
+	return schema_changed;
+}
+
 void
 Table::insert(
 	Data::Table::Iterator& it,
