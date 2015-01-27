@@ -68,24 +68,15 @@ HORD_SCOPE_CLASS::operator()(
 	// Validate
 	auto const* parent_obj = datastore.find_ptr(parent_id);
 	auto const* schema_obj = datastore.find_ptr(schema_id);
-	if (
-		parent_id != Hord::Object::ID_NULL &&
-		!parent_obj
-	) {
+	if (!parent_id.is_null() && !parent_obj) {
 		return commit_error("parent not found");
-	} else if (
-		Hord::Schema::ID_NULL != schema_id &&
-		!schema_obj
-	) {
+	} else if (!schema_id.is_null() && !schema_obj) {
 		return commit_error("schema not found");
-	} else if (
-		Hord::Schema::ID_NULL != schema_id &&
-		Hord::Object::BaseType::Schema != schema_obj->get_base_type()
-	) {
+	} else if (!schema_id.is_null() && Hord::Object::BaseType::Schema != schema_obj->get_base_type()) {
 		return commit_error("given schema ID is not a schema");
 	} else if (slug.empty()) {
 		return commit_error("slug empty");
-	} else if (Hord::Object::SLUG_MAX_SIZE < slug.size()) {
+	} else if (slug.size() > Hord::Object::SLUG_MAX_SIZE) {
 		return commit_error("slug too long");
 	} else {
 		auto const& parent_children = parent_obj ? parent_obj->get_children() : datastore.get_root_objects();
