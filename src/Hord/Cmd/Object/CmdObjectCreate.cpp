@@ -133,6 +133,9 @@ HORD_SCOPE_CLASS::operator()(
 		break;
 	}
 	object.get_prop_states().assign_all(IO::PropState::modified);
+	if (object.get_parent().is_null()) {
+		datastore.get_root_objects().emplace(m_object_id);
+	}
 
 	return commit();
 } catch (Error const& err) {
