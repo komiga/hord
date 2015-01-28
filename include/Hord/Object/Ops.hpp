@@ -30,7 +30,7 @@ struct IDPrinter;
 /**
 	Set object parent.
 
-	@note If <code>object.get_id() == new_parent</code>, the object is
+	@note If <code>object.id() == new_parent</code>, the object is
 	unmodified and @c false is returned.
 
 	@pre @code
@@ -39,17 +39,17 @@ struct IDPrinter;
 
 	@post If succeeded:
 	@code
-		object.get_parent() == new_parent
+		object.parent() == new_parent
 	@endcode
 
 	@post If new_parent does not exist:
 	@code
-		object.get_parent() == Object::ID_NULL
+		object.parent() == Object::ID_NULL
 	@endcode
 
 	@post If state was changed:
 	@code
-		true == object.get_prop_states().has(
+		true == object.prop_states().has(
 		    IO::PropType::identity,
 		    IO::PropState::modified
 		)
@@ -83,7 +83,7 @@ path_to(
 	Object::Unit const& object,
 	IO::Datastore const& datastore
 ) noexcept {
-	return path_to(object.get_id(), datastore);
+	return path_to(object.id(), datastore);
 }
 /** @} */
 
@@ -125,13 +125,13 @@ public:
 		Constructor with object.
 
 		@post @code
-			this->id == object.get_id()
+			this->id == object.id()
 		@endcode
 	*/
 	IDPrinter(
 		Object::Unit const& object
 	) noexcept
-		: id(object.get_id())
+		: id(object.id())
 	{}
 /// @}
 };

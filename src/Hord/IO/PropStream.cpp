@@ -26,7 +26,7 @@ InputPropStream::InputPropStream(
 {}
 
 std::istream&
-InputPropStream::get_stream() {
+InputPropStream::stream() {
 	assert(nullptr != m_stream);
 	return *m_stream;
 }
@@ -69,7 +69,7 @@ OutputPropStream::OutputPropStream(
 {}
 
 std::ostream&
-OutputPropStream::get_stream() {
+OutputPropStream::stream() {
 	assert(nullptr != m_stream);
 	return *m_stream;
 }

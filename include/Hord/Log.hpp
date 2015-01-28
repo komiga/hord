@@ -251,7 +251,7 @@ public:
 		Get log file path.
 	*/
 	String const&
-	get_file_path() const noexcept {
+	file_path() const noexcept {
 		return m_file_path;
 	}
 /// @}
@@ -313,7 +313,7 @@ public:
 		Get stream type.
 	*/
 	StreamType
-	get_type() const noexcept {
+	type() const noexcept {
 		return m_type;
 	}
 /// @}

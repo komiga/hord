@@ -23,7 +23,7 @@ Unit::Unit(Unit&&) = default;
 Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
-	Object::type_info const& tinfo,
+	Object::TypeInfo const& tinfo,
 	Anchor::ID const id,
 	Object::ID const parent
 ) noexcept

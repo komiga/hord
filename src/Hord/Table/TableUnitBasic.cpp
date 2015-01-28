@@ -15,7 +15,7 @@ namespace Table {
 
 #define HORD_SCOPE_CLASS Table::UnitBasic
 
-constexpr Object::type_info const
+constexpr Object::TypeInfo const
 Table::UnitBasic::info;
 
 Object::UPtr

@@ -23,15 +23,15 @@ emplace_child(
 ) noexcept {
 	assert(!parent.is_null());
 
-	if (object.has_child(parent.get_id())) {
+	if (object.has_child(parent.id())) {
 		return false;
 	}
 
 	// NB: children is a set, so no duplicates occur
-	parent.get_children().emplace(object.get_id());
-	if (object.get_parent() != parent.get_id()) {
-		object.set_parent(parent.get_id());
-		object.get_prop_states().assign(
+	parent.children().emplace(object.id());
+	if (object.parent() != parent.id()) {
+		object.set_parent(parent.id());
+		object.prop_states().assign(
 			IO::PropType::identity,
 			IO::PropState::modified
 		);
@@ -47,17 +47,17 @@ set_parent(
 ) noexcept {
 	assert(!object.is_null());
 
-	if (new_parent == object.get_id()) {
+	if (new_parent == object.id()) {
 		return false;
 	}
 
-	auto* const old_ptr = datastore.find_ptr(object.get_parent());
+	auto* const old_ptr = datastore.find_ptr(object.parent());
 	if (old_ptr) {
-		if (object.get_parent() == new_parent) {
+		if (object.parent() == new_parent) {
 			// To ensure object is in parent's children collection
 			return emplace_child(object, *old_ptr);
 		} else {
-			old_ptr->get_children().erase(object.get_id());
+			old_ptr->children().erase(object.id());
 			object.set_parent(Object::ID_NULL);
 		}
 	}
@@ -66,9 +66,9 @@ set_parent(
 		return emplace_child(object, *new_ptr);
 	} else {
 		// If old_ptr and/or new_ptr are null or do not exist
-		if (!object.get_parent().is_null()) {
+		if (!object.parent().is_null()) {
 			object.set_parent(Object::ID_NULL);
-			object.get_prop_states().assign(
+			object.prop_states().assign(
 				IO::PropType::identity,
 				IO::PropState::modified
 			);
@@ -83,12 +83,12 @@ push_path_parent(
 	Object::Unit const& object,
 	IO::Datastore const& datastore
 ) noexcept {
-	auto* const parent = datastore.find_ptr(object.get_parent());
+	auto* const parent = datastore.find_ptr(object.parent());
 	if (parent) {
 		push_path_parent(path, *parent, datastore);
-		path.append(parent->get_slug());
+		path.append(parent->slug());
 		path.append(1, '/');
-	} else if (object.get_parent() != Object::ID_NULL) {
+	} else if (object.parent() != Object::ID_NULL) {
 		path.append("<non-existent>/");
 	}
 }
@@ -104,7 +104,7 @@ path_to(
 	auto* const object = datastore.find_ptr(id);
 	if (object) {
 		push_path_parent(path, *object, datastore);
-		path.append(object->get_slug());
+		path.append(object->slug());
 	} else if (id != Object::ID_NULL) {
 		path.append("<non-existent>");
 	}
@@ -135,13 +135,13 @@ operator<<(
 	std::ostream& stream,
 	Object::Unit const& object
 ) {
-	auto const& type_info = object.get_type_info();
+	auto const& type_info = object.type_info();
 	ceformat::write<s_fmt_object_identity>(
 		stream,
-		object.get_id().value(),
+		object.id().value(),
 		Object::get_base_type_name(type_info.type.base()),
 		type_info.unit_name,
-		object.get_slug()
+		object.slug()
 	);
 	return stream;
 }

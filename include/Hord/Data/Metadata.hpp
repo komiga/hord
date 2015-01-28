@@ -101,7 +101,7 @@ public:
 		@note State will be retained if an exception is thrown.
 
 		@pre @code
-			IO::PropType::metadata == prop_stream.get_type()
+			IO::PropType::metadata == prop_stream.type()
 		@endcode
 
 		@throws Error{ErrorCode::serialization_io_failed}
@@ -118,7 +118,7 @@ public:
 		@note State will be retained if an exception is thrown.
 
 		@pre @code
-			IO::PropType::metadata == prop_stream.get_type()
+			IO::PropType::metadata == prop_stream.type()
 		@endcode
 
 		@throws Error{ErrorCode::serialization_io_failed}

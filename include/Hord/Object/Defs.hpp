@@ -37,7 +37,7 @@ template<class>
 struct GenType;
 template<Object::BaseType const>
 struct GenID;
-struct type_info;
+struct TypeInfo;
 
 /**
 	@addtogroup object
@@ -722,7 +722,7 @@ struct is_genid<Object::GenID<B>>
 /**
 	Object type info.
 */
-struct type_info {
+struct TypeInfo {
 /** @name Types */ /// @{
 	/**
 		Construct function type.
@@ -768,7 +768,7 @@ struct type_info {
 	*/
 	template<std::size_t const N>
 	constexpr
-	type_info(
+	TypeInfo(
 		char const (&unit_name)[N],
 		Object::Type const type,
 		IO::PropStateStore const& props,

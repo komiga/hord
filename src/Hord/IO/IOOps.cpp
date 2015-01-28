@@ -27,7 +27,7 @@ load_prop(
 	IO::PropType const prop_type,
 	bool const force
 ) {
-	if (force || !object.get_prop_states().is_initialized(prop_type)) {
+	if (force || !object.prop_states().is_initialized(prop_type)) {
 		IO::InputPropStream prop_stream{
 			datastore, {object, prop_type}
 		};
@@ -39,7 +39,7 @@ load_prop(
 			prop_stream.release(); // will not double-throw
 			throw;
 		}
-		object.get_prop_states().assign(prop_type, IO::PropState::original);
+		object.prop_states().assign(prop_type, IO::PropState::original);
 		return true;
 	}
 	return false;
@@ -53,7 +53,7 @@ load_prop_weak(
 	std::istream& stream,
 	bool const force
 ) {
-	if (force || !object.get_prop_states().is_initialized(prop_type)) {
+	if (force || !object.prop_states().is_initialized(prop_type)) {
 		IO::InputPropStream prop_stream{
 			datastore, {object, prop_type}
 		};
@@ -112,7 +112,7 @@ store_prop(
 ) {
 	if (
 		force ||
-		object.get_prop_states().has(prop_type, IO::PropState::modified)
+		object.prop_states().has(prop_type, IO::PropState::modified)
 	) {
 		IO::OutputPropStream prop_stream{
 			datastore, {object, prop_type}
@@ -125,7 +125,7 @@ store_prop(
 			prop_stream.release();
 			throw;
 		}
-		object.get_prop_states().assign(prop_type, IO::PropState::original);
+		object.prop_states().assign(prop_type, IO::PropState::original);
 		return true;
 	}
 	return false;
@@ -141,7 +141,7 @@ store_prop_weak(
 ) {
 	if (
 		force ||
-		object.get_prop_states().has(prop_type, IO::PropState::modified)
+		object.prop_states().has(prop_type, IO::PropState::modified)
 	) {
 		IO::OutputPropStream prop_stream{
 			datastore, {object, prop_type}

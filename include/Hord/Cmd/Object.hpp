@@ -138,7 +138,7 @@ public:
 		@returns -1 when no index was known.
 	*/
 	signed
-	get_field_index() const noexcept {
+	field_index() const noexcept {
 		return m_field_index;
 	}
 /// @}

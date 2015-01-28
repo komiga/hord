@@ -73,7 +73,7 @@ public:
 	/**
 		Type info.
 	*/
-	struct type_info final {
+	struct TypeInfo final {
 	/** @name Operations */ /// @{
 		// TODO: Add UPtr alias, return UPtr instead
 		/**
@@ -234,7 +234,7 @@ protected:
 	virtual storage_info_map_type::const_iterator
 	create_object_impl(
 		Object::ID const object_id,
-		Object::type_info const& type_info,
+		Object::TypeInfo const& type_info,
 		IO::Linkage const linkage
 	) = 0;
 
@@ -327,7 +327,7 @@ protected:
 /// @}
 
 private:
-	IO::Datastore::type_info const* m_type_info;
+	IO::Datastore::TypeInfo const* m_type_info;
 	IO::Datastore::ID m_id;
 	duct::StateStore<State> m_states;
 	String m_root_path;
@@ -352,7 +352,7 @@ protected:
 		Constructor with root path.
 	*/
 	Datastore(
-		IO::Datastore::type_info const& tinfo,
+		IO::Datastore::TypeInfo const& tinfo,
 		String root_path
 	) noexcept;
 /// @}
@@ -362,8 +362,8 @@ public:
 	/**
 		Get type info.
 	*/
-	IO::Datastore::type_info const&
-	get_type_info() const noexcept {
+	IO::Datastore::TypeInfo const&
+	type_info() const noexcept {
 		return *m_type_info;
 	}
 
@@ -371,7 +371,7 @@ public:
 		Get ID.
 	*/
 	IO::Datastore::ID
-	get_id() const noexcept {
+	id() const noexcept {
 		return m_id;
 	}
 
@@ -379,7 +379,7 @@ public:
 		Get root path.
 	*/
 	String const&
-	get_root_path() const noexcept {
+	root_path() const noexcept {
 		return m_root_path;
 	}
 
@@ -415,7 +415,7 @@ protected:
 		Get storage info (mutable).
 	*/
 	storage_info_map_type&
-	get_storage_info() noexcept {
+	storage_info() noexcept {
 		return m_storage_info;
 	}
 
@@ -424,7 +424,7 @@ public:
 		Get storage info.
 	*/
 	storage_info_map_type const&
-	get_storage_info() const noexcept {
+	storage_info() const noexcept {
 		return m_storage_info;
 	}
 
@@ -432,7 +432,7 @@ public:
 		Get resident object map (mutable).
 	*/
 	object_map_type&
-	get_objects() noexcept {
+	objects() noexcept {
 		return m_objects;
 	}
 
@@ -440,7 +440,7 @@ public:
 		Get resident object map.
 	*/
 	object_map_type const&
-	get_objects() const noexcept {
+	objects() const noexcept {
 		return m_objects;
 	}
 
@@ -448,7 +448,7 @@ public:
 		Get resident root object set (mutable).
 	*/
 	id_set_type&
-	get_root_objects() noexcept {
+	root_objects() noexcept {
 		return m_root_objects;
 	}
 
@@ -456,7 +456,7 @@ public:
 		Get resident root object set.
 	*/
 	id_set_type const&
-	get_root_objects() const noexcept {
+	root_objects() const noexcept {
 		return m_root_objects;
 	}
 /// @}
@@ -593,7 +593,7 @@ public:
 	storage_info_map_type::const_iterator
 	create_object(
 		Object::ID const object_id,
-		Object::type_info const& type_info,
+		Object::TypeInfo const& type_info,
 		IO::Linkage const linkage
 	);
 

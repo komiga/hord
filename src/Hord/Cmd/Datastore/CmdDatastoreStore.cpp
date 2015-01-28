@@ -32,7 +32,7 @@ store_object(
 	unsigned const num_stored = IO::store_props(
 		datastore,
 		object,
-		object.get_prop_states().get_supplied()
+		object.prop_states().supplied()
 	);
 	num_props_stored += num_stored;
 	num_objects_stored += static_cast<unsigned>(0 < num_stored);
@@ -42,8 +42,8 @@ store_object(
 #define HORD_SCOPE_FUNC exec_all // pseudo
 HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()() noexcept try {
-	auto& datastore = get_datastore();
-	for (auto& obj_pair : datastore.get_objects()) {
+	auto& datastore = this->datastore();
+	for (auto& obj_pair : datastore.objects()) {
 		store_object(
 			datastore,
 			*obj_pair.second,
@@ -74,7 +74,7 @@ HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	Hord::Object::ID const object_id
 ) noexcept try {
-	auto& datastore = get_datastore();
+	auto& datastore = this->datastore();
 	auto* const object = datastore.find_ptr(object_id);
 	if (!object) {
 		return commit_error("object does not exist");

@@ -16,7 +16,7 @@ namespace Cmd {
 
 // Forward declarations
 enum class Result : unsigned;
-struct type_info;
+struct TypeInfo;
 
 /**
 	@addtogroup cmd
@@ -43,7 +43,7 @@ enum class Result : unsigned {
 /**
 	Command type info.
 */
-struct type_info {
+struct TypeInfo {
 /** @name Properties */ /// @{
 	/**
 		Command ID.

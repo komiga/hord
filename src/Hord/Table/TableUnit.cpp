@@ -27,7 +27,7 @@ Unit::Unit(Unit&&) = default;
 Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
-	Object::type_info const& tinfo,
+	Object::TypeInfo const& tinfo,
 	Table::ID const id,
 	Object::ID const parent
 ) noexcept
@@ -53,7 +53,7 @@ Unit::deserialize_impl(
 	IO::InputPropStream& prop_stream
 ) try {
 	auto ser = prop_stream.make_serializer();
-	switch (prop_stream.get_type()) {
+	switch (prop_stream.type()) {
 	case IO::PropType::identity: {
 		Schema::ID des_schema_ref{Schema::ID_NULL};
 		ser(des_schema_ref);
@@ -78,8 +78,8 @@ Unit::deserialize_impl(
 	HORD_THROW_SER_PROP(
 		s_err_read_failed,
 		serr,
-		get_id(),
-		IO::get_prop_type_name(prop_stream.get_type())
+		id(),
+		IO::get_prop_type_name(prop_stream.type())
 	);
 }
 #undef HORD_SCOPE_FUNC
@@ -97,7 +97,7 @@ Unit::serialize_impl(
 	IO::OutputPropStream& prop_stream
 ) const try {
 	auto ser = prop_stream.make_serializer();
-	switch (prop_stream.get_type()) {
+	switch (prop_stream.type()) {
 	case IO::PropType::identity:
 		ser(m_schema_ref);
 		break;
@@ -114,8 +114,8 @@ Unit::serialize_impl(
 	HORD_THROW_SER_PROP(
 		s_err_write_failed,
 		serr,
-		get_id(),
-		IO::get_prop_type_name(prop_stream.get_type())
+		id(),
+		IO::get_prop_type_name(prop_stream.type())
 	);
 }
 #undef HORD_SCOPE_FUNC

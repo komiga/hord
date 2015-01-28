@@ -56,7 +56,7 @@ public:
 
 private:
 	Schema::ID m_schema_ref{Table::ID_NULL};
-	Data::Table m_data;
+	Data::Table m_data{};
 
 	Unit() = delete;
 	Unit(Unit const&) = delete;
@@ -91,7 +91,7 @@ protected:
 		@post See Object::Unit.
 	*/
 	Unit(
-		Object::type_info const& tinfo,
+		Object::TypeInfo const& tinfo,
 		Table::ID const id,
 		Object::ID const parent
 	) noexcept;
@@ -113,7 +113,7 @@ public:
 		Get schema reference.
 	*/
 	Schema::ID
-	get_schema_ref() const noexcept {
+	schema_ref() const noexcept {
 		return m_schema_ref;
 	}
 
@@ -121,7 +121,7 @@ public:
 		Get table data (mutable).
 	*/
 	Data::Table&
-	get_data() noexcept {
+	data() noexcept {
 		return m_data;
 	}
 
@@ -129,7 +129,7 @@ public:
 		Get table data.
 	*/
 	Data::Table const&
-	get_data() const noexcept {
+	data() const noexcept {
 		return m_data;
 	}
 /// @}

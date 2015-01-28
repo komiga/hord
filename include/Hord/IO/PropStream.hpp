@@ -85,7 +85,7 @@ public:
 		Get datastore.
 	*/
 	IO::Datastore&
-	get_datastore() noexcept {
+	datastore() noexcept {
 		return m_datastore;
 	}
 
@@ -93,7 +93,7 @@ public:
 		Get info.
 	*/
 	IO::PropInfo const&
-	get_info() const noexcept {
+	info() const noexcept {
 		return m_info;
 	}
 
@@ -101,7 +101,7 @@ public:
 		Get prop type.
 	*/
 	IO::PropType
-	get_type() const noexcept {
+	type() const noexcept {
 		return m_info.prop_type;
 	}
 
@@ -157,7 +157,7 @@ public:
 		terrific things will happen.
 	*/
 	std::istream&
-	get_stream();
+	stream();
 /// @}
 
 /** @name Operations */ /// @{
@@ -166,7 +166,7 @@ public:
 	*/
 	InputSerializer
 	make_serializer() noexcept {
-		return make_input_serializer(get_stream());
+		return make_input_serializer(stream());
 	}
 
 	/**
@@ -242,7 +242,7 @@ public:
 		terrific things will happen.
 	*/
 	std::ostream&
-	get_stream();
+	stream();
 /// @}
 
 /** @name Operations */ /// @{
@@ -251,7 +251,7 @@ public:
 	*/
 	OutputSerializer
 	make_serializer() noexcept {
-		return make_output_serializer(get_stream());
+		return make_output_serializer(stream());
 	}
 
 	/**

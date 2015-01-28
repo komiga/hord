@@ -93,7 +93,7 @@ public:
 		Get path.
 	*/
 	String const&
-	get_path() const noexcept {
+	path() const noexcept {
 		return m_path;
 	}
 /// @}

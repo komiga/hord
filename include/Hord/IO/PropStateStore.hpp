@@ -264,7 +264,7 @@ public:
 	) const noexcept {
 		return
 			enum_cast(props)
-			== (enum_cast(get_supplied()) & enum_cast(props))
+			== (enum_cast(supplied()) & enum_cast(props))
 		;
 	}
 
@@ -275,14 +275,14 @@ public:
 	supplies_any(
 		IO::PropTypeBit const props
 	) const noexcept {
-		return enum_cast(get_supplied()) & enum_cast(props);
+		return enum_cast(supplied()) & enum_cast(props);
 	}
 
 	/**
 		Get store value.
 	*/
 	constexpr unsigned
-	get_value() const noexcept {
+	value() const noexcept {
 		return m_states;
 	}
 
@@ -290,7 +290,7 @@ public:
 		Get full state for prop.
 	*/
 	constexpr IO::PropState
-	get_state(
+	state(
 		IO::PropType const prop_type
 	) const noexcept {
 		return static_cast<IO::PropState>(
@@ -302,7 +302,7 @@ public:
 		Get supplied props.
 	*/
 	constexpr IO::PropTypeBit
-	get_supplied() const noexcept {
+	supplied() const noexcept {
 		return static_cast<IO::PropTypeBit>(
 			m_supplied >> bit_shift
 		);
@@ -316,7 +316,7 @@ public:
 		IO::PropTypeBit const prop_types
 	) const noexcept {
 		return static_cast<IO::PropTypeBit>(
-			enum_cast(prop_types) & enum_cast(get_supplied())
+			enum_cast(prop_types) & enum_cast(supplied())
 		);
 	}
 
@@ -328,7 +328,7 @@ public:
 		IO::PropTypeBit const prop_types
 	) const noexcept {
 		return static_cast<IO::PropTypeBit>(
-			enum_cast(prop_types) & ~enum_cast(get_supplied())
+			enum_cast(prop_types) & ~enum_cast(supplied())
 		);
 	}
 
@@ -572,7 +572,7 @@ constexpr PropTypeIterator
 begin(
 	IO::PropStateStore const store
 ) noexcept {
-	return {store.get_supplied()};
+	return {store.supplied()};
 }
 
 /**

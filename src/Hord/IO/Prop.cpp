@@ -16,8 +16,8 @@ PropInfo::PropInfo(
 	Object::Unit const& object,
 	IO::PropType const prop_type
 ) noexcept
-	: object_id(object.get_id())
-	, object_type(object.get_type())
+	: object_id(object.id())
+	, object_type(object.type())
 	, prop_type(prop_type)
 {}
 

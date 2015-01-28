@@ -51,7 +51,7 @@ bool
 TableSchema::assign(
 	TableSchema const& schema
 ) noexcept {
-	auto const& new_columns = schema.get_columns();
+	auto const& new_columns = schema.columns();
 	bool changed = m_columns.size() != new_columns.size();
 	if (!changed) {
 		auto x = m_columns.cbegin();
@@ -64,7 +64,7 @@ TableSchema::assign(
 		}
 	}
 	m_columns = new_columns;
-	m_hash = schema.get_hash();
+	m_hash = schema.hash();
 	unsigned index = 0;
 	for (auto& column : m_columns) {
 		column.index = index++;

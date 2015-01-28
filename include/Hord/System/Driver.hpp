@@ -45,7 +45,7 @@ private:
 	using object_type_map_type
 	= aux::unordered_map<
 		Object::Type,
-		Object::type_info const&
+		Object::TypeInfo const&
 	>;
 
 	System::IDGenerator m_id_generator;
@@ -79,7 +79,7 @@ public:
 		Get ID generator.
 	*/
 	System::IDGenerator&
-	get_id_generator() noexcept {
+	id_generator() noexcept {
 		return m_id_generator;
 	}
 
@@ -87,7 +87,7 @@ public:
 		Get datastores collection.
 	*/
 	System::Driver::datastore_map_type&
-	get_datastores() noexcept {
+	datastores() noexcept {
 		return m_datastores;
 	}
 /// @}
@@ -104,7 +104,7 @@ public:
 	*/
 	void
 	register_object_type(
-		Object::type_info const& type_info
+		Object::TypeInfo const& type_info
 	);
 
 	/**
@@ -113,8 +113,8 @@ public:
 		@returns The object type info, or @c nullptr if the type was
 		not registered.
 	*/
-	Object::type_info const*
-	get_object_type_info(
+	Object::TypeInfo const*
+	find_object_type_info(
 		Object::Type const type
 	) const noexcept;
 /// @}
@@ -140,13 +140,13 @@ public:
 
 		@throws Error{ErrorCode::driver_datastore_construct_failed}
 		If the datastore failed to construct (see
-		IO::Datastore::type_info::construct()).
+		IO::Datastore::TypeInfo::construct()).
 
 		@returns The placeheld datastore.
 	*/
 	IO::Datastore&
 	placehold_datastore(
-		IO::Datastore::type_info const& type_info,
+		IO::Datastore::TypeInfo const& type_info,
 		String root_path
 	);
 /// @}

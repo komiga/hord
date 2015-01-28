@@ -32,7 +32,7 @@ HORD_SCOPE_CLASS::load_or_initialize(
 	IO::StorageInfo const& sinfo,
 	IO::PropTypeBit prop_types
 ) {
-	prop_types = object.get_prop_states().supplied_of(prop_types);
+	prop_types = object.prop_states().supplied_of(prop_types);
 	unsigned const num_props_loaded = IO::load_props(
 		datastore,
 		object,
@@ -50,11 +50,11 @@ HORD_SCOPE_CLASS::load_or_initialize(
 		};
 		char ms_buf[BUF_SIZE];
 		duct::IO::omemstream ms{ms_buf, BUF_SIZE};
-		ms << Object::IDPrinter{object.get_id()};
+		ms << Object::IDPrinter{object.id()};
 		object.set_slug(String{ms_buf, BUF_SIZE});
 		object.set_parent(Object::ID_NULL);
 	}
-	object.get_prop_states().assign(unstored_types, IO::PropState::modified);
+	object.prop_states().assign(unstored_types, IO::PropState::modified);
 	return num_props_loaded;
 }
 #undef HORD_SCOPE_FUNC
@@ -64,14 +64,14 @@ HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	IO::PropTypeBit prop_types
 ) noexcept try {
-	auto& datastore = get_datastore();
-	auto const& si_map = make_const(datastore).get_storage_info();
+	auto& datastore = this->datastore();
+	auto const& si_map = make_const(datastore).storage_info();
 
 	auto it_sinfo = si_map.cend();
 	unsigned num_props_loaded;
-	for (auto& obj_pair : datastore.get_objects()) {
+	for (auto& obj_pair : datastore.objects()) {
 		auto& object = *obj_pair.second;
-		it_sinfo = si_map.find(object.get_id());
+		it_sinfo = si_map.find(object.id());
 		DUCT_ASSERTE(it_sinfo != si_map.cend());
 		auto const& sinfo = it_sinfo->second;
 		num_props_loaded = load_or_initialize(
@@ -104,14 +104,14 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::ID const object_id,
 	IO::PropTypeBit prop_types
 ) noexcept try {
-	auto& datastore = get_datastore();
-	auto const& si_map = make_const(datastore).get_storage_info();
+	auto& datastore = this->datastore();
+	auto const& si_map = make_const(datastore).storage_info();
 
 	auto* const object = datastore.find_ptr(object_id);
 	if (!object) {
 		return commit_error("object does not exist");
 	}
-	auto const it_sinfo = si_map.find(object->get_id());
+	auto const it_sinfo = si_map.find(object->id());
 	DUCT_ASSERTE(it_sinfo != si_map.cend());
 	auto const& sinfo = it_sinfo->second;
 	unsigned const num_props_loaded = load_or_initialize(

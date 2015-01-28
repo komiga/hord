@@ -37,9 +37,9 @@ init_table(
 	if (schema_ref) {
 		table.set_schema_ref(schema_id);
 	}
-	if (schema_obj && Hord::Schema::UnitType::Table == static_cast<Hord::Schema::UnitType>(schema_obj->get_unit_type())) {
-		table.get_data().replace_schema(
-			static_cast<Hord::Schema::UnitTable const*>(schema_obj)->get_data_schema()
+	if (schema_obj && schema_obj->type() == Hord::Schema::Type{Hord::Schema::UnitType::Table}) {
+		table.data().replace_schema(
+			static_cast<Hord::Schema::UnitTable const*>(schema_obj)->data_schema()
 		);
 	}
 }
@@ -62,8 +62,8 @@ HORD_SCOPE_CLASS::operator()(
 	String const& slug,
 	bool schema_ref
 ) noexcept try {
-	auto& driver = get_driver();
-	auto& datastore = get_datastore();
+	auto& driver = this->driver();
+	auto& datastore = this->datastore();
 
 	// Validate
 	auto const* parent_obj = datastore.find_ptr(parent_id);
@@ -72,34 +72,34 @@ HORD_SCOPE_CLASS::operator()(
 		return commit_error("parent not found");
 	} else if (!schema_id.is_null() && !schema_obj) {
 		return commit_error("schema not found");
-	} else if (!schema_id.is_null() && Hord::Object::BaseType::Schema != schema_obj->get_base_type()) {
+	} else if (!schema_id.is_null() && Hord::Object::BaseType::Schema != schema_obj->base_type()) {
 		return commit_error("given schema ID is not a schema");
 	} else if (slug.empty()) {
 		return commit_error("slug empty");
 	} else if (slug.size() > Hord::Object::SLUG_MAX_SIZE) {
 		return commit_error("slug too long");
 	} else {
-		auto const& parent_children = parent_obj ? parent_obj->get_children() : datastore.get_root_objects();
+		auto const& parent_children = parent_obj ? parent_obj->children() : datastore.root_objects();
 		for (auto child_id : parent_children) {
 			auto child_obj = datastore.find_ptr(child_id);
-			if (child_obj && slug == child_obj->get_slug()) {
+			if (child_obj && slug == child_obj->slug()) {
 				return commit_error("slug already exists");
 			}
 		}
 	}
 
 	// Create
-	auto const* tinfo = driver.get_object_type_info(type);
+	auto const* tinfo = driver.find_object_type_info(type);
 	if (nullptr == tinfo) {
 		return commit_error("unknown unit type");
 	}
 	// NB: Leak ErrorCode::datastore_closed
-	m_object_id = datastore.generate_id(driver.get_id_generator());
+	m_object_id = datastore.generate_id(driver.id_generator());
 	auto obj = tinfo->construct(m_object_id, Hord::Object::ID_NULL);
 	if (nullptr == obj) {
 		return commit_error("allocation failed");
 	}
-	auto emplace_pair = datastore.get_objects().emplace(m_object_id, std::move(obj));
+	auto emplace_pair = datastore.objects().emplace(m_object_id, std::move(obj));
 	if (!emplace_pair.second) {
 		return commit_error("id already exists");
 	}
@@ -111,7 +111,7 @@ HORD_SCOPE_CLASS::operator()(
 	Hord::Object::set_parent(object, datastore, parent_id);
 	object.set_slug(slug);
 	if (schema_obj_typed) {
-		object.get_metadata().table().assign(schema_obj_typed->get_init_metadata().table());
+		object.metadata().table().assign(schema_obj_typed->init_metadata().table());
 	}
 
 	// Base type-specific properties
@@ -132,9 +132,9 @@ HORD_SCOPE_CLASS::operator()(
 		);
 		break;
 	}
-	object.get_prop_states().assign_all(IO::PropState::modified);
-	if (object.get_parent().is_null()) {
-		datastore.get_root_objects().emplace(m_object_id);
+	object.prop_states().assign_all(IO::PropState::modified);
+	if (object.parent().is_null()) {
+		datastore.root_objects().emplace(m_object_id);
 	}
 
 	return commit();

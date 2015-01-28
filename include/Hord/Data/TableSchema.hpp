@@ -156,7 +156,7 @@ public:
 		Get schema hash.
 	*/
 	HashValue
-	get_hash() const noexcept {
+	hash() const noexcept {
 		return m_hash;
 	}
 
@@ -164,7 +164,7 @@ public:
 		Get columns (mutable).
 	*/
 	column_vector_type&
-	get_columns() noexcept {
+	columns() noexcept {
 		return m_columns;
 	}
 
@@ -172,7 +172,7 @@ public:
 		Get columns.
 	*/
 	column_vector_type const&
-	get_columns() const noexcept {
+	columns() const noexcept {
 		return m_columns;
 	}
 

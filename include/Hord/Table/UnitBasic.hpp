@@ -43,7 +43,7 @@ public:
 	/**
 		Type info.
 	*/
-	static constexpr Object::type_info const
+	static constexpr Object::TypeInfo const
 	info{
 		"Hord.Table.Basic",
 		Table::Type{Table::UnitType::Basic},

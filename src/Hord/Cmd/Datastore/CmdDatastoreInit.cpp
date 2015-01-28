@@ -31,22 +31,22 @@ void
 link_parents(
 	IO::Datastore& datastore
 ) {
-	auto& objects = datastore.get_objects();
+	auto& objects = datastore.objects();
 	for (auto& obj_pair : objects) {
 		auto& obj = *obj_pair.second;
-		auto parent = obj.get_parent();
-		if (obj.get_id() == parent) {
+		auto parent = obj.parent();
+		if (obj.id() == parent) {
 			Log::acquire(Log::error)
 				<< "Object " << obj << " has itself as parent\n"
 			;
 			parent = Object::ID_NULL;
 		} else if (
-			Object::ID_NULL != obj.get_parent() &&
-			!datastore.has_object(obj.get_parent())
+			Object::ID_NULL != obj.parent() &&
+			!datastore.has_object(obj.parent())
 		) {
 			Log::acquire(Log::error)
 				<< "Object " << obj << " points to invalid parent: "
-				<< Object::IDPrinter{obj.get_parent()}
+				<< Object::IDPrinter{obj.parent()}
 				<< "\n"
 			;
 			parent = Object::ID_NULL;
@@ -54,8 +54,8 @@ link_parents(
 		// NB: Ignoring circular; client should decide what to do
 		// with these objects
 		Object::set_parent(obj, datastore, parent);
-		if (obj.get_parent() == Object::ID_NULL) {
-			datastore.get_root_objects().emplace(obj.get_id());
+		if (obj.parent() == Object::ID_NULL) {
+			datastore.root_objects().emplace(obj.id());
 		}
 	}
 }
@@ -66,8 +66,8 @@ HORD_SCOPE_CLASS::exec_result_type
 HORD_SCOPE_CLASS::operator()(
 	IO::PropTypeBit prop_types
 ) noexcept try {
-	auto const& driver = get_driver();
-	auto& datastore = get_datastore();
+	auto const& driver = this->driver();
+	auto& datastore = this->datastore();
 	if (datastore.is_initialized()) {
 		Log::acquire()
 			<< DUCT_GR_MSG_FQN("datastore already initialized")
@@ -79,18 +79,18 @@ HORD_SCOPE_CLASS::operator()(
 	prop_types |= IO::PropTypeBit::identity;
 
 	// Create and initialize resident objects
-	auto const& si_map = make_const(datastore).get_storage_info();
+	auto const& si_map = make_const(datastore).storage_info();
 	for (auto const& si_pair : si_map) {
 		auto const& sinfo = si_pair.second;
 		if (IO::Linkage::resident != sinfo.linkage) {
 			continue;
 		}
 		auto const* const
-		tinfo = driver.get_object_type_info(sinfo.object_type);
+		tinfo = driver.find_object_type_info(sinfo.object_type);
 		if (nullptr == tinfo) {
 			return commit_error("object type unknown");
 		}
-		auto const emplace_pair = datastore.get_objects().emplace(
+		auto const emplace_pair = datastore.objects().emplace(
 			sinfo.object_id,
 			tinfo->construct(
 				sinfo.object_id,

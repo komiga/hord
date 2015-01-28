@@ -37,7 +37,7 @@ void
 Metadata::deserialize(
 	IO::InputPropStream& prop_stream
 ) try {
-	DUCT_ASSERTE(IO::PropType::metadata == prop_stream.get_type());
+	DUCT_ASSERTE(IO::PropType::metadata == prop_stream.type());
 	auto ser = prop_stream.make_serializer();
 
 	// table
@@ -51,7 +51,7 @@ Metadata::deserialize(
 	HORD_THROW_SER_PROP(
 		s_err_read_failed,
 		serr,
-		prop_stream.get_info().object_id,
+		prop_stream.info().object_id,
 		"metadata"
 	);
 }
@@ -69,7 +69,7 @@ void
 Metadata::serialize(
 	IO::OutputPropStream& prop_stream
 ) const try {
-	DUCT_ASSERTE(IO::PropType::metadata == prop_stream.get_type());
+	DUCT_ASSERTE(IO::PropType::metadata == prop_stream.type());
 	auto ser = prop_stream.make_serializer();
 
 	// table
@@ -78,7 +78,7 @@ Metadata::serialize(
 	HORD_THROW_SER_PROP(
 		s_err_write_failed,
 		serr,
-		prop_stream.get_info().object_id,
+		prop_stream.info().object_id,
 		"metadata"
 	);
 }

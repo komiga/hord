@@ -20,7 +20,7 @@ namespace Hord {
 
 namespace Cmd {
 
-struct type_info;
+struct TypeInfo;
 class UnitBase;
 
 } // namespace Cmd
@@ -64,7 +64,7 @@ protected:
 	virtual void
 	notify_exception_impl(
 		Cmd::UnitBase const& command,
-		Cmd::type_info const& type_info,
+		Cmd::TypeInfo const& type_info,
 		std::exception_ptr eptr
 	) noexcept = 0;
 
@@ -74,7 +74,7 @@ protected:
 	virtual void
 	notify_complete_impl(
 		Cmd::UnitBase const& command,
-		Cmd::type_info const& type_info
+		Cmd::TypeInfo const& type_info
 	) noexcept = 0;
 /// @}
 
@@ -103,7 +103,7 @@ public:
 		Get driver (mutable).
 	*/
 	System::Driver&
-	get_driver() noexcept {
+	driver() noexcept {
 		return m_driver;
 	}
 
@@ -111,7 +111,7 @@ public:
 		Get driver.
 	*/
 	System::Driver const&
-	get_driver() const noexcept {
+	driver() const noexcept {
 		return m_driver;
 	}
 
@@ -119,7 +119,7 @@ public:
 		Get datastore (mutable).
 	*/
 	IO::Datastore&
-	get_datastore() noexcept {
+	datastore() noexcept {
 		return m_datastore;
 	}
 
@@ -127,7 +127,7 @@ public:
 		Get datastore.
 	*/
 	IO::Datastore const&
-	get_datastore() const noexcept {
+	datastore() const noexcept {
 		return m_datastore;
 	}
 /// @}
@@ -146,7 +146,7 @@ public:
 	void
 	notify_exception(
 		Cmd::UnitBase const& command,
-		Cmd::type_info const& type_info,
+		Cmd::TypeInfo const& type_info,
 		std::exception_ptr&& eptr
 	) noexcept {
 		notify_exception_impl(command, type_info, std::move(eptr));
@@ -164,7 +164,7 @@ public:
 	void
 	notify_complete(
 		Cmd::UnitBase const& command,
-		Cmd::type_info const& type_info
+		Cmd::TypeInfo const& type_info
 	) noexcept {
 		notify_complete_impl(command, type_info);
 	}

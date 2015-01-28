@@ -626,8 +626,8 @@ bool
 Table::configure(
 	Data::TableSchema const& schema
 ) {
-	auto const& old_columns = m_schema.get_columns();
-	auto const& new_columns = schema.get_columns();
+	auto const& old_columns = m_schema.columns();
+	auto const& new_columns = schema.columns();
 	unsigned const num_old = old_columns.size();
 	unsigned const num_new = new_columns.size();
 	// Nothing to validate; makes table empty
@@ -858,7 +858,7 @@ Table::assign(
 	Data::Table const& table
 ) {
 	clear();
-	bool schema_changed = replace_schema(table.get_schema());
+	bool schema_changed = replace_schema(table.schema());
 	unsigned head;
 	unsigned tail;
 	for (auto const& chunk : table.m_chunks) {

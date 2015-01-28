@@ -30,7 +30,7 @@ namespace IO {
 
 	@post With no exceptions:
 	@code
-		object.get_prop_states().has(
+		object.prop_states().has(
 			prop_type,
 			IO::PropState::original
 		)
@@ -119,7 +119,7 @@ load_props_weak(
 
 	@post With no exceptions:
 	@code
-		object.get_prop_states().has(
+		object.prop_states().has(
 			prop_type,
 			IO::PropState::original
 		)

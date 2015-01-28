@@ -53,9 +53,7 @@ operator<<(
 	Pre prefix
 ) {
 	if (Pre::current == prefix) {
-		prefix = s_prefix_for_type[
-			stream.get_type()
-		];
+		prefix = s_prefix_for_type[stream.type()];
 	}
 	if (Pre::none != prefix) {
 		stream << s_prefix_strings[static_cast<unsigned>(prefix)];

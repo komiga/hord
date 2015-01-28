@@ -117,7 +117,7 @@ protected:
 		@post See Object::Unit.
 	*/
 	Unit(
-		Object::type_info const& tinfo,
+		Object::TypeInfo const& tinfo,
 		Schema::ID const id,
 		Object::ID const parent
 	) noexcept;
@@ -129,7 +129,7 @@ public:
 		Get init metadata (mutable).
 	*/
 	Data::Metadata&
-	get_init_metadata() noexcept {
+	init_metadata() noexcept {
 		return m_init_metadata;
 	}
 
@@ -137,7 +137,7 @@ public:
 		Get init metadata.
 	*/
 	Data::Metadata const&
-	get_init_metadata() const noexcept {
+	init_metadata() const noexcept {
 		return m_init_metadata;
 	}
 /// @}

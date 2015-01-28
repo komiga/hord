@@ -206,7 +206,7 @@ public:
 		Get schema (mutable).
 	*/
 	Data::TableSchema&
-	get_schema() noexcept {
+	schema() noexcept {
 		return m_schema;
 	}
 
@@ -214,7 +214,7 @@ public:
 		Get schema.
 	*/
 	Data::TableSchema const&
-	get_schema() const noexcept {
+	schema() const noexcept {
 		return m_schema;
 	}
 

@@ -100,7 +100,7 @@ enum class ErrorCode : unsigned {
 	/**
 		Failed to construct datastore.
 
-		@sa IO::Datastore::type_info
+		@sa IO::Datastore::TypeInfo
 	*/
 	driver_datastore_construct_failed,
 	/**

@@ -25,7 +25,7 @@ Unit::Unit(Unit&&) = default;
 Unit& Unit::operator=(Unit&&) = default;
 
 Unit::Unit(
-	type_info const& tinfo,
+	Object::TypeInfo const& tinfo,
 	Object::ID const id,
 	Object::ID const parent
 ) noexcept
@@ -59,9 +59,9 @@ Unit::set_slug(
 		HORD_THROW_FMT(											\
 			ErrorCode::serialization_prop_unsupplied,			\
 			err_,												\
-			get_id().value(),									\
+			id().value(),										\
 			IO::get_prop_type_name(type),						\
-			Object::get_base_type_name(get_base_type())			\
+			Object::get_base_type_name(base_type())				\
 		);														\
 	}
 //
@@ -82,7 +82,7 @@ void
 Unit::deserialize(
 	IO::InputPropStream& prop_stream
 ) try {
-	IO::PropType const type = prop_stream.get_type();
+	IO::PropType const type = prop_stream.type();
 	HORD_UNIT_CHECK_UNSUPPLIED_(s_err_deserialize_unsupplied);
 
 	auto ser = prop_stream.make_serializer();
@@ -127,8 +127,8 @@ Unit::deserialize(
 	HORD_THROW_SER_PROP(
 		s_err_read_failed,
 		serr,
-		get_id(),
-		IO::get_prop_type_name(prop_stream.get_type())
+		id(),
+		IO::get_prop_type_name(prop_stream.type())
 	);
 }
 #undef HORD_SCOPE_FUNC
@@ -153,7 +153,7 @@ void
 Unit::serialize(
 	IO::OutputPropStream& prop_stream
 ) try {
-	IO::PropType const type = prop_stream.get_type();
+	IO::PropType const type = prop_stream.type();
 	HORD_UNIT_CHECK_UNSUPPLIED_(s_err_serialize_unsupplied);
 	if (!m_prop_states.is_initialized(type)) {
 		HORD_THROW_FMT(
@@ -196,8 +196,8 @@ Unit::serialize(
 	HORD_THROW_SER_PROP(
 		s_err_write_failed,
 		serr,
-		get_id(),
-		IO::get_prop_type_name(prop_stream.get_type())
+		id(),
+		IO::get_prop_type_name(prop_stream.type())
 	);
 }
 #undef HORD_SCOPE_FUNC

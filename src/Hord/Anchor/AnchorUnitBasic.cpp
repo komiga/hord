@@ -14,7 +14,7 @@ namespace Anchor {
 
 #define HORD_SCOPE_CLASS Anchor::UnitBasic
 
-constexpr Object::type_info const
+constexpr Object::TypeInfo const
 Anchor::UnitBasic::info;
 
 Object::UPtr

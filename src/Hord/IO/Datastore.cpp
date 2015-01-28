@@ -17,7 +17,7 @@ namespace IO {
 #define HORD_SCOPE_CLASS IO::Datastore
 
 Datastore::Datastore(
-	IO::Datastore::type_info const& tinfo,
+	IO::Datastore::TypeInfo const& tinfo,
 	String root_path
 ) noexcept
 	: m_type_info(&tinfo)
@@ -155,7 +155,7 @@ Datastore::generate_id(
 Datastore::storage_info_map_type::const_iterator
 Datastore::create_object(
 	Object::ID const object_id,
-	Object::type_info const& type_info,
+	Object::TypeInfo const& type_info,
 	IO::Linkage const linkage
 ) {
 	HORD_CLOSED_CHECK_;
@@ -191,7 +191,7 @@ find_by_slug(
 ) {
 	for (auto const id : children) {
 		auto const* object = datastore.find_ptr(id);
-		if (object && string_equal(object->get_slug(), slug_size, slug)) {
+		if (object && string_equal(object->slug(), slug_size, slug)) {
 			return object;
 		}
 	}
@@ -212,7 +212,7 @@ Datastore::find_ptr_path(
 		b = path.find(++a, '/');
 		object = find_by_slug(
 			*this,
-			object ? object->get_children() : m_root_objects,
+			object ? object->children() : m_root_objects,
 			min_ce(b, path.size()) - a, &path[a]
 		);
 		if (!object || b == String::npos) {

@@ -51,7 +51,7 @@ struct unit_ensure_traits;
 	@remarks
 	- <code>static constexpr Cmd::ID const COMMAND_ID;</code>
 	- <code>static constexpr char const* command_name();</code>
-	- <code>static constexpr Cmd::type_info command_info();</code>
+	- <code>static constexpr Cmd::TypeInfo command_info();</code>
 
 	@param impl_ Implementation class.
 	@param name_ Name of command (string literal).
@@ -81,7 +81,7 @@ struct unit_ensure_traits;
 		COMMAND_ID = name_ ## _hash;								\
 		static constexpr char const*								\
 		command_name() noexcept { return HORD_STR_LIT(name_); }		\
-		static constexpr ::Hord::Cmd::type_info						\
+		static constexpr ::Hord::Cmd::TypeInfo						\
 		command_info() noexcept {									\
 			return {COMMAND_ID, command_name()};					\
 		}
@@ -197,7 +197,7 @@ public:
 		Get context.
 	*/
 	System::Context&
-	get_context() noexcept {
+	context() noexcept {
 		return m_context;
 	}
 
@@ -205,7 +205,7 @@ public:
 		Get context.
 	*/
 	System::Context const&
-	get_context() const noexcept {
+	context() const noexcept {
 		return m_context;
 	}
 
@@ -213,39 +213,39 @@ public:
 		Get driver.
 	*/
 	System::Driver&
-	get_driver() noexcept {
-		return get_context().get_driver();
+	driver() noexcept {
+		return context().driver();
 	}
 
 	/**
 		Get driver.
 	*/
 	System::Driver const&
-	get_driver() const noexcept {
-		return get_context().get_driver();
+	driver() const noexcept {
+		return context().driver();
 	}
 
 	/**
 		Get datastore.
 	*/
 	IO::Datastore&
-	get_datastore() noexcept {
-		return get_context().get_datastore();
+	datastore() noexcept {
+		return context().datastore();
 	}
 
 	/**
 		Get datastore.
 	*/
 	IO::Datastore const&
-	get_datastore() const noexcept {
-		return get_context().get_datastore();
+	datastore() const noexcept {
+		return context().datastore();
 	}
 
 	/**
 		Get error message.
 	*/
 	String const&
-	get_message() const noexcept {
+	message() const noexcept {
 		return m_message;
 	}
 
@@ -253,7 +253,7 @@ public:
 		Get result.
 	*/
 	Cmd::Result
-	get_result() const noexcept {
+	result() const noexcept {
 		return m_result;
 	}
 
@@ -290,7 +290,7 @@ public:
 		operate on no or multiple objects.
 	*/
 	Hord::Object::ID
-	get_object_id() const noexcept {
+	object_id() const noexcept {
 		return m_object_id;
 	}
 /// @}
@@ -336,7 +336,7 @@ private:
 
 	void
 	commit_post() noexcept {
-		get_context().notify_complete(
+		context().notify_complete(
 			*this, impl_type::command_info()
 		);
 	}
@@ -369,7 +369,7 @@ protected:
 	notify_exception(
 		std::exception_ptr eptr
 	) noexcept {
-		get_context().notify_exception(
+		context().notify_exception(
 			*this, impl_type::command_info(), std::move(eptr)
 		);
 	}

@@ -62,7 +62,7 @@ Driver::Driver(
 #define HORD_SCOPE_FUNC register_object_type
 void
 Driver::register_object_type(
-	Object::type_info const& type_info
+	Object::TypeInfo const& type_info
 ) {
 	if (m_object_types.cend() != m_object_types.find(type_info.type)) {
 		HORD_THROW_FQN(
@@ -77,9 +77,9 @@ Driver::register_object_type(
 }
 #undef HORD_SCOPE_FUNC
 
-#define HORD_SCOPE_FUNC get_object_type_info
-Object::type_info const*
-Driver::get_object_type_info(
+#define HORD_SCOPE_FUNC find_object_type_info
+Object::TypeInfo const*
+Driver::find_object_type_info(
 	Object::Type const type
 ) const noexcept {
 	auto const it = m_object_types.find(type);
@@ -100,7 +100,7 @@ HORD_DEF_FMT_FQN(
 
 IO::Datastore&
 Driver::placehold_datastore(
-	IO::Datastore::type_info const& type_info,
+	IO::Datastore::TypeInfo const& type_info,
 	String root_path
 ) {
 	if (root_path.empty()) {
@@ -124,7 +124,7 @@ Driver::placehold_datastore(
 		);
 	}
 	auto const result_pair = m_datastores.emplace(
-		datastore_ptr->get_id(),
+		datastore_ptr->id(),
 		std::move(datastore_ptr)
 	);
 	return *result_pair.first->second;

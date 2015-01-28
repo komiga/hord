@@ -17,7 +17,7 @@ namespace Schema {
 
 #define HORD_SCOPE_CLASS Schema::UnitGeneric
 
-constexpr Object::type_info const
+constexpr Object::TypeInfo const
 Schema::UnitGeneric::info;
 
 Object::UPtr

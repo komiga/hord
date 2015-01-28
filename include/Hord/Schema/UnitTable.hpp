@@ -44,7 +44,7 @@ public:
 	/**
 		Type info.
 	*/
-	static constexpr Object::type_info const
+	static constexpr Object::TypeInfo const
 	info{
 		"Hord.Schema.Table",
 		Schema::Type{Schema::UnitType::Table},
@@ -96,7 +96,7 @@ public:
 		Get data schema (mutable).
 	*/
 	Data::TableSchema&
-	get_data_schema() noexcept {
+	data_schema() noexcept {
 		return m_data_schema;
 	}
 
@@ -104,7 +104,7 @@ public:
 		Get data schema.
 	*/
 	Data::TableSchema const&
-	get_data_schema() const noexcept {
+	data_schema() const noexcept {
 		return m_data_schema;
 	}
 
@@ -112,7 +112,7 @@ public:
 		Get referrers (mutable).
 	*/
 	id_set_type&
-	get_referrers() noexcept {
+	referrers() noexcept {
 		return m_referrers;
 	}
 
@@ -120,7 +120,7 @@ public:
 		Get referrers.
 	*/
 	id_set_type const&
-	get_referrers() const noexcept {
+	referrers() const noexcept {
 		return m_referrers;
 	}
 /// @}

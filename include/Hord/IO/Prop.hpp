@@ -72,8 +72,8 @@ public:
 		Constructor with object.
 
 		@post @code
-			this->object_id == object.get_id() &&
-			this->object_type == object.get_type()
+			this->object_id == object.id() &&
+			this->object_type == object.type()
 		@endcode
 	*/
 	PropInfo(

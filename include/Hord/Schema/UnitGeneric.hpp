@@ -43,7 +43,7 @@ public:
 	/**
 		Type info.
 	*/
-	static constexpr Object::type_info const
+	static constexpr Object::TypeInfo const
 	info{
 		"Hord.Schema.Generic",
 		Schema::Type{Schema::UnitType::Generic},

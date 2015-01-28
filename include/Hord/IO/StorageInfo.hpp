@@ -84,9 +84,9 @@ public:
 		Constructor with object and linkage.
 
 		@post @code
-			this->object_id == object.get_id() &&
-			this->object_type == object.get_type() &&
-			this->prop_storage == object.get_type_info().props &&
+			this->object_id == object.id() &&
+			this->object_type == object.type() &&
+			this->prop_storage == object.type_info().props &&
 		@endcode
 	*/
 	StorageInfo(
@@ -94,9 +94,9 @@ public:
 		IO::Linkage const linkage
 	) noexcept
 		: StorageInfo(
-			object.get_id(),
-			object.get_type(),
-			object.get_type_info().props,
+			object.id(),
+			object.type(),
+			object.type_info().props,
 			linkage
 		)
 	{}

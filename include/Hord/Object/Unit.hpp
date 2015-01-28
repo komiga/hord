@@ -63,7 +63,7 @@ public:
 	>;
 
 private:
-	Object::type_info const* m_type_info;
+	Object::TypeInfo const* m_type_info;
 	Object::ID m_id;
 	IO::PropStateStore m_prop_states;
 	id_set_type m_children{}; // runtime
@@ -133,15 +133,15 @@ protected:
 
 		@post
 		@code
-			get_storage_state()
-			== (get_id() == Object::ID_NULL
+			storage_state()
+			== (id() == Object::ID_NULL
 				? IO::StorageState::null
 				: IO::StorageState::placeholder
 			)
 		@endcode
 	*/
 	Unit(
-		Object::type_info const& tinfo,
+		Object::TypeInfo const& tinfo,
 		Object::ID const id,
 		Object::ID const parent
 	) noexcept;
@@ -152,8 +152,8 @@ public:
 	/**
 		Get type info.
 	*/
-	Object::type_info const&
-	get_type_info() const noexcept {
+	Object::TypeInfo const&
+	type_info() const noexcept {
 		return *m_type_info;
 	}
 
@@ -161,7 +161,7 @@ public:
 		Get type.
 	*/
 	Object::Type
-	get_type() const noexcept {
+	type() const noexcept {
 		return m_type_info->type;
 	}
 
@@ -169,23 +169,23 @@ public:
 		Get base type.
 	*/
 	Object::BaseType
-	get_base_type() const noexcept {
-		return get_type().base();
+	base_type() const noexcept {
+		return type().base();
 	}
 
 	/**
 		Get unit type.
 	*/
 	Object::UnitType
-	get_unit_type() const noexcept {
-		return get_type().unit();
+	unit_type() const noexcept {
+		return type().unit();
 	}
 
 	/**
 		Get unit name.
 	*/
 	char const*
-	get_unit_name() const noexcept {
+	unit_name() const noexcept {
 		return m_type_info->unit_name;
 	}
 
@@ -193,7 +193,7 @@ public:
 		Get prop state store.
 	*/
 	IO::PropStateStore const&
-	get_prop_states() const noexcept {
+	prop_states() const noexcept {
 		return m_prop_states;
 	}
 
@@ -201,7 +201,7 @@ public:
 		Get mutable prop state store.
 	*/
 	IO::PropStateStore&
-	get_prop_states() noexcept {
+	prop_states() noexcept {
 		return m_prop_states;
 	}
 
@@ -209,7 +209,7 @@ public:
 		Get children set.
 	*/
 	id_set_type const&
-	get_children() const noexcept {
+	children() const noexcept {
 		return m_children;
 	}
 
@@ -217,7 +217,7 @@ public:
 		Get mutable children set.
 	*/
 	id_set_type&
-	get_children() noexcept {
+	children() noexcept {
 		return m_children;
 	}
 
@@ -235,7 +235,7 @@ public:
 		Get ID.
 	*/
 	Object::ID
-	get_id() const noexcept {
+	id() const noexcept {
 		return m_id;
 	}
 
@@ -255,7 +255,7 @@ public:
 		@sa IO::StorageState
 	*/
 	IO::StorageState
-	get_storage_state() const noexcept {
+	storage_state() const noexcept {
 		return
 			  is_null()
 				? IO::StorageState::null
@@ -289,7 +289,7 @@ public:
 		Get parent.
 	*/
 	Object::ID
-	get_parent() const noexcept {
+	parent() const noexcept {
 		return m_parent;
 	}
 
@@ -307,7 +307,7 @@ public:
 		Get slug.
 	*/
 	String const&
-	get_slug() const noexcept {
+	slug() const noexcept {
 		return m_slug;
 	}
 
@@ -315,7 +315,7 @@ public:
 		Get slug hash.
 	*/
 	HashValue
-	get_slug_hash() const noexcept {
+	slug_hash() const noexcept {
 		return m_slug_hash;
 	}
 
@@ -323,7 +323,7 @@ public:
 		Get metadata.
 	*/
 	Data::Metadata const&
-	get_metadata() const noexcept {
+	metadata() const noexcept {
 		return m_metadata;
 	}
 
@@ -331,7 +331,7 @@ public:
 		Get mutable metadata.
 	*/
 	Data::Metadata&
-	get_metadata() noexcept {
+	metadata() noexcept {
 		return m_metadata;
 	}
 
@@ -349,7 +349,7 @@ public:
 		Get scratch space.
 	*/
 	String const&
-	get_scratch_space() const noexcept {
+	scratch_space() const noexcept {
 		return m_scratch_space;
 	}
 
@@ -357,7 +357,7 @@ public:
 		Get mutable scratch space.
 	*/
 	String&
-	get_scratch_space() noexcept {
+	scratch_space() noexcept {
 		return m_scratch_space;
 	}
 /// @}

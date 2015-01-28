@@ -88,7 +88,7 @@ protected:
 		@post See Object::Unit.
 	*/
 	Unit(
-		Object::type_info const& tinfo,
+		Object::TypeInfo const& tinfo,
 		Rule::ID const id,
 		Object::ID const parent
 	) noexcept;
