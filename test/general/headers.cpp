@@ -51,7 +51,7 @@ main() {
 	);
 
 	// Registering rule types
-	Hord::Object::type_info const
+	Hord::Object::TypeInfo const
 	ti_standard{
 		"Hord:test:ti_standard",
 		Hord::Rule::Type{Hord::Rule::UnitType::null},
@@ -101,7 +101,7 @@ main() {
 
 	std::cout
 		<< "first datastore id: "
-		<< driver.placehold_datastore(DummyDatastore::s_type_info, "./bork").get_id()
+		<< driver.placehold_datastore(DummyDatastore::s_type_info, "./bork").id()
 	<< std::endl;
 	try {
 		driver.placehold_datastore(DummyDatastore::s_type_info, "./bork");

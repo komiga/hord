@@ -37,14 +37,14 @@ main() {
 		values[0] = {static_cast<std::uint16_t>(~0u)};
 		table.push_back(1, values);
 		DUCT_ASSERTE(value_equal(table, 0, 0, values[0]));
-		schema.get_columns()[0].index = 0;
+		schema.columns()[0].index = 0;
 		DUCT_ASSERTE(!table.configure(schema));
 		DUCT_ASSERTE(value_equal(table, 0, 0, values[0]));
 	}
 
 	{
-		auto schema = table.get_schema();
-		auto& columns = schema.get_columns();
+		auto schema = table.schema();
+		auto& columns = schema.columns();
 		columns[0].index = 0;
 		columns[0].name = "y";
 		schema.update();
@@ -67,7 +67,7 @@ main() {
 		values[0] = {str};
 		table.push_back(1, values);
 
-		auto& columns = schema.get_columns();
+		auto& columns = schema.columns();
 		columns[0].index = 0;
 		columns[0].type = {Data::ValueType::string, Data::Size::b8};
 		schema.update();
@@ -87,7 +87,7 @@ main() {
 		Data::TableSchema schema{
 			{"x", {Data::ValueType::null}}
 		};
-		schema.get_columns()[0].index = 0;
+		schema.columns()[0].index = 0;
 		table.configure(schema);
 		DUCT_ASSERTE(false);
 	} catch (Hord::Error const& err) {

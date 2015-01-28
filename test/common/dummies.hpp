@@ -13,7 +13,7 @@ class DummyDatastore
 {
 private:
 	using base = Hord::IO::Datastore;
-	using base::type_info;
+	using base::TypeInfo;
 	using base::State;
 
 	std::iostream m_stream{nullptr};
@@ -34,7 +34,7 @@ public:
 		};
 	}
 
-	static type_info const s_type_info;
+	static TypeInfo const s_type_info;
 
 private:
 	DummyDatastore(
@@ -93,10 +93,10 @@ private:
 	Hord::IO::Datastore::storage_info_map_type::const_iterator
 	create_object_impl(
 		Hord::Object::ID const,
-		Hord::Object::type_info const&,
+		Hord::Object::TypeInfo const&,
 		Hord::IO::Linkage const
 	) override {
-		return get_storage_info().cend();
+		return storage_info().cend();
 	}
 	void
 	destroy_object_impl(
@@ -106,7 +106,7 @@ private:
 
 template struct Hord::IO::Datastore::ensure_traits<DummyDatastore>;
 
-Hord::IO::Datastore::type_info const
+Hord::IO::Datastore::TypeInfo const
 DummyDatastore::s_type_info{
 	DummyDatastore::construct
 };

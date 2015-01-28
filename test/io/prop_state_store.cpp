@@ -41,8 +41,8 @@ print_store(
 	bool const typed = 0u != enum_cast(t);
 	unsigned const value
 		= typed
-		? enum_cast(s.get_state(t))
-		: s.get_value()
+		? enum_cast(s.state(t))
+		: s.value()
 	;
 
 	if (typed) {
@@ -94,7 +94,7 @@ assignments(
 
 	// Back to initial value when resetting
 	s.reset_all();
-	assert(s.get_value() == initial);
+	assert(s.value() == initial);
 
 	s.assign_all(State::original);
 	print_store(s);
@@ -110,8 +110,8 @@ main() {
 		s_neither{false, false}
 	;
 	unsigned const
-		value_init_all = s_all.get_value(),
-		value_init_neither = s_neither.get_value()
+		value_init_all = s_all.value(),
+		value_init_neither = s_neither.value()
 	;
 
 	// Constructed state
@@ -124,15 +124,15 @@ main() {
 
 	// Unchanged when resetting while all_uninitialized()
 	s_all.reset_all();
-	assert(s_all.get_value() == value_init_all);
+	assert(s_all.value() == value_init_all);
 
 	s_neither.reset_all();
-	assert(s_neither.get_value() == value_init_neither);
+	assert(s_neither.value() == value_init_neither);
 
 	// Unsupplied props are unassignable
 	s_neither.reset(Type::primary);
 	s_neither.assign(Type::auxiliary, State::modified);
-	assert(s_neither.get_value() == value_init_neither);
+	assert(s_neither.value() == value_init_neither);
 
 	// Traits
 	std::cout << "s_all:\n";
