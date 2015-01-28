@@ -10,7 +10,7 @@
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
 
-#include <cassert>
+#include <duct/debug.hpp>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
@@ -40,38 +40,6 @@ Unit::Unit(
 
 // serialization
 
-#define HORD_SCOPE_FUNC deserialize_prop_primary
-void
-Unit::deserialize_prop_primary(
-	IO::InputPropStream& /*prop_stream*/,
-	InputSerializer& ser
-) {
-	Schema::ID des_schema_ref{Schema::ID_NULL};
-	ser(des_schema_ref);
-
-	Data::Table des_data;
-	ser(des_data);
-
-	// commit
-	set_schema_ref(des_schema_ref);
-	m_data = std::move(des_data);
-}
-#undef HORD_SCOPE_FUNC
-
-#define HORD_SCOPE_FUNC serialize_prop_primary
-void
-Unit::serialize_prop_primary(
-	IO::OutputPropStream& /*prop_stream*/,
-	OutputSerializer& ser
-) const {
-	ser(m_schema_ref);
-	ser(m_data);
-}
-#undef HORD_SCOPE_FUNC
-
-
-// - impl
-
 #define HORD_SCOPE_FUNC deserialize_impl
 namespace {
 HORD_DEF_FMT_FQN(
@@ -86,13 +54,25 @@ Unit::deserialize_impl(
 ) try {
 	auto ser = prop_stream.make_serializer();
 	switch (prop_stream.get_type()) {
-	case IO::PropType::primary:
-		deserialize_prop_primary(prop_stream, ser);
-		break;
+	case IO::PropType::identity: {
+		Schema::ID des_schema_ref{Schema::ID_NULL};
+		ser(des_schema_ref);
+
+		// commit
+		set_schema_ref(des_schema_ref);
+	}	break;
+
+	case IO::PropType::primary: {
+		Data::Table des_data;
+		ser(des_data);
+
+		// commit
+		m_data = std::move(des_data);
+	}	break;
 
 	default:
 		// Object::Unit should protect us from this
-		assert(false);
+		DUCT_ASSERTE(false);
 	}
 } catch (SerializerError& serr) {
 	HORD_THROW_SER_PROP(
@@ -118,13 +98,17 @@ Unit::serialize_impl(
 ) const try {
 	auto ser = prop_stream.make_serializer();
 	switch (prop_stream.get_type()) {
+	case IO::PropType::identity:
+		ser(m_schema_ref);
+		break;
+
 	case IO::PropType::primary:
-		serialize_prop_primary(prop_stream, ser);
+		ser(m_data);
 		break;
 
 	default:
 		// Object::Unit should protect us from this
-		assert(false);
+		DUCT_ASSERTE(false);
 	}
 } catch (SerializerError& serr) {
 	HORD_THROW_SER_PROP(

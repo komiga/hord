@@ -10,7 +10,6 @@
 
 #include <Hord/config.hpp>
 #include <Hord/Object/Defs.hpp>
-
 #include <Hord/IO/PropStateStore.hpp>
 
 namespace Hord {

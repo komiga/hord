@@ -8,7 +8,7 @@
 #include <Hord/IO/Defs.hpp>
 #include <Hord/IO/PropStream.hpp>
 
-#include <cassert>
+#include <duct/debug.hpp>
 
 #include <Hord/detail/gr_ceformat.hpp>
 
@@ -88,16 +88,18 @@ Unit::deserialize(
 	auto ser = prop_stream.make_serializer();
 	switch (type) {
 	case IO::PropType::identity: {
-		Object::ID parent{Object::ID_NULL};
-		String slug{};
+		Object::ID des_parent{Object::ID_NULL};
+		String des_slug{};
 		ser(
-			parent,
-			Cacophony::make_string_cfg<std::uint8_t>(slug)
+			des_parent,
+			Cacophony::make_string_cfg<std::uint8_t>(des_slug)
 		);
+		// BaseType properties
+		deserialize_impl(prop_stream);
 
 		// commit
-		set_parent(parent);
-		set_slug(std::move(slug));
+		set_parent(des_parent);
+		set_slug(std::move(des_slug));
 	} break;
 
 	case IO::PropType::metadata:
@@ -118,7 +120,7 @@ Unit::deserialize(
 		break;
 
 	case IO::PropType::LAST:
-		assert(false);
+		DUCT_ASSERTE(false);
 		break;
 	}
 } catch (SerializerError& serr) {
@@ -169,6 +171,8 @@ Unit::serialize(
 			m_parent,
 			Cacophony::make_string_cfg<std::uint8_t>(m_slug)
 		);
+		// BaseType properties
+		serialize_impl(prop_stream);
 		break;
 
 	case IO::PropType::metadata:
@@ -185,7 +189,7 @@ Unit::serialize(
 		break;
 
 	case IO::PropType::LAST:
-		assert(false);
+		DUCT_ASSERTE(false);
 		break;
 	}
 } catch (SerializerError& serr) {

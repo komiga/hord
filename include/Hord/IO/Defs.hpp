@@ -47,6 +47,8 @@ enum class PropType : unsigned {
 		Identity.
 
 		This prop stores the object's parent and slug properties.
+		Object base types may store additional properties in this prop.
+		Properties stored should not vary between unit types.
 	*/
 	identity = 0u,
 
@@ -68,6 +70,7 @@ enum class PropType : unsigned {
 		This prop stores object data most likely to mutate.
 		The following standard objects provide this prop:
 
+		- Schema::UnitTable
 		- Rule::Unit
 		- Table::Unit
 	*/

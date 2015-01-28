@@ -76,6 +76,10 @@ Unit::deserialize_impl(
 ) try {
 	auto ser = prop_stream.make_serializer();
 	switch (prop_stream.get_type()) {
+	case IO::PropType::identity:
+		// No additional identity properties
+		break;
+
 	case IO::PropType::primary:
 		deserialize_prop_primary(prop_stream, ser);
 		break;
@@ -112,6 +116,10 @@ Unit::serialize_impl(
 ) const try {
 	auto ser = prop_stream.make_serializer();
 	switch (prop_stream.get_type()) {
+	case IO::PropType::identity:
+		// No additional identity properties
+		break;
+
 	case IO::PropType::primary:
 		serialize_prop_primary(prop_stream, ser);
 		break;

@@ -62,17 +62,6 @@ private:
 	Unit(Unit const&) = delete;
 	Unit& operator=(Unit const&) = delete;
 
-	void
-	deserialize_prop_primary(
-		IO::InputPropStream& prop_stream,
-		InputSerializer& ser
-	);
-	void
-	serialize_prop_primary(
-		IO::OutputPropStream& prop_stream,
-		OutputSerializer& ser
-	) const;
-
 // Object::Unit implementation
 	void
 	deserialize_impl(
