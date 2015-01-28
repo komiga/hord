@@ -94,8 +94,8 @@ operator<<(
 	Error const& error
 ) {
 	return stream
-		<< "[Hord::" << get_error_name(error.get_code()) << "] "
-		<< error.get_message()
+		<< "[Hord::" << get_error_name(error.code()) << "] "
+		<< error.message()
 		<< '\n'
 	;
 }

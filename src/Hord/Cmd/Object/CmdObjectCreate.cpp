@@ -140,7 +140,7 @@ HORD_SCOPE_CLASS::operator()(
 	return commit();
 } catch (Error const& err) {
 	notify_exception_current();
-	if (ErrorCode::datastore_object_already_exists == err.get_code()) {
+	if (ErrorCode::datastore_object_already_exists == err.code()) {
 		return commit_error("id already exists");
 	}
 	return commit_error("unknown error");

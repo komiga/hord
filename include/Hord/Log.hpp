@@ -364,8 +364,8 @@ report_error(
 	SerializerError const& err
 ) {
 	Log::acquire(Log::error)
-		<< "[Serializer:" << get_ser_error_name(err.get_code()) << "] "
-		<< err.get_message()
+		<< "[Serializer:" << get_ser_error_name(err.code()) << "] "
+		<< err.message()
 		<< '\n'
 	;
 }
@@ -378,8 +378,8 @@ report_error(
 	Hord::Error const& err
 ) {
 	Log::acquire(Log::error)
-		<< "[Hord:" << get_error_name(err.get_code()) << "] "
-		<< err.get_message()
+		<< "[Hord:" << get_error_name(err.code()) << "] "
+		<< err.message()
 		<< '\n'
 	;
 }

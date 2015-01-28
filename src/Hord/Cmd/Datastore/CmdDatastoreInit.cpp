@@ -113,7 +113,7 @@ HORD_SCOPE_CLASS::operator()(
 	return commit();
 } catch (Error const& err) {
 	notify_exception_current();
-	switch (err.get_code()) {
+	switch (err.code()) {
 	case ErrorCode::serialization_prop_improper_state: // fall-through
 	case ErrorCode::serialization_io_failed:
 		return commit_error("serialization error");

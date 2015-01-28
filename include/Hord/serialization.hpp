@@ -135,8 +135,8 @@ make_output_serializer(
 	HORD_THROW_FMT(									\
 		ErrorCode::serialization_io_failed,			\
 		efmt_,										\
-		get_ser_error_name(serr_.get_code()),		\
-		serr_.get_message()							\
+		get_ser_error_name(serr_.code()),			\
+		serr_.message()								\
 	)
 //
 
@@ -146,8 +146,8 @@ make_output_serializer(
 		efmt_,												\
 		objid_.value(),										\
 		pkind_,												\
-		Hord::get_ser_error_name(serr_.get_code()),			\
-		serr_.get_message()									\
+		Hord::get_ser_error_name(serr_.code()),				\
+		serr_.message()										\
 	)
 //
 /** @endcond */ // INTERNAL
