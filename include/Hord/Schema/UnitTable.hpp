@@ -54,6 +54,7 @@ public:
 
 private:
 	Data::TableSchema m_data_schema{};
+	id_set_type m_referrers{};
 
 	UnitTable() = delete;
 	UnitTable(UnitTable const&) = delete;
@@ -105,6 +106,22 @@ public:
 	Data::TableSchema const&
 	get_data_schema() const noexcept {
 		return m_data_schema;
+	}
+
+	/**
+		Get referrers (mutable).
+	*/
+	id_set_type&
+	get_referrers() noexcept {
+		return m_referrers;
+	}
+
+	/**
+		Get referrers.
+	*/
+	id_set_type const&
+	get_referrers() const noexcept {
+		return m_referrers;
 	}
 /// @}
 };
