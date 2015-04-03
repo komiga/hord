@@ -1,38 +1,24 @@
 
-dofile("premake_common.lua")
+dofile("precore_import.lua")
 
--- Core solution
+local S, G, P = precore.helpers()
 
-precore.make_solution(
-	"Hord",
-	{"debug", "release"},
-	{"x64", "x32"},
+precore.init(
 	nil,
 	{
-		"precore-generic",
-		"hord-strict",
-		"hord-deps"
+		"precore.clang-opts",
+		"precore.c++11-core",
+		"precore.env-common",
 	}
 )
 
--- Core library
+precore.import(".")
 
-precore.make_project(
-	"hord",
-	"C++", "SharedLib",
-	"lib/", "out/",
-	nil, nil
-)
+precore.apply_global("hord.projects")
+precore.import("test")
 
-configuration {"debug"}
-	targetsuffix("_d")
+precore.action_clean("out")
+if _ACTION == "clean" then
+	os.rmdir(S"${BUILD_PATH}")
+end
 
-configuration {}
-	includedirs {
-		"include/"
-	}
-	files {
-		"src/Hord/**.cpp"
-	}
-
-precore.action_clean("out", "lib")
