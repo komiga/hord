@@ -73,7 +73,7 @@ precore.make_config_scoped("hord.projects", {
 }, {
 {global = function()
 	precore.make_solution(
-		"Beard",
+		"Hord",
 		{"debug", "release"},
 		{"x64", "x32"},
 		nil,
