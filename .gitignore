@@ -1,7 +1,6 @@
 
 Hord.sublime-workspace
 
-hord.make
+*.make
 Makefile
-out/
-lib/
+build/
