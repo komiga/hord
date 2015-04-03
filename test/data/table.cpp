@@ -91,7 +91,7 @@ main() {
 		table.configure(schema);
 		DUCT_ASSERTE(false);
 	} catch (Hord::Error const& err) {
-		DUCT_ASSERTE(err.get_code() == ErrorCode::table_column_index_invalid);
+		DUCT_ASSERTE(err.code() == ErrorCode::table_column_index_invalid);
 	}
 
 	try {
@@ -101,7 +101,7 @@ main() {
 		table.configure(schema);
 		DUCT_ASSERTE(false);
 	} catch (Hord::Error const& err) {
-		DUCT_ASSERTE(err.get_code() == ErrorCode::table_column_name_empty);
+		DUCT_ASSERTE(err.code() == ErrorCode::table_column_name_empty);
 	}
 
 	try {
@@ -112,7 +112,7 @@ main() {
 		table.configure(schema);
 		DUCT_ASSERTE(false);
 	} catch (Hord::Error const& err) {
-		DUCT_ASSERTE(err.get_code() == ErrorCode::table_column_name_shared);
+		DUCT_ASSERTE(err.code() == ErrorCode::table_column_name_shared);
 	}
 	return 0;
 }
