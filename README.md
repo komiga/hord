@@ -24,7 +24,7 @@ All features support Clang 3.5+ with libc++ (SVN head). GCC is not supported
 due to the ceformat dependency.
 
 Once dependencies are setup (see `dep/README.md`), the library and tests can be
-compiled using plash's standard project protocol: http://komiga.com/pp-cpp
+compiled using my [standard project protocol](http://komiga.com/pp-cpp).
 
 ## License
 
@@ -32,7 +32,7 @@ Hord carries the MIT license, which can be found below and in the `LICENSE`
 file.
 
 ```
-Copyright (c) 2013-2015 plash <plash@komiga.com>
+Copyright (c) 2013-2015 Coranna Howard <me@komiga.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
